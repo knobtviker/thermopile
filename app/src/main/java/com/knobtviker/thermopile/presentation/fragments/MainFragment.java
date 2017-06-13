@@ -3,6 +3,10 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.views.KnobButton;
+import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,8 +29,8 @@ public class MainFragment extends Fragment {
 
     private Unbinder unbinder;
 
-    @BindView(R.id.root_layout)
-    public RelativeLayout rootLayout;
+    @BindView(R.id.recyclerview_hours)
+    public RecyclerView recyclerViewHours;
 
     public static Fragment newInstance() {
         return new MainFragment();
@@ -38,8 +43,7 @@ public class MainFragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, view);
 
-//        final KnobButton rv = new KnobButton(this.getContext(), R.drawable.stator, R.drawable.rotoron, R.drawable.rotoroff);
-//        rootLayout.addView(rv);
+        setupRecyclerViewHours();
 
         return view;
     }
@@ -49,5 +53,14 @@ public class MainFragment extends Fragment {
         super.onDestroyView();
 
         unbinder.unbind();
+    }
+
+    private void setupRecyclerViewHours() {
+        recyclerViewHours.setHasFixedSize(true);
+        recyclerViewHours.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewHours.setAdapter(new HoursAdapter(this.getContext()));
+
+        final SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(recyclerViewHours);
     }
 }

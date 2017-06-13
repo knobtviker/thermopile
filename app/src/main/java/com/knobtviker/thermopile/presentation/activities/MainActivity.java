@@ -34,16 +34,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         showMainFragment();
-
-        new Handler().postDelayed(
-            new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(getApplicationContext(), ScreenSaverActivity.class));
-                }
-            },
-            3000
-        );
     }
 
     private void showMainFragment() {
