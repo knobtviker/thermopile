@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.data.models.presentation;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
@@ -17,7 +16,9 @@ public abstract class Mode {
 
     public abstract String name();
 
-    public abstract Color color();
+    public abstract int color();
+
+    public abstract long lastModified();
 
     public abstract int startHour();
 
@@ -29,6 +30,8 @@ public abstract class Mode {
 
     public abstract ImmutableList<Integer> days();
 
+    public abstract float temperature();
+
     @AutoValue.Builder
     public abstract static class Builder {
 
@@ -36,7 +39,9 @@ public abstract class Mode {
 
         public abstract Builder name(@NonNull final String value);
 
-        public abstract Builder color(@NonNull final Color value);
+        public abstract Builder color(@NonNull final int value);
+
+        public abstract Builder lastModified(final long value);
 
         public abstract Builder startHour(final int value);
 
@@ -48,6 +53,12 @@ public abstract class Mode {
 
         public abstract Builder days(@NonNull final ImmutableList<Integer> value);
 
+        public abstract Builder temperature(final float value);
+
         public abstract Mode build();
+    }
+
+    public static Builder builder() {
+        return new AutoValue_Mode.Builder();
     }
 }

@@ -4,6 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
+import com.knobtviker.thermopile.presentation.views.adapters.ModesAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
 import butterknife.BindView;
@@ -28,7 +33,12 @@ public class ModesFragment extends BaseFragment {
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
+    @BindView(R.id.recyclerview_modes)
+    public RecyclerView recyclerView;
+
     private MainCommunicator mainCommunicator;
+
+    private ModesAdapter adapter;
 
     public static Fragment newInstance() {
         return new ModesFragment();
@@ -58,6 +68,7 @@ public class ModesFragment extends BaseFragment {
         bind(this, view);
 
         setupToolbar();
+        setupRecyclerView();
 
         return view;
     }
@@ -86,5 +97,16 @@ public class ModesFragment extends BaseFragment {
 
     private void setupToolbar() {
         setupCustomActionBarWithHomeAsUp(toolbar);
+    }
+
+    private void setupRecyclerView() {
+        adapter = new ModesAdapter(this.getContext());
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(adapter);
+
+        final SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(recyclerView);
     }
 }

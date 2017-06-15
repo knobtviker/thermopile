@@ -32,13 +32,13 @@ public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
     }
 
     @Override
-    public HourViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public HourViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         return new HourViewHolder(layoutInflater.inflate(R.layout.item_hour, null));
     }
 
     @Override
-    public void onBindViewHolder(HourViewHolder hourViewHolder, int i) {
-        final int hour = hours.get(i);
+    public void onBindViewHolder(HourViewHolder hourViewHolder, int position) {
+        final int hour = hours.get(position);
         hourViewHolder.textViewHour.setText(String.format(hour < 10 ? "0%s" : "%s", String.valueOf(hour)));
     }
 

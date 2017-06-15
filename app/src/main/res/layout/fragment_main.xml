@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:elevation="8dp"/>
 
     <com.knobtviker.thermopile.presentation.views.KnobButton
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_hours"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:elevation="4dp"/>

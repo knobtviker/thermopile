@@ -36,7 +36,7 @@ public class MainFragment extends BaseFragment {
     public Toolbar toolbar;
 
     @BindView(R.id.recyclerview_hours)
-    public RecyclerView recyclerViewHours;
+    public RecyclerView recyclerView;
 
     public static Fragment newInstance() {
         return new MainFragment();
@@ -66,7 +66,7 @@ public class MainFragment extends BaseFragment {
         bind(this, view);
 
         setupToolbar();
-        setupRecyclerViewHours();
+        setupRecyclerView();
 
         return view;
     }
@@ -99,12 +99,12 @@ public class MainFragment extends BaseFragment {
         setupCustomActionBar(toolbar);
     }
 
-    private void setupRecyclerViewHours() {
-        recyclerViewHours.setHasFixedSize(true);
-        recyclerViewHours.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewHours.setAdapter(new HoursAdapter(this.getContext()));
+    private void setupRecyclerView() {
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(new HoursAdapter(this.getContext()));
 
         final SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(recyclerViewHours);
+        snapHelper.attachToRecyclerView(recyclerView);
     }
 }
