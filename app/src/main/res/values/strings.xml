@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Thermopile</string>
+
+    <string name="action_modes">Modes</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

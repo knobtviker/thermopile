@@ -1,12 +1,12 @@
 package com.knobtviker.thermopile.presentation.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 
-import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.MainFragment;
+import com.knobtviker.thermopile.presentation.fragments.ModesFragment;
+import com.knobtviker.thermopile.presentation.fragments.SettingsFragment;
+import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
 /**
  * Skeleton of an Android Things activity.
@@ -27,7 +27,7 @@ import com.knobtviker.thermopile.presentation.fragments.MainFragment;
  *
  * @see <a href="https://github.com/androidthings/contrib-drivers#readme">https://github.com/androidthings/contrib-drivers#readme</a>
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements MainCommunicator {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +36,22 @@ public class MainActivity extends BaseActivity {
         showMainFragment();
     }
 
+    @Override
+    public void back() {
+        popBackStack();
+    }
+
+    @Override
+    public void showModes() {
+        addFragment(ModesFragment.newInstance(), ModesFragment.TAG, true);
+    }
+
+    @Override
+    public void showSettings() {
+        addFragment(SettingsFragment.newInstance(), SettingsFragment.TAG, true);
+    }
+
     private void showMainFragment() {
-        getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.fragment_container, MainFragment.newInstance(), MainFragment.TAG)
-            .commit();
+        replaceFragment(MainFragment.newInstance(), MainFragment.TAG, false);
     }
 }

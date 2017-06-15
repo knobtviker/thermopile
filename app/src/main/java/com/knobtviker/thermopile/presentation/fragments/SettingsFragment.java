@@ -4,10 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,28 +14,24 @@ import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
-import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
 import butterknife.BindView;
 
 /**
- * Created by bojan on 09/06/2017.
+ * Created by bojan on 15/06/2017.
  */
 
-public class MainFragment extends BaseFragment {
-    public static final String TAG = MainFragment.class.getSimpleName();
-
-    private MainCommunicator mainCommunicator;
+public class SettingsFragment extends BaseFragment {
+    public static final String TAG = SettingsFragment.class.getSimpleName();
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
-    @BindView(R.id.recyclerview_hours)
-    public RecyclerView recyclerViewHours;
+    private MainCommunicator mainCommunicator;
 
     public static Fragment newInstance() {
-        return new MainFragment();
+        return new SettingsFragment();
     }
 
     @Override
@@ -61,12 +53,11 @@ public class MainFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_main, container, false);
+        final View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         bind(this, view);
 
         setupToolbar();
-        setupRecyclerViewHours();
 
         return view;
     }
@@ -75,15 +66,13 @@ public class MainFragment extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.settings, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_modes) {
-            mainCommunicator.showModes();
-        } else if (item.getItemId() == R.id.action_settings) {
-            mainCommunicator.showSettings();
+        if (item.getItemId() == android.R.id.home) {
+            mainCommunicator.back();
         }
 
         return super.onOptionsItemSelected(item);
@@ -97,15 +86,6 @@ public class MainFragment extends BaseFragment {
     }
 
     private void setupToolbar() {
-        setupCustomActionBar(toolbar);
-    }
-
-    private void setupRecyclerViewHours() {
-        recyclerViewHours.setHasFixedSize(true);
-        recyclerViewHours.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewHours.setAdapter(new HoursAdapter(this.getContext()));
-
-        final SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(recyclerViewHours);
+        setupCustomActionBarWithHomeAsUp(toolbar);
     }
 }
