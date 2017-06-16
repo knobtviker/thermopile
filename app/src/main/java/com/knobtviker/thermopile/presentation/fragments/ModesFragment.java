@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.dgreenhalgh.android.simpleitemdecoration.linear.DividerItemDecoration;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.views.adapters.ModesAdapter;
@@ -104,6 +105,7 @@ public class ModesFragment extends BaseFragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext().getDrawable(R.drawable.divider_mode)));
         recyclerView.setAdapter(adapter);
 
         final SnapHelper snapHelper = new LinearSnapHelper();

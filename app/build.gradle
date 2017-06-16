@@ -44,4 +44,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.0.0-beta2'
     implementation 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    implementation 'com.bignerdranch.android:simple-item-decoration:1.0.0'
 }
