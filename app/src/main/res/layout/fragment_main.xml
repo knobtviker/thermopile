@@ -4,28 +4,27 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="@color/gray"
     android:clickable="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
+        android:background="@color/dark_gray"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:elevation="8dp"/>
+        android:layout_centerHorizontal="true"/>
 
     <com.knobtviker.thermopile.presentation.views.KnobButton
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"/>
 
+    android:layout_centerHorizontal="true"
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_hours"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:elevation="4dp"/>
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
