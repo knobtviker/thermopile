@@ -54,7 +54,6 @@ public abstract class BaseFragment extends Fragment {
         final Optional<Toolbar> toolbarOptional = Optional.ofNullable(toolbar);
         if (toolbarOptional.isPresent()) {
             final Toolbar toolbarInternal = toolbarOptional.get();
-            toolbarInternal.setContentInsetsAbsolute(0, 0); //Neverfixable hack
 
             final AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
             appCompatActivity.setSupportActionBar(toolbarInternal);
