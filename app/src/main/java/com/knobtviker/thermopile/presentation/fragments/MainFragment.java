@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
+import com.knobtviker.thermopile.presentation.views.CircularSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
@@ -38,6 +39,12 @@ public class MainFragment extends BaseFragment {
 
     @BindView(R.id.textview_clock)
     public TextView textViewClock;
+
+    @BindView(R.id.seekbar_temperature)
+    public CircularSeekBar seekBarTemperature;
+
+    @BindView(R.id.textview_current_temperature)
+    public TextView textViewCurrentTemperature;
 
     @BindView(R.id.recyclerview_hours)
     public RecyclerView recyclerView;

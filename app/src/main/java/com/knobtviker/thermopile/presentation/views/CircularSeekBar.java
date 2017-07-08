@@ -57,9 +57,9 @@ public class CircularSeekBar extends View {
 	protected static final boolean DEFAULT_LOCK_ENABLED = true;
 
     protected static final int[] DEFAULT_BACKGROUND_GRADIENT_COLORS = {
-        Color.RED,
-        Color.BLUE,
-        Color.RED
+        Color.parseColor("#d32f2f"),
+        Color.parseColor("#1976d2"),
+        Color.parseColor("#d32f2f")
     };
     protected static final float[] DEFAULT_BACKGROUND_GRADIENT_POSITIONS = {
         0.0f,
