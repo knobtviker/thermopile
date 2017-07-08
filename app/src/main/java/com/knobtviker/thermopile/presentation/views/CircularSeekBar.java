@@ -5,10 +5,13 @@ import android.content.res.TypedArray;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.SweepGradient;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -18,6 +21,7 @@ import android.view.View;
 import com.knobtviker.thermopile.R;
 
 public class CircularSeekBar extends View {
+    private static final String TAG = CircularSeekBar.class.getSimpleName();
 
 	/**
 	 * Used to scale the dp units to pixels
@@ -384,10 +388,10 @@ public class CircularSeekBar extends View {
 	 * Initializes the {@code Paint} objects with the appropriate styles.
 	 */
 	protected void initPaints() {
-		mCirclePaint = new Paint();
+        mCirclePaint = new Paint();
 		mCirclePaint.setAntiAlias(true);
 		mCirclePaint.setDither(true);
-		mCirclePaint.setColor(mCircleColor);
+//		mCirclePaint.setColor(mCircleColor);
 		mCirclePaint.setStrokeWidth(mCircleStrokeWidth);
 		mCirclePaint.setStyle(Paint.Style.STROKE);
 		mCirclePaint.setStrokeJoin(Paint.Join.ROUND);
@@ -495,6 +499,21 @@ public class CircularSeekBar extends View {
 
 		canvas.translate(this.getWidth() / 2, this.getHeight() / 2);
 
+        final int[] colors = {
+            Color.RED,
+            Color.BLUE,
+            Color.RED
+        };
+        final float[] positions = {
+            0.0f,
+            0.5f,
+            1.0f
+        };
+
+        Shader gradient = new SweepGradient(0, this.getHeight()/2.0f, colors, positions);
+//        final Shader gradient = new LinearGradient(0,0,this.getWidth(), getHeight(), colors, positions, Shader.TileMode.MIRROR);
+        mCirclePaint.setShader(gradient);
+
 		canvas.drawPath(mCirclePath, mCirclePaint);
 		canvas.drawPath(mCircleProgressPath, mCircleProgressGlowPaint);
 		canvas.drawPath(mCircleProgressPath, mCircleProgressPaint);
@@ -598,7 +617,7 @@ public class CircularSeekBar extends View {
 
 	/**
 	 * Set whether the pointer locks at zero and max or not.
-	 * @param boolean value. True if the pointer should lock at zero and max, false if it should not.
+	 * boolean value. True if the pointer should lock at zero and max, false if it should not.
 	 */
 	public void setLockEnabled(boolean lockEnabled) {
 		this.lockEnabled = lockEnabled;
@@ -1039,7 +1058,7 @@ public class CircularSeekBar extends View {
 
 	/**
 	 * Set whether user touch input is accepted or ignored.
-	 * @param boolean value. True if user touch input is to be accepted, false if user touch input is to be ignored.
+	 * boolean value. True if user touch input is to be accepted, false if user touch input is to be ignored.
 	 */
 	public void setIsTouchEnabled(boolean isTouchEnabled) {
 		this.isTouchEnabled = isTouchEnabled;

@@ -59,7 +59,7 @@
             app:circle_y_radius="200dp"
             app:end_angle="45"
             app:max="60"
-            app:circle_color="@color/red"
+            app:circle_color="@color/blue"
             app:circle_progress_color="@color/transparent"
             app:pointer_alpha_ontouch="100"
             app:pointer_color="#0174DF"
