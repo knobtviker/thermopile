@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="88.8"/>
+            android:text="28.7"/>
 
         <com.knobtviker.thermopile.presentation.views.CircularSeekBar
             android:id="@+id/seekbar_temperature"
@@ -58,13 +58,16 @@
             app:circle_x_radius="200dp"
             app:circle_y_radius="200dp"
             app:end_angle="45"
-            app:max="60"
-            app:circle_color="@color/blue"
+            app:min="0"
+            app:max="100"
+            app:maintain_equal_circle="true"
             app:circle_progress_color="@color/transparent"
-            app:pointer_alpha_ontouch="100"
-            app:pointer_color="#0174DF"
-            app:pointer_halo_color="#880174DF"
-            app:progress="25"
+            app:pointer_alpha_ontouch="255"
+            app:pointer_color="@color/light_gray"
+            app:pointer_halo_color="@color/light_gray"
+            app:pointer_radius="12dp"
+            app:pointer_halo_border_width="0dp"
+            app:progress="50"
             app:start_angle="135"
             app:use_custom_radii="true"/>
 
