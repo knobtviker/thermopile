@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
@@ -34,6 +35,9 @@ public class MainFragment extends BaseFragment {
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
+
+    @BindView(R.id.textview_clock)
+    public TextView textViewClock;
 
     @BindView(R.id.recyclerview_hours)
     public RecyclerView recyclerView;
@@ -66,6 +70,7 @@ public class MainFragment extends BaseFragment {
         bind(this, view);
 
         setupToolbar();
+        setupClock();
         setupRecyclerView();
 
         return view;
@@ -97,6 +102,10 @@ public class MainFragment extends BaseFragment {
 
     private void setupToolbar() {
         setupCustomActionBar(toolbar);
+    }
+
+    private void setupClock() {
+        textViewClock.setText("23:59"); //TODO: Change from hardcoded to real fetched RXJava2 value.
     }
 
     private void setupRecyclerView() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,21 +11,64 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:background="@color/dark_gray"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        app:contentInsetStart="0dp"
+        app:contentInsetEnd="0dp"
+        android:background="@color/dark_gray">
 
-    <!--<com.knobtviker.thermopile.presentation.views.KnobButton-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_centerInParent="true"/>-->
+        <TextView
+            android:id="@+id/textview_clock"
+            android:gravity="center"
+            android:layout_gravity="center"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-    android:layout_centerHorizontal="true"
+    </android.support.v7.widget.Toolbar>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_hours"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/recyclerview_hours"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/textview_current_temperature"
+            style="@style/TextAppearance.AppCompat.Display4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="88.8"/>
+
+        <com.knobtviker.thermopile.presentation.views.CircularSeekBar
+            android:id="@+id/seekbar_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:circle_stroke_width="24dp"
+            app:circle_x_radius="200dp"
+            app:circle_y_radius="200dp"
+            app:end_angle="45"
+            app:max="60"
+            app:circle_color="@color/red"
+            app:circle_progress_color="@color/transparent"
+            app:pointer_alpha_ontouch="100"
+            app:pointer_color="#0174DF"
+            app:pointer_halo_color="#880174DF"
+            app:progress="25"
+            app:start_angle="135"
+            app:use_custom_radii="true"/>
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
