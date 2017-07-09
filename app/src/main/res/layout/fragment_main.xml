@@ -14,17 +14,17 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        app:contentInsetStart="0dp"
+        android:background="@color/dark_gray"
         app:contentInsetEnd="0dp"
-        android:background="@color/dark_gray">
+        app:contentInsetStart="0dp">
 
         <TextView
             android:id="@+id/textview_clock"
-            android:gravity="center"
-            android:layout_gravity="center"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"/>
 
     </android.support.v7.widget.Toolbar>
 
@@ -41,63 +41,181 @@
         android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true">
 
-        <TextView
-            android:id="@+id/textview_current_temperature"
-            style="@style/TextAppearance.AppCompat.Display4"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="28.7"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textview_current_temperature"
+                style="@style/TextAppearance.AppCompat.Display4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="28.7"
+                android:textSize="96sp"/>
+
+            <TextView
+                android:id="@+id/textview_current_temperature_unit"
+                style="@style/TextAppearance.AppCompat.Display2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="8dp"
+                android:text="°C"/>
+
+        </LinearLayout>
 
         <com.knobtviker.thermopile.presentation.views.CircularSeekBar
             android:id="@+id/seekbar_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            app:circle_progress_color="@color/transparent"
             app:circle_stroke_width="24dp"
             app:circle_x_radius="200dp"
             app:circle_y_radius="200dp"
             app:end_angle="45"
-            app:min="0"
-            app:max="100"
             app:maintain_equal_circle="true"
-            app:circle_progress_color="@color/transparent"
+            app:max="100"
+            app:min="0"
+            app:move_outside_circle="false"
             app:pointer_alpha_ontouch="255"
             app:pointer_color="@color/light_gray"
+            app:pointer_halo_border_width="0dp"
             app:pointer_halo_color="@color/light_gray"
             app:pointer_radius="12dp"
-            app:pointer_halo_border_width="0dp"
-            app:move_outside_circle="false"
             app:progress="50"
             app:start_angle="135"
             app:use_custom_radii="true"/>
 
         <LinearLayout
-            android:weightSum="2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/seekbar_temperature"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textview_humidity"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_humidity"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="100"/>
+
+                <TextView
+                    android:id="@+id/textview_humidity_unit"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="%"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textview_pressure"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_pressure"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="1039"/>
+
+                <TextView
+                    android:id="@+id/textview_pressure_unit"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="hPa"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textview_seismic"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_seismic"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="0.00"/>
+
+                <TextView
+                    android:id="@+id/textview_seismic_unit"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="m/s²"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
-            android:layout_alignParentBottom="true"
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:weightSum="2">
 
             <android.support.design.widget.FloatingActionButton
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                app:fabSize="normal"
-                app:backgroundTint="@color/light_gray"
-                app:srcCompat="@drawable/ic_arrow_down"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="32dp"
-                android:layout_height="wrap_content"/>
+                android:layout_weight="1"
+                app:backgroundTint="@color/light_gray"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_arrow_down"/>
 
             <android.support.design.widget.FloatingActionButton
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
-                app:fabSize="normal"
+                android:layout_weight="1"
                 app:backgroundTint="@color/light_gray"
-                app:srcCompat="@drawable/ic_arrow_up"
-                android:layout_height="wrap_content"/>
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_arrow_up"/>
 
         </LinearLayout>
 
