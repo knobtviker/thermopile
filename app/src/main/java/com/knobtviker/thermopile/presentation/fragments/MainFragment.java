@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,10 +19,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.sources.raw.implementation.drivers.Bme280;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.views.CircularSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 
@@ -33,6 +37,8 @@ public class MainFragment extends BaseFragment {
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private MainCommunicator mainCommunicator;
+
+    private Bme280 bme280;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -84,6 +90,21 @@ public class MainFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        testInit();
+        testRead();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        testClose();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.main, menu);
@@ -122,5 +143,31 @@ public class MainFragment extends BaseFragment {
 
         final SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
+    }
+
+    private void testInit() {
+        try {
+            bme280 = new Bme280("I2C1");
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+    }
+
+    private void testRead() {
+        try {
+            final float[] readings = bme280.readAll();
+            Log.i(TAG, "Temperature: " + readings[0] + " --- Humidity: " + readings[1] + " --- Pressure: " + readings[1]);
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
+    private void testClose() {
+        try {
+            bme280.close();
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
     }
 }
