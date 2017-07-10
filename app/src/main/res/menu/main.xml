@@ -3,9 +3,9 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_modes"
-        android:icon="@drawable/ic_modes"
-        android:title="@string/action_modes"
+        android:id="@+id/action_schedule"
+        android:icon="@drawable/ic_schedule"
+        android:title="@string/action_schedule"
         app:showAsAction="always"/>
 
     <item

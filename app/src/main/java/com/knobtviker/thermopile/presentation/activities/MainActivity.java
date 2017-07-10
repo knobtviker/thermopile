@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.MainFragment;
-import com.knobtviker.thermopile.presentation.fragments.ModesFragment;
+import com.knobtviker.thermopile.presentation.fragments.ScheduleFragment;
 import com.knobtviker.thermopile.presentation.fragments.SettingsFragment;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
@@ -42,8 +42,8 @@ public class MainActivity extends BaseActivity implements MainCommunicator {
     }
 
     @Override
-    public void showModes() {
-        addFragment(ModesFragment.newInstance(), ModesFragment.TAG, true);
+    public void showSchedule() {
+        addFragment(ScheduleFragment.newInstance(), ScheduleFragment.TAG, true);
     }
 
     @Override

@@ -15,8 +15,16 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@color/dark_gray"
-        app:contentInsetEnd="0dp"
-        app:contentInsetStart="0dp">
+        app:contentInsetEnd="16dp"
+        app:contentInsetStart="8dp">
+
+        <TextView
+            android:id="@+id/textview_date"
+            android:layout_width="wrap_content"
+            style="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
+            android:layout_gravity="center_vertical|left"
+            android:gravity="center_vertical|left"
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/textview_clock"
@@ -99,7 +107,7 @@
             android:layout_toLeftOf="@id/seekbar_temperature"
             android:orientation="vertical"
             android:padding="16dp"
-            android:weightSum="3">
+            android:weightSum="2">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -156,35 +164,6 @@
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="hPa"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textview_seismic"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawableLeft="@drawable/ic_seismic"
-                    android:drawablePadding="16dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="0.00"/>
-
-                <TextView
-                    android:id="@+id/textview_seismic_unit"
-                    style="@style/TextAppearance.AppCompat.Body1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="m/s²"/>
 
             </LinearLayout>
 

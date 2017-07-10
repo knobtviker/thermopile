@@ -8,7 +8,7 @@ public interface MainCommunicator {
 
     void back();
 
-    void showModes();
+    void showSchedule();
 
     void showSettings();
 }

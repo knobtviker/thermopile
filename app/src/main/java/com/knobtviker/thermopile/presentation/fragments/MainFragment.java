@@ -43,6 +43,9 @@ public class MainFragment extends BaseFragment {
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
+    @BindView(R.id.textview_date)
+    public TextView textViewDate;
+
     @BindView(R.id.textview_clock)
     public TextView textViewClock;
 
@@ -83,6 +86,7 @@ public class MainFragment extends BaseFragment {
         bind(this, view);
 
         setupToolbar();
+        setupDate();
         setupClock();
         setupRecyclerView();
 
@@ -93,15 +97,15 @@ public class MainFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
 
-        testInit();
-        testRead();
+//        testInit();
+//        testRead();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        testClose();
+//        testClose();
     }
 
     @Override
@@ -112,8 +116,8 @@ public class MainFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_modes) {
-            mainCommunicator.showModes();
+        if (item.getItemId() == R.id.action_schedule) {
+            mainCommunicator.showSchedule();
         } else if (item.getItemId() == R.id.action_settings) {
             mainCommunicator.showSettings();
         }
@@ -130,6 +134,10 @@ public class MainFragment extends BaseFragment {
 
     private void setupToolbar() {
         setupCustomActionBar(toolbar);
+    }
+
+    private void setupDate() {
+        textViewDate.setText("11.11.2017. Wednesday"); //TODO: Change from hardcoded to real fetched RXJava2 value.
     }
 
     private void setupClock() {
