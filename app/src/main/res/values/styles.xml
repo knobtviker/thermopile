@@ -17,16 +17,25 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="ScheduleDay" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:layout_weight">0.13</item>
+    <style name="ScheduleDay" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:layout_weight">0.10</item>
         <item name="android:background">@drawable/layerlist_background_schedule_day</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
         <item name="android:layout_gravity">center_vertical|left</item>
         <item name="android:gravity">center_vertical|left</item>
         <item name="android:maxLines">1</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="ScheduleDayHours">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:paddingTop">1dp</item>
+        <item name="android:paddingBottom">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_weight">0.90</item>
     </style>
 
 </resources>

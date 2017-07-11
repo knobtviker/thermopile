@@ -6,10 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.annimon.stream.IntStream;
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.views.viewholders.HourViewHolder;
+
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by bojan on 13/06/2017.
@@ -27,7 +29,7 @@ public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
             IntStream
                 .range(0, 24)
                 .boxed()
-                .toList()
+                .collect(Collectors.toList())
         );
     }
 

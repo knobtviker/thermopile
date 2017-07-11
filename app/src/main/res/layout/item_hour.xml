@@ -36,11 +36,10 @@
 
     </LinearLayout>
 
-    <View
+    <com.knobtviker.thermopile.presentation.views.DashedLineView
         android:layout_width="1dp"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/divider_hour"/>
+        android:layout_alignParentLeft="true"/>
 
 </RelativeLayout>
