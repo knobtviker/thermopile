@@ -1,12 +1,12 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,7 +21,9 @@ import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
+import com.knobtviker.thermopile.presentation.views.AddDialogViewHolder;
 import com.knobtviker.thermopile.presentation.views.DashedLineView;
+import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
 import java.util.List;
@@ -81,6 +83,13 @@ public class ScheduleFragment extends BaseFragment {
         setupDayTouchListeners();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        showAddDialog(4, 720);
     }
 
     @Override
@@ -177,12 +186,17 @@ public class ScheduleFragment extends BaseFragment {
     }
 
     private void showAddDialog(final int dayIndex, final int minuteOfDay) {
-        Log.i(TAG, dayIndex + " --- " + minuteOfDay);
+        final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        final View addDialogView = layoutInflater.inflate(R.layout.dialog_add, null, false);
+        final AddDialogViewHolder addDialogViewHolder = new AddDialogViewHolder(addDialogView);
+        final ColorAdapter adapter = new ColorAdapter(getContext(), addDialogViewHolder.buttonPreview);
+
+        addDialogViewHolder.recyclerViewColors.setAdapter(adapter);
+        addDialogViewHolder.buttonPreview.setBackgroundTintList(ColorStateList.valueOf(adapter.getItem(0)));
+
         new AlertDialog.Builder(getContext())
-            .setTitle("OVO ĆE POSTAVITI TEMP")
-            .setMessage("OVO ĆE POSTAVITI TEMP SA MINUTOM I SATOM START I END I SLIDER ZA TEMP I COLOR PICKER MATERIAL OSNOVNI")
+            .setView(addDialogView)
             .setPositiveButton("SET", (dialogInterface, i) -> {
-                //TODO: Save this range and mode and show on day view
                 dialogInterface.dismiss();
             })
             .setNegativeButton("CANCEL", (dialogInterface, i) -> dialogInterface.dismiss())
