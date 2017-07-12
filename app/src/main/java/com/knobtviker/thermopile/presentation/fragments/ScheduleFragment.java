@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -75,6 +77,7 @@ public class ScheduleFragment extends BaseFragment {
 
         setupToolbar();
         setupDays();
+        setupDayTouchListeners();
 
         return view;
     }
@@ -111,7 +114,6 @@ public class ScheduleFragment extends BaseFragment {
         final LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) hourLayout.getLayoutParams();
         final float weight = layoutParams.weight;
         final int realWidth = Math.round(screenWidth * weight);
-        final int MINUTES_IN_DAY = 1440;
 
         final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         IntStream
@@ -120,7 +122,6 @@ public class ScheduleFragment extends BaseFragment {
                 final View view = layoutInflater.inflate(R.layout.item_hour_toolbar, null);
                 final TextView textViewHour = ButterKnife.findById(view, R.id.textview_hour);
                 textViewHour.setText(String.format(hour < 10 ? "0%s" : "%s", String.valueOf(hour)));
-                Log.i(TAG, textViewHour.getText().toString());
                 layoutHours.addView(view);
             });
 
@@ -138,5 +139,43 @@ public class ScheduleFragment extends BaseFragment {
                         relativeLayout.addView(view);
                     })
             );
+    }
+
+    private void setupDayTouchListeners() {
+        final int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+
+        IntStream
+            .range(0, hourLayouts.size())
+            .forEach(index ->
+                hourLayouts
+                    .get(index)
+                    .setOnTouchListener(new View.OnTouchListener() {
+                        int startX;
+                        int startY;
+
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                                startX = (int) event.getX();
+                                startY = (int) event.getY();
+                            }
+
+                            if (event.getAction() == MotionEvent.ACTION_UP) {
+                                final int endX = (int) event.getX();
+                                final int endY = (int) event.getY();
+                                final int dX = Math.abs(endX - startX);
+                                final int dY = Math.abs(endY - startY);
+
+
+                                if (Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)) <= touchSlop) {
+                                    showAddDialog(index, startX*2);
+                                }
+                            }
+                            return true;
+                        }
+                    }));
+    }
+
+    private void showAddDialog(final int dayIndex, final int minuteOfDay) {
+        Log.i(TAG, dayIndex + " --- " + minuteOfDay);
     }
 }

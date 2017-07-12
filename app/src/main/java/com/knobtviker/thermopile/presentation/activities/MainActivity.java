@@ -34,8 +34,7 @@ public class MainActivity extends BaseActivity implements MainCommunicator {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        showMainFragment();
-        showSchedule();
+        showMainFragment();
     }
 
     @Override
