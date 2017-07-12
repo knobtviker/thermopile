@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -177,5 +178,15 @@ public class ScheduleFragment extends BaseFragment {
 
     private void showAddDialog(final int dayIndex, final int minuteOfDay) {
         Log.i(TAG, dayIndex + " --- " + minuteOfDay);
+        new AlertDialog.Builder(getContext())
+            .setTitle("OVO ĆE POSTAVITI TEMP")
+            .setMessage("OVO ĆE POSTAVITI TEMP SA MINUTOM I SATOM START I END I SLIDER ZA TEMP I COLOR PICKER MATERIAL OSNOVNI")
+            .setPositiveButton("SET", (dialogInterface, i) -> {
+                //TODO: Save this range and mode and show on day view
+                dialogInterface.dismiss();
+            })
+            .setNegativeButton("CANCEL", (dialogInterface, i) -> dialogInterface.dismiss())
+            .create()
+            .show();
     }
 }
