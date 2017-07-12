@@ -21,9 +21,9 @@
         <LinearLayout
             android:id="@+id/layout_hours"
             android:orientation="horizontal"
-            android:background="@color/blue"
             android:gravity="bottom"
             android:weightSum="24"
+            android:paddingBottom="2dp"
             android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />

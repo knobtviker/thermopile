@@ -121,8 +121,6 @@ public class ScheduleFragment extends BaseFragment {
                 final TextView textViewHour = ButterKnife.findById(view, R.id.textview_hour);
                 textViewHour.setText(String.format(hour < 10 ? "0%s" : "%s", String.valueOf(hour)));
                 Log.i(TAG, textViewHour.getText().toString());
-//                view.setScaleX(0.75f);
-//                view.setScaleY(0.75f);
                 layoutHours.addView(view);
             });
 

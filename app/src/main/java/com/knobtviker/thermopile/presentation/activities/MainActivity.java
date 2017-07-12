@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.presentation.activities;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.MainFragment;
@@ -44,15 +45,30 @@ public class MainActivity extends BaseActivity implements MainCommunicator {
 
     @Override
     public void showSchedule() {
-        addFragment(ScheduleFragment.newInstance(), ScheduleFragment.TAG, true);
+        Fragment fragment = findFragment(ScheduleFragment.TAG);
+        if (fragment == null) {
+            fragment = ScheduleFragment.newInstance();
+        }
+
+        addFragment(fragment, ScheduleFragment.TAG, true);
     }
 
     @Override
     public void showSettings() {
-        addFragment(SettingsFragment.newInstance(), SettingsFragment.TAG, true);
+        Fragment fragment = findFragment(SettingsFragment.TAG);
+        if (fragment == null) {
+            fragment = SettingsFragment.newInstance();
+        }
+
+        addFragment(fragment, SettingsFragment.TAG, true);
     }
 
     private void showMainFragment() {
-        replaceFragment(MainFragment.newInstance(), MainFragment.TAG, false);
+        Fragment fragment = findFragment(MainFragment.TAG);
+        if (fragment == null) {
+            fragment = MainFragment.newInstance();
+        }
+
+        replaceFragment(fragment, MainFragment.TAG, false);
     }
 }

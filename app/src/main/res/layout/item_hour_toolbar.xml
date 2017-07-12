@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="0dp"
     android:layout_weight="1"
-    android:background="@color/red"
     android:layout_height="?attr/actionBarSize"
     android:gravity="bottom"
     android:layout_gravity="bottom"
@@ -11,6 +10,7 @@
 
     <TextView
         android:id="@+id/textview_hour"
+        android:textSize="10sp"
         style="@style/TextAppearance.AppCompat.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +18,8 @@
 
     <TextView
         style="@style/TextAppearance.AppCompat.Caption"
-        android:textSize="10sp"
+        android:textSize="8sp"
+        android:layout_marginRight="6dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=":00"/>
