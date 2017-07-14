@@ -2,8 +2,8 @@ package com.knobtviker.thermopile.presentation.views.adapters;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -29,10 +29,14 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
         this.layoutInflater = LayoutInflater.from(context);
         this.targetView = targetView;
 
-        this.colors = ImmutableList.of(
-            ContextCompat.getColor(context, R.color.red),
-            ContextCompat.getColor(context, R.color.blue)
-        );
+        final TypedArray colors500TypedArray = context.getResources().obtainTypedArray(R.array.colors_500);
+        final Integer[] colors500 = new Integer[colors500TypedArray.length()];
+        for (int i = 0; i < colors500TypedArray.length(); i++) {
+            colors500[i] = colors500TypedArray.getColor(i, 0);
+        }
+        colors500TypedArray.recycle();
+
+        this.colors = ImmutableList.copyOf(colors500);
     }
 
     @Override
