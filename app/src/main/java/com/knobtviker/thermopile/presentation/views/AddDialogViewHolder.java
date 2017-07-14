@@ -40,8 +40,8 @@ public class AddDialogViewHolder {
     @BindView(R.id.checkbox_mode_save)
     public AppCompatCheckBox checkBoxModeSave;
 
-    @BindView(R.id.textinputedittext_mode_name)
-    public EditText textInputEditTextModeName;
+    @BindView(R.id.edittext_mode_name)
+    public EditText editTextModeName;
 
     public AddDialogViewHolder(@NonNull final View view) {
 
@@ -52,7 +52,7 @@ public class AddDialogViewHolder {
 
     @OnCheckedChanged(R.id.checkbox_mode_save)
     public void onSaveModeChanged(final boolean isChecked) {
-        textInputEditTextModeName.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        editTextModeName.setVisibility(isChecked ? View.VISIBLE : View.GONE);
     }
 
     private void init(@NonNull final View view) {

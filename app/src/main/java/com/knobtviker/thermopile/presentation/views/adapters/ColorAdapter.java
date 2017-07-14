@@ -25,6 +25,8 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
     private final Button targetView;
 
+    private int selectedColor = 0;
+
     public ColorAdapter(@NonNull final Context context, @NonNull final Button targetView) {
         this.layoutInflater = LayoutInflater.from(context);
         this.targetView = targetView;
@@ -37,6 +39,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
         colors500TypedArray.recycle();
 
         this.colors = ImmutableList.copyOf(colors500);
+        this.selectedColor = colors.get(0);
     }
 
     @Override
@@ -48,7 +51,11 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
     public void onBindViewHolder(ColorViewHolder colorViewHolder, int position) {
         final int color = colors.get(position);
         colorViewHolder.backgroundView.setBackgroundColor(color);
-        colorViewHolder.backgroundView.setOnClickListener(view -> targetView.setBackgroundTintList(ColorStateList.valueOf(color)));
+        colorViewHolder.backgroundView.setOnClickListener(view -> {
+                targetView.setBackgroundTintList(ColorStateList.valueOf(color));
+                selectedColor = color;
+            }
+        );
     }
 
     @Override
@@ -64,5 +71,9 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
     public int getItem(final int position) {
         return colors.get(position);
+    }
+
+    public int getSelectedColor() {
+        return selectedColor;
     }
 }

@@ -177,7 +177,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
         <EditText
-            android:id="@+id/textinputedittext_mode_name"
+            android:id="@+id/edittext_mode_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
