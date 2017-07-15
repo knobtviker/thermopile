@@ -96,9 +96,14 @@
 
     <SeekBar
         android:id="@+id/seekbar_temperature"
+        style="@style/Widget.AppCompat.SeekBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"/>
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:progressDrawable="@drawable/shape_background_seekbar_linear"
+        android:thumbTint="@color/white"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
