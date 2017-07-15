@@ -4,6 +4,7 @@
     package="com.knobtviker.thermopile">
 
     <application
+        android:name=".presentation.ThermopileApp"
         android:theme="@style/AppTheme">
 
         <uses-library android:name="com.google.android.things"/>

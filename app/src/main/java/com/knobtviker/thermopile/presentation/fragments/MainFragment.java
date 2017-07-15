@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,10 +21,15 @@ import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.sources.raw.implementation.drivers.Bme280;
+import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
+import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.views.CircularSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.io.IOException;
 
@@ -33,7 +39,7 @@ import butterknife.BindView;
  * Created by bojan on 09/06/2017.
  */
 
-public class MainFragment extends BaseFragment {
+public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View {
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private MainCommunicator mainCommunicator;
@@ -76,19 +82,23 @@ public class MainFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+
+        presenter = new MainPresenter(this.getContext(), this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         bind(this, view);
 
         setupToolbar();
-        setupDate();
-        setupClock();
+        onClockTick();
         setupRecyclerView();
+        startClock();
 
         return view;
     }
@@ -132,16 +142,24 @@ public class MainFragment extends BaseFragment {
         mainCommunicator = null;
     }
 
+    @Override
+    public void showLoading(boolean isLoading) {
+        //TODO:
+    }
+
+    @Override
+    public void showError(@NonNull Throwable throwable) {
+        Log.e(TAG, throwable.getMessage(), throwable);
+    }
+
+    @Override
+    public void onClockTick() {
+        final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
+        setDateTime(dateTime);
+    }
+
     private void setupToolbar() {
         setupCustomActionBar(toolbar);
-    }
-
-    private void setupDate() {
-        textViewDate.setText("11.11.2017. Wednesday"); //TODO: Change from hardcoded to real fetched RXJava2 value.
-    }
-
-    private void setupClock() {
-        textViewClock.setText("23:59"); //TODO: Change from hardcoded to real fetched RXJava2 value.
     }
 
     private void setupRecyclerView() {
@@ -151,6 +169,23 @@ public class MainFragment extends BaseFragment {
 
         final SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
+    }
+
+    private void setDateTime(@NonNull final DateTime dateTime) {
+        setDate(dateTime.toString("dd.MM.yyyy. EEEE"));
+        setTime(dateTime.toString("HH:mm"));
+    }
+
+    private void setDate(@NonNull final String date) {
+        textViewDate.setText(date);
+    }
+
+    private void setTime(@NonNull final String time) {
+        textViewClock.setText(time);
+    }
+
+    private void startClock() {
+        presenter.startClock();
     }
 
     private void testInit() {
