@@ -59,14 +59,6 @@ public class SettingsFragment extends BaseFragment {
 
         setupToolbar();
 
-        //TODO:
-        //Add DateTimeZone selector, picker or whatever
-        //Add 12h or 24h switch
-        //Add date format
-        //Add time format
-        //Add temperature unit selector. C, F, K
-        //Add pressure unit selector
-
         return view;
     }
 
