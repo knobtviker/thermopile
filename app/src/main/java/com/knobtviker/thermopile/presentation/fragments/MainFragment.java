@@ -172,7 +172,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setDateTime(@NonNull final DateTime dateTime) {
-        setDate(dateTime.toString("dd.MM.yyyy. EEEE"));
+        setDate(dateTime.toString("EEEE dd.MM.yyyy."));
         setTime(dateTime.toString("HH:mm"));
     }
 

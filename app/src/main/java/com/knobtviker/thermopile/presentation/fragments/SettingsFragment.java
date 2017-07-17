@@ -6,15 +6,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
+
+import org.joda.time.DateTimeZone;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -27,6 +32,9 @@ public class SettingsFragment extends BaseFragment {
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
+
+    @BindView(R.id.spinner_timezone)
+    public Spinner spinnerTimezone;
 
     private MainCommunicator mainCommunicator;
 
@@ -58,14 +66,9 @@ public class SettingsFragment extends BaseFragment {
         bind(this, view);
 
         setupToolbar();
+        setupSpinnerTimezone();
 
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.settings, menu);
     }
 
     @Override
@@ -86,5 +89,13 @@ public class SettingsFragment extends BaseFragment {
 
     private void setupToolbar() {
         setupCustomActionBarWithHomeAsUp(toolbar);
+    }
+
+    private void setupSpinnerTimezone() {
+        final List<String> timezones = new ArrayList<>(DateTimeZone.getAvailableIDs());
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, timezones);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTimezone.setAdapter(spinnerAdapter);
+        spinnerTimezone.setPrompt("Timezone");
     }
 }

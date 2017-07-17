@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:colorPrimary">@color/dark_gray</item>
         <item name="android:colorPrimaryDark">@color/black</item>
-        <item name="android:colorAccent">@color/vanilla</item>
+        <item name="android:colorAccent">@color/light_blue_500</item>
     </style>
 
     <style name="ModeDaysTextAppearance" parent="TextAppearance.AppCompat.Body1">

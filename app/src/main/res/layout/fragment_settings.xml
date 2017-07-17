@@ -15,4 +15,292 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/textview_title_timezone"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="4dp"
+                    android:text="Timezone"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@+id/textview_title_timezone"
+                    android:background="@color/white"/>
+
+            </RelativeLayout>
+
+            <Spinner
+                android:id="@+id/spinner_timezone"
+                android:spinnerMode="dialog"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/listPreferredItemHeight" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/textview_title_clock_mode"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="4dp"
+                    android:text="Clock mode"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@+id/textview_title_clock_mode"
+                    android:background="@color/white"/>
+
+            </RelativeLayout>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:gravity="center_vertical"
+                android:layout_height="?attr/listPreferredItemHeight">
+
+                <RadioButton
+                    android:id="@+id/mode_12h"
+                    android:layout_width="0dp"
+                    android:text="12h"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/mode_24h"
+                    android:checked="true"
+                    android:text="24h"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+            </RadioGroup>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/textview_title_date_format"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="4dp"
+                    android:text="Date format"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@+id/textview_title_date_format"
+                    android:background="@color/white"/>
+
+            </RelativeLayout>
+
+            <Spinner
+                android:id="@+id/spinner_date_format"
+                android:spinnerMode="dialog"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/listPreferredItemHeight" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/textview_title_time_format"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="4dp"
+                    android:text="Time format"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@+id/textview_title_time_format"
+                    android:background="@color/white"/>
+
+            </RelativeLayout>
+
+            <Spinner
+                android:id="@+id/spinner_time_format"
+                android:spinnerMode="dialog"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/listPreferredItemHeight" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/textview_title_unit_temperature"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="4dp"
+                    android:text="Temperature unit"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@+id/textview_title_unit_temperature"
+                    android:background="@color/white"/>
+
+            </RelativeLayout>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:gravity="center_vertical"
+                android:layout_height="?attr/listPreferredItemHeight">
+
+                <RadioButton
+                    android:id="@+id/unit_celsius"
+                    android:layout_width="0dp"
+                    android:checked="true"
+                    android:text="Celsius"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/unit_farenheit"
+                    android:text="Farenheit"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/unit_kelvin"
+                    android:text="Kelvin"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+            </RadioGroup>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/textview_title_unit_pressure"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="4dp"
+                    android:text="Pressure unit"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@+id/textview_title_unit_pressure"
+                    android:background="@color/white"/>
+
+            </RelativeLayout>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:gravity="center_vertical"
+                android:layout_height="?attr/listPreferredItemHeight">
+
+                <RadioButton
+                    android:id="@+id/unit_pascal"
+                    android:layout_width="0dp"
+                    android:checked="true"
+                    android:text="Pascal"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/unit_bar"
+                    android:text="bar"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/unit_psi"
+                    android:text="psi"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
 </RelativeLayout>

@@ -12,7 +12,7 @@ import io.requery.Table;
 
 @Entity
 @Table(name = "_reading_")
-public interface SettingTable {
+public interface SettingsTable {
 
     @Key
     @Generated

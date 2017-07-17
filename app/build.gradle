@@ -15,6 +15,9 @@ android {
                 includeCompileClasspath false
             }
         }
+
+        buildConfigField "String", 'DATABASE_NAME', '"Thermopile"'
+        buildConfigField "int", 'DATABASE_VERSION', '1'
     }
     buildTypes {
         release {
