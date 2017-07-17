@@ -23,9 +23,12 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
+import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
+import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.views.AddDialogViewHolder;
 import com.knobtviker.thermopile.presentation.views.DashedLineView;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
@@ -45,7 +48,7 @@ import butterknife.ButterKnife;
  * Created by bojan on 15/06/2017.
  */
 
-public class ScheduleFragment extends BaseFragment {
+public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
     public static final String TAG = ScheduleFragment.class.getSimpleName();
 
     @BindView(R.id.toolbar)
@@ -77,6 +80,8 @@ public class ScheduleFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+
+        presenter = new SchedulePresenter(this.getContext(), this);
     }
 
     @Nullable
@@ -114,6 +119,51 @@ public class ScheduleFragment extends BaseFragment {
         super.onDetach();
 
         mainCommunicator = null;
+    }
+
+    @Override
+    public void showLoading(boolean isLoading) {
+
+    }
+
+    @Override
+    public void showError(@NonNull Throwable throwable) {
+        Log.e(TAG, throwable.getMessage(), throwable);
+    }
+
+    @Override
+    public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
+
+    }
+
+    @Override
+    public void onSaved(@NonNull Threshold threshold) {
+        final RelativeLayout layout = hourLayouts.get(threshold.day());
+
+        final Button thresholdView = new Button(layout.getContext());
+        thresholdView.setBackgroundColor(threshold.color());
+        thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
+
+        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, 1);
+        params.addRule(RelativeLayout.CENTER_VERTICAL);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margind_small), 0, getResources().getDimensionPixelSize(R.dimen.margind_small));
+        params.width = Math.round(
+            Minutes.minutesBetween(
+                new DateTime()
+                    .withHourOfDay(threshold.startHour())
+                    .withMinuteOfHour(threshold.startMinute()),
+                new DateTime()
+                    .withHourOfDay(threshold.endHour())
+                    .withMinuteOfHour(threshold.endMinute())
+            ).getMinutes() / 2.0f
+        );
+
+        thresholdView.setLayoutParams(params);
+        thresholdView.setOnClickListener(view -> Log.i(TAG, threshold.toString()));
+
+        layout.addView(thresholdView);
     }
 
     private void setupToolbar() {
@@ -235,41 +285,16 @@ public class ScheduleFragment extends BaseFragment {
     }
 
     private void addThreshold(final int day, final int hourStart, final int minuteStart, final int hourEnd, final int minuteEnd, final int desiredTemperature, final int selectedColor, final boolean isSaveChecked, @NonNull final String modeName) {
-        final Threshold threshold = Threshold.builder()
-            .day(day)
-            .startHour(hourStart)
-            .startMinute(minuteStart)
-            .endHour(hourEnd)
-            .endMinute(minuteEnd)
-            .temperature(desiredTemperature)
-            .color(selectedColor)
-            .build();
-
-        final RelativeLayout layout = hourLayouts.get(day);
-
-        final Button thresholdView = new Button(layout.getContext());
-        thresholdView.setBackgroundColor(threshold.color());
-        thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
-
-        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, 1);
-        params.addRule(RelativeLayout.CENTER_VERTICAL);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margind_small), 0, getResources().getDimensionPixelSize(R.dimen.margind_small));
-        params.width = Math.round(
-            Minutes.minutesBetween(
-                new DateTime()
-                    .withHourOfDay(hourStart)
-                    .withMinuteOfHour(minuteStart),
-                new DateTime()
-                    .withHourOfDay(hourEnd)
-                    .withMinuteOfHour(minuteEnd)
-            ).getMinutes() / 2.0f
+        presenter.save(
+            Threshold.builder()
+                .day(day)
+                .startHour(hourStart)
+                .startMinute(minuteStart)
+                .endHour(hourEnd)
+                .endMinute(minuteEnd)
+                .temperature(desiredTemperature)
+                .color(selectedColor)
+                .build()
         );
-
-        thresholdView.setLayoutParams(params);
-        thresholdView.setOnClickListener(view -> Log.i(TAG, threshold.toString()));
-
-        layout.addView(thresholdView);
     }
 }
