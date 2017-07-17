@@ -96,7 +96,8 @@ public class ScheduleFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.modes, menu);
+        menu.clear();
+        inflater.inflate(R.menu.schedule, menu);
     }
 
     @Override
