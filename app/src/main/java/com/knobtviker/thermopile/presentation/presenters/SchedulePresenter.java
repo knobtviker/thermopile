@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
@@ -60,7 +61,17 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
 
     @Override
     public void thresholds() {
+        started();
 
+        compositeDisposable.add(
+          thresholdRepository
+            .load()
+            .subscribe(
+                this::onNext,
+                this::error,
+                this::completed
+            )
+        );
     }
 
     @Override
@@ -77,6 +88,10 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
                     this::completed
                 )
         );
+    }
+
+    private void onNext(@NonNull final ImmutableList<Threshold> thresholds) {
+        view.onThresholds(thresholds);
     }
 
     private void onSavedNext(@NonNull final Threshold threshold) {

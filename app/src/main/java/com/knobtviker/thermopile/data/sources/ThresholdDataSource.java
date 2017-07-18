@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.ThresholdTableEntity;
 
+import java.util.List;
+
 import io.reactivex.Single;
 
 /**
@@ -13,6 +15,8 @@ import io.reactivex.Single;
 public interface ThresholdDataSource {
 
     interface Local {
+
+        Single<List<ThresholdTableEntity>> load();
 
         Single<ThresholdTableEntity> save(@NonNull final ThresholdTableEntity item);
     }

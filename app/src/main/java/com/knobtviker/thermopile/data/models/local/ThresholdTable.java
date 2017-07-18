@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.data.models.local;
 
 import io.requery.Column;
 import io.requery.Entity;
+import io.requery.Generated;
 import io.requery.Key;
 import io.requery.Table;
 
@@ -14,8 +15,9 @@ import io.requery.Table;
 public interface ThresholdTable {
 
     @Key
+    @Generated
     @Column("_id_")
-    String id();
+    long id();
 
     @Column("_day_")
     int day();

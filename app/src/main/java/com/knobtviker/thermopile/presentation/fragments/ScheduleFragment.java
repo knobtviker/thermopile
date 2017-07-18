@@ -87,6 +87,8 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         final View view = inflater.inflate(R.layout.fragment_schedule, container, false);
 
         bind(this, view);
@@ -94,6 +96,8 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         setupToolbar();
         setupDays();
         setupDayTouchListeners();
+
+        presenter.thresholds();
 
         return view;
     }
@@ -133,7 +137,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
-
+        thresholds.forEach(this::onSaved);
     }
 
     @Override

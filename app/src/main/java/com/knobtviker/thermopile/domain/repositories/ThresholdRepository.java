@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.domain.repositories;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.data.converters.ThresholdConverter;
 import com.knobtviker.thermopile.data.models.local.ThresholdTableEntity;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
@@ -44,6 +45,16 @@ public class ThresholdRepository extends BaseRepository {
         this.thresholdConverter = new ThresholdConverter();
     }
 
+    public Observable<ImmutableList<Threshold>> load() {
+        return thresholdLocalDataSource
+            .load()
+            .toObservable()
+            .subscribeOn(schedulerProvider.io())
+            .map(ImmutableList::copyOf)
+            .map(thresholdConverter::localToPresentation)
+            .observeOn(schedulerProvider.ui());
+    }
+
     public Observable<Threshold> save(@NonNull final ThresholdTableEntity entity) {
         return thresholdLocalDataSource
             .save(entity)
@@ -54,9 +65,6 @@ public class ThresholdRepository extends BaseRepository {
     }
 
     public Observable<ThresholdTableEntity> convertToLocal(@NonNull final Threshold threshold) {
-        return Observable
-            .just(thresholdConverter.presentationToLocal(threshold))
-            .subscribeOn(schedulerProvider.io())
-            .observeOn(schedulerProvider.ui());
+        return Observable.defer(() -> Observable.just(thresholdConverter.presentationToLocal(threshold)));
     }
 }

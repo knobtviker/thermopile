@@ -7,6 +7,7 @@ import com.knobtviker.thermopile.data.models.local.ThresholdTableEntity;
 import com.knobtviker.thermopile.data.sources.ThresholdDataSource;
 import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 
+import java.util.List;
 import java.util.Optional;
 
 import io.reactivex.Single;
@@ -40,15 +41,16 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
         this.database = Database.getInstance(context).database();
     }
 
-//    @Override
-//    public Single<List<RegionTableEntity>> regions() {
-//        return database
-//            .select(RegionTableEntity.class)
-//            .get()
-//            .observable()
-//            .toList();
-//    }
+    @Override
+    public Single<List<ThresholdTableEntity>> load() {
+        return database
+            .select(ThresholdTableEntity.class)
+            .get()
+            .observable()
+            .toList();
+    }
 
+    @Override
     public Single<ThresholdTableEntity> save(@NonNull ThresholdTableEntity item) {
         return database.upsert(item);
     }

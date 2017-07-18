@@ -11,7 +11,7 @@ import io.requery.Table;
  */
 
 @Entity
-@Table(name = "_reading_")
+@Table(name = "_settings_")
 public interface SettingsTable {
 
     @Key

@@ -46,6 +46,7 @@ public class Database {
     private Database(@NonNull final Context context) {
         final EntityModel models = Models.DEFAULT;
         final DatabaseSource source = new DatabaseSource(context, models, VERSION);
+        source.setLoggingEnabled(true);
         source.setTableCreationMode(BuildConfig.DEBUG ? TableCreationMode.DROP_CREATE : TableCreationMode.CREATE_NOT_EXISTS);
 
         final Configuration configuration = new ConfigurationBuilder(source, models)
