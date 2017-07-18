@@ -265,7 +265,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
         new AlertDialog.Builder(getContext())
             .setView(addDialogView)
-            .setPositiveButton("SET", (dialogInterface, i) -> {
+            .setPositiveButton(getString(android.R.string.ok), (dialogInterface, i) -> {
                 addThreshold(
                     dayIndex,
                     addDialogViewHolder.timePickerStart.getHour(),
@@ -279,7 +279,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 );
                 dialogInterface.dismiss();
             })
-            .setNegativeButton("CANCEL", (dialogInterface, i) -> dialogInterface.dismiss())
+            .setNegativeButton(getString(android.R.string.cancel), (dialogInterface, i) -> dialogInterface.dismiss())
             .create()
             .show();
     }

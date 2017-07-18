@@ -69,7 +69,8 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
 
         compositeDisposable.add(
             thresholdRepository
-                .save(threshold)
+                .convertToLocal(threshold)
+                .flatMap(thresholdTableEntity -> thresholdRepository.save(thresholdTableEntity))
                 .subscribe(
                     this::onSavedNext,
                     this::error,
