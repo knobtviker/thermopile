@@ -1,5 +1,7 @@
 package com.knobtviker.thermopile.data.models.presentation;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 /**
@@ -8,6 +10,9 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class Threshold {
+
+    @Nullable
+    public abstract Long id();
 
     public abstract int day();
 
@@ -25,6 +30,8 @@ public abstract class Threshold {
 
     @AutoValue.Builder
     public abstract static class Builder {
+
+        public abstract Builder id(@Nullable final Long value);
 
         public abstract Builder day(final int value);
 

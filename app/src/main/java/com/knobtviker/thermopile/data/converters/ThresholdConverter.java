@@ -29,6 +29,7 @@ public class ThresholdConverter implements LocalToPresentation<ThresholdTableEnt
     @Override
     public Threshold localToPresentation(@NonNull ThresholdTableEntity item) {
         return Threshold.builder()
+            .id(item.id())
             .day(item.day())
             .startHour(item.startHour())
             .startMinute(item.startMinute())

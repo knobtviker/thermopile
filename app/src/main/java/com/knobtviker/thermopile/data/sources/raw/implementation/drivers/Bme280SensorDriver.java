@@ -262,7 +262,7 @@ public class Bme280SensorDriver implements AutoCloseable {
         // DRIVER parameters
         // documented at https://source.android.com/devices/sensors/hal-interface.html#sensor_t
         private static final float DRIVER_MAX_RANGE = Bme280.MAX_HUMIDITY_PERCENT;
-        private static final float DRIVER_RESOLUTION = 0.008f;
+        private static final float DRIVER_RESOLUTION = 0.00008f; //0.008f;
         private static final float DRIVER_POWER = Bme280.MAX_POWER_CONSUMPTION_HUMIDITY_UA / 1000.f;
         private static final int DRIVER_VERSION = 1;
         private static final String DRIVER_REQUIRED_PERMISSION = "";

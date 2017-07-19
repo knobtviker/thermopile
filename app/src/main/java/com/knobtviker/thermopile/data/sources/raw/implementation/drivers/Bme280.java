@@ -67,7 +67,7 @@ public class Bme280 implements AutoCloseable {
     /**
      * Maximum power consumption in micro-amperes when measuring pressure.
      */
-    public static final float MAX_POWER_CONSUMPTION_HUMIDITY_UA = 340f;
+    public static final float MAX_POWER_CONSUMPTION_HUMIDITY_UA = 280f; //340f;
     /**
      * Maximum frequency of the measurements.
      */
@@ -120,7 +120,8 @@ public class Bme280 implements AutoCloseable {
     private static final int BME280_REG_HUM_CALIB_3 = 0xE3;
     private static final int BME280_REG_HUM_CALIB_4 = 0xE4;
     private static final int BME280_REG_HUM_CALIB_5 = 0xE5;
-    private static final int BME280_REG_HUM_CALIB_6 = 0xE7;
+    private static final int BME280_REG_HUM_CALIB_6 = 0xE6;
+    private static final int BME280_REG_HUM_CALIB_7 = 0xE7;
 
     private static final int BME280_REG_ID = 0xD0;
     private static final int BME280_REG_VERSION = 0xD1;
@@ -215,12 +216,12 @@ public class Bme280 implements AutoCloseable {
         mPressureCalibrationData[7] = (short) mDevice.readRegWord(BME280_REG_PRESS_CALIB_8);
         mPressureCalibrationData[8] = (short) mDevice.readRegWord(BME280_REG_PRESS_CALIB_9);
         // Read humidity calibration data (6 words). First value is unsigned.
-        mHumidityCalibrationData[0] = mDevice.readRegWord(BME280_REG_HUM_CALIB_1) & 0xffff;
-        mHumidityCalibrationData[1] = (short) mDevice.readRegWord(BME280_REG_HUM_CALIB_2);
-        mHumidityCalibrationData[2] = (short) mDevice.readRegWord(BME280_REG_HUM_CALIB_3);
-        mHumidityCalibrationData[3] = (short) mDevice.readRegWord(BME280_REG_HUM_CALIB_4);
-        mHumidityCalibrationData[4] = (short) mDevice.readRegWord(BME280_REG_HUM_CALIB_5);
-        mHumidityCalibrationData[5] = (short) mDevice.readRegWord(BME280_REG_HUM_CALIB_6);
+        mHumidityCalibrationData[0] = mDevice.readRegByte(BME280_REG_HUM_CALIB_1) & 0xFF;
+        mHumidityCalibrationData[1] = mDevice.readRegWord(BME280_REG_HUM_CALIB_2);
+        mHumidityCalibrationData[2] = mDevice.readRegByte(BME280_REG_HUM_CALIB_3) & 0xFF;
+        mHumidityCalibrationData[3] = ((mDevice.readRegByte(BME280_REG_HUM_CALIB_4) & 0xFF) << 4) | ((mDevice.readRegByte(BME280_REG_HUM_CALIB_5) & 0xFF) & 0x0F);
+        mHumidityCalibrationData[4] = (((mDevice.readRegByte(BME280_REG_HUM_CALIB_5) & 0xFF) & 0xF0) << 4) | (mDevice.readRegByte(BME280_REG_HUM_CALIB_6) & 0xFF);
+        mHumidityCalibrationData[5] = mDevice.readRegByte(BME280_REG_HUM_CALIB_7);
     }
 
     /**
