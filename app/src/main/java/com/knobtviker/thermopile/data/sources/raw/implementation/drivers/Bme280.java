@@ -67,7 +67,7 @@ public class Bme280 implements AutoCloseable {
     /**
      * Maximum power consumption in micro-amperes when measuring pressure.
      */
-    public static final float MAX_POWER_CONSUMPTION_HUMIDITY_UA = 280f; //340f;
+    public static final float MAX_POWER_CONSUMPTION_HUMIDITY_UA = 340f;
     /**
      * Maximum frequency of the measurements.
      */

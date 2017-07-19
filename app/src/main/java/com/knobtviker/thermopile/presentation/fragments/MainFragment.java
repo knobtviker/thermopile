@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.sources.raw.implementation.drivers.Bme280;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
@@ -30,8 +29,6 @@ import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicat
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 
@@ -43,8 +40,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private MainCommunicator mainCommunicator;
-
-    private Bme280 bme280;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -101,21 +96,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         startClock();
 
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-//        testInit();
-//        testRead();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-//        testClose();
     }
 
     @Override
@@ -189,29 +169,4 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.startClock();
     }
 
-    private void testInit() {
-        try {
-            bme280 = new Bme280("I2C1");
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-
-    }
-
-    private void testRead() {
-        try {
-            final float[] readings = bme280.readAll();
-            Log.i(TAG, "Temperature: " + readings[0] + " --- Humidity: " + readings[1] + " --- Pressure: " + readings[1]);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
-
-    private void testClose() {
-        try {
-            bme280.close();
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
 }

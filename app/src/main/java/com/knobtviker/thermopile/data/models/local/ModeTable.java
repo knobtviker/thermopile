@@ -21,6 +21,9 @@ public interface ModeTable {
     @Column("_id_")
     long id();
 
+    @Column("_name_")
+    String name();
+
     @ForeignKey
     @OneToOne
     ThresholdTableEntity threshold();
