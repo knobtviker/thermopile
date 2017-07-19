@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.presentation.Reading;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
@@ -49,6 +50,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @BindView(R.id.textview_clock)
     public TextView textViewClock;
+
+    @BindView(R.id.textview_humidity)
+    public TextView textViewHumidity;
+
+    @BindView(R.id.textview_pressure)
+    public TextView textViewPressure;
 
     @BindView(R.id.seekbar_temperature)
     public CircularSeekBar seekBarTemperature;
@@ -137,6 +144,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onClockTick() {
         final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
         setDateTime(dateTime);
+
+        data();
+    }
+
+    @Override
+    public void onData(@NonNull Reading data) {
+        populateData(data);
     }
 
     private void setupToolbar() {
@@ -169,4 +183,14 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.startClock();
     }
 
+    private void data() {
+        presenter.data();
+    }
+
+    private void populateData(@NonNull final Reading data) {
+        //TODO: Apply data units and formats and timezone
+        textViewCurrentTemperature.setText(String.valueOf(data.temperature()));
+        textViewHumidity.setText(String.valueOf(data.humidity()));
+        textViewPressure.setText(String.valueOf(data.pressure()));
+    }
 }

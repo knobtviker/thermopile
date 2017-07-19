@@ -3,6 +3,8 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.presentation.Reading;
+import com.knobtviker.thermopile.domain.repositories.ReadingRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 
 import java.util.concurrent.TimeUnit;
@@ -20,7 +22,7 @@ public class MainPresenter implements MainContract.Presenter {
     private final Context context;
     private final MainContract.View view;
 
-    //    private UserRepository userRepository;
+    private ReadingRepository readingRepository;
     private CompositeDisposable compositeDisposable;
 
     public MainPresenter(@NonNull final Context context, @NonNull final MainContract.View view) {
@@ -30,7 +32,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void subscribe() {
-//        userRepository = UserRepository.getInstance(context);
+        readingRepository = ReadingRepository.getInstance(context);
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -40,7 +42,7 @@ public class MainPresenter implements MainContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
-//        UserRepository.destroyInstance();
+        ReadingRepository.destroyInstance();
     }
 
     @Override
@@ -66,14 +68,33 @@ public class MainPresenter implements MainContract.Presenter {
             Observable.interval(1L, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    this::onNext,
+                    tick -> onNext(),
                     this::error,
                     this::completed
                 )
         );
     }
 
-    private void onNext(Long tick) {
+    @Override
+    public void data() {
+        started();
+//TODO: This should be zipped with Settings data load in a Pair
+        compositeDisposable.add(
+            readingRepository.read()
+            .flatMap(rawData -> readingRepository.save(rawData))
+            .subscribe(
+                this::onDataNext,
+                this::error,
+                this::completed
+            )
+        );
+    }
+
+    private void onNext() {
         view.onClockTick();
+    }
+
+    private void onDataNext(@NonNull final Reading reading) {
+        view.onData(reading);
     }
 }
