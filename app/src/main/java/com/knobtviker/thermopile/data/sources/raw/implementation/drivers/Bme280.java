@@ -505,11 +505,11 @@ public class Bme280 implements AutoCloseable {
         float h = fineTemperature - 76800.0f;
         h = (rawHumidity - (dig_H4 * 64.0f + dig_H5 / 16384.8f * h)) * (dig_H2 / 65536.0f * (1.0f + dig_H6 / 67108864.0f * h * (1.0f + dig_H3 / 67108864.0f * h)));
         h = h * (1.0f - dig_H1 * h / 524288.0f);
-        if (h > 100) {
-            h = 100;
-        } else if (h < 0) {
-            h = 0;
+        if (h > 100.0f) {
+            h = 100.0f;
+        } else if (h < 0.0f) {
+            h = 0.0f;
         }
-        return h;
+        return (100.0f - h);
     }
 }
