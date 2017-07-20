@@ -2,6 +2,8 @@ package com.knobtviker.thermopile.presentation;
 
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
+
 import net.danlew.android.joda.JodaTimeAndroid;
 
 /**
@@ -15,9 +17,14 @@ public class ThermopileApp extends Application {
         super.onCreate();
 
         initJodaTime();
+        initStetho();
     }
 
     private void initJodaTime() {
         JodaTimeAndroid.init(this);
+    }
+
+    private void initStetho() {
+        Stetho.initializeWithDefaults(this);
     }
 }

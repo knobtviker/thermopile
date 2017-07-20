@@ -35,7 +35,6 @@ dependencies {
     //base
     compileOnly 'com.google.android.things:androidthings:0.4.1-devpreview'
     implementation 'com.google.android.things.contrib:driver-button:0.3'
-    implementation 'com.google.android.things.contrib:driver-bmx280:0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.1'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'net.danlew:android.joda:2.9.9'
@@ -45,6 +44,7 @@ dependencies {
     implementation 'com.google.guava:guava-primitives:r03'
     implementation 'com.google.guava:guava-annotations:r03'
     implementation 'com.google.guava:guava-collections:r03'
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 
     //data
     //local

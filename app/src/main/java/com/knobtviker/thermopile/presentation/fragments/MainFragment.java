@@ -204,3 +204,5 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         return bd;
     }
 }
+
+//00:00 baza ima 236kB
