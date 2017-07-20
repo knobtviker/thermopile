@@ -59,11 +59,11 @@ public class Bme280 implements AutoCloseable {
     /**
      * Maximum power consumption in micro-amperes when measuring temperature.
      */
-    public static final float MAX_POWER_CONSUMPTION_TEMP_UA = 350f;
+    public static final float MAX_POWER_CONSUMPTION_TEMP_UA = 325f;
     /**
      * Maximum power consumption in micro-amperes when measuring pressure.
      */
-    public static final float MAX_POWER_CONSUMPTION_PRESSURE_UA = 714f;
+    public static final float MAX_POWER_CONSUMPTION_PRESSURE_UA = 720f;
     /**
      * Maximum power consumption in micro-amperes when measuring pressure.
      */

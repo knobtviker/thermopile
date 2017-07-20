@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +31,8 @@ import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicat
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+
+import java.math.BigDecimal;
 
 import butterknife.BindView;
 
@@ -187,10 +190,17 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.data();
     }
 
+    @SuppressLint("SetTextI18n")
     private void populateData(@NonNull final Reading data) {
         //TODO: Apply data units and formats and timezone
-        textViewCurrentTemperature.setText(String.valueOf(data.temperature()));
-        textViewHumidity.setText(String.valueOf(data.humidity()));
-        textViewPressure.setText(String.valueOf(data.pressure()));
+        textViewCurrentTemperature.setText(round(data.temperature(), 1).toString());
+        textViewHumidity.setText(round(data.humidity(), 1).toString());
+        textViewPressure.setText(round(data.pressure(), 1).toString());
+    }
+
+    private BigDecimal round(final float d, final int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd;
     }
 }
