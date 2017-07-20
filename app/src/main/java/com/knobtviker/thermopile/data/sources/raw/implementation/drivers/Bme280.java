@@ -510,6 +510,6 @@ public class Bme280 implements AutoCloseable {
         } else if (h < 0.0f) {
             h = 0.0f;
         }
-        return (100.0f - h);
+        return h;
     }
 }
