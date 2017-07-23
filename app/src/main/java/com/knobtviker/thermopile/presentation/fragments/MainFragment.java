@@ -25,6 +25,8 @@ import com.knobtviker.thermopile.data.models.presentation.Reading;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
+import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.utils.MiniPID;
 import com.knobtviker.thermopile.presentation.views.CircularSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
@@ -44,6 +46,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private MainCommunicator mainCommunicator;
+
+    private MiniPID miniPID;
+//    private float fakeIncrease = 0.05f;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -100,7 +105,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         bind(this, view);
 
+        setupPID();
         setupToolbar();
+        setupSeekBar();
         onClockTick();
         setupRecyclerView();
         startClock();
@@ -156,8 +163,38 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         populateData(data);
     }
 
+    //TODO: this needs more calibration to work properly but it does behave promising...
+    private void setupPID() {
+        miniPID = new MiniPID(1.0, 0.5, 0.0);
+        miniPID.setOutputLimits(5, 35);
+        //miniPID.setMaxIOutput(2);
+        miniPID.setOutputRampRate(3);
+        //miniPID.setOutputFilter(.3);
+//        miniPID.setSetpointRange(5);
+    }
+
     private void setupToolbar() {
         setupCustomActionBar(toolbar);
+    }
+
+    private void setupSeekBar() {
+        seekBarTemperature.setProgressString(round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
+        seekBarTemperature.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+                seekBarTemperature.setProgressString(round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
+            }
+
+            @Override
+            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(CircularSeekBar seekBar) {
+
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -196,6 +233,14 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         textViewCurrentTemperature.setText(round(data.temperature(), 1).toString());
         textViewHumidity.setText(round(data.humidity(), 1).toString());
         textViewPressure.setText(round(data.pressure(), 1).toString());
+
+//        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
+//        final double measured = data.temperature() + fakeIncrease;
+//        if (measured < target) {
+//            fakeIncrease = fakeIncrease + 0.05f;
+//            final double output = miniPID.getOutput(measured, target);
+//            Log.i(TAG, String.format("Measured: %3.2f , Target: %3.2f , Error: %3.2f , Output: %3.2f\n", measured, target, (target - measured), output));
+//        }
     }
 
     private BigDecimal round(final float d, final int decimalPlace) {
@@ -206,3 +251,4 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 }
 
 //00:00 baza ima 236kB
+//00:00 24h kasnije baza ima 3.7MB

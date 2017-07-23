@@ -6,6 +6,9 @@ package com.knobtviker.thermopile.presentation.utils;
 
 public class Constants {
 
+    public static final float MEASURED_TEMPERATURE_MIN = 5.0f;
+    public static final float MEASURED_TEMPERATURE_MAX = 35.0f;
+
     public static final int DAYS_MONDAY = 0;
     public static final int DAYS_TUESDAY = 1;
     public static final int DAYS_WEDNESDAY = 2;

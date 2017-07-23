@@ -12,6 +12,8 @@ import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -103,6 +105,8 @@ public class CircularSeekBar extends View {
 	 * {@code Paint} instance used to draw the border of the pointer, outside of the halo.
 	 */
 	protected Paint mPointerHaloBorderPaint;
+
+	protected TextPaint mPointerTextPaint;
 
 	/**
 	 * The width of the circle (in pixels).
@@ -223,6 +227,8 @@ public class CircularSeekBar extends View {
 	 * Progress value that this CircularSeekBar is representing.
 	 */
 	protected int mProgress;
+
+	protected String mProgressString = String.valueOf(mProgress);
 
 	/**
 	 * If true, then the user can specify the X and Y radii.
@@ -379,6 +385,7 @@ public class CircularSeekBar extends View {
         mMin = attrArray.getInt(R.styleable.CircularSeekBar_min, DEFAULT_MIN);
 		mMax = attrArray.getInt(R.styleable.CircularSeekBar_max, DEFAULT_MAX);
 		mProgress = attrArray.getInt(R.styleable.CircularSeekBar_progress, DEFAULT_PROGRESS);
+		mProgressString = String.valueOf(mProgress);
 		mCustomRadii = attrArray.getBoolean(R.styleable.CircularSeekBar_use_custom_radii, DEFAULT_USE_CUSTOM_RADII);
 		mMaintainEqualCircle = attrArray.getBoolean(R.styleable.CircularSeekBar_maintain_equal_circle, DEFAULT_MAINTAIN_EQUAL_CIRCLE);
 		mMoveOutsideCircle = attrArray.getBoolean(R.styleable.CircularSeekBar_move_outside_circle, DEFAULT_MOVE_OUTSIDE_CIRCLE);
@@ -442,6 +449,14 @@ public class CircularSeekBar extends View {
 		mPointerHaloBorderPaint.set(mPointerPaint);
 		mPointerHaloBorderPaint.setStrokeWidth(mPointerHaloBorderWidth);
 		mPointerHaloBorderPaint.setStyle(Paint.Style.STROKE);
+
+		mPointerTextPaint = new TextPaint();
+		mPointerTextPaint.setAntiAlias(true);
+		mPointerTextPaint.setDither(true);
+        mPointerTextPaint.setTextAlign(Paint.Align.CENTER);
+		mPointerTextPaint.setStyle(Paint.Style.FILL);
+		mPointerTextPaint.setTextSize(12 * getResources().getDisplayMetrics().density);
+		mPointerTextPaint.setColor(Color.WHITE);
 
 	}
 
@@ -521,6 +536,7 @@ public class CircularSeekBar extends View {
 		if (mUserIsMovingPointer) {
 			canvas.drawCircle(mPointerPositionXY[0], mPointerPositionXY[1], mPointerRadius + mPointerHaloWidth + (mPointerHaloBorderWidth / 2f), mPointerHaloBorderPaint);
 		}
+		canvas.drawText(getProgressString(), mPointerPositionXY[0], mPointerPositionXY[1]+mPointerTextPaint.getTextSize()/4.0f, mPointerTextPaint);
 	}
 
 	/**
@@ -528,8 +544,11 @@ public class CircularSeekBar extends View {
 	 * @return The progress of the CircularSeekBar.
 	 */
 	public int getProgress() {
-		int progress = Math.round((float)(mMax-mMin) * mProgressDegrees / mTotalCircleDegrees);
-		return progress;
+		return Math.round((float)(mMax-mMin) * mProgressDegrees / mTotalCircleDegrees);
+	}
+
+	public String getProgressString() {
+		return mProgressString;
 	}
 
 	/**
@@ -547,6 +566,10 @@ public class CircularSeekBar extends View {
 			recalculateAll();
 			invalidate();
 		}
+	}
+
+	public void setProgressString(@NonNull final String progressString) {
+		this.mProgressString = progressString;
 	}
 
 	protected void setProgressBasedOnAngle(float angle) {
@@ -843,6 +866,7 @@ public class CircularSeekBar extends View {
         state.putInt("MIN", mMin);
 		state.putInt("MAX", mMax);
 		state.putInt("PROGRESS", mProgress);
+		state.putString("PROGRESSSTRING", mProgressString);
 		state.putInt("mCircleProgressColor", mCircleProgressColor);
 		state.putInt("mPointerColor", mPointerColor);
 		state.putInt("mPointerHaloColor", mPointerHaloColor);
@@ -865,6 +889,7 @@ public class CircularSeekBar extends View {
         mMin = savedState.getInt("MIN");
 		mMax = savedState.getInt("MAX");
 		mProgress = savedState.getInt("PROGRESS");
+		mProgressString = savedState.getString("PROGRESSSTRING");
 		mCircleProgressColor = savedState.getInt("mCircleProgressColor");
 		mPointerColor = savedState.getInt("mPointerColor");
 		mPointerHaloColor = savedState.getInt("mPointerHaloColor");
