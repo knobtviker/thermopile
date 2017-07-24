@@ -19,5 +19,7 @@ public interface ThresholdDataSource {
         Single<List<ThresholdTableEntity>> load();
 
         Single<ThresholdTableEntity> save(@NonNull final ThresholdTableEntity item);
+
+        Single<List<ThresholdTableEntity>> loadByDay(final int day);
     }
 }

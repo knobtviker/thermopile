@@ -54,4 +54,14 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
     public Single<ThresholdTableEntity> save(@NonNull ThresholdTableEntity item) {
         return database.upsert(item);
     }
+
+    @Override
+    public Single<List<ThresholdTableEntity>> loadByDay(int day) {
+        return database
+            .select(ThresholdTableEntity.class)
+            .where(ThresholdTableEntity.DAY.eq(day))
+            .get()
+            .observable()
+            .toList();
+    }
 }

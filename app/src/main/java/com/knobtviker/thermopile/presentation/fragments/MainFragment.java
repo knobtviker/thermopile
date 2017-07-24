@@ -20,8 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.presentation.Reading;
+import com.knobtviker.thermopile.data.models.presentation.Settings;
+import com.knobtviker.thermopile.data.models.presentation.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
@@ -46,6 +49,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private MainCommunicator mainCommunicator;
+
+    private Settings settings = Settings.EMPTY();
 
     private MiniPID miniPID;
 //    private float fakeIncrease = 0.05f;
@@ -134,6 +139,14 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
+        presenter.settings();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
 
@@ -161,6 +174,21 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @Override
     public void onData(@NonNull Reading data) {
         populateData(data);
+    }
+
+    @Override
+    public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
+        if (!thresholds.isEmpty()) {
+            //TODO: Find a threshold for the current second if it exists at all.
+            //TODO: If exists, apply to UI.
+        }
+    }
+
+    @Override
+    public void onSettings(@NonNull Settings settings) {
+        this.settings = settings;
+
+        Log.i(TAG, settings.toString());
     }
 
     //TODO: this needs more calibration to work properly but it does behave promising...

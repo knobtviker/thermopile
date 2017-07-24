@@ -67,4 +67,14 @@ public class ThresholdRepository extends BaseRepository {
     public Observable<ThresholdTableEntity> convertToLocal(@NonNull final Threshold threshold) {
         return Observable.defer(() -> Observable.just(thresholdConverter.presentationToLocal(threshold)));
     }
+
+    public Observable<ImmutableList<Threshold>> loadByDay(final int day) {
+        return thresholdLocalDataSource
+            .loadByDay(day)
+            .toObservable()
+            .subscribeOn(schedulerProvider.io())
+            .map(ImmutableList::copyOf)
+            .map(thresholdConverter::localToPresentation)
+            .observeOn(schedulerProvider.ui());
+    }
 }
