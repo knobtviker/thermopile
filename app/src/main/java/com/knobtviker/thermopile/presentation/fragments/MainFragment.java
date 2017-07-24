@@ -208,7 +208,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private void setDateTime(@NonNull final DateTime dateTime) {
         setDate(dateTime.toString("EEEE dd.MM.yyyy."));
-        setTime(dateTime.toString("HH:mm"));
+        setTime(dateTime.toString(String.format("HH%smm", dateTime.getSecondOfMinute() % 2 == 0 ? ":" : " ")));
     }
 
     private void setDate(@NonNull final String date) {
