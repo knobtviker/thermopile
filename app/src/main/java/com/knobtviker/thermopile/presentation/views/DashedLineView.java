@@ -10,8 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.knobtviker.thermopile.R;
-
 /**
  * Created by bojan on 11/07/2017.
  */
@@ -48,7 +46,7 @@ public class DashedLineView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(context.getResources().getDisplayMetrics().density * strokeWidth);
         //set your own color
-        paint.setColor(ContextCompat.getColor(context, R.color.light_gray));
+        paint.setColor(ContextCompat.getColor(context, android.R.color.secondary_text_dark));
         path = new Path();
         //array is ON and OFF distances in px (8px line then 8px space)
         effects = new DashPathEffect(

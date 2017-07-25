@@ -40,6 +40,7 @@ import org.joda.time.DateTimeZone;
 import java.math.BigDecimal;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by bojan on 09/06/2017.
@@ -189,6 +190,20 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         this.settings = settings;
 
         Log.i(TAG, settings.toString());
+    }
+
+    @OnClick(R.id.floatingactionbutton_down)
+    public void onActionDownClicked() {
+        if (seekBarTemperature.getProgress() > seekBarTemperature.getMin()) {
+            seekBarTemperature.setProgress(seekBarTemperature.getProgress() - 1);
+        }
+    }
+
+    @OnClick(R.id.floatingactionbutton_up)
+    public void onActionUpClicked() {
+        if (seekBarTemperature.getProgress() < seekBarTemperature.getMax()) {
+            seekBarTemperature.setProgress(seekBarTemperature.getProgress() + 1);
+        }
     }
 
     //TODO: this needs more calibration to work properly but it does behave promising...

@@ -5,8 +5,7 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
-    android:clickable="true">
+    android:background="@color/gray">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -20,7 +19,7 @@
 
         <TextView
             android:id="@+id/textview_date"
-            style="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
+            style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
@@ -61,6 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="96sp"/>
 
             <TextView
@@ -68,6 +68,7 @@
                 style="@style/TextAppearance.AppCompat.Display2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="?android:textColorPrimary"
                 android:layout_gravity="bottom"
                 android:layout_marginLeft="8dp"
                 android:text="°C"/>
@@ -131,6 +132,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="bottom"
+                        android:textColor="?android:textColorPrimary"
                         android:maxLines="1"/>
 
                     <TextView
@@ -139,6 +141,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="4dp"
+                        android:textColor="?android:textColorPrimary"
                         android:gravity="bottom"
                         android:maxLines="1"
                         android:text="%"/>
@@ -181,6 +184,7 @@
                         android:id="@+id/textview_pressure"
                         style="@style/TextAppearance.AppCompat.Display2"
                         android:layout_width="wrap_content"
+                        android:textColor="?android:textColorPrimary"
                         android:layout_height="match_parent"
                         android:gravity="bottom"
                         android:maxLines="1"/>
@@ -192,6 +196,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginLeft="4dp"
                         android:gravity="bottom"
+                        android:textColor="?android:textColorPrimary"
                         android:maxLines="1"
                         android:text="hPa"/>
 
@@ -211,6 +216,7 @@
             android:weightSum="2">
 
             <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingactionbutton_down"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="32dp"
@@ -220,6 +226,7 @@
                 app:srcCompat="@drawable/ic_arrow_down"/>
 
             <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingactionbutton_up"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
