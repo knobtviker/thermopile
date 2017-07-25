@@ -51,7 +51,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private MainCommunicator mainCommunicator;
 
+    private HoursAdapter hoursAdapter;
+
     private Settings settings = Settings.EMPTY();
+
+    private ImmutableList<Threshold> thresholdsToday = ImmutableList.of();
 
     private MiniPID miniPID;
 //    private float fakeIncrease = 0.05f;
@@ -179,10 +183,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
-        if (!thresholds.isEmpty()) {
-            //TODO: Find a threshold for the current second if it exists at all.
-            //TODO: If exists, apply to UI.
-        }
+        this.thresholdsToday = thresholds;
+
+        hoursAdapter.applyThreasholds(thresholds);
     }
 
     @Override
@@ -241,9 +244,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setupRecyclerView() {
+        hoursAdapter = new HoursAdapter(this.getContext());
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new HoursAdapter(this.getContext()));
+        recyclerView.setAdapter(hoursAdapter);
 
         final SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
@@ -273,6 +278,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @SuppressLint("SetTextI18n")
     private void populateData(@NonNull final Reading data) {
         //TODO: Apply data units and formats and timezone
+        //TODO: Find the right threshold if todays list is not empty.
+        //TODO: If threshold is found set it as progress on seekbar and/or use as target value
+        //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
+
         textViewCurrentTemperature.setText(round(data.temperature(), 1).toString());
         textViewHumidity.setText(round(data.humidity(), 1).toString());
         textViewPressure.setText(round(data.pressure(), 1).toString());

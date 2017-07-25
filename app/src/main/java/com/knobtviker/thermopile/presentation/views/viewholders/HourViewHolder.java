@@ -15,6 +15,9 @@ import butterknife.ButterKnife;
 
 public class HourViewHolder extends RecyclerView.ViewHolder {
 
+    @BindView(R.id.view_indicator)
+    public View viewIndicator;
+
     @BindView(R.id.textview_hour)
     public TextView textViewHour;
 

@@ -5,6 +5,7 @@
     android:layout_height="?attr/actionBarSize">
 
     <LinearLayout
+        android:id="@+id/layout_hour"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -37,6 +38,15 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/view_indicator"
+        android:layout_above="@+id/layout_hour"
+        android:layout_marginTop="2dp"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="2dp"
+        android:layout_width="60dp"
+        android:layout_height="12dp" />
 
     <com.knobtviker.thermopile.presentation.views.DashedLineView
         android:layout_width="1dp"
