@@ -38,6 +38,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -172,8 +173,15 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onClockTick() {
         final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
         setDateTime(dateTime);
+        maybeApplyThresholds(dateTime);
 
         data();
+    }
+
+    private void maybeApplyThresholds(@NonNull final DateTime dateTime) {
+        if (dateTime.getSecondOfDay() == 0) {
+            presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
+        }
     }
 
     @Override
@@ -279,6 +287,18 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private void populateData(@NonNull final Reading data) {
         //TODO: Apply data units and formats and timezone
         //TODO: Find the right threshold if todays list is not empty.
+        final Optional<Threshold> thresholdOptional = thresholdsToday.stream()
+            .filter(threshold -> {
+                final DateTime now = DateTime.now();
+                return threshold.startHour() < now.getHourOfDay() && threshold.startMinute() < now.getMinuteOfHour()
+                    && now.getHourOfDay() <= threshold.endHour() && now.getMinuteOfHour() <= threshold.endMinute();
+            })
+            .findFirst();
+        if (thresholdOptional.isPresent()) {
+            seekBarTemperature.setProgress(thresholdOptional.get().temperature());
+        } else {
+            seekBarTemperature.setProgress(Math.round(data.temperature()));
+        }
         //TODO: If threshold is found set it as progress on seekbar and/or use as target value
         //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
 

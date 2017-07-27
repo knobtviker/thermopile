@@ -6,12 +6,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.presentation.Hour;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
 import com.knobtviker.thermopile.presentation.views.viewholders.HourViewHolder;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -22,26 +25,16 @@ import java.util.stream.IntStream;
 public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
 
     private final LayoutInflater layoutInflater;
-    private final ImmutableList<Integer> hours;
-    private ImmutableList<Threshold> thresholds = ImmutableList.of();
+    private final int colorTransparent;
 
-    private RecyclerView recyclerView;
+    private List<Hour> hours;
+    private ImmutableList<Threshold> thresholds = ImmutableList.of();
 
     public HoursAdapter(@NonNull final Context context) {
         this.layoutInflater = LayoutInflater.from(context);
-        this.hours = ImmutableList.copyOf(
-            IntStream
-                .range(0, 24)
-                .boxed()
-                .collect(Collectors.toList())
-        );
-    }
+        this.colorTransparent = ContextCompat.getColor(context, android.R.color.transparent);
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-
-        this.recyclerView = recyclerView;
+        initHours();
     }
 
     @Override
@@ -51,15 +44,20 @@ public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
 
     @Override
     public void onBindViewHolder(HourViewHolder hourViewHolder, int position) {
-        final int hour = hours.get(position);
+        final Hour hour = hours.get(position);
 
-        hourViewHolder.textViewHour.setText(String.format(hour < 10 ? "0%s" : "%s", String.valueOf(hour)));
+        hourViewHolder.textViewHour.setText(String.format(hour.hour() < 10 ? "0%s" : "%s", String.valueOf(hour.hour())));
+        hourViewHolder.viewIndicator.setBackgroundColor(hour.color());
+        hourViewHolder.viewIndicator.setX(hour.startMinutes());
+        final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)hourViewHolder.viewIndicator.getLayoutParams();
+        layoutParams.width = hour.endMinutes() - hour.startMinutes();
+        hourViewHolder.viewIndicator.setLayoutParams(layoutParams);
     }
 
     @Override
     public void onViewRecycled(HourViewHolder holder) {
 
-        holder.viewIndicator.setBackgroundColor(ContextCompat.getColor(recyclerView.getContext(), android.R.color.transparent));
+        holder.viewIndicator.setBackgroundColor(colorTransparent);
 
         super.onViewRecycled(holder);
     }
@@ -72,8 +70,15 @@ public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
     public void applyThreasholds(@NonNull final ImmutableList<Threshold> thresholds) {
         this.thresholds = thresholds;
 
+        initHours();
+
         this.thresholds
             .forEach(threshold -> {
+                final int startHour = threshold.startHour();
+                final int startMinute = threshold.startMinute();
+                final int endHour = threshold.endHour();
+                final int endMinute = threshold.endMinute();
+
                 final ImmutableList<Integer> thresholdHours = ImmutableList.copyOf(
                     IntStream
                         .range(threshold.startHour(), threshold.endHour() + 1)
@@ -81,9 +86,37 @@ public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
                         .collect(Collectors.toList())
                 );
 
-                thresholdHours.forEach(
-                    hour -> ((HourViewHolder) recyclerView.findViewHolderForLayoutPosition(hour)).viewIndicator.setBackgroundColor(threshold.color())
-                );
+                thresholdHours
+                    .forEach(position -> {
+                        Hour hour = hours.get(position);
+                        if (position == startHour) {
+                            hour = hour.withStartMinutes(startMinute);
+                        }
+                        if (position == endHour) {
+                            hour = hour.withEndMinutes(endMinute);
+                        }
+                        hours.set(
+                            position,
+                            hour.withColor(threshold.color())
+                        );
+                    });
             });
+
+        notifyDataSetChanged();
+    }
+
+    private void initHours() {
+        this.hours = IntStream
+            .range(0, 24)
+            .boxed()
+            .map(hour ->
+                Hour.builder()
+                    .hour(hour)
+                    .startMinutes(0)
+                    .endMinutes(59)
+                    .color(colorTransparent)
+                    .build()
+            )
+            .collect(Collectors.toList());
     }
 }
