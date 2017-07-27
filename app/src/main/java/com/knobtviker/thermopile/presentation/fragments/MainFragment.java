@@ -174,14 +174,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
         setDateTime(dateTime);
         maybeApplyThresholds(dateTime);
+        moveHourLine(dateTime);
 
         data();
-    }
-
-    private void maybeApplyThresholds(@NonNull final DateTime dateTime) {
-        if (dateTime.getSecondOfDay() == 0) {
-            presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
-        }
     }
 
     @Override
@@ -286,6 +281,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @SuppressLint("SetTextI18n")
     private void populateData(@NonNull final Reading data) {
         //TODO: Apply data units and formats and timezone
+
         //TODO: Find the right threshold if todays list is not empty.
         final Optional<Threshold> thresholdOptional = thresholdsToday.stream()
             .filter(threshold -> {
@@ -295,12 +291,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
             })
             .findFirst();
         if (thresholdOptional.isPresent()) {
+            //TODO: If threshold is found set it as progress on seekbar and/or use as target value
             seekBarTemperature.setProgress(thresholdOptional.get().temperature());
         } else {
+            //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
             seekBarTemperature.setProgress(Math.round(data.temperature()));
         }
-        //TODO: If threshold is found set it as progress on seekbar and/or use as target value
-        //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
 
         textViewCurrentTemperature.setText(round(data.temperature(), 1).toString());
         textViewHumidity.setText(round(data.humidity(), 1).toString());
@@ -319,5 +315,22 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         BigDecimal bd = new BigDecimal(Float.toString(d));
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd;
+    }
+
+    private void maybeApplyThresholds(@NonNull final DateTime dateTime) {
+        if (dateTime.getSecondOfDay() == 0) {
+            presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
+        }
+    }
+
+    private void moveHourLine(@NonNull final DateTime dateTime) {
+        final int currentHour = dateTime.getHourOfDay();
+        if (currentHour > 6 && currentHour < 17) {
+            recyclerView.scrollToPosition(dateTime.getHourOfDay() - 6);
+        } else if (currentHour <=6){
+            recyclerView.scrollToPosition(0);
+        } else if (currentHour >= 17) {
+            recyclerView.scrollToPosition(12);
+        }
     }
 }
