@@ -326,7 +326,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private void moveHourLine(@NonNull final DateTime dateTime) {
         final int currentHour = dateTime.getHourOfDay();
         if (currentHour > 6 && currentHour < 17) {
-            recyclerView.scrollToPosition(dateTime.getHourOfDay() - 6);
+            recyclerView.scrollToPosition(currentHour - 6);
         } else if (currentHour <=6){
             recyclerView.scrollToPosition(0);
         } else if (currentHour >= 17) {

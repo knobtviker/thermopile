@@ -21,6 +21,7 @@ public class SchedulerProvider implements BaseSchedulerProvider {
     private final Scheduler computation;
     private final Scheduler io;
     private final Scheduler sensors;
+    private final Scheduler screensaver;
     private final Scheduler network;
     private final Scheduler ui;
 
@@ -29,6 +30,7 @@ public class SchedulerProvider implements BaseSchedulerProvider {
         this.computation = Schedulers.computation();
         this.io = Schedulers.io();
         this.sensors = Schedulers.newThread();
+        this.screensaver = Schedulers.newThread();
         this.network = Schedulers.newThread();
         this.ui = AndroidSchedulers.mainThread();
     }
@@ -50,6 +52,12 @@ public class SchedulerProvider implements BaseSchedulerProvider {
     @NonNull
     public Scheduler io() {
         return io;
+    }
+
+    @NonNull
+    @Override
+    public Scheduler screensaver() {
+        return screensaver;
     }
 
     @Override

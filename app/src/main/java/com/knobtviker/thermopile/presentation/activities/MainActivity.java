@@ -2,7 +2,9 @@ package com.knobtviker.thermopile.presentation.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.MotionEvent;
 
+import com.knobtviker.thermopile.presentation.ThermopileApp;
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.MainFragment;
 import com.knobtviker.thermopile.presentation.fragments.ScheduleFragment;
@@ -16,6 +18,16 @@ public class MainActivity extends BaseActivity implements MainCommunicator {
         super.onCreate(savedInstanceState);
 
         showMainFragment();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            ((ThermopileApp)getApplication()).destroyScreensaver();
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            ((ThermopileApp)getApplication()).createScreensaver();
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override

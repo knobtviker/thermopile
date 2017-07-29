@@ -11,17 +11,20 @@ import io.reactivex.Scheduler;
 public interface BaseSchedulerProvider {
 
     @NonNull
-    Scheduler computation();
-
-    @NonNull
-    Scheduler io();
+    Scheduler ui();
 
     @NonNull
     Scheduler sensors();
 
     @NonNull
-    Scheduler network();
+    Scheduler io();
 
     @NonNull
-    Scheduler ui();
+    Scheduler screensaver();
+
+    @NonNull
+    Scheduler computation();
+
+    @NonNull
+    Scheduler network();
 }

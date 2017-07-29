@@ -1,13 +1,12 @@
 package com.knobtviker.thermopile.presentation.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.WindowManager;
+import android.view.MotionEvent;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.presentation.ThermopileApp;
 
 /**
  * Created by bojan on 11/06/2017.
@@ -20,20 +19,14 @@ public class ScreenSaverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_screensaver);
+    }
 
-        final WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.screenBrightness = 0.2f;
-        getWindow().setAttributes(lp);
-
-        new Handler().postDelayed(
-            new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            },
-            3000
-        );
-
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            ((ThermopileApp)getApplication()).createScreensaver();
+            finish();
+        }
+        return super.onTouchEvent(event);
     }
 }
