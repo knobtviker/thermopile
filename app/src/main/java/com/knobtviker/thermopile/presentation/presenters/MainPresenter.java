@@ -91,7 +91,8 @@ public class MainPresenter implements MainContract.Presenter {
         started();
 
         compositeDisposable.add(
-            readingRepository.read()
+            readingRepository
+                .read()
                 .flatMap(rawData -> readingRepository.save(rawData))
                 .subscribe(
                     this::onDataNext,
