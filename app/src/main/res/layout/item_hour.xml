@@ -22,17 +22,10 @@
 
             <TextView
                 android:id="@+id/textview_hour"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="?android:textColorPrimary"
-                android:textStyle="bold"/>
+                style="@style/TextHour"/>
 
             <TextView
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:layout_width="wrap_content"
-                android:textColor="?android:textColorSecondary"
-                android:layout_height="wrap_content"
+                style="@style/TextMinute"
                 android:text=":00"/>
 
         </LinearLayout>

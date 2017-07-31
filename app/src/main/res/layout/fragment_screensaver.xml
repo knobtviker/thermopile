@@ -21,7 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:fontFamily="@font/cabin_regular"
             android:textAllCaps="true"
             android:layout_centerVertical="true"
             android:text="Saturday 28.07.2017."/>
@@ -30,7 +29,6 @@
             android:id="@+id/textview_clock"
             style="@style/TextAppearance.AppCompat.Display3"
             android:layout_width="wrap_content"
-            android:fontFamily="@font/cabin_semibold"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

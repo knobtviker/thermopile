@@ -79,7 +79,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @BindView(R.id.seekbar_temperature)
     public CircularSeekBar seekBarTemperature;
 
-    @BindView(R.id.textview_current_temperature)
+    @BindView(R.id.textview_temperature)
     public TextView textViewCurrentTemperature;
 
     @BindView(R.id.recyclerview_hours)
@@ -259,7 +259,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private void setDateTime(@NonNull final DateTime dateTime) {
         setDate(dateTime.toString("EEEE dd.MM.yyyy."));
-        setTime(dateTime.toString(String.format("HH%smm", dateTime.getSecondOfMinute() % 2 == 0 ? ":" : ".")));
+        setTime(dateTime.toString("HH:mm"));
     }
 
     private void setDate(@NonNull final String date) {

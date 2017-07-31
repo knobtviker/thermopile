@@ -10,20 +10,10 @@
 
     <TextView
         android:id="@+id/textview_hour"
-        android:textSize="10sp"
-        style="@style/TextAppearance.AppCompat.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?android:textColorPrimary"
-        android:textStyle="bold"/>
+        style="@style/ItemTextHour"/>
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Caption"
-        android:textSize="8sp"
-        android:layout_marginRight="6dp"
-        android:layout_width="wrap_content"
-        android:textColor="?android:textColorSecondary"
-        android:layout_height="wrap_content"
+        style="@style/ItemTextMinute"
         android:text=":00"/>
 
 </LinearLayout>
