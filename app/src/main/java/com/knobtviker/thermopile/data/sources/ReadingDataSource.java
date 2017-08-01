@@ -7,6 +7,7 @@ import com.knobtviker.thermopile.data.models.raw.Triplet;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -25,5 +26,7 @@ public interface ReadingDataSource {
         Single<List<ReadingTableEntity>> load();
 
         Single<ReadingTableEntity> save(@NonNull final ReadingTableEntity item);
+
+        Observable<ReadingTableEntity> last();
     }
 }

@@ -10,6 +10,7 @@ import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import java.util.List;
 import java.util.Optional;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
@@ -53,5 +54,15 @@ public class ReadingLocalDataSource implements ReadingDataSource.Local {
     @Override
     public Single<ReadingTableEntity> save(@NonNull ReadingTableEntity item) {
         return database.upsert(item);
+    }
+
+    @Override
+    public Observable<ReadingTableEntity> last() {
+        return database
+            .select(ReadingTableEntity.class)
+            .orderBy(ReadingTableEntity.TIMESTAMP.desc())
+            .limit(1)
+            .get()
+            .observable();
     }
 }

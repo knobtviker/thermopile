@@ -87,7 +87,6 @@
                 android:layout_height="match_parent"
                 android:gravity="bottom"
                 android:maxLines="1"
-                android:text="33.2"
                 android:textColor="?android:textColorPrimary"
                 tools:ignore="MissingPrefix"/>
 
@@ -123,7 +122,6 @@
                 android:layout_gravity="bottom"
                 android:gravity="bottom"
                 android:maxLines="1"
-                android:text="66.8"
                 android:textColor="?android:textColorPrimary"
                 tools:ignore="MissingPrefix"/>
 
@@ -160,7 +158,6 @@
                 android:layout_height="match_parent"
                 android:gravity="bottom"
                 android:maxLines="1"
-                android:text="1004.9"
                 android:textColor="?android:textColorPrimary"
                 tools:ignore="MissingPrefix"/>
 

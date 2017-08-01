@@ -76,4 +76,12 @@ public class ReadingRepository extends BaseRepository {
             .map(readingConverter::localToPresentation)
             .observeOn(schedulerProvider.ui());
     }
+
+    public Observable<Reading> last() {
+        return readingLocalDataSource
+            .last()
+            .subscribeOn(schedulerProvider.io())
+            .map(readingConverter::localToPresentation)
+            .observeOn(schedulerProvider.ui());
+    }
 }
