@@ -95,7 +95,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
         setDateTime(dateTime);
 
-        data();
+//        data();
     }
 
     @Override
