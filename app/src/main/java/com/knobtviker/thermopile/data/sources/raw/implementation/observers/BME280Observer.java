@@ -3,7 +3,7 @@ package com.knobtviker.thermopile.data.sources.raw.implementation.observers;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.raw.Triplet;
-import com.knobtviker.thermopile.data.sources.raw.implementation.drivers.Bme280;
+import com.knobtviker.thermopile.data.sources.raw.implementation.drivers.BME280;
 
 import java.io.IOException;
 
@@ -14,15 +14,15 @@ import io.reactivex.SingleSource;
  * Created by bojan on 19/07/2017.
  */
 
-public class Bme280Observer implements SingleSource<Triplet<Float, Float, Float>> {
+public class BME280Observer implements SingleSource<Triplet<Float, Float, Float>> {
 
     private final String bus;
 
-    public static Bme280Observer create(@NonNull final String bus) {
-        return new Bme280Observer(bus);
+    public static BME280Observer create(@NonNull final String bus) {
+        return new BME280Observer(bus);
     }
 
-    private Bme280Observer(@NonNull final String bus) {
+    private BME280Observer(@NonNull final String bus) {
         this.bus = bus;
     }
 
@@ -30,11 +30,11 @@ public class Bme280Observer implements SingleSource<Triplet<Float, Float, Float>
     @Override
     public void subscribe(SingleObserver<? super Triplet<Float, Float, Float>> observer) {
         try {
-            final Bme280 bme280 = new Bme280(bus);
-            bme280.setTemperatureOversampling(Bme280.OVERSAMPLING_1X);
-            bme280.setHumidityOversampling(Bme280.OVERSAMPLING_1X);
-            bme280.setPressureOversampling(Bme280.OVERSAMPLING_1X);
-            bme280.setMode(Bme280.MODE_NORMAL);
+            final BME280 bme280 = new BME280(bus);
+            bme280.setTemperatureOversampling(BME280.OVERSAMPLING_1X);
+            bme280.setHumidityOversampling(BME280.OVERSAMPLING_1X);
+            bme280.setPressureOversampling(BME280.OVERSAMPLING_1X);
+            bme280.setMode(BME280.MODE_NORMAL);
 
             final float[] readings = bme280.readAll();
             observer.onSuccess(

@@ -14,17 +14,17 @@ import java.util.UUID;
  * Created by bojan on 10/07/2017.
  */
 
-public class Bme280SensorDriver implements AutoCloseable {
-    private static final String TAG = Bme280SensorDriver.class.getSimpleName();
+public class BME280SensorDriver implements AutoCloseable {
+    private static final String TAG = BME280SensorDriver.class.getSimpleName();
 
-    private Bme280 mDevice;
+    private BME280 mDevice;
 
     // DRIVER parameters
     // documented at https://source.android.com/devices/sensors/hal-interface.html#sensor_t
     private static final String DRIVER_VENDOR = "Bosch";
     private static final String DRIVER_NAME = "BME280";
-    private static final int DRIVER_MIN_DELAY_US = Math.round(1000000.f / Bme280.MAX_FREQ_HZ);
-    private static final int DRIVER_MAX_DELAY_US = Math.round(1000000.f / Bme280.MIN_FREQ_HZ);
+    private static final int DRIVER_MIN_DELAY_US = Math.round(1000000.f / BME280.MAX_FREQ_HZ);
+    private static final int DRIVER_MAX_DELAY_US = Math.round(1000000.f / BME280.MIN_FREQ_HZ);
 
     private TemperatureUserDriver mTemperatureUserDriver;
     private PressureUserDriver mPressureUserDriver;
@@ -39,8 +39,8 @@ public class Bme280SensorDriver implements AutoCloseable {
      * @see #registerPressureSensor()
      * @see #registerTemperatureSensor()
      */
-    public Bme280SensorDriver(String bus) throws IOException {
-        mDevice = new Bme280(bus);
+    public BME280SensorDriver(String bus) throws IOException {
+        mDevice = new BME280(bus);
     }
 
     /**
@@ -53,8 +53,8 @@ public class Bme280SensorDriver implements AutoCloseable {
      * @see #registerPressureSensor()
      * @see #registerTemperatureSensor()
      */
-    public Bme280SensorDriver(String bus, int address) throws IOException {
-        mDevice = new Bme280(bus, address);
+    public BME280SensorDriver(String bus, int address) throws IOException {
+        mDevice = new BME280(bus, address);
     }
 
     /**
@@ -154,18 +154,18 @@ public class Bme280SensorDriver implements AutoCloseable {
         if ((mTemperatureUserDriver == null || !mTemperatureUserDriver.isEnabled())
             && (mPressureUserDriver == null || !mPressureUserDriver.isEnabled())
             && (mHumidityUserDriver == null || !mHumidityUserDriver.isEnabled())) {
-            mDevice.setMode(Bme280.MODE_SLEEP);
+            mDevice.setMode(BME280.MODE_SLEEP);
         } else {
-            mDevice.setMode(Bme280.MODE_NORMAL);
+            mDevice.setMode(BME280.MODE_NORMAL);
         }
     }
 
     private class PressureUserDriver extends UserSensorDriver {
         // DRIVER parameters
         // documented at https://source.android.com/devices/sensors/hal-interface.html#sensor_t
-        private static final float DRIVER_MAX_RANGE = Bme280.MAX_PRESSURE_HPA;
+        private static final float DRIVER_MAX_RANGE = BME280.MAX_PRESSURE_HPA;
         private static final float DRIVER_RESOLUTION = 0.0262f;
-        private static final float DRIVER_POWER = Bme280.MAX_POWER_CONSUMPTION_PRESSURE_UA / 1000.f;
+        private static final float DRIVER_POWER = BME280.MAX_POWER_CONSUMPTION_PRESSURE_UA / 1000.f;
         private static final int DRIVER_VERSION = 1;
         private static final String DRIVER_REQUIRED_PERMISSION = "";
 
@@ -200,7 +200,7 @@ public class Bme280SensorDriver implements AutoCloseable {
         @Override
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
-            mDevice.setPressureOversampling(enabled ? Bme280.OVERSAMPLING_1X : Bme280.OVERSAMPLING_SKIPPED);
+            mDevice.setPressureOversampling(enabled ? BME280.OVERSAMPLING_1X : BME280.OVERSAMPLING_SKIPPED);
             maybeSleep();
         }
 
@@ -212,9 +212,9 @@ public class Bme280SensorDriver implements AutoCloseable {
     private class TemperatureUserDriver extends UserSensorDriver {
         // DRIVER parameters
         // documented at https://source.android.com/devices/sensors/hal-interface.html#sensor_t
-        private static final float DRIVER_MAX_RANGE = Bme280.MAX_TEMP_C;
+        private static final float DRIVER_MAX_RANGE = BME280.MAX_TEMP_C;
         private static final float DRIVER_RESOLUTION = 0.005f;
-        private static final float DRIVER_POWER = Bme280.MAX_POWER_CONSUMPTION_TEMP_UA / 1000.f;
+        private static final float DRIVER_POWER = BME280.MAX_POWER_CONSUMPTION_TEMP_UA / 1000.f;
         private static final int DRIVER_VERSION = 1;
         private static final String DRIVER_REQUIRED_PERMISSION = "";
 
@@ -249,7 +249,7 @@ public class Bme280SensorDriver implements AutoCloseable {
         @Override
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
-            mDevice.setTemperatureOversampling(enabled ? Bme280.OVERSAMPLING_1X : Bme280.OVERSAMPLING_SKIPPED);
+            mDevice.setTemperatureOversampling(enabled ? BME280.OVERSAMPLING_1X : BME280.OVERSAMPLING_SKIPPED);
             maybeSleep();
         }
 
@@ -261,9 +261,9 @@ public class Bme280SensorDriver implements AutoCloseable {
     private class HumidityUserDriver extends UserSensorDriver {
         // DRIVER parameters
         // documented at https://source.android.com/devices/sensors/hal-interface.html#sensor_t
-        private static final float DRIVER_MAX_RANGE = Bme280.MAX_HUMIDITY_PERCENT;
+        private static final float DRIVER_MAX_RANGE = BME280.MAX_HUMIDITY_PERCENT;
         private static final float DRIVER_RESOLUTION = 0.00008f; //0.008f;
-        private static final float DRIVER_POWER = Bme280.MAX_POWER_CONSUMPTION_HUMIDITY_UA / 1000.f;
+        private static final float DRIVER_POWER = BME280.MAX_POWER_CONSUMPTION_HUMIDITY_UA / 1000.f;
         private static final int DRIVER_VERSION = 1;
         private static final String DRIVER_REQUIRED_PERMISSION = "";
 
@@ -298,7 +298,7 @@ public class Bme280SensorDriver implements AutoCloseable {
         @Override
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
-            mDevice.setHumidityOversampling(enabled ? Bme280.OVERSAMPLING_1X : Bme280.OVERSAMPLING_SKIPPED);
+            mDevice.setHumidityOversampling(enabled ? BME280.OVERSAMPLING_1X : BME280.OVERSAMPLING_SKIPPED);
             maybeSleep();
         }
 

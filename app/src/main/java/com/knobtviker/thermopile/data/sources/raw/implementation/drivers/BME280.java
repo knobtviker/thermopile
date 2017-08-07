@@ -17,8 +17,8 @@ import java.lang.annotation.RetentionPolicy;
  * Driver for the BMP/BME 280 temperature sensor.
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class Bme280 implements AutoCloseable {
-    private static final String TAG = Bme280.class.getSimpleName();
+public class BME280 implements AutoCloseable {
+    private static final String TAG = BME280.class.getSimpleName();
 
     /**
      * Chip ID for the BME280
@@ -28,6 +28,7 @@ public class Bme280 implements AutoCloseable {
      * Default I2C address for the sensor.
      */
     public static final int DEFAULT_I2C_ADDRESS = 0x77;
+
     @Deprecated
     public static final int I2C_ADDRESS = DEFAULT_I2C_ADDRESS;
 
@@ -163,7 +164,7 @@ public class Bme280 implements AutoCloseable {
      * @param bus I2C bus the sensor is connected to.
      * @throws IOException
      */
-    public Bme280(String bus) throws IOException {
+    public BME280(String bus) throws IOException {
         this(bus, DEFAULT_I2C_ADDRESS);
     }
 
@@ -173,7 +174,7 @@ public class Bme280 implements AutoCloseable {
      * @param address I2C address of the sensor.
      * @throws IOException
      */
-    public Bme280(String bus, int address) throws IOException {
+    public BME280(String bus, int address) throws IOException {
         final PeripheralManagerService pioService = new PeripheralManagerService();
         final I2cDevice device = pioService.openI2cDevice(bus, address);
         try {
@@ -192,8 +193,22 @@ public class Bme280 implements AutoCloseable {
      * @param device I2C device of the sensor.
      * @throws IOException
      */
-    /*package*/  Bme280(I2cDevice device) throws IOException {
+    /*package*/  BME280(I2cDevice device) throws IOException {
         connect(device);
+    }
+
+    /**
+     * Close the driver and the underlying device.
+     */
+    @Override
+    public void close() throws IOException {
+        if (mDevice != null) {
+            try {
+                mDevice.close();
+            } finally {
+                mDevice = null;
+            }
+        }
     }
 
     private void connect(I2cDevice device) throws IOException {
@@ -302,20 +317,6 @@ public class Bme280 implements AutoCloseable {
         }
         mDevice.writeRegByte(BME280_REG_CTRL_HUM, (byte)(regCtrl));
         mHumidityOversampling = oversampling;
-    }
-
-    /**
-     * Close the driver and the underlying device.
-     */
-    @Override
-    public void close() throws IOException {
-        if (mDevice != null) {
-            try {
-                mDevice.close();
-            } finally {
-                mDevice = null;
-            }
-        }
     }
 
     /**
@@ -494,7 +495,7 @@ public class Bme280 implements AutoCloseable {
     }
 
     // Compensation formula from the BME280 datasheet.
-    public float compensateHumidity(final int rawHumidity, final float fineTemperature, final int[] calibration) {
+    private float compensateHumidity(final int rawHumidity, final float fineTemperature, final int[] calibration) {
         final int dig_H1 = calibration[0];
         final int dig_H2 = calibration[1];
         final int dig_H3 = calibration[2];

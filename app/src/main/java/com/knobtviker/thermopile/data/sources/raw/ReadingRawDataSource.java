@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.data.sources.raw;
 
 import com.knobtviker.thermopile.data.models.raw.Triplet;
 import com.knobtviker.thermopile.data.sources.ReadingDataSource;
-import com.knobtviker.thermopile.data.sources.raw.implementation.observers.Bme280Observer;
+import com.knobtviker.thermopile.data.sources.raw.implementation.observers.BME280Observer;
 
 import java.util.Optional;
 
@@ -36,6 +36,6 @@ public class ReadingRawDataSource implements ReadingDataSource.Raw {
 
     @Override
     public Single<Triplet<Float, Float, Float>> read() {
-        return Single.defer(() -> Bme280Observer.create(BUS_I2C));
+        return Single.defer(() -> BME280Observer.create(BUS_I2C));
     }
 }
