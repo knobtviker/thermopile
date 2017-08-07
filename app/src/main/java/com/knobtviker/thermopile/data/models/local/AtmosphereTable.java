@@ -11,8 +11,8 @@ import io.requery.Table;
  */
 
 @Entity
-@Table(name = "_reading_")
-public interface ReadingTable {
+@Table(name = "_atmosphere_")
+public interface AtmosphereTable {
 
     @Key
     @Generated

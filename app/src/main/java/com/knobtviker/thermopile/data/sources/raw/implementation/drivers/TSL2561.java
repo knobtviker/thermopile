@@ -450,7 +450,7 @@ public class TSL2561 implements AutoCloseable {
                     autoGainCheck = true;
                 } else {
                     // Nothing to look at here, keep moving ....
-                    // Reading is either valid, or we're already at the chips limits
+                    // Atmosphere is either valid, or we're already at the chips limits
                     isValid = true;
                 }
             } else {

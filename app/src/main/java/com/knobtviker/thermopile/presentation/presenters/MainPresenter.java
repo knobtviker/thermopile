@@ -4,10 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
-import com.knobtviker.thermopile.data.models.presentation.Reading;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.models.presentation.Settings;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
-import com.knobtviker.thermopile.domain.repositories.ReadingRepository;
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
@@ -27,7 +27,7 @@ public class MainPresenter implements MainContract.Presenter {
     private final Context context;
     private final MainContract.View view;
 
-    private ReadingRepository readingRepository;
+    private AtmosphereRepository atmosphereRepository;
     private ThresholdRepository thresholdRepository;
     private SettingsRepository settingsRepository;
     private CompositeDisposable compositeDisposable;
@@ -39,7 +39,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void subscribe() {
-        readingRepository = ReadingRepository.getInstance(context);
+        atmosphereRepository = AtmosphereRepository.getInstance(context);
         thresholdRepository = ThresholdRepository.getInstance(context);
         settingsRepository = SettingsRepository.getInstance(context);
         compositeDisposable = new CompositeDisposable();
@@ -51,7 +51,7 @@ public class MainPresenter implements MainContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
-        ReadingRepository.destroyInstance();
+        AtmosphereRepository.destroyInstance();
         ThresholdRepository.destroyInstance();
         SettingsRepository.destroyInstance();
     }
@@ -91,9 +91,9 @@ public class MainPresenter implements MainContract.Presenter {
         started();
 
         compositeDisposable.add(
-            readingRepository
+            atmosphereRepository
                 .read()
-                .flatMap(rawData -> readingRepository.save(rawData))
+                .flatMap(rawData -> atmosphereRepository.save(rawData))
                 .subscribe(
                     this::onDataNext,
                     this::error,
@@ -146,8 +146,8 @@ public class MainPresenter implements MainContract.Presenter {
         view.onClockTick();
     }
 
-    private void onDataNext(@NonNull final Reading reading) {
-        view.onData(reading);
+    private void onDataNext(@NonNull final Atmosphere atmosphere) {
+        view.onData(atmosphere);
     }
 
     private void onThresholdsNext(@NonNull final ImmutableList<Threshold> thresholds) {

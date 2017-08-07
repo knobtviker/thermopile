@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.presentation.Reading;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.models.presentation.Settings;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
@@ -99,7 +99,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     @Override
-    public void onData(@NonNull Reading data) {
+    public void onData(@NonNull Atmosphere data) {
         populateData(data);
     }
 
@@ -140,7 +140,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         presenter.data();
     }
 
-    private void populateData(@NonNull final Reading data) {
+    private void populateData(@NonNull final Atmosphere data) {
         textViewTemperature.setText(round(data.temperature(), 1).toString());
         textViewHumidity.setText(round(data.humidity(), 1).toString());
         textViewPressure.setText(round(data.pressure(), 1).toString());

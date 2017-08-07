@@ -3,9 +3,9 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.presentation.Reading;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.models.presentation.Settings;
-import com.knobtviker.thermopile.domain.repositories.ReadingRepository;
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 
@@ -24,7 +24,7 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
     private final Context context;
     private final ScreenSaverContract.View view;
 
-    private ReadingRepository readingRepository;
+    private AtmosphereRepository atmosphereRepository;
     private SettingsRepository settingsRepository;
     private CompositeDisposable compositeDisposable;
 
@@ -35,7 +35,7 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
 
     @Override
     public void subscribe() {
-        readingRepository = ReadingRepository.getInstance(context);
+        atmosphereRepository = AtmosphereRepository.getInstance(context);
         settingsRepository = SettingsRepository.getInstance(context);
         compositeDisposable = new CompositeDisposable();
     }
@@ -46,7 +46,7 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
-        ReadingRepository.destroyInstance();
+        AtmosphereRepository.destroyInstance();
         SettingsRepository.destroyInstance();
     }
 
@@ -85,7 +85,7 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
         started();
 
         compositeDisposable.add(
-            readingRepository
+            atmosphereRepository
                 .last()
                 .subscribe(
                     this::onDataNext,
@@ -115,8 +115,8 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
         view.onClockTick();
     }
 
-    private void onDataNext(@NonNull final Reading reading) {
-        view.onData(reading);
+    private void onDataNext(@NonNull final Atmosphere atmosphere) {
+        view.onData(atmosphere);
     }
 
     private void onSettingsNext(@NonNull final Settings settings) {

@@ -7,7 +7,7 @@ import com.google.auto.value.AutoValue;
  */
 
 @AutoValue
-public abstract class Reading {
+public abstract class Atmosphere {
 
     public abstract long id();
 
@@ -32,10 +32,10 @@ public abstract class Reading {
 
         public abstract Builder pressure(final float value);
 
-        public abstract Reading build();
+        public abstract Atmosphere build();
     }
 
     public static Builder builder() {
-        return new AutoValue_Reading.Builder();
+        return new AutoValue_Atmosphere.Builder();
     }
 }

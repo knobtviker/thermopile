@@ -333,7 +333,7 @@ public class BME280 implements AutoCloseable {
      */
     public float readTemperature() throws IOException, IllegalStateException {
         if (mTemperatureOversampling == OVERSAMPLING_SKIPPED) {
-            throw new IllegalStateException("temperature oversampling is skipped");
+            throw new IllegalStateException("BME280 temperature oversampling is skipped");
         }
         final int rawTemp = readSample(BME280_REG_TEMP);
         return compensateTemperature(rawTemp, mTempCalibrationData)[0];
@@ -361,10 +361,10 @@ public class BME280 implements AutoCloseable {
      */
     public float[] readTemperatureAndPressure() throws IOException, IllegalStateException {
         if (mTemperatureOversampling == OVERSAMPLING_SKIPPED) {
-            throw new IllegalStateException("temperature oversampling is skipped");
+            throw new IllegalStateException("BME280 temperature oversampling is skipped.");
         }
         if (mPressureOversampling == OVERSAMPLING_SKIPPED) {
-            throw new IllegalStateException("pressure oversampling is skipped");
+            throw new IllegalStateException("BME280 pressure oversampling is skipped.");
         }
         // The pressure compensation formula requires the fine temperature reading, so we always read temperature first.
         final int rawTemp = readSample(BME280_REG_TEMP);
@@ -383,13 +383,13 @@ public class BME280 implements AutoCloseable {
      */
     public float[] readAll() throws IOException, IllegalStateException {
         if (mTemperatureOversampling == OVERSAMPLING_SKIPPED) {
-            throw new IllegalStateException("temperature oversampling is skipped");
+            throw new IllegalStateException("BME280 temperature oversampling is skipped.");
         }
         if (mPressureOversampling == OVERSAMPLING_SKIPPED) {
-            throw new IllegalStateException("pressure oversampling is skipped");
+            throw new IllegalStateException("BME280 pressure oversampling is skipped.");
         }
         if (mHumidityOversampling == OVERSAMPLING_SKIPPED) {
-            throw new IllegalStateException("humidity oversampling is skipped");
+            throw new IllegalStateException("BME280 humidity oversampling is skipped.");
         }
         // The humidity and pressure compensation formula requires the fine temperature reading, so we always read temperature first.
         final int rawTemp = readSample(BME280_REG_TEMP);

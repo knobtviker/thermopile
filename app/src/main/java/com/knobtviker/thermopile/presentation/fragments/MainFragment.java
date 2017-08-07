@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.presentation.Reading;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.models.presentation.Settings;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
@@ -180,7 +180,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
-    public void onData(@NonNull Reading data) {
+    public void onData(@NonNull Atmosphere data) {
         populateData(data);
     }
 
@@ -279,7 +279,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @SuppressLint("SetTextI18n")
-    private void populateData(@NonNull final Reading data) {
+    private void populateData(@NonNull final Atmosphere data) {
         //TODO: Apply data units and formats and timezone
 
         //TODO: Find the right threshold if todays list is not empty.

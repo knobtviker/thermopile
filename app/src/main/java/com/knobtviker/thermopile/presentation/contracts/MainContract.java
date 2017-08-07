@@ -3,7 +3,7 @@ package com.knobtviker.thermopile.presentation.contracts;
 import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
-import com.knobtviker.thermopile.data.models.presentation.Reading;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.models.presentation.Settings;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
@@ -19,7 +19,7 @@ public interface MainContract {
 
         void onClockTick();
 
-        void onData(@NonNull final Reading data);
+        void onData(@NonNull final Atmosphere data);
 
         void onThresholds(@NonNull final ImmutableList<Threshold> thresholds);
 
