@@ -29,15 +29,14 @@ import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.utils.MiniPID;
 import com.knobtviker.thermopile.presentation.views.CircularSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import butterknife.BindView;
@@ -119,9 +118,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         setupPID();
         setupToolbar();
         setupSeekBar();
-        onClockTick();
         setupRecyclerView();
-        startClock();
 
         return view;
     }
@@ -170,21 +167,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
-    public void onClockTick() {
-        final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
-        setDateTime(dateTime);
-        maybeApplyThresholds(dateTime);
-        moveHourLine(dateTime);
-
-        data();
-    }
-
-    @Override
-    public void onData(@NonNull Atmosphere data) {
-        populateData(data);
-    }
-
-    @Override
     public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
         this.thresholdsToday = thresholds;
 
@@ -212,6 +194,61 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         }
     }
 
+    public void setDateTime(@NonNull final DateTime dateTime) {
+        setDate(dateTime.toString("EEEE dd.MM.yyyy."));
+        setTime(dateTime.toString("HH:mm"));
+    }
+
+    public void maybeApplyThresholds(@NonNull final DateTime dateTime) {
+        if (dateTime.getSecondOfDay() == 0) {
+            presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
+        }
+    }
+
+    public void moveHourLine(@NonNull final DateTime dateTime) {
+        final int currentHour = dateTime.getHourOfDay();
+        if (currentHour > 6 && currentHour < 17) {
+            recyclerView.scrollToPosition(currentHour - 6);
+        } else if (currentHour <=6){
+            recyclerView.scrollToPosition(0);
+        } else if (currentHour >= 17) {
+            recyclerView.scrollToPosition(12);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void populateData(@NonNull final Atmosphere data) {
+        //TODO: Apply data units and formats and timezone
+
+        //TODO: Find the right threshold if todays list is not empty.
+        final Optional<Threshold> thresholdOptional = thresholdsToday.stream()
+            .filter(threshold -> {
+                final DateTime now = DateTime.now();
+                return threshold.startHour() < now.getHourOfDay() && threshold.startMinute() < now.getMinuteOfHour()
+                    && now.getHourOfDay() <= threshold.endHour() && now.getMinuteOfHour() <= threshold.endMinute();
+            })
+            .findFirst();
+        if (thresholdOptional.isPresent()) {
+            //TODO: If threshold is found set it as progress on seekbar and/or use as target value
+            seekBarTemperature.setProgress(thresholdOptional.get().temperature());
+        } else {
+            //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
+            seekBarTemperature.setProgress(Math.round(data.temperature()));
+        }
+
+        textViewCurrentTemperature.setText(MathKit.round(data.temperature(), 1).toString());
+        textViewHumidity.setText(MathKit.round(data.humidity(), 1).toString());
+        textViewPressure.setText(MathKit.round(data.pressure(), 1).toString());
+
+//        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
+//        final double measured = data.temperature() + fakeIncrease;
+//        if (measured < target) {
+//            fakeIncrease = fakeIncrease + 0.05f;
+//            final double output = miniPID.getOutput(measured, target);
+//            Log.i(TAG, String.format("Measured: %3.2f , Target: %3.2f , Error: %3.2f , Output: %3.2f\n", measured, target, (target - measured), output));
+//        }
+    }
+
     //TODO: this needs more calibration to work properly but it does behave promising...
     private void setupPID() {
         miniPID = new MiniPID(1.0, 0.5, 0.0);
@@ -227,11 +264,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setupSeekBar() {
-        seekBarTemperature.setProgressString(round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
+        seekBarTemperature.setProgressString(MathKit.round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
         seekBarTemperature.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
             public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
-                seekBarTemperature.setProgressString(round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
+                seekBarTemperature.setProgressString(MathKit.round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
             }
 
             @Override
@@ -257,80 +294,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         snapHelper.attachToRecyclerView(recyclerView);
     }
 
-    private void setDateTime(@NonNull final DateTime dateTime) {
-        setDate(dateTime.toString("EEEE dd.MM.yyyy."));
-        setTime(dateTime.toString("HH:mm"));
-    }
-
     private void setDate(@NonNull final String date) {
         textViewDate.setText(date);
     }
 
     private void setTime(@NonNull final String time) {
         textViewClock.setText(time);
-    }
-
-    private void startClock() {
-        presenter.startClock();
-    }
-
-    private void data() {
-        presenter.data();
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void populateData(@NonNull final Atmosphere data) {
-        //TODO: Apply data units and formats and timezone
-
-        //TODO: Find the right threshold if todays list is not empty.
-        final Optional<Threshold> thresholdOptional = thresholdsToday.stream()
-            .filter(threshold -> {
-                final DateTime now = DateTime.now();
-                return threshold.startHour() < now.getHourOfDay() && threshold.startMinute() < now.getMinuteOfHour()
-                    && now.getHourOfDay() <= threshold.endHour() && now.getMinuteOfHour() <= threshold.endMinute();
-            })
-            .findFirst();
-        if (thresholdOptional.isPresent()) {
-            //TODO: If threshold is found set it as progress on seekbar and/or use as target value
-            seekBarTemperature.setProgress(thresholdOptional.get().temperature());
-        } else {
-            //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
-            seekBarTemperature.setProgress(Math.round(data.temperature()));
-        }
-
-        textViewCurrentTemperature.setText(round(data.temperature(), 1).toString());
-        textViewHumidity.setText(round(data.humidity(), 1).toString());
-        textViewPressure.setText(round(data.pressure(), 1).toString());
-
-//        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
-//        final double measured = data.temperature() + fakeIncrease;
-//        if (measured < target) {
-//            fakeIncrease = fakeIncrease + 0.05f;
-//            final double output = miniPID.getOutput(measured, target);
-//            Log.i(TAG, String.format("Measured: %3.2f , Target: %3.2f , Error: %3.2f , Output: %3.2f\n", measured, target, (target - measured), output));
-//        }
-    }
-
-    private BigDecimal round(final float d, final int decimalPlace) {
-        BigDecimal bd = new BigDecimal(Float.toString(d));
-        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-        return bd;
-    }
-
-    private void maybeApplyThresholds(@NonNull final DateTime dateTime) {
-        if (dateTime.getSecondOfDay() == 0) {
-            presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
-        }
-    }
-
-    private void moveHourLine(@NonNull final DateTime dateTime) {
-        final int currentHour = dateTime.getHourOfDay();
-        if (currentHour > 6 && currentHour < 17) {
-            recyclerView.scrollToPosition(currentHour - 6);
-        } else if (currentHour <=6){
-            recyclerView.scrollToPosition(0);
-        } else if (currentHour >= 17) {
-            recyclerView.scrollToPosition(12);
-        }
     }
 }

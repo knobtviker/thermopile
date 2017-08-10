@@ -3,16 +3,11 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.models.presentation.Settings;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -67,33 +62,33 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
         view.showLoading(false);
     }
 
-    @Override
-    public void startClock() {
-        compositeDisposable.add(
-            Observable.interval(1L, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    tick -> onNext(),
-                    this::error,
-                    this::completed
-                )
-        );
-    }
+//    @Override
+//    public void startClock() {
+//        compositeDisposable.add(
+//            Observable.interval(1L, TimeUnit.SECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                    tick -> onNext(),
+//                    this::error,
+//                    this::completed
+//                )
+//        );
+//    }
 
-    @Override
-    public void data() {
-        started();
-
-        compositeDisposable.add(
-            atmosphereRepository
-                .last()
-                .subscribe(
-                    this::onDataNext,
-                    this::error,
-                    this::completed
-                )
-        );
-    }
+//    @Override
+//    public void data() {
+//        started();
+//
+//        compositeDisposable.add(
+//            atmosphereRepository
+//                .last()
+//                .subscribe(
+//                    this::onDataNext,
+//                    this::error,
+//                    this::completed
+//                )
+//        );
+//    }
 
     @Override
     public void settings() {
@@ -111,13 +106,13 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
         );
     }
 
-    private void onNext() {
-        view.onClockTick();
-    }
-
-    private void onDataNext(@NonNull final Atmosphere atmosphere) {
-        view.onData(atmosphere);
-    }
+//    private void onNext() {
+//        view.onClockTick();
+//    }
+//
+//    private void onDataNext(@NonNull final Atmosphere atmosphere) {
+//        view.onData(atmosphere);
+//    }
 
     private void onSettingsNext(@NonNull final Settings settings) {
         view.onSettings(settings);

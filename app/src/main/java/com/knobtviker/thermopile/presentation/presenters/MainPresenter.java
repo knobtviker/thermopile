@@ -4,18 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.models.presentation.Settings;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
-import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -27,7 +21,7 @@ public class MainPresenter implements MainContract.Presenter {
     private final Context context;
     private final MainContract.View view;
 
-    private AtmosphereRepository atmosphereRepository;
+
     private ThresholdRepository thresholdRepository;
     private SettingsRepository settingsRepository;
     private CompositeDisposable compositeDisposable;
@@ -39,7 +33,6 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void subscribe() {
-        atmosphereRepository = AtmosphereRepository.getInstance(context);
         thresholdRepository = ThresholdRepository.getInstance(context);
         settingsRepository = SettingsRepository.getInstance(context);
         compositeDisposable = new CompositeDisposable();
@@ -51,7 +44,6 @@ public class MainPresenter implements MainContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
-        AtmosphereRepository.destroyInstance();
         ThresholdRepository.destroyInstance();
         SettingsRepository.destroyInstance();
     }
@@ -71,35 +63,6 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void completed() {
         view.showLoading(false);
-    }
-
-    @Override
-    public void startClock() {
-        compositeDisposable.add(
-            Observable.interval(1L, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    tick -> onNext(),
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    @Override
-    public void data() {
-        started();
-
-        compositeDisposable.add(
-            atmosphereRepository
-                .read()
-                .flatMap(rawData -> atmosphereRepository.save(rawData))
-                .subscribe(
-                    this::onDataNext,
-                    this::error,
-                    this::completed
-                )
-        );
     }
 
     @Override
@@ -140,14 +103,6 @@ public class MainPresenter implements MainContract.Presenter {
                     this::completed
                 )
         );
-    }
-
-    private void onNext() {
-        view.onClockTick();
-    }
-
-    private void onDataNext(@NonNull final Atmosphere atmosphere) {
-        view.onData(atmosphere);
     }
 
     private void onThresholdsNext(@NonNull final ImmutableList<Threshold> thresholds) {

@@ -1,13 +1,27 @@
 package com.knobtviker.thermopile.presentation;
 
+import android.app.Activity;
 import android.app.Application;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.facebook.stetho.Stetho;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
+import com.knobtviker.thermopile.presentation.activities.MainActivity;
+import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
+import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
+import com.knobtviker.thermopile.presentation.fragments.MainFragment;
+import com.knobtviker.thermopile.presentation.fragments.ScreensaverFragment;
+import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.Router;
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,14 +33,22 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * Created by bojan on 15/07/2017.
  */
 
-public class ThermopileApp extends Application {
+public class ThermopileApp extends Application implements ApplicationContract.View, Application.ActivityLifecycleCallbacks {
 
-    private Disposable screensaver;
+    @NonNull
+    private ApplicationContract.Presenter presenter;
+
+    @Nullable
+    private Disposable screensaverDisposable;
+
+    @Nullable
+    private Activity currentActivity;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        initPresenter();
         initCalligraphy();
         initJodaTime();
         initStetho();
@@ -35,18 +57,24 @@ public class ThermopileApp extends Application {
     }
 
     public void createScreensaver() {
-        screensaver = Completable.timer(60, TimeUnit.SECONDS, SchedulerProvider.getInstance().screensaver())
+        screensaverDisposable = Completable.timer(60, TimeUnit.SECONDS, SchedulerProvider.getInstance().screensaver())
             .observeOn(SchedulerProvider.getInstance().ui())
             .subscribe(this::showScreensaver);
     }
 
     public void destroyScreensaver() {
-        if (screensaver != null) {
-            if (!screensaver.isDisposed()) {
-                screensaver.dispose();
-                screensaver = null;
+        if (screensaverDisposable != null) {
+            if (!screensaverDisposable.isDisposed()) {
+                screensaverDisposable.dispose();
+                screensaverDisposable = null;
             }
         }
+    }
+
+    private void initPresenter() {
+        presenter = new ApplicationPresenter(this, this);
+        presenter.subscribe();
+        presenter.startClock();
     }
 
     private void initCalligraphy() {
@@ -66,5 +94,78 @@ public class ThermopileApp extends Application {
 
     private void showScreensaver() {
         Router.showScreensaver(this);
+    }
+
+    @Override
+    public void showLoading(boolean isLoading) {
+        //TODO: Propagate to each fragment loading method
+    }
+
+    @Override
+    public void showError(@NonNull Throwable throwable) {
+        //TODO: Propagate to each fragment showError method
+    }
+
+    @Override
+    public void onClockTick() {
+        final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
+
+        if (currentActivity.getClass() == MainActivity.class) {
+            final MainFragment fragment = ((MainFragment) ((MainActivity) currentActivity).findFragment(MainFragment.TAG));
+            fragment.setDateTime(dateTime);
+            fragment.maybeApplyThresholds(dateTime);
+            fragment.moveHourLine(dateTime);
+        } else if (currentActivity.getClass() == ScreenSaverActivity.class) {
+            final ScreensaverFragment fragment = ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG));
+            fragment.setDateTime(dateTime);
+        }
+
+        presenter.atmosphereData();
+    }
+
+    @Override
+    public void onAtmosphereData(@NonNull Atmosphere data) {
+        if (currentActivity.getClass() == MainActivity.class) {
+            final MainFragment fragment = ((MainFragment) ((MainActivity) currentActivity).findFragment(MainFragment.TAG));
+            fragment.populateData(data);
+        } else if (currentActivity.getClass() == ScreenSaverActivity.class) {
+            final ScreensaverFragment fragment = ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG));
+            fragment.populateData(data);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Activity activity, Bundle bundle) {
+        this.currentActivity = activity;
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {
+        this.currentActivity = activity;
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+        this.currentActivity = activity;
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
+        //DO NOTHING
+    }
+
+    @Override
+    public void onActivityStopped(Activity activity) {
+        //DO NOTHING
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+        //DO NOTHING
+    }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+        //DO NOTHING
     }
 }
