@@ -34,6 +34,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 
 public class ThermopileApp extends Application implements ApplicationContract.View, Application.ActivityLifecycleCallbacks {
+    private static final String TAG = ThermopileApp.class.getSimpleName();
 
     @NonNull
     private ApplicationContract.Presenter presenter;
@@ -47,6 +48,8 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     @Override
     public void onCreate() {
         super.onCreate();
+
+        registerActivityLifecycleCallbacks(this);
 
         initPresenter();
         initCalligraphy();
@@ -109,28 +112,31 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     @Override
     public void onClockTick() {
         final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
+        if (currentActivity != null) {
+            if (currentActivity.getClass() == MainActivity.class) {
+                final MainFragment fragment = ((MainFragment) ((MainActivity) currentActivity).findFragment(MainFragment.TAG));
+                fragment.setDateTime(dateTime);
+                fragment.maybeApplyThresholds(dateTime);
+                fragment.moveHourLine(dateTime);
+            } else if (currentActivity.getClass() == ScreenSaverActivity.class) {
+                final ScreensaverFragment fragment = ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG));
+                fragment.setDateTime(dateTime);
+            }
 
-        if (currentActivity.getClass() == MainActivity.class) {
-            final MainFragment fragment = ((MainFragment) ((MainActivity) currentActivity).findFragment(MainFragment.TAG));
-            fragment.setDateTime(dateTime);
-            fragment.maybeApplyThresholds(dateTime);
-            fragment.moveHourLine(dateTime);
-        } else if (currentActivity.getClass() == ScreenSaverActivity.class) {
-            final ScreensaverFragment fragment = ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG));
-            fragment.setDateTime(dateTime);
+            presenter.atmosphereData();
         }
-
-        presenter.atmosphereData();
     }
 
     @Override
     public void onAtmosphereData(@NonNull Atmosphere data) {
-        if (currentActivity.getClass() == MainActivity.class) {
-            final MainFragment fragment = ((MainFragment) ((MainActivity) currentActivity).findFragment(MainFragment.TAG));
-            fragment.populateData(data);
-        } else if (currentActivity.getClass() == ScreenSaverActivity.class) {
-            final ScreensaverFragment fragment = ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG));
-            fragment.populateData(data);
+        if (currentActivity != null) {
+            if (currentActivity.getClass() == MainActivity.class) {
+                final MainFragment fragment = ((MainFragment) ((MainActivity) currentActivity).findFragment(MainFragment.TAG));
+                fragment.populateData(data);
+            } else if (currentActivity.getClass() == ScreenSaverActivity.class) {
+                final ScreensaverFragment fragment = ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG));
+                fragment.populateData(data);
+            }
         }
     }
 
