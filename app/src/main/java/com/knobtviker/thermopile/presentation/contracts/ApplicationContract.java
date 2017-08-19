@@ -17,6 +17,8 @@ public interface ApplicationContract {
         void onClockTick();
 
         void onAtmosphereData(@NonNull final Atmosphere data);
+
+        void onLuminosityData(final float luminosity);
     }
 
     interface Presenter extends BasePresenter {
@@ -24,5 +26,7 @@ public interface ApplicationContract {
         void startClock();
 
         void atmosphereData();
+
+        void luminosityData();
     }
 }

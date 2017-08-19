@@ -124,6 +124,7 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
             }
 
             presenter.atmosphereData();
+            presenter.luminosityData();
         }
     }
 
@@ -138,6 +139,12 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
                 fragment.populateData(data);
             }
         }
+    }
+
+    @Override
+    public void onLuminosityData(float luminosity) {
+        //TODO: Normalize luminosity in lux from 0 to 40 000 to 0.0 to 1.0
+//        Log.i(TAG, "LUMINOSITY --- "+luminosity);
     }
 
     @Override

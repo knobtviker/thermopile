@@ -91,6 +91,21 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
         );
     }
 
+    @Override
+    public void luminosityData() {
+        started();
+
+        compositeDisposable.add(
+            atmosphereRepository
+                .luminosity()
+                .subscribe(
+                    this::onLuminosityDataNext,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
     private void onClockNext() {
         view.onClockTick();
     }
@@ -98,5 +113,9 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
 
     private void onAtmosphereDataNext(@NonNull final Atmosphere atmosphere) {
         view.onAtmosphereData(atmosphere);
+    }
+
+    private void onLuminosityDataNext(final float luminosity) {
+        view.onLuminosityData(luminosity);
     }
 }
