@@ -24,7 +24,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:gravity="center_vertical|left"
-            android:text="23:59"
             android:textColor="?android:textColorPrimary"
             tools:ignore="MissingPrefix"/>
 
@@ -42,7 +41,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|left"
-                android:text="28.07.2017."
                 android:textColor="?android:textColorPrimary"
                 tools:ignore="MissingPrefix"/>
 
@@ -53,7 +51,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|left"
-                android:text="Wednesday"
                 android:textAllCaps="true"
                 android:textColor="?android:textColorPrimary"
                 tools:ignore="MissingPrefix"/>

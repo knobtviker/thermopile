@@ -19,6 +19,11 @@ public class ScreenSaverActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        WindowManager.LayoutParams params = getWindow().getAttributes();
+//        params.screenBrightness = 0.1f;
+//        getWindow().setAttributes(params);
+
         showScreensaver();
     }
 
