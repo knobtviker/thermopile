@@ -634,8 +634,8 @@ public class TSL2561 implements AutoCloseable {
         synchronized (mBuffer) {
             mDevice.readRegBuffer(TSL2561_COMMAND_BIT | address, mBuffer, 2);
             // msb[7:0] lsb[7:0]
-            final int msb = mBuffer[0] & 0xff;
-            final int lsb = mBuffer[1] & 0xff;
+            final int lsb = mBuffer[0] & 0xff;
+            final int msb = mBuffer[1] & 0xff;
             // Convert to integer
             return (msb << 8) | lsb;
         }
