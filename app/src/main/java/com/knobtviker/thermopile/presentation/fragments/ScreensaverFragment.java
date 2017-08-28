@@ -102,9 +102,9 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     @SuppressLint("SetTextI18n")
     public void populateData(@NonNull final Atmosphere data) {
-        textViewTemperature.setText(MathKit.round(data.temperature(), 1).toString());
-        textViewHumidity.setText(MathKit.round(data.humidity(), 1).toString());
-        textViewPressure.setText(MathKit.round(data.pressure(), 1).toString());
+        textViewTemperature.setText(MathKit.round(data.temperature(), 0).toString());
+        textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
+        textViewPressure.setText(MathKit.round(data.pressure(), 0).toString());
     }
 
     private void setTime(@NonNull final String time) {

@@ -124,7 +124,7 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
             }
 
             presenter.atmosphereData();
-            presenter.luminosityData();
+//            presenter.luminosityData();
         }
     }
 

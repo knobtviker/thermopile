@@ -236,9 +236,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
             seekBarTemperature.setProgress(Math.round(data.temperature()));
         }
 
-        textViewCurrentTemperature.setText(MathKit.round(data.temperature(), 1).toString());
-        textViewHumidity.setText(MathKit.round(data.humidity(), 1).toString());
-        textViewPressure.setText(MathKit.round(data.pressure(), 1).toString());
+        textViewCurrentTemperature.setText(MathKit.round(data.temperature(), 0).toString());
+        textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
+        textViewPressure.setText(MathKit.round(data.pressure(), 0).toString());
 
 //        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
 //        final double measured = data.temperature() + fakeIncrease;
