@@ -25,6 +25,8 @@ import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.models.presentation.Settings;
 import com.knobtviker.thermopile.data.models.presentation.Threshold;
+import com.knobtviker.thermopile.data.sources.raw.RelayRawDataSource;
+import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
@@ -185,6 +187,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         if (seekBarTemperature.getProgress() > seekBarTemperature.getMin()) {
             seekBarTemperature.setProgress(seekBarTemperature.getProgress() - 1);
         }
+        RelayRawDataSource.getInstance()
+            .on()
+            .subscribeOn(SchedulerProvider.getInstance().ui())
+            .observeOn(SchedulerProvider.getInstance().ui())
+            .subscribe();
     }
 
     @OnClick(R.id.floatingactionbutton_up)
@@ -192,6 +199,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         if (seekBarTemperature.getProgress() < seekBarTemperature.getMax()) {
             seekBarTemperature.setProgress(seekBarTemperature.getProgress() + 1);
         }
+        RelayRawDataSource.getInstance()
+            .off()
+            .subscribeOn(SchedulerProvider.getInstance().ui())
+            .observeOn(SchedulerProvider.getInstance().ui())
+            .subscribe();
     }
 
     public void setDateTime(@NonNull final DateTime dateTime) {
