@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.knobtviker.thermopile"
         minSdkVersion 26
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -35,11 +35,11 @@ dependencies {
     //base
     compileOnly 'com.google.android.things:androidthings:0.5.1-devpreview'
     implementation 'com.google.android.things.contrib:driver-button:0.3'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.3'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'net.danlew:android.joda:2.9.9'
-    compileOnly 'com.google.auto.value:auto-value:1.4.1'
-    annotationProcessor 'com.google.auto.value:auto-value:1.4.1'
+    compileOnly 'com.google.auto.value:auto-value:1.5'
+    annotationProcessor 'com.google.auto.value:auto-value:1.5'
     implementation 'com.google.guava:guava-base:r03'
     implementation 'com.google.guava:guava-primitives:r03'
     implementation 'com.google.guava:guava-annotations:r03'
@@ -53,9 +53,9 @@ dependencies {
     annotationProcessor 'io.requery:requery-processor:1.4.0'
 
     //presentation
-    implementation 'com.android.support:appcompat-v7:26.0.1'
-    implementation 'com.android.support:design:26.0.1'
-    implementation 'com.android.support:recyclerview-v7:26.0.1'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.bignerdranch.android:simple-item-decoration:1.0.0'
