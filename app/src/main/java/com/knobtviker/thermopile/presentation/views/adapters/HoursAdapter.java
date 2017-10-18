@@ -3,26 +3,27 @@ package com.knobtviker.thermopile.presentation.views.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.presentation.Hour;
-import com.knobtviker.thermopile.data.models.presentation.Threshold;
+import com.knobtviker.thermopile.data.models.local.Hour;
+import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.views.viewholders.HourViewHolder;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import io.realm.RealmRecyclerViewAdapter;
+
 /**
  * Created by bojan on 13/06/2017.
  */
 
-public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
+public class HoursAdapter extends RealmRecyclerViewAdapter<Threshold, HourViewHolder> {
 
     private final LayoutInflater layoutInflater;
     private final int colorTransparent;
@@ -31,6 +32,8 @@ public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
     private ImmutableList<Threshold> thresholds = ImmutableList.of();
 
     public HoursAdapter(@NonNull final Context context) {
+        super(null, true);
+
         this.layoutInflater = LayoutInflater.from(context);
         this.colorTransparent = ContextCompat.getColor(context, android.R.color.transparent);
 
@@ -90,15 +93,16 @@ public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
                     .forEach(position -> {
                         Hour hour = hours.get(position);
                         if (position == startHour) {
-                            hour = hour.withStartMinutes(startMinute);
+                            hour.startMinutes(startMinute);
                         }
                         if (position == endHour) {
-                            hour = hour.withEndMinutes(endMinute);
+                            hour.endMinutes(endMinute);
                         }
-                        hours.set(
-                            position,
-                            hour.withColor(threshold.color())
-                        );
+                        //TODO: Fix this
+//                        hours.set(
+//                            position,
+//                            hour.color(threshold.color());
+//                        );
                     });
             });
 
@@ -109,13 +113,15 @@ public class HoursAdapter extends RecyclerView.Adapter<HourViewHolder> {
         this.hours = IntStream
             .range(0, 24)
             .boxed()
-            .map(hour ->
-                Hour.builder()
-                    .hour(hour)
-                    .startMinutes(0)
-                    .endMinutes(59)
-                    .color(colorTransparent)
-                    .build()
+            .map(hour -> {
+                    final Hour realmObject = new Hour();
+                realmObject.hour(hour);
+                realmObject.startMinutes(0);
+                realmObject.endMinutes(59);
+                realmObject.color(colorTransparent);
+
+                return realmObject;
+                }
             )
             .collect(Collectors.toList());
     }

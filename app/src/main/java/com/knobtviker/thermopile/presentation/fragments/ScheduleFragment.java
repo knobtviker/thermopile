@@ -17,15 +17,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.presentation.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
@@ -33,9 +30,6 @@ import com.knobtviker.thermopile.presentation.views.AddDialogViewHolder;
 import com.knobtviker.thermopile.presentation.views.DashedLineView;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
-
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -81,7 +75,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
         setHasOptionsMenu(true);
 
-        presenter = new SchedulePresenter(this.getContext(), this);
+        presenter = new SchedulePresenter(this);
     }
 
     @Nullable
@@ -135,40 +129,40 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-    @Override
-    public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
-        thresholds.forEach(this::onSaved);
-    }
+//    @Override
+//    public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
+//        thresholds.forEach(this::onSaved);
+//    }
 
-    @Override
-    public void onSaved(@NonNull Threshold threshold) {
-        final RelativeLayout layout = hourLayouts.get(threshold.day());
-
-        final Button thresholdView = new Button(layout.getContext());
-        thresholdView.setBackgroundColor(threshold.color());
-        thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
-
-        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, 1);
-        params.addRule(RelativeLayout.CENTER_VERTICAL);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margind_small), 0, getResources().getDimensionPixelSize(R.dimen.margind_small));
-        params.width = Math.round(
-            Minutes.minutesBetween(
-                new DateTime()
-                    .withHourOfDay(threshold.startHour())
-                    .withMinuteOfHour(threshold.startMinute()),
-                new DateTime()
-                    .withHourOfDay(threshold.endHour())
-                    .withMinuteOfHour(threshold.endMinute())
-            ).getMinutes() / 2.0f
-        );
-
-        thresholdView.setLayoutParams(params);
-        thresholdView.setOnClickListener(view -> Log.i(TAG, threshold.toString()));
-
-        layout.addView(thresholdView);
-    }
+//    @Override
+//    public void onSaved(@NonNull Threshold threshold) {
+//        final RelativeLayout layout = hourLayouts.get(threshold.day());
+//
+//        final Button thresholdView = new Button(layout.getContext());
+//        thresholdView.setBackgroundColor(threshold.color());
+//        thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
+//
+//        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, 1);
+//        params.addRule(RelativeLayout.CENTER_VERTICAL);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//        params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margind_small), 0, getResources().getDimensionPixelSize(R.dimen.margind_small));
+//        params.width = Math.round(
+//            Minutes.minutesBetween(
+//                new DateTime()
+//                    .withHourOfDay(threshold.startHour())
+//                    .withMinuteOfHour(threshold.startMinute()),
+//                new DateTime()
+//                    .withHourOfDay(threshold.endHour())
+//                    .withMinuteOfHour(threshold.endMinute())
+//            ).getMinutes() / 2.0f
+//        );
+//
+//        thresholdView.setLayoutParams(params);
+//        thresholdView.setOnClickListener(view -> Log.i(TAG, threshold.toString()));
+//
+//        layout.addView(thresholdView);
+//    }
 
     private void setupToolbar() {
         setupCustomActionBarWithHomeAsUp(toolbar);
@@ -289,16 +283,16 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     }
 
     private void addThreshold(final int day, final int hourStart, final int minuteStart, final int hourEnd, final int minuteEnd, final int desiredTemperature, final int selectedColor, final boolean isSaveChecked, @NonNull final String modeName) {
-        presenter.save(
-            Threshold.builder()
-                .day(day)
-                .startHour(hourStart)
-                .startMinute(minuteStart)
-                .endHour(hourEnd)
-                .endMinute(minuteEnd)
-                .temperature(desiredTemperature)
-                .color(selectedColor)
-                .build()
-        );
+//        presenter.save(
+//            Threshold.builder()
+//                .day(day)
+//                .startHour(hourStart)
+//                .startMinute(minuteStart)
+//                .endHour(hourEnd)
+//                .endMinute(minuteEnd)
+//                .temperature(desiredTemperature)
+//                .color(selectedColor)
+//                .build()
+//        );
     }
 }

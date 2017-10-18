@@ -1,11 +1,7 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
-import com.knobtviker.thermopile.data.models.presentation.Settings;
-import com.knobtviker.thermopile.data.models.presentation.Threshold;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
@@ -18,7 +14,6 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class MainPresenter implements MainContract.Presenter {
 
-    private final Context context;
     private final MainContract.View view;
 
 
@@ -26,15 +21,14 @@ public class MainPresenter implements MainContract.Presenter {
     private SettingsRepository settingsRepository;
     private CompositeDisposable compositeDisposable;
 
-    public MainPresenter(@NonNull final Context context, @NonNull final MainContract.View view) {
-        this.context = context;
+    public MainPresenter(@NonNull final MainContract.View view) {
         this.view = view;
     }
 
     @Override
     public void subscribe() {
-        thresholdRepository = ThresholdRepository.getInstance(context);
-        settingsRepository = SettingsRepository.getInstance(context);
+        thresholdRepository = ThresholdRepository.getInstance();
+        settingsRepository = SettingsRepository.getInstance();
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -78,38 +72,11 @@ public class MainPresenter implements MainContract.Presenter {
         //6 = 5
         day = (day == 0 ? 6 : (day - 1));
 
-        compositeDisposable.add(
-            thresholdRepository
-                .loadByDay(day)
-                .subscribe(
-                    this::onThresholdsNext,
-                    this::error,
-                    this::completed
-                )
-        );
+        thresholdRepository.loadByDay(day);
     }
 
     @Override
     public void settings() {
-        started();
-
-        compositeDisposable.add(
-            settingsRepository
-                .load()
-                .onErrorReturn(throwable -> Settings.EMPTY())
-                .subscribe(
-                    this::onSettingsNext,
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    private void onThresholdsNext(@NonNull final ImmutableList<Threshold> thresholds) {
-        view.onThresholds(thresholds);
-    }
-
-    private void onSettingsNext(@NonNull final Settings settings) {
-        view.onSettings(settings);
+        settingsRepository.load();
     }
 }

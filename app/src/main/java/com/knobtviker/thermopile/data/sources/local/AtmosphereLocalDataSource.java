@@ -1,19 +1,15 @@
 package com.knobtviker.thermopile.data.sources.local;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.AtmosphereTableEntity;
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.sources.AtmosphereDataSource;
-import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 
-import java.util.List;
 import java.util.Optional;
 
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.requery.Persistable;
-import io.requery.reactivex.ReactiveEntityStore;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by bojan on 26/06/2017.
@@ -23,11 +19,9 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
 
     private static Optional<AtmosphereLocalDataSource> INSTANCE = Optional.empty();
 
-    private final ReactiveEntityStore<Persistable> database;
-
-    public static AtmosphereLocalDataSource getInstance(@NonNull final Context context) {
+    public static AtmosphereLocalDataSource getInstance() {
         if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new AtmosphereLocalDataSource(context));
+            INSTANCE = Optional.of(new AtmosphereLocalDataSource());
         }
         return INSTANCE.get();
     }
@@ -38,31 +32,34 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
         }
     }
 
-    private AtmosphereLocalDataSource(@NonNull final Context context) {
-        this.database = Database.getInstance(context).database();
+    private AtmosphereLocalDataSource() {
+
     }
 
     @Override
-    public Single<List<AtmosphereTableEntity>> load() {
-        return database
-            .select(AtmosphereTableEntity.class)
-            .get()
-            .observable()
-            .toList();
+    public RealmResults<Atmosphere> load() {
+        final Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Atmosphere> results = realm
+            .where(Atmosphere.class)
+            .findAllAsync();
+        realm.close();
+        return results;
     }
 
     @Override
-    public Single<AtmosphereTableEntity> save(@NonNull AtmosphereTableEntity item) {
-        return database.upsert(item);
+    public RealmResults<Atmosphere> last() {
+        final Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Atmosphere> result = realm
+            .where(Atmosphere.class)
+            .findAllSortedAsync("timestamp", Sort.DESCENDING);
+        realm.close();
+        return result;
     }
 
     @Override
-    public Observable<AtmosphereTableEntity> last() {
-        return database
-            .select(AtmosphereTableEntity.class)
-            .orderBy(AtmosphereTableEntity.TIMESTAMP.desc())
-            .limit(1)
-            .get()
-            .observable();
+    public void save(@NonNull Atmosphere item) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(item));
+        realm.close();
     }
 }

@@ -1,8 +1,5 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
-import android.support.annotation.NonNull;
-
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
@@ -16,8 +13,6 @@ public interface ApplicationContract {
 
         void onClockTick();
 
-        void onAtmosphereData(@NonNull final Atmosphere data);
-
         void onLuminosityData(final float luminosity);
     }
 
@@ -25,8 +20,10 @@ public interface ApplicationContract {
 
         void startClock();
 
-        void atmosphereData();
+        void collectData();
 
-        void luminosityData();
+//        void atmosphereData();
+
+//        void luminosityData();
     }
 }

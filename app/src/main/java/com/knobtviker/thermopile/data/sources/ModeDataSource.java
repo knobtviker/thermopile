@@ -2,11 +2,9 @@ package com.knobtviker.thermopile.data.sources;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.ModeTableEntity;
+import com.knobtviker.thermopile.data.models.local.Mode;
 
-import java.util.List;
-
-import io.reactivex.Single;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 18/07/2017.
@@ -16,8 +14,8 @@ public interface ModeDataSource {
 
     interface Local {
 
-        Single<List<ModeTableEntity>> load();
+        RealmResults<Mode> load();
 
-        Single<ModeTableEntity> save(@NonNull final ModeTableEntity item);
+        void save(@NonNull final Mode item);
     }
 }

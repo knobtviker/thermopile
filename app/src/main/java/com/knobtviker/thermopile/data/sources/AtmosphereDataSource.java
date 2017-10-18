@@ -2,13 +2,11 @@ package com.knobtviker.thermopile.data.sources;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.AtmosphereTableEntity;
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.raw.Triplet;
 
-import java.util.List;
-
-import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 18/07/2017.
@@ -25,10 +23,10 @@ public interface AtmosphereDataSource {
 
     interface Local {
 
-        Single<List<AtmosphereTableEntity>> load();
+        RealmResults<Atmosphere> load();
 
-        Single<AtmosphereTableEntity> save(@NonNull final AtmosphereTableEntity item);
+        RealmResults<Atmosphere> last();
 
-        Observable<AtmosphereTableEntity> last();
+        void save(@NonNull final Atmosphere item);
     }
 }

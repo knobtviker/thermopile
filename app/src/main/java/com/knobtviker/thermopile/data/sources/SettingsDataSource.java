@@ -2,10 +2,9 @@ package com.knobtviker.thermopile.data.sources;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.SettingsTableEntity;
+import com.knobtviker.thermopile.data.models.local.Settings;
 
-import io.reactivex.Observable;
-import io.reactivex.Single;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 18/07/2017.
@@ -15,8 +14,8 @@ public interface SettingsDataSource {
 
     interface Local {
 
-        Observable<SettingsTableEntity> load();
+        RealmResults<Settings> load();
 
-        Single<SettingsTableEntity> save(@NonNull final SettingsTableEntity item);
+        void save(@NonNull final Settings item);
     }
 }

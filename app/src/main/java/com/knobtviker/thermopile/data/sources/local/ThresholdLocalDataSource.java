@@ -1,18 +1,15 @@
 package com.knobtviker.thermopile.data.sources.local;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.ThresholdTableEntity;
+import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.ThresholdDataSource;
-import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 
-import java.util.List;
 import java.util.Optional;
 
-import io.reactivex.Single;
-import io.requery.Persistable;
-import io.requery.reactivex.ReactiveEntityStore;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by bojan on 26/06/2017.
@@ -22,11 +19,9 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
 
     private static Optional<ThresholdLocalDataSource> INSTANCE = Optional.empty();
 
-    private final ReactiveEntityStore<Persistable> database;
-
-    public static ThresholdLocalDataSource getInstance(@NonNull final Context context) {
+    public static ThresholdLocalDataSource getInstance() {
         if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new ThresholdLocalDataSource(context));
+            INSTANCE = Optional.of(new ThresholdLocalDataSource());
         }
         return INSTANCE.get();
     }
@@ -37,31 +32,43 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
         }
     }
 
-    private ThresholdLocalDataSource(@NonNull final Context context) {
-        this.database = Database.getInstance(context).database();
+    private ThresholdLocalDataSource() {
     }
 
     @Override
-    public Single<List<ThresholdTableEntity>> load() {
-        return database
-            .select(ThresholdTableEntity.class)
-            .get()
-            .observable()
-            .toList();
+    public RealmResults<Threshold> load() {
+        final Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Threshold> results = realm
+            .where(Threshold.class)
+            .findAllAsync();
+        realm.close();
+        return results;
     }
 
     @Override
-    public Single<ThresholdTableEntity> save(@NonNull ThresholdTableEntity item) {
-        return database.upsert(item);
+    public RealmResults<Threshold> loadByDay(int day) {
+        final String[] fieldNames = {"startHour", "startMinute"};
+        final Sort[] directions = {Sort.ASCENDING, Sort.ASCENDING};
+
+        final Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Threshold> results = realm
+            .where(Threshold.class)
+            .equalTo("day", day)
+            .findAllSortedAsync(fieldNames, directions);
+        realm.close();
+        return results;
     }
 
     @Override
-    public Single<List<ThresholdTableEntity>> loadByDay(int day) {
-        return database
-            .select(ThresholdTableEntity.class)
-            .where(ThresholdTableEntity.DAY.eq(day))
-            .get()
-            .observable()
-            .toList();
+    public void save(@NonNull Threshold item) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            final Number maxValue = realm1.where(Threshold.class).max("id");
+            final long newId = (maxValue != null) ? maxValue.longValue() + 1L : 0L;
+            item.id(newId);
+
+            realm1.insertOrUpdate(item);
+        });
+        realm.close();
     }
 }

@@ -6,9 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.facebook.stetho.Stetho;
+import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.activities.MainActivity;
 import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
@@ -27,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.disposables.Disposable;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -39,9 +40,11 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     @NonNull
     private ApplicationContract.Presenter presenter;
 
+    //TODO: This needs to be moved to presenter
     @Nullable
     private Disposable screensaverDisposable;
 
+    //TODO: This needs to be deprecated
     @Nullable
     private Activity currentActivity;
 
@@ -51,10 +54,10 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
         registerActivityLifecycleCallbacks(this);
 
+        initRealm();
         initPresenter();
         initCalligraphy();
         initJodaTime();
-        initStetho();
 
         createScreensaver();
     }
@@ -66,16 +69,26 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     }
 
     public void destroyScreensaver() {
-        if (screensaverDisposable != null) {
-            if (!screensaverDisposable.isDisposed()) {
-                screensaverDisposable.dispose();
-                screensaverDisposable = null;
-            }
+        if (screensaverDisposable != null && !screensaverDisposable.isDisposed()) {
+            screensaverDisposable.dispose();
+            screensaverDisposable = null;
         }
     }
 
+    private void initRealm() {
+        Realm.init(this);
+        //TODO: Enable encryption
+        final RealmConfiguration config = new RealmConfiguration.Builder()
+            .name(BuildConfig.DATABASE_NAME)
+            .schemaVersion(BuildConfig.DATABASE_VERSION)
+            .deleteRealmIfMigrationNeeded()
+            .build();
+
+        Realm.setDefaultConfiguration(config);
+    }
+
     private void initPresenter() {
-        presenter = new ApplicationPresenter(this, this);
+        presenter = new ApplicationPresenter(this);
         presenter.subscribe();
         presenter.startClock();
     }
@@ -89,10 +102,6 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
     private void initJodaTime() {
         JodaTimeAndroid.init(this);
-    }
-
-    private void initStetho() {
-        Stetho.initializeWithDefaults(this);
     }
 
     private void showScreensaver() {
@@ -123,21 +132,9 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
                 fragment.setDateTime(dateTime);
             }
 
-            presenter.atmosphereData();
+            presenter.collectData();
+//            presenter.atmosphereData();
 //            presenter.luminosityData(); //TODO: wait for first I2C hardware to close and than daisy chain this one.
-        }
-    }
-
-    @Override
-    public void onAtmosphereData(@NonNull Atmosphere data) {
-        if (currentActivity != null) {
-            if (currentActivity.getClass() == MainActivity.class) {
-                final MainFragment fragment = ((MainFragment) ((MainActivity) currentActivity).findFragment(MainFragment.TAG));
-                fragment.populateData(data);
-            } else if (currentActivity.getClass() == ScreenSaverActivity.class) {
-                final ScreensaverFragment fragment = ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG));
-                fragment.populateData(data);
-            }
         }
     }
 

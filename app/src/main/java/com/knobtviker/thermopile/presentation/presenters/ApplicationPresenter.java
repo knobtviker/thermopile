@@ -1,14 +1,13 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -19,20 +18,18 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class ApplicationPresenter implements ApplicationContract.Presenter {
 
-    private final Context context;
     private final ApplicationContract.View view;
 
     private AtmosphereRepository atmosphereRepository;
     private CompositeDisposable compositeDisposable;
 
-    public ApplicationPresenter(@NonNull final Context context, @NonNull final ApplicationContract.View view) {
-        this.context = context;
+    public ApplicationPresenter(@NonNull final ApplicationContract.View view) {
         this.view = view;
     }
 
     @Override
     public void subscribe() {
-        atmosphereRepository = AtmosphereRepository.getInstance(context);
+        atmosphereRepository = AtmosphereRepository.getInstance();
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -68,7 +65,7 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
             Observable.interval(1L, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    tick -> onClockNext(),
+                    tick -> view.onClockTick(),
                     this::error,
                     this::completed
                 )
@@ -76,46 +73,72 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
     }
 
     @Override
-    public void atmosphereData() {
+    public void collectData() {
         started();
 
+//        compositeDisposable.add(
+//            Completable.concatArray(
+//                atmosphereRepository
+//                    .read()
+//                    .doOnNext(atmosphereRepository::save)
+//                    .ignoreElements(),
+//                atmosphereRepository
+//                    .luminosity()
+//                    .doOnNext(view::onLuminosityData)
+//                    .ignoreElements()
+//            )
+//                .subscribe(
+//                    this::completed,
+//                    this::error
+//                )
+//        );
+
+        //TODO: Uncomment when Google fixes bug for multiple I2C devices connected.
         compositeDisposable.add(
-            atmosphereRepository
-                .read()
-                .flatMap(rawData -> atmosphereRepository.save(rawData))
+            Completable.mergeArrayDelayError(
+                atmosphereRepository
+                    .read()
+                    .doOnNext(atmosphereRepository::save)
+                    .ignoreElements(),
+                atmosphereRepository
+                    .luminosity()
+                    .doOnNext(view::onLuminosityData)
+                    .ignoreElements()
+            )
                 .subscribe(
-                    this::onAtmosphereDataNext,
-                    this::error,
-                    this::completed
+                    this::completed,
+                    this::error
                 )
         );
     }
 
-    @Override
-    public void luminosityData() {
-        started();
-
-        compositeDisposable.add(
-            atmosphereRepository
-                .luminosity()
-                .subscribe(
-                    this::onLuminosityDataNext,
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    private void onClockNext() {
-        view.onClockTick();
-    }
-
-
-    private void onAtmosphereDataNext(@NonNull final Atmosphere atmosphere) {
-        view.onAtmosphereData(atmosphere);
-    }
-
-    private void onLuminosityDataNext(final float luminosity) {
-        view.onLuminosityData(luminosity);
-    }
+//    @Override
+//    public void atmosphereData() {
+//        started();
+//
+//        compositeDisposable.add(
+//            atmosphereRepository
+//                .read()
+//                .subscribe(
+//                    atmosphereRepository::save,
+//                    this::error,
+//                    this::completed
+//                )
+//        );
+//    }
+//
+//    @Override
+//    public void luminosityData() {
+//        started();
+//
+//        compositeDisposable.add(
+//            atmosphereRepository
+//                .luminosity()
+//                .subscribe(
+//                    view::onLuminosityData,
+//                    this::error,
+//                    this::completed
+//                )
+//        );
+//    }
 }

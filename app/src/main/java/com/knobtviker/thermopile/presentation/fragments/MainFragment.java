@@ -22,9 +22,8 @@ import android.widget.TextView;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
-import com.knobtviker.thermopile.data.models.presentation.Settings;
-import com.knobtviker.thermopile.data.models.presentation.Threshold;
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.raw.RelayRawDataSource;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
@@ -55,7 +54,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private HoursAdapter hoursAdapter;
 
-    private Settings settings = Settings.EMPTY();
 
     private ImmutableList<Threshold> thresholdsToday = ImmutableList.of();
 
@@ -105,7 +103,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         setHasOptionsMenu(true);
 
-        presenter = new MainPresenter(this.getContext(), this);
+        presenter = new MainPresenter(this);
     }
 
     @Nullable
@@ -168,19 +166,19 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-    @Override
-    public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
-        this.thresholdsToday = thresholds;
+//    @Override
+//    public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
+//        this.thresholdsToday = thresholds;
+//
+//        hoursAdapter.applyThreasholds(thresholds);
+//    }
 
-        hoursAdapter.applyThreasholds(thresholds);
-    }
-
-    @Override
-    public void onSettings(@NonNull Settings settings) {
-        this.settings = settings;
-
-        Log.i(TAG, settings.toString());
-    }
+//    @Override
+//    public void onSettings(@NonNull Settings settings) {
+//        this.settings = settings;
+//
+//        Log.i(TAG, settings.toString());
+//    }
 
     @OnClick(R.id.floatingactionbutton_down)
     public void onActionDownClicked() {

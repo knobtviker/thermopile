@@ -1,18 +1,14 @@
 package com.knobtviker.thermopile.data.sources.local;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.SettingsTableEntity;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.SettingsDataSource;
-import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 
 import java.util.Optional;
 
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.requery.Persistable;
-import io.requery.reactivex.ReactiveEntityStore;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 26/06/2017.
@@ -22,11 +18,9 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
 
     private static Optional<SettingsLocalDataSource> INSTANCE = Optional.empty();
 
-    private final ReactiveEntityStore<Persistable> database;
-
-    public static SettingsLocalDataSource getInstance(@NonNull final Context context) {
+    public static SettingsLocalDataSource getInstance() {
         if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new SettingsLocalDataSource(context));
+            INSTANCE = Optional.of(new SettingsLocalDataSource());
         }
         return INSTANCE.get();
     }
@@ -37,21 +31,23 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
         }
     }
 
-    private SettingsLocalDataSource(@NonNull final Context context) {
-        this.database = Database.getInstance(context).database();
+    private SettingsLocalDataSource() {
     }
 
     @Override
-    public Observable<SettingsTableEntity> load() {
-        return database
-            .select(SettingsTableEntity.class)
-            .limit(1)
-            .get()
-            .observable();
+    public RealmResults<Settings> load() {
+        final Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Settings> results = realm
+            .where(Settings.class)
+            .findAllAsync();
+        realm.close();
+        return results;
     }
 
     @Override
-    public Single<SettingsTableEntity> save(@NonNull SettingsTableEntity item) {
-        return database.upsert(item);
+    public void save(@NonNull Settings item) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(item));
+        realm.close();
     }
 }

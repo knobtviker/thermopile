@@ -12,8 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
-import com.knobtviker.thermopile.data.models.presentation.Settings;
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
@@ -29,8 +28,6 @@ import butterknife.BindView;
 
 public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presenter> implements ScreenSaverContract.View {
     public static final String TAG = ScreensaverFragment.class.getSimpleName();
-
-    private Settings settings = Settings.EMPTY();
 
     @BindView(R.id.textview_clock)
     public TextView textViewClock;
@@ -60,7 +57,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
         setHasOptionsMenu(false);
 
-        presenter = new ScreenSaverPresenter(this.getContext(), this);
+        presenter = new ScreenSaverPresenter(this);
     }
 
     @Nullable
@@ -87,12 +84,12 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-    @Override
-    public void onSettings(@NonNull Settings settings) {
-        this.settings = settings;
-
-        Log.i(TAG, settings.toString());
-    }
+//    @Override
+//    public void onSettings(@NonNull Settings settings) {
+//        this.settings = settings;
+//
+//        Log.i(TAG, settings.toString());
+//    }
 
     public void setDateTime(@NonNull final DateTime dateTime) {
         setTime(dateTime.toString("HH:mm"));
