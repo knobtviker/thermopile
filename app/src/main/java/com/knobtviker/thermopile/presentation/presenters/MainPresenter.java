@@ -6,11 +6,14 @@ import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
-import com.knobtviker.thermopile.domain.repositories.ClockRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -23,7 +26,6 @@ public class MainPresenter implements MainContract.Presenter {
 
     private final MainContract.View view;
 
-    private ClockRepository clockRepository;
     private AtmosphereRepository atmosphereRepository;
     private SettingsRepository settingsRepository;
     private ThresholdRepository thresholdRepository;
@@ -44,7 +46,6 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void subscribe() {
-        clockRepository = ClockRepository.getInstance();
         atmosphereRepository = AtmosphereRepository.getInstance();
         settingsRepository = SettingsRepository.getInstance();
         thresholdRepository = ThresholdRepository.getInstance();
@@ -74,7 +75,6 @@ public class MainPresenter implements MainContract.Presenter {
             changeListenerThresholds = null;
         }
 
-        ClockRepository.destroyInstance();
         AtmosphereRepository.destroyInstance();
         SettingsRepository.destroyInstance();
         ThresholdRepository.destroyInstance();
@@ -100,8 +100,9 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void startClock() {
         compositeDisposable.add(
-            clockRepository
-                .get()
+            Observable
+                .interval(1L, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     tick -> view.onClockTick(),
                     this::error,

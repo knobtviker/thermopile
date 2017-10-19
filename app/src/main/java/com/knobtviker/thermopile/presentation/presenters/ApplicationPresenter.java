@@ -62,7 +62,8 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
     @Override
     public void startClock() {
         compositeDisposable.add(
-            Observable.interval(1L, TimeUnit.SECONDS)
+            Observable
+                .interval(1L, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     tick -> view.onClockTick(),
@@ -76,24 +77,6 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
     public void collectData() {
         started();
 
-//        compositeDisposable.add(
-//            Completable.concatArray(
-//                atmosphereRepository
-//                    .read()
-//                    .doOnNext(atmosphereRepository::save)
-//                    .ignoreElements(),
-//                atmosphereRepository
-//                    .luminosity()
-//                    .doOnNext(view::onLuminosityData)
-//                    .ignoreElements()
-//            )
-//                .subscribe(
-//                    this::completed,
-//                    this::error
-//                )
-//        );
-
-        //TODO: Uncomment when Google fixes bug for multiple I2C devices connected.
         compositeDisposable.add(
             Completable.mergeArrayDelayError(
                 atmosphereRepository
@@ -111,34 +94,4 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
                 )
         );
     }
-
-//    @Override
-//    public void atmosphereData() {
-//        started();
-//
-//        compositeDisposable.add(
-//            atmosphereRepository
-//                .read()
-//                .subscribe(
-//                    atmosphereRepository::save,
-//                    this::error,
-//                    this::completed
-//                )
-//        );
-//    }
-//
-//    @Override
-//    public void luminosityData() {
-//        started();
-//
-//        compositeDisposable.add(
-//            atmosphereRepository
-//                .luminosity()
-//                .subscribe(
-//                    view::onLuminosityData,
-//                    this::error,
-//                    this::completed
-//                )
-//        );
-//    }
 }

@@ -5,10 +5,13 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
-import com.knobtviker.thermopile.domain.repositories.ClockRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -21,7 +24,6 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
 
     private final ScreenSaverContract.View view;
 
-    private ClockRepository clockRepository;
     private AtmosphereRepository atmosphereRepository;
     private SettingsRepository settingsRepository;
     private CompositeDisposable compositeDisposable;
@@ -38,7 +40,6 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
 
     @Override
     public void subscribe() {
-        clockRepository = ClockRepository.getInstance();
         atmosphereRepository = AtmosphereRepository.getInstance();
         settingsRepository = SettingsRepository.getInstance();
         compositeDisposable = new CompositeDisposable();
@@ -63,7 +64,6 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
             changeListenerSettings = null;
         }
 
-        ClockRepository.destroyInstance();
         AtmosphereRepository.destroyInstance();
         SettingsRepository.destroyInstance();
     }
@@ -88,8 +88,9 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
     @Override
     public void startClock() {
         compositeDisposable.add(
-            clockRepository
-                .get()
+            Observable
+                .interval(1L, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     tick -> view.onClockTick(),
                     this::error,
