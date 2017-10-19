@@ -38,28 +38,24 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
 
     @Override
     public RealmResults<Atmosphere> load() {
-        final Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Atmosphere> results = realm
+        return Realm
+            .getDefaultInstance()
             .where(Atmosphere.class)
             .findAllAsync();
-        realm.close();
-        return results;
     }
 
     @Override
-    public RealmResults<Atmosphere> last() {
-        final Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Atmosphere> result = realm
+    public RealmResults<Atmosphere> latest() {
+        return Realm
+            .getDefaultInstance()
             .where(Atmosphere.class)
             .findAllSortedAsync("timestamp", Sort.DESCENDING);
-        realm.close();
-        return result;
     }
 
     @Override
     public void save(@NonNull Atmosphere item) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(item));
-        realm.close();
+        Realm
+            .getDefaultInstance()
+            .executeTransactionAsync(realm1 -> realm1.insertOrUpdate(item));
     }
 }

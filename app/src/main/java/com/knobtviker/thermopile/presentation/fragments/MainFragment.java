@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.raw.RelayRawDataSource;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
@@ -37,11 +38,13 @@ import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.Optional;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 09/06/2017.
@@ -53,7 +56,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private MainCommunicator mainCommunicator;
 
     private HoursAdapter hoursAdapter;
-
 
     private ImmutableList<Threshold> thresholdsToday = ImmutableList.of();
 
@@ -115,6 +117,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         bind(this, view);
 
+        presenter.startClock();
+        presenter.data();
+        presenter.settings();
+        presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
+
         setupPID();
         setupToolbar();
         setupSeekBar();
@@ -142,18 +149,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
-        presenter.settings();
-    }
-
-    @Override
     public void onDetach() {
-        super.onDetach();
 
         mainCommunicator = null;
+
+        super.onDetach();
     }
 
     @Override
@@ -166,19 +166,62 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-//    @Override
-//    public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
-//        this.thresholdsToday = thresholds;
-//
-//        hoursAdapter.applyThreasholds(thresholds);
-//    }
+    @Override
+    public void onClockTick() {
+        //TODO: Move and get this timezone from Settings in Realm
+        final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
+        setDateTime(dateTime);
+        maybeApplyThresholds(dateTime);
+        moveHourLine(dateTime);
 
-//    @Override
-//    public void onSettings(@NonNull Settings settings) {
-//        this.settings = settings;
-//
-//        Log.i(TAG, settings.toString());
-//    }
+        //TODO: Check if it is 00:00 of the day and reaload thresholds
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onDataChanged(@NonNull Atmosphere data) {
+        //TODO: Change units and recalculate Atmosphere data according to Settings loaded
+        //TODO: Apply data units and formats and timezone
+
+        //TODO: Find the right threshold if todays list is not empty.
+        final Optional<Threshold> thresholdOptional = thresholdsToday.stream()
+            .filter(threshold -> {
+                final DateTime now = DateTime.now();
+                return threshold.startHour() < now.getHourOfDay() && threshold.startMinute() < now.getMinuteOfHour()
+                    && now.getHourOfDay() <= threshold.endHour() && now.getMinuteOfHour() <= threshold.endMinute();
+            })
+            .findFirst();
+        if (thresholdOptional.isPresent()) {
+            //TODO: If threshold is found set it as progress on seekbar and/or use as target value
+            seekBarTemperature.setProgress(thresholdOptional.get().temperature());
+        } else {
+            //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
+            seekBarTemperature.setProgress(Math.round(data.temperature()));
+        }
+
+        textViewCurrentTemperature.setText(MathKit.round(data.temperature(), 0).toString());
+        textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
+        textViewPressure.setText(MathKit.round(data.pressure(), 0).toString());
+
+//        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
+//        final double measured = data.temperature() + fakeIncrease;
+//        if (measured < target) {
+//            fakeIncrease = fakeIncrease + 0.05f;
+//            final double output = miniPID.getOutput(measured, target);
+//            Log.i(TAG, String.format("Measured: %3.2f , Target: %3.2f , Error: %3.2f , Output: %3.2f\n", measured, target, (target - measured), output));
+//        }
+    }
+
+    @Override
+    public void onSettingsChanged(@NonNull Settings settings) {
+        //TODO: Change units and recalculate Atmosphere data
+        Log.i(TAG, settings.toString());
+    }
+
+    @Override
+    public void onThresholdsChanged(@NonNull RealmResults<Threshold> thresholds) {
+//        hoursAdapter.applyThreasholds(thresholds); //TODO: Fix this bad logic
+    }
 
     @OnClick(R.id.floatingactionbutton_down)
     public void onActionDownClicked() {

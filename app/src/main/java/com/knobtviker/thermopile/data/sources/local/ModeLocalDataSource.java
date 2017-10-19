@@ -36,18 +36,16 @@ public class ModeLocalDataSource implements ModeDataSource.Local {
 
     @Override
     public RealmResults<Mode> load() {
-        final Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Mode> results = realm
+        return Realm
+            .getDefaultInstance()
             .where(Mode.class)
             .findAllAsync();
-        realm.close();
-        return results;
     }
 
     @Override
     public void save(@NonNull Mode item) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(item));
-        realm.close();
+        Realm
+            .getDefaultInstance()
+            .executeTransactionAsync(realm1 -> realm1.insertOrUpdate(item));
     }
 }

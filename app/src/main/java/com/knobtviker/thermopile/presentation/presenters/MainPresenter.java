@@ -2,11 +2,21 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -16,10 +26,19 @@ public class MainPresenter implements MainContract.Presenter {
 
     private final MainContract.View view;
 
-
-    private ThresholdRepository thresholdRepository;
+    private AtmosphereRepository atmosphereRepository;
     private SettingsRepository settingsRepository;
+    private ThresholdRepository thresholdRepository;
     private CompositeDisposable compositeDisposable;
+
+    private RealmResults<Atmosphere> resultsAtmosphere;
+    private RealmChangeListener<RealmResults<Atmosphere>> changeListenerAtmosphere;
+
+    private RealmResults<Settings> resultsSettings;
+    private RealmChangeListener<RealmResults<Settings>> changeListenerSettings;
+
+    private RealmResults<Threshold> resultsThresholds;
+    private RealmChangeListener<RealmResults<Threshold>> changeListenerThresholds;
 
     public MainPresenter(@NonNull final MainContract.View view) {
         this.view = view;
@@ -27,8 +46,9 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void subscribe() {
-        thresholdRepository = ThresholdRepository.getInstance();
+        atmosphereRepository = AtmosphereRepository.getInstance();
         settingsRepository = SettingsRepository.getInstance();
+        thresholdRepository = ThresholdRepository.getInstance();
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -38,8 +58,26 @@ public class MainPresenter implements MainContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
-        ThresholdRepository.destroyInstance();
+
+        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
+            resultsAtmosphere.removeChangeListener(changeListenerAtmosphere);
+            resultsAtmosphere = null;
+            changeListenerAtmosphere = null;
+        }
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.removeChangeListener(changeListenerSettings);
+            resultsSettings = null;
+            changeListenerSettings = null;
+        }
+        if (resultsThresholds != null && resultsThresholds.isValid()) {
+            resultsThresholds.removeChangeListener(changeListenerThresholds);
+            resultsThresholds = null;
+            changeListenerThresholds = null;
+        }
+
+        AtmosphereRepository.destroyInstance();
         SettingsRepository.destroyInstance();
+        ThresholdRepository.destroyInstance();
     }
 
     @Override
@@ -60,9 +98,56 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void thresholdsForToday(int day) {
-        started();
+    public void startClock() {
+//        started();
 
+        compositeDisposable.add(
+            Observable.interval(1L, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    tick -> view.onClockTick(),
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public void data() {
+        resultsAtmosphere = atmosphereRepository.latest();
+
+        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
+            changeListenerAtmosphere = atmosphereRealmResults -> {
+                if (!atmosphereRealmResults.isEmpty()) {
+                    if (!atmosphereRealmResults.isEmpty()) {
+                        view.onDataChanged(atmosphereRealmResults.first());
+                    }
+                }
+            };
+            resultsAtmosphere.addChangeListener(changeListenerAtmosphere);
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public void settings() {
+        resultsSettings = settingsRepository.load();
+
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            changeListenerSettings = settingsRealmResults -> {
+                if (!settingsRealmResults.isEmpty()) {
+                    if (!settingsRealmResults.isEmpty()) {
+                        view.onSettingsChanged(settingsRealmResults.first());
+                    }
+                }
+            };
+            resultsSettings.addChangeListener(changeListenerSettings);
+        }
+    }
+
+    @Override
+    public void thresholdsForToday(int day) {
         //0 = 6
         //1 = 0
         //2 = 1
@@ -72,11 +157,17 @@ public class MainPresenter implements MainContract.Presenter {
         //6 = 5
         day = (day == 0 ? 6 : (day - 1));
 
-        thresholdRepository.loadByDay(day);
-    }
+        resultsThresholds = thresholdRepository.loadByDay(day);
 
-    @Override
-    public void settings() {
-        settingsRepository.load();
+        if (resultsThresholds != null && resultsThresholds.isValid()) {
+            changeListenerThresholds = thresholdsRealmResults -> {
+                if (!thresholdsRealmResults.isEmpty()) {
+                    if (!thresholdsRealmResults.isEmpty()) {
+                        view.onThresholdsChanged(thresholdsRealmResults);
+                    }
+                }
+            };
+            resultsThresholds.addChangeListener(changeListenerThresholds);
+        }
     }
 }

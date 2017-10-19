@@ -297,7 +297,7 @@ public class MiniPID {
 
         // If this is our first time running this, we don't actually _have_ a previous input or output.
         // For sensor, sanely assume it was exactly where it is now.
-        // For last output, we can assume it's the current time-independent outputs.
+        // For data output, we can assume it's the current time-independent outputs.
         if (firstRun) {
             lastActual = actual;
             lastOutput = Poutput + Foutput;
@@ -361,8 +361,8 @@ public class MiniPID {
 
     /**
      * Calculate the output value for the current PID cycle.<br>
-     * In no-parameter mode, this uses the last sensor value,
-     * and last setpoint value. <br>
+     * In no-parameter mode, this uses the data sensor value,
+     * and data setpoint value. <br>
      * Not typically useful, and use of parameter modes is suggested. <br>
      *
      * @return calculated output value for driving the system
@@ -373,7 +373,7 @@ public class MiniPID {
 
     /**
      * Calculate the output value for the current PID cycle.<br>
-     * In one parameter mode, the last configured setpoint will be used.<br>
+     * In one parameter mode, the data configured setpoint will be used.<br>
      *
      * @param actual   The monitored value, typically as a sensor input.
      * @param setpoint The target value for the system

@@ -22,8 +22,6 @@ public interface ApplicationContract {
 
         void collectData();
 
-//        void atmosphereData();
-
 //        void luminosityData();
     }
 }

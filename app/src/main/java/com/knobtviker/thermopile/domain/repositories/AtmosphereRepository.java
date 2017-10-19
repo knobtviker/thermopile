@@ -64,8 +64,8 @@ public class AtmosphereRepository extends BaseRepository {
         atmosphereLocalDataSource.save(item);
     }
 
-    public RealmResults<Atmosphere> last() {
-        return atmosphereLocalDataSource.last();
+    public RealmResults<Atmosphere> latest() {
+        return atmosphereLocalDataSource.latest();
     }
 
     public Observable<Float> luminosity() {

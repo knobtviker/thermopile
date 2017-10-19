@@ -36,18 +36,16 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
 
     @Override
     public RealmResults<Settings> load() {
-        final Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Settings> results = realm
+        return Realm
+            .getDefaultInstance()
             .where(Settings.class)
             .findAllAsync();
-        realm.close();
-        return results;
     }
 
     @Override
     public void save(@NonNull Settings item) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(item));
-        realm.close();
+        Realm
+            .getDefaultInstance()
+            .executeTransactionAsync(realm1 -> realm1.insertOrUpdate(item));
     }
 }

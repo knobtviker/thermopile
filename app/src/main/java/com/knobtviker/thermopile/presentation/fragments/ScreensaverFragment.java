@@ -13,12 +13,14 @@ import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import butterknife.BindView;
 
@@ -69,7 +71,9 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
         bind(this, view);
 
-        settings();
+        presenter.startClock();
+        presenter.data();
+        presenter.settings();
 
         return view;
     }
@@ -84,24 +88,32 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-//    @Override
-//    public void onSettings(@NonNull Settings settings) {
-//        this.settings = settings;
-//
-//        Log.i(TAG, settings.toString());
-//    }
-
-    public void setDateTime(@NonNull final DateTime dateTime) {
-        setTime(dateTime.toString("HH:mm"));
-        setDate(dateTime.toString("dd.MM.yyyy."));
-        setDay(dateTime.toString("EEEE"));
+    @Override
+    public void onClockTick() {
+        //TODO: Move and get this timezone from Settings in Realm
+        setDateTime(new DateTime(DateTimeZone.forID("Europe/Zagreb")));
     }
 
     @SuppressLint("SetTextI18n")
-    public void populateData(@NonNull final Atmosphere data) {
+    @Override
+    public void onDataChanged(@NonNull Atmosphere data) {
+        //TODO: Change units and recalculate Atmosphere data according to Settings loaded
         textViewTemperature.setText(MathKit.round(data.temperature(), 0).toString());
         textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
         textViewPressure.setText(MathKit.round(data.pressure(), 0).toString());
+    }
+
+    @Override
+    public void onSettingsChanged(@NonNull Settings settings) {
+        //TODO: Change units and recalculate Atmosphere data
+        Log.i(TAG, settings.toString());
+    }
+
+    private void setDateTime(@NonNull final DateTime dateTime) {
+        //TODO: Move and get these from Settings in Realm
+        setTime(dateTime.toString("HH:mm"));
+        setDate(dateTime.toString("dd.MM.yyyy."));
+        setDay(dateTime.toString("EEEE"));
     }
 
     private void setTime(@NonNull final String time) {
@@ -114,9 +126,5 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     private void setDay(@NonNull final String date) {
         textViewDay.setText(date);
-    }
-
-    private void settings() {
-        presenter.settings();
     }
 }

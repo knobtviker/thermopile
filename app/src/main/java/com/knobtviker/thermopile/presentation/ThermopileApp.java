@@ -1,26 +1,17 @@
 package com.knobtviker.thermopile.presentation;
 
-import android.app.Activity;
 import android.app.Application;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
-import com.knobtviker.thermopile.presentation.activities.MainActivity;
-import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
-import com.knobtviker.thermopile.presentation.fragments.MainFragment;
-import com.knobtviker.thermopile.presentation.fragments.ScreensaverFragment;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.Router;
 
 import net.danlew.android.joda.JodaTimeAndroid;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +25,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * Created by bojan on 15/07/2017.
  */
 
-public class ThermopileApp extends Application implements ApplicationContract.View, Application.ActivityLifecycleCallbacks {
+public class ThermopileApp extends Application implements ApplicationContract.View {
     private static final String TAG = ThermopileApp.class.getSimpleName();
 
     @NonNull
@@ -44,15 +35,9 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     @Nullable
     private Disposable screensaverDisposable;
 
-    //TODO: This needs to be deprecated
-    @Nullable
-    private Activity currentActivity;
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-        registerActivityLifecycleCallbacks(this);
 
         initRealm();
         initPresenter();
@@ -120,62 +105,12 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
     @Override
     public void onClockTick() {
-        final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
-        if (currentActivity != null) {
-            if (currentActivity.getClass() == MainActivity.class) {
-                final MainFragment fragment = ((MainFragment) ((MainActivity) currentActivity).findFragment(MainFragment.TAG));
-                fragment.setDateTime(dateTime);
-                fragment.maybeApplyThresholds(dateTime);
-                fragment.moveHourLine(dateTime);
-            } else if (currentActivity.getClass() == ScreenSaverActivity.class) {
-                final ScreensaverFragment fragment = ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG));
-                fragment.setDateTime(dateTime);
-            }
-
-            presenter.collectData();
-//            presenter.atmosphereData();
-//            presenter.luminosityData(); //TODO: wait for first I2C hardware to close and than daisy chain this one.
-        }
+        presenter.collectData();
     }
 
     @Override
     public void onLuminosityData(float luminosity) {
         //TODO: Normalize luminosity in lux from 0 to 40 000 to 0.0 to 1.0
 //        Log.i(TAG, "LUMINOSITY --- "+luminosity);
-    }
-
-    @Override
-    public void onActivityCreated(Activity activity, Bundle bundle) {
-        this.currentActivity = activity;
-    }
-
-    @Override
-    public void onActivityStarted(Activity activity) {
-        this.currentActivity = activity;
-    }
-
-    @Override
-    public void onActivityResumed(Activity activity) {
-        this.currentActivity = activity;
-    }
-
-    @Override
-    public void onActivityPaused(Activity activity) {
-        //DO NOTHING
-    }
-
-    @Override
-    public void onActivityStopped(Activity activity) {
-        //DO NOTHING
-    }
-
-    @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-        //DO NOTHING
-    }
-
-    @Override
-    public void onActivityDestroyed(Activity activity) {
-        //DO NOTHING
     }
 }

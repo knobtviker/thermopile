@@ -37,12 +37,10 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
 
     @Override
     public RealmResults<Threshold> load() {
-        final Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Threshold> results = realm
+        return Realm
+            .getDefaultInstance()
             .where(Threshold.class)
             .findAllAsync();
-        realm.close();
-        return results;
     }
 
     @Override
@@ -50,25 +48,25 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
         final String[] fieldNames = {"startHour", "startMinute"};
         final Sort[] directions = {Sort.ASCENDING, Sort.ASCENDING};
 
-        final Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Threshold> results = realm
+        return Realm
+            .getDefaultInstance()
             .where(Threshold.class)
             .equalTo("day", day)
             .findAllSortedAsync(fieldNames, directions);
-        realm.close();
-        return results;
     }
 
     @Override
     public void save(@NonNull Threshold item) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(realm1 -> {
-            final Number maxValue = realm1.where(Threshold.class).max("id");
+        Realm
+            .getDefaultInstance()
+            .executeTransactionAsync(realm1 -> {
+            final Number maxValue = realm1
+                .where(Threshold.class)
+                .max("id");
             final long newId = (maxValue != null) ? maxValue.longValue() + 1L : 0L;
             item.id(newId);
 
             realm1.insertOrUpdate(item);
         });
-        realm.close();
     }
 }
