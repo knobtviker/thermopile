@@ -23,6 +23,9 @@ public interface BaseSchedulerProvider {
     Scheduler screensaver();
 
     @NonNull
+    Scheduler clock();
+
+    @NonNull
     Scheduler computation();
 
     @NonNull
