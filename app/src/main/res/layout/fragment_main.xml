@@ -1,204 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/dark_gray"
-        app:contentInsetEnd="16dp"
-        app:contentInsetStart="8dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="spread">
 
-        <TextView
-            android:id="@+id/textview_date"
-            style="@style/TextDate"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetEnd="16dp"
+            app:contentInsetStart="8dp">
 
-        <TextView
-            android:id="@+id/textview_clock"
-            style="@style/TextTime"/>
+            <TextView
+                android:id="@+id/textview_date"
+                style="@style/TextDate"
+                tools:text="TUESDAY 31.05.2016."/>
 
-    </android.support.v7.widget.Toolbar>
+            <TextView
+                android:id="@+id/textview_clock"
+                style="@style/TextTime"
+                tools:text="10:30"/>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_hours"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentBottom="true"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_default="spread"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <com.knobtviker.thermopile.presentation.views.CircularSeekBar
+        android:id="@+id/seekbar_temperature"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/recyclerview_hours"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true">
+        app:circle_progress_color="@color/transparent"
+        app:circle_stroke_width="24dp"
+        app:circle_x_radius="200dp"
+        app:circle_y_radius="200dp"
+        app:end_angle="45"
+        app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout"
+        app:maintain_equal_circle="true"
+        app:max="100"
+        app:min="0"
+        app:move_outside_circle="false"
+        app:pointer_alpha_ontouch="255"
+        app:pointer_color="@color/light_gray"
+        app:pointer_halo_border_width="0dp"
+        app:pointer_halo_color="@color/light_gray"
+        app:pointer_radius="16dp"
+        app:progress="0"
+        app:start_angle="135"
+        app:use_custom_radii="true"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="horizontal">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/seekbar_temperature"
+        app:layout_constraintEnd_toEndOf="@id/seekbar_temperature"
+        app:layout_constraintStart_toStartOf="@id/seekbar_temperature"
+        app:layout_constraintTop_toTopOf="@id/seekbar_temperature">
 
-            <TextView
-                android:id="@+id/textview_temperature"
-                style="@style/TextTemperature"/>
+        <TextView
+            android:id="@+id/textview_temperature"
+            style="@style/TextTemperature"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="30"/>
 
-            <TextView
-                android:id="@+id/textview_temperature_unit"
-                style="@style/TextUnitTemperature"
-                android:text="°C"/>
+        <TextView
+            android:id="@+id/textview_temperature_unit"
+            style="@style/TextUnitTemperature"
+            android:text="°C"
+            app:layout_constraintBottom_toBottomOf="@id/textview_temperature"
+            app:layout_constraintStart_toEndOf="@id/textview_temperature"
+            app:layout_constraintTop_toTopOf="@id/textview_temperature"/>
 
-        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
-        <com.knobtviker.thermopile.presentation.views.CircularSeekBar
-            android:id="@+id/seekbar_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            app:circle_progress_color="@color/transparent"
-            app:circle_stroke_width="24dp"
-            app:circle_x_radius="190dp"
-            app:circle_y_radius="190dp"
-            app:end_angle="45"
-            app:maintain_equal_circle="true"
-            app:max="100"
-            app:min="0"
-            app:move_outside_circle="false"
-            app:pointer_alpha_ontouch="255"
-            app:pointer_color="@color/light_gray"
-            app:pointer_halo_border_width="0dp"
-            app:pointer_halo_color="@color/light_gray"
-            app:pointer_radius="12dp"
-            app:progress="99"
-            app:start_angle="135"
-            app:use_custom_radii="true"/>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
+        app:layout_constraintEnd_toStartOf="@id/seekbar_temperature"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/seekbar_temperature"
-            android:orientation="vertical"
-            android:padding="16dp">
+        <ImageView
+            android:id="@+id/imageview_humidity"
+            android:layout_width="?attr/listPreferredItemHeightSmall"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
+            android:layout_marginBottom="4dp"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_humidity"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/textview_humidity"
+            style="@style/TextHumidity"
+            app:layout_constraintTop_toBottomOf="@id/imageview_humidity"
+            tools:text="68"/>
 
-                <ImageView
-                    android:padding="8dp"
-                    android:layout_width="?attr/listPreferredItemHeightSmall"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="4dp"
-                    app:srcCompat="@drawable/ic_humidity"/>
+        <TextView
+            android:id="@+id/textview_humidity_unit"
+            style="@style/TextUnitHumidity"
+            android:text="%"
+            app:layout_constraintBottom_toBottomOf="@id/textview_humidity"
+            app:layout_constraintStart_toEndOf="@id/textview_humidity"
+            app:layout_constraintTop_toBottomOf="@id/imageview_humidity"
+            app:layout_constraintTop_toTopOf="@id/textview_humidity"/>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal">
+    </android.support.constraint.ConstraintLayout>
 
-                    <TextView
-                        android:id="@+id/textview_humidity"
-                        style="@style/TextHumidity"/>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/seekbar_temperature"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
-                    <TextView
-                        android:id="@+id/textview_humidity_unit"
-                        style="@style/TextUnitHumidity"
-                        android:text="%"/>
+        <ImageView
+            android:id="@+id/imageview_pressure"
+            android:layout_width="?attr/listPreferredItemHeightSmall"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_pressure"/>
 
-                </LinearLayout>
+        <TextView
+            android:id="@+id/textview_pressure"
+            style="@style/TextPressure"
+            app:layout_constraintTop_toBottomOf="@id/imageview_pressure"
+            tools:text="1003"/>
 
-            </LinearLayout>
+        <TextView
+            android:id="@+id/textview_pressure_unit"
+            style="@style/TextUnitPressure"
+            android:text="hPa"
+            app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
+            app:layout_constraintStart_toEndOf="@id/textview_pressure"
+            app:layout_constraintTop_toBottomOf="@id/imageview_pressure"
+            app:layout_constraintTop_toTopOf="@id/textview_pressure"/>
 
-        </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/seekbar_temperature"
-            android:orientation="vertical"
-            android:padding="16dp">
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingactionbutton_down"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:backgroundTint="@color/light_gray"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
+        app:layout_constraintEnd_toStartOf="@+id/floatingactionbutton_up"
+        app:layout_constraintStart_toStartOf="@id/seekbar_temperature"
+        app:srcCompat="@drawable/ic_arrow_down"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingactionbutton_up"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:backgroundTint="@color/light_gray"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
+        app:layout_constraintEnd_toEndOf="@id/seekbar_temperature"
+        app:layout_constraintStart_toEndOf="@+id/floatingactionbutton_down"
+        app:srcCompat="@drawable/ic_arrow_up"/>
 
-                <ImageView
-                    android:padding="8dp"
-                    android:layout_width="?attr/listPreferredItemHeightSmall"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="4dp"
-                    app:srcCompat="@drawable/ic_pressure"/>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textview_pressure"
-                        style="@style/TextPressure"/>
-
-                    <TextView
-                        android:id="@+id/textview_pressure_unit"
-                        style="@style/TextUnitPressure"
-                        android:text="hPa"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floatingactionbutton_down"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="32dp"
-                android:layout_weight="1"
-                app:backgroundTint="@color/light_gray"
-                app:fabSize="normal"
-                app:srcCompat="@drawable/ic_arrow_down"/>
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floatingactionbutton_up"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_weight="1"
-                app:backgroundTint="@color/light_gray"
-                app:fabSize="normal"
-                app:srcCompat="@drawable/ic_arrow_up"/>
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
