@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,298 +11,367 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:background="@color/dark_gray"
+        android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:background="@color/dark_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            style="@style/TextDate"
+            android:text="Settings"
+            android:layout_gravity="center"
+            tools:text="Settings"/>
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_below="@id/toolbar"
-        android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_height="wrap_content">
+            android:padding="16dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_timezone_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="@dimen/margin_xsmall"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/textview_title_timezone"
                     style="@style/TextAppearance.AppCompat.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="4dp"
                     android:text="Timezone"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <View
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_toRightOf="@+id/textview_title_timezone"
-                    android:background="@color/white"/>
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_title_timezone"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <Spinner
                 android:id="@+id/spinner_timezone"
+                android:layout_width="0dp"
+                android:layout_height="?attr/listPreferredItemHeight"
                 android:spinnerMode="dialog"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/listPreferredItemHeight" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_timezone_title"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_clock_mode_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="@dimen/margin_xsmall"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_timezone">
 
                 <TextView
                     android:id="@+id/textview_title_clock_mode"
                     style="@style/TextAppearance.AppCompat.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="4dp"
                     android:text="Clock mode"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <View
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_toRightOf="@+id/textview_title_clock_mode"
-                    android:background="@color/white"/>
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_title_clock_mode"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <RadioGroup
-                android:layout_width="match_parent"
+                android:id="@+id/radiogroup_clock_mode"
+                android:layout_width="0dp"
+                android:layout_height="?attr/listPreferredItemHeight"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                android:gravity="center_vertical"
-                android:layout_height="?attr/listPreferredItemHeight">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_clock_mode_title">
 
                 <RadioButton
                     android:id="@+id/mode_12h"
                     android:layout_width="0dp"
-                    android:text="12h"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:text="12h"/>
 
                 <RadioButton
                     android:id="@+id/mode_24h"
-                    android:checked="true"
-                    android:text="24h"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:checked="true"
+                    android:text="24h"/>
 
             </RadioGroup>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_date_format_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="@dimen/margin_xsmall"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/radiogroup_clock_mode">
 
                 <TextView
                     android:id="@+id/textview_title_date_format"
                     style="@style/TextAppearance.AppCompat.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="4dp"
                     android:text="Date format"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <View
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_toRightOf="@+id/textview_title_date_format"
-                    android:background="@color/white"/>
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_title_date_format"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <Spinner
                 android:id="@+id/spinner_date_format"
+                android:layout_width="0dp"
+                android:layout_height="?attr/listPreferredItemHeight"
                 android:spinnerMode="dialog"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/listPreferredItemHeight" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_date_format_title"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_time_format_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="@dimen/margin_xsmall"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_date_format">
 
                 <TextView
                     android:id="@+id/textview_title_time_format"
                     style="@style/TextAppearance.AppCompat.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="4dp"
                     android:text="Time format"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <View
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_toRightOf="@+id/textview_title_time_format"
-                    android:background="@color/white"/>
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_title_time_format"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <Spinner
                 android:id="@+id/spinner_time_format"
+                android:layout_width="0dp"
+                android:layout_height="?attr/listPreferredItemHeight"
                 android:spinnerMode="dialog"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/listPreferredItemHeight" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_time_format_title"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_temperature_unit_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="@dimen/margin_xsmall"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_time_format">
 
                 <TextView
                     android:id="@+id/textview_title_unit_temperature"
                     style="@style/TextAppearance.AppCompat.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="4dp"
                     android:text="Temperature unit"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <View
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_toRightOf="@+id/textview_title_unit_temperature"
-                    android:background="@color/white"/>
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_title_unit_temperature"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <RadioGroup
-                android:layout_width="match_parent"
+                android:id="@+id/radiogroup_temperature_unit"
+                android:layout_width="0dp"
+                android:layout_height="?attr/listPreferredItemHeight"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:weightSum="3"
-                android:gravity="center_vertical"
-                android:layout_height="?attr/listPreferredItemHeight">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_temperature_unit_title">
 
                 <RadioButton
                     android:id="@+id/unit_celsius"
                     android:layout_width="0dp"
-                    android:checked="true"
-                    android:text="Celsius"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:checked="true"
+                    android:text="Celsius"/>
 
                 <RadioButton
                     android:id="@+id/unit_farenheit"
-                    android:text="Farenheit"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:text="Farenheit"/>
 
                 <RadioButton
                     android:id="@+id/unit_kelvin"
-                    android:text="Kelvin"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:text="Kelvin"/>
 
             </RadioGroup>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_pressure_unit_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="@dimen/margin_xsmall"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/radiogroup_temperature_unit">
 
                 <TextView
                     android:id="@+id/textview_title_unit_pressure"
                     style="@style/TextAppearance.AppCompat.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="4dp"
                     android:text="Pressure unit"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <View
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_toRightOf="@+id/textview_title_unit_pressure"
-                    android:background="@color/white"/>
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_title_unit_pressure"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <RadioGroup
-                android:layout_width="match_parent"
+                android:id="@+id/radiogroup_pressure_unit"
+                android:layout_width="0dp"
+                android:layout_height="?attr/listPreferredItemHeight"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:weightSum="3"
-                android:gravity="center_vertical"
-                android:layout_height="?attr/listPreferredItemHeight">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_pressure_unit_title">
 
                 <RadioButton
                     android:id="@+id/unit_pascal"
                     android:layout_width="0dp"
-                    android:checked="true"
-                    android:text="Pascal"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:checked="true"
+                    android:text="Pascal"/>
 
                 <RadioButton
                     android:id="@+id/unit_bar"
-                    android:text="bar"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:text="bar"/>
 
                 <RadioButton
                     android:id="@+id/unit_psi"
-                    android:text="psi"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:text="psi"/>
 
             </RadioGroup>
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
