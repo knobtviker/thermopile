@@ -1,12 +1,12 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,15 +17,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
-import com.knobtviker.thermopile.presentation.views.AddDialogViewHolder;
-import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
 import java.util.List;
@@ -45,7 +41,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public Toolbar toolbar;
 
     @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday, R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
-    public List<RelativeLayout> hourLayouts;
+    public List<ConstraintLayout> hourLayouts;
 
     private MainCommunicator mainCommunicator;
 
@@ -81,7 +77,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         bind(this, view);
 
         setupToolbar();
-        setupDays();
         setupDayTouchListeners();
 
         presenter.thresholds();
@@ -107,9 +102,9 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     public void onDetach() {
-        super.onDetach();
-
         mainCommunicator = null;
+
+        super.onDetach();
     }
 
     @Override
@@ -161,23 +156,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         setupCustomActionBarWithHomeAsUp(toolbar);
     }
 
-    private void setupDays() {
-//        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, ViewGroup.LayoutParams.MATCH_PARENT);
-//        hourLayouts
-//            .forEach(relativeLayout ->
-//                IntStream
-//                    .range(1, realWidth + 1)
-//                    .filter(i -> i % 30 == 0)
-//                    .forEach(i -> {
-//                        final DashedLineView view = new DashedLineView(getContext());
-//                        view.setLayoutParams(params);
-//                        view.setX(i);
-//
-//                        relativeLayout.addView(view);
-//                    })
-//            );
-    }
-
+    @SuppressLint("ClickableViewAccessibility")
     private void setupDayTouchListeners() {
         final int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
@@ -187,6 +166,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 hourLayouts
                     .get(index)
                     .setOnTouchListener(new View.OnTouchListener() {
+
                         int startX;
                         int startY;
 
@@ -204,7 +184,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
 
                                 if (Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)) <= touchSlop) {
-                                    showAddDialog(index, startX * 2);
+                                    showAddDialog(index, startX);
                                 }
                             }
                             return true;
@@ -212,51 +192,52 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                     }));
     }
 
-    private void showAddDialog(final int dayIndex, final int minuteOfDay) {
-        final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        final View addDialogView = layoutInflater.inflate(R.layout.dialog_add, null, false);
-        final AddDialogViewHolder addDialogViewHolder = new AddDialogViewHolder(addDialogView);
-        final ColorAdapter adapter = new ColorAdapter(getContext(), addDialogViewHolder.buttonPreview);
-
-        addDialogViewHolder.buttonPreview.setText(String.format("%s °C", String.valueOf(addDialogViewHolder.seekBarTemperature.getProgress())));
-        addDialogViewHolder.seekBarTemperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                addDialogViewHolder.buttonPreview.setText(String.format("%s °C", String.valueOf(i)));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                //DO NOTHING
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                //DO NOTHING
-            }
-        });
-        addDialogViewHolder.recyclerViewColors.setAdapter(adapter);
-        addDialogViewHolder.buttonPreview.setBackgroundTintList(ColorStateList.valueOf(adapter.getItem(0)));
-
-        new AlertDialog.Builder(getContext())
-            .setView(addDialogView)
-            .setPositiveButton(getString(android.R.string.ok), (dialogInterface, i) -> {
-                addThreshold(
-                    dayIndex,
-                    addDialogViewHolder.timePickerStart.getHour(),
-                    addDialogViewHolder.timePickerStart.getMinute(),
-                    addDialogViewHolder.timePickerEnd.getHour(),
-                    addDialogViewHolder.timePickerEnd.getMinute(),
-                    addDialogViewHolder.seekBarTemperature.getProgress(),
-                    adapter.getSelectedColor(),
-                    addDialogViewHolder.checkBoxModeSave.isChecked(),
-                    addDialogViewHolder.editTextModeName.getText().toString().trim()
-                );
-                dialogInterface.dismiss();
-            })
-            .setNegativeButton(getString(android.R.string.cancel), (dialogInterface, i) -> dialogInterface.dismiss())
-            .create()
-            .show();
+    private void showAddDialog(final int dayIndex, final int touchX) {
+        Log.i(TAG, dayIndex + " --- " + touchX + " --- " + hourLayouts.get(0).getWidth());
+//        final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+//        final View addDialogView = layoutInflater.inflate(R.layout.dialog_add, null, false);
+//        final AddDialogViewHolder addDialogViewHolder = new AddDialogViewHolder(addDialogView);
+//        final ColorAdapter adapter = new ColorAdapter(getContext(), addDialogViewHolder.buttonPreview);
+//
+//        addDialogViewHolder.buttonPreview.setText(String.format("%s °C", String.valueOf(addDialogViewHolder.seekBarTemperature.getProgress())));
+//        addDialogViewHolder.seekBarTemperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+//                addDialogViewHolder.buttonPreview.setText(String.format("%s °C", String.valueOf(i)));
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//                //DO NOTHING
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//                //DO NOTHING
+//            }
+//        });
+//        addDialogViewHolder.recyclerViewColors.setAdapter(adapter);
+//        addDialogViewHolder.buttonPreview.setBackgroundTintList(ColorStateList.valueOf(adapter.getItem(0)));
+//
+//        new AlertDialog.Builder(getContext())
+//            .setView(addDialogView)
+//            .setPositiveButton(getString(android.R.string.ok), (dialogInterface, i) -> {
+//                addThreshold(
+//                    dayIndex,
+//                    addDialogViewHolder.timePickerStart.getHour(),
+//                    addDialogViewHolder.timePickerStart.getMinute(),
+//                    addDialogViewHolder.timePickerEnd.getHour(),
+//                    addDialogViewHolder.timePickerEnd.getMinute(),
+//                    addDialogViewHolder.seekBarTemperature.getProgress(),
+//                    adapter.getSelectedColor(),
+//                    addDialogViewHolder.checkBoxModeSave.isChecked(),
+//                    addDialogViewHolder.editTextModeName.getText().toString().trim()
+//                );
+//                dialogInterface.dismiss();
+//            })
+//            .setNegativeButton(getString(android.R.string.cancel), (dialogInterface, i) -> dialogInterface.dismiss())
+//            .create()
+//            .show();
     }
 
     private void addThreshold(final int day, final int hourStart, final int minuteStart, final int hourEnd, final int minuteEnd, final int desiredTemperature, final int selectedColor, final boolean isSaveChecked, @NonNull final String modeName) {

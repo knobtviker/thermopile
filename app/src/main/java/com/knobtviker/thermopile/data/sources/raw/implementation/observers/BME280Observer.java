@@ -44,6 +44,7 @@ public class BME280Observer implements SingleSource<Triplet<Float, Float, Float>
                     .third(Float.valueOf(readings[2]))
                     .build()
             );
+
             bme280.close();
         } catch (IOException e) {
             observer.onError(e);

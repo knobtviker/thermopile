@@ -83,7 +83,9 @@ public class BME280 implements AutoCloseable {
      */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({MODE_SLEEP, MODE_FORCED, MODE_NORMAL})
-    public @interface Mode {}
+    public @interface Mode {
+    }
+
     public static final int MODE_SLEEP = 0;
     public static final int MODE_FORCED = 1;
     public static final int MODE_NORMAL = 2;
@@ -93,7 +95,9 @@ public class BME280 implements AutoCloseable {
      */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({OVERSAMPLING_SKIPPED, OVERSAMPLING_1X, OVERSAMPLING_2X, OVERSAMPLING_4X, OVERSAMPLING_8X, OVERSAMPLING_16X})
-    public @interface Oversampling {}
+    public @interface Oversampling {
+    }
+
     public static final int OVERSAMPLING_SKIPPED = 0;
     public static final int OVERSAMPLING_1X = 1;
     public static final int OVERSAMPLING_2X = 2;
@@ -161,6 +165,7 @@ public class BME280 implements AutoCloseable {
 
     /**
      * Create a new BMP/BME280 sensor driver connected on the given bus.
+     *
      * @param bus I2C bus the sensor is connected to.
      * @throws IOException
      */
@@ -170,7 +175,8 @@ public class BME280 implements AutoCloseable {
 
     /**
      * Create a new BME280 sensor driver connected on the given bus and address.
-     * @param bus I2C bus the sensor is connected to.
+     *
+     * @param bus     I2C bus the sensor is connected to.
      * @param address I2C address of the sensor.
      * @throws IOException
      */
@@ -179,10 +185,10 @@ public class BME280 implements AutoCloseable {
         final I2cDevice device = pioService.openI2cDevice(bus, address);
         try {
             connect(device);
-        } catch (IOException|RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
             try {
                 close();
-            } catch (IOException|RuntimeException ignored) {
+            } catch (IOException | RuntimeException ignored) {
             }
             throw e;
         }
@@ -190,6 +196,7 @@ public class BME280 implements AutoCloseable {
 
     /**
      * Create a new BME280 sensor driver connected to the given I2c device.
+     *
      * @param device I2C device of the sensor.
      * @throws IOException
      */
@@ -241,6 +248,7 @@ public class BME280 implements AutoCloseable {
 
     /**
      * Set the power mode of the sensor.
+     *
      * @param mode power mode.
      * @throws IOException
      */
@@ -255,12 +263,13 @@ public class BME280 implements AutoCloseable {
         } else {
             regCtrl |= BME280_POWER_MODE_NORMAL;
         }
-        mDevice.writeRegByte(BME280_REG_CTRL, (byte)(regCtrl));
+        mDevice.writeRegByte(BME280_REG_CTRL, (byte) (regCtrl));
         mMode = mode;
     }
 
     /**
      * Set oversampling multiplier for the temperature measurement.
+     *
      * @param oversampling temperature oversampling multiplier.
      * @throws IOException
      */
@@ -275,12 +284,13 @@ public class BME280 implements AutoCloseable {
         } else {
             regCtrl |= 1 << BME280_OVERSAMPLING_TEMPERATURE_BITSHIFT;
         }
-        mDevice.writeRegByte(BME280_REG_CTRL, (byte)(regCtrl));
+        mDevice.writeRegByte(BME280_REG_CTRL, (byte) (regCtrl));
         mTemperatureOversampling = oversampling;
     }
 
     /**
      * Set oversampling multiplier for the pressure measurement.
+     *
      * @param oversampling pressure oversampling multiplier.
      * @throws IOException
      */
@@ -295,12 +305,13 @@ public class BME280 implements AutoCloseable {
         } else {
             regCtrl |= 1 << BME280_OVERSAMPLING_PRESSURE_BITSHIFT;
         }
-        mDevice.writeRegByte(BME280_REG_CTRL, (byte)(regCtrl));
+        mDevice.writeRegByte(BME280_REG_CTRL, (byte) (regCtrl));
         mPressureOversampling = oversampling;
     }
 
     /**
      * Set oversampling multiplier for the pressure measurement.
+     *
      * @param oversampling pressure oversampling multiplier.
      * @throws IOException
      */
@@ -315,7 +326,7 @@ public class BME280 implements AutoCloseable {
         } else {
             regCtrl |= 1 << BME280_OVERSAMPLING_HUMIDITY_BITSHIFT;
         }
-        mDevice.writeRegByte(BME280_REG_CTRL_HUM, (byte)(regCtrl));
+        mDevice.writeRegByte(BME280_REG_CTRL_HUM, (byte) (regCtrl));
         mHumidityOversampling = oversampling;
     }
 
@@ -414,6 +425,7 @@ public class BME280 implements AutoCloseable {
 
     /**
      * Reads 20 bits from the given address.
+     *
      * @throws IOException
      */
     private int readSample(final int address) throws IOException, IllegalStateException {
@@ -434,6 +446,7 @@ public class BME280 implements AutoCloseable {
 
     /**
      * Reads bits from the given address.
+     *
      * @throws IOException
      */
     private int readSampleHumidity(final int address) throws IOException, IllegalStateException {

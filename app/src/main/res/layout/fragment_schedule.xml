@@ -78,8 +78,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_00"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_00"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -104,8 +104,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_01"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_01"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -130,8 +130,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_02"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_02"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -156,8 +156,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_03"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_03"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -182,8 +182,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_04"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_04"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -208,8 +208,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_05"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_05"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -234,8 +234,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_06"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_06"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -260,8 +260,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_07"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_07"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -286,8 +286,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_08"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_08"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -312,8 +312,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_09"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_09"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -338,8 +338,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_10"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_10"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -364,8 +364,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_11"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_11"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -390,8 +390,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_12"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_12"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -416,8 +416,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_13"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_13"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -442,8 +442,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_14"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_14"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -468,8 +468,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_15"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_15"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -494,8 +494,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_16"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_16"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -520,8 +520,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_17"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_17"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -546,8 +546,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_18"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_18"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -572,8 +572,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_19"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_19"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -598,8 +598,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_20"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_20"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -624,8 +624,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_21"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_21"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -650,8 +650,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_22"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_22"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -676,8 +676,8 @@
                 <TextView
                     style="@style/ItemTextMinute"
                     android:text=":00"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_23"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_hour_23"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>
@@ -782,96 +782,96 @@
             app:layout_constraintTop_toBottomOf="@+id/textview_day_saturday"
             app:layout_constraintWidth_default="spread"/>
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_monday"
             style="@style/ScheduleDayHours"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintWidth_default="spread"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/textview_day_monday"
+            app:layout_constraintBottom_toBottomOf="@id/textview_day_monday"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_monday"/>
+            app:layout_constraintTop_toTopOf="@id/textview_day_monday"
+            app:layout_constraintWidth_default="spread" />
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_tuesday"
             style="@style/ScheduleDayHours"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintWidth_default="spread"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/textview_day_tuesday"
+            app:layout_constraintBottom_toBottomOf="@id/textview_day_tuesday"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_tuesday"/>
+            app:layout_constraintTop_toTopOf="@id/textview_day_tuesday"
+            app:layout_constraintWidth_default="spread"/>
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_wednesday"
             style="@style/ScheduleDayHours"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintWidth_default="spread"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/textview_day_wednesday"
+            app:layout_constraintBottom_toBottomOf="@id/textview_day_wednesday"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_wednesday"/>
+            app:layout_constraintTop_toTopOf="@id/textview_day_wednesday"
+            app:layout_constraintWidth_default="spread"/>
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_thursday"
             style="@style/ScheduleDayHours"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintWidth_default="spread"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/textview_day_thursday"
+            app:layout_constraintBottom_toBottomOf="@id/textview_day_thursday"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_thursday"/>
+            app:layout_constraintTop_toTopOf="@id/textview_day_thursday"
+            app:layout_constraintWidth_default="spread"/>
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_friday"
             style="@style/ScheduleDayHours"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintWidth_default="spread"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/textview_day_friday"
+            app:layout_constraintBottom_toBottomOf="@id/textview_day_friday"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_friday"/>
+            app:layout_constraintTop_toTopOf="@id/textview_day_friday"
+            app:layout_constraintWidth_default="spread"/>
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_saturday"
             style="@style/ScheduleDayHours"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintWidth_default="spread"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/textview_day_saturday"
+            app:layout_constraintBottom_toBottomOf="@id/textview_day_saturday"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_saturday"/>
+            app:layout_constraintTop_toTopOf="@id/textview_day_saturday"
+            app:layout_constraintWidth_default="spread"/>
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_sunday"
             style="@style/ScheduleDayHours"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintWidth_default="spread"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/textview_day_sunday"
+            app:layout_constraintBottom_toBottomOf="@id/textview_day_sunday"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_sunday"/>
+            app:layout_constraintTop_toTopOf="@id/textview_day_sunday"
+            app:layout_constraintWidth_default="spread"/>
 
     </android.support.constraint.ConstraintLayout>
 

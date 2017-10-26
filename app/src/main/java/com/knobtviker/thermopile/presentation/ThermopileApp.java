@@ -100,7 +100,7 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        //TODO: Propagate to each fragment showError method
+//        Log.e(TAG, throwable.getMessage(), throwable);
     }
 
     @Override

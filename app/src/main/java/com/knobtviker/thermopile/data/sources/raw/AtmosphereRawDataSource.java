@@ -35,6 +35,7 @@ public class AtmosphereRawDataSource implements AtmosphereDataSource.Raw {
     private AtmosphereRawDataSource() {
     }
 
+    @SuppressWarnings("UnnecessaryBoxing")
     @Override
     public Single<Triplet<Float, Float, Float>> read() {
         return Single.defer(() -> BME280Observer.create(BUS_I2C));
