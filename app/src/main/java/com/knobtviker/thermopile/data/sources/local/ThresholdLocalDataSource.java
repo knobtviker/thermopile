@@ -56,17 +56,20 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
     }
 
     @Override
+    public RealmResults<Threshold> loadById(long thresholdId) {
+        return Realm
+            .getDefaultInstance()
+            .where(Threshold.class)
+            .equalTo("id", thresholdId)
+            .findAllAsync();
+    }
+
+    @Override
     public void save(@NonNull Threshold item) {
         Realm
             .getDefaultInstance()
             .executeTransactionAsync(realm1 -> {
-            final Number maxValue = realm1
-                .where(Threshold.class)
-                .max("id");
-            final long newId = (maxValue != null) ? maxValue.longValue() + 1L : 0L;
-            item.id(newId);
-
-            realm1.insertOrUpdate(item);
-        });
+                realm1.insertOrUpdate(item);
+            });
     }
 }

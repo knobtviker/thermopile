@@ -4,5 +4,6 @@
     <string name="action_charts">Charts</string>
     <string name="action_schedule">Schedule</string>
     <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
 
 </resources>

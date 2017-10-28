@@ -17,18 +17,25 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
+import com.knobtviker.thermopile.presentation.utils.Router;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
+
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import butterknife.BindView;
 import butterknife.BindViews;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -117,40 +124,10 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-//    @Override
-//    public void onThresholds(@NonNull ImmutableList<Threshold> thresholds) {
-//        thresholds.forEach(this::onSaved);
-//    }
-
-//    @Override
-//    public void onSaved(@NonNull Threshold threshold) {
-//        final RelativeLayout layout = hourLayouts.get(threshold.day());
-//
-//        final Button thresholdView = new Button(layout.getContext());
-//        thresholdView.setBackgroundColor(threshold.color());
-//        thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
-//
-//        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, 1);
-//        params.addRule(RelativeLayout.CENTER_VERTICAL);
-//        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-//        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//        params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margind_small), 0, getResources().getDimensionPixelSize(R.dimen.margind_small));
-//        params.width = Math.round(
-//            Minutes.minutesBetween(
-//                new DateTime()
-//                    .withHourOfDay(threshold.startHour())
-//                    .withMinuteOfHour(threshold.startMinute()),
-//                new DateTime()
-//                    .withHourOfDay(threshold.endHour())
-//                    .withMinuteOfHour(threshold.endMinute())
-//            ).getMinutes() / 2.0f
-//        );
-//
-//        thresholdView.setLayoutParams(params);
-//        thresholdView.setOnClickListener(view -> Log.i(TAG, threshold.toString()));
-//
-//        layout.addView(thresholdView);
-//    }
+    @Override
+    public void onThresholds(@NonNull RealmResults<Threshold> thresholds) {
+        populate(thresholds);
+    }
 
     private void setupToolbar() {
         setupCustomActionBarWithHomeAsUp(toolbar);
@@ -184,7 +161,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
 
                                 if (Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)) <= touchSlop) {
-                                    showAddDialog(index, startX);
+                                    Router.showThreshold(getContext(), index, startX, hourLayouts.get(0).getWidth());
                                 }
                             }
                             return true;
@@ -192,65 +169,36 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                     }));
     }
 
-    private void showAddDialog(final int dayIndex, final int touchX) {
-        Log.i(TAG, dayIndex + " --- " + touchX + " --- " + hourLayouts.get(0).getWidth());
-//        final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-//        final View addDialogView = layoutInflater.inflate(R.layout.dialog_add, null, false);
-//        final AddDialogViewHolder addDialogViewHolder = new AddDialogViewHolder(addDialogView);
-//        final ColorAdapter adapter = new ColorAdapter(getContext(), addDialogViewHolder.buttonPreview);
-//
-//        addDialogViewHolder.buttonPreview.setText(String.format("%s °C", String.valueOf(addDialogViewHolder.seekBarTemperature.getProgress())));
-//        addDialogViewHolder.seekBarTemperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-//                addDialogViewHolder.buttonPreview.setText(String.format("%s °C", String.valueOf(i)));
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//                //DO NOTHING
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//                //DO NOTHING
-//            }
-//        });
-//        addDialogViewHolder.recyclerViewColors.setAdapter(adapter);
-//        addDialogViewHolder.buttonPreview.setBackgroundTintList(ColorStateList.valueOf(adapter.getItem(0)));
-//
-//        new AlertDialog.Builder(getContext())
-//            .setView(addDialogView)
-//            .setPositiveButton(getString(android.R.string.ok), (dialogInterface, i) -> {
-//                addThreshold(
-//                    dayIndex,
-//                    addDialogViewHolder.timePickerStart.getHour(),
-//                    addDialogViewHolder.timePickerStart.getMinute(),
-//                    addDialogViewHolder.timePickerEnd.getHour(),
-//                    addDialogViewHolder.timePickerEnd.getMinute(),
-//                    addDialogViewHolder.seekBarTemperature.getProgress(),
-//                    adapter.getSelectedColor(),
-//                    addDialogViewHolder.checkBoxModeSave.isChecked(),
-//                    addDialogViewHolder.editTextModeName.getText().toString().trim()
-//                );
-//                dialogInterface.dismiss();
-//            })
-//            .setNegativeButton(getString(android.R.string.cancel), (dialogInterface, i) -> dialogInterface.dismiss())
-//            .create()
-//            .show();
-    }
+    private void populate(@NonNull final RealmResults<Threshold> thresholds) {
+        hourLayouts.forEach(ViewGroup::removeAllViewsInLayout);
 
-    private void addThreshold(final int day, final int hourStart, final int minuteStart, final int hourEnd, final int minuteEnd, final int desiredTemperature, final int selectedColor, final boolean isSaveChecked, @NonNull final String modeName) {
-//        presenter.save(
-//            Threshold.builder()
-//                .day(day)
-//                .startHour(hourStart)
-//                .startMinute(minuteStart)
-//                .endHour(hourEnd)
-//                .endMinute(minuteEnd)
-//                .temperature(desiredTemperature)
-//                .color(selectedColor)
-//                .build()
-//        );
+        thresholds
+            .forEach(threshold -> {
+                final ConstraintLayout layout = hourLayouts.get(threshold.day());
+
+                final Button thresholdView = new Button(layout.getContext());
+                thresholdView.setBackgroundColor(threshold.color());
+                thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
+
+                final ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(0, 0);
+                params.topToTop = layout.getTop(); //TODO: Check if this works or not
+                params.bottomToBottom = layout.getBottom(); //TODO: Check if this works or not
+                params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margin_small), 0, getResources().getDimensionPixelSize(R.dimen.margin_small));
+                params.width = Math.round(
+                    Minutes.minutesBetween(
+                        new DateTime()
+                            .withHourOfDay(threshold.startHour())
+                            .withMinuteOfHour(threshold.startMinute()),
+                        new DateTime()
+                            .withHourOfDay(threshold.endHour())
+                            .withMinuteOfHour(threshold.endMinute())
+                    ).getMinutes() / 2.0f
+                );
+
+                thresholdView.setLayoutParams(params);
+                thresholdView.setOnClickListener(view -> Router.showThreshold(getContext(), threshold.id()));
+
+                layout.addView(thresholdView);
+            });
     }
 }

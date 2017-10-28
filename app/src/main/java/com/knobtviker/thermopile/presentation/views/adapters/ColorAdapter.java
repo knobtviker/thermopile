@@ -51,11 +51,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
     public void onBindViewHolder(ColorViewHolder colorViewHolder, int position) {
         final int color = colors.get(position);
         colorViewHolder.backgroundView.setBackgroundColor(color);
-        colorViewHolder.backgroundView.setOnClickListener(view -> {
-                targetView.setBackgroundTintList(ColorStateList.valueOf(color));
-                selectedColor = color;
-            }
-        );
+        colorViewHolder.backgroundView.setOnClickListener(view -> setSelectedColor(color));
     }
 
     @Override
@@ -75,5 +71,10 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
     public int getSelectedColor() {
         return selectedColor;
+    }
+
+    public void setSelectedColor(final int color) {
+        targetView.setBackgroundTintList(ColorStateList.valueOf(color));
+        selectedColor = color;
     }
 }

@@ -18,6 +18,8 @@ public interface ThresholdDataSource {
 
         RealmResults<Threshold> loadByDay(final int day);
 
+        RealmResults<Threshold> loadById(final long thresholdId);
+
         void save(@NonNull final Threshold item);
     }
 }
