@@ -47,7 +47,7 @@ public class ThresholdRepository extends BaseRepository {
         return thresholdLocalDataSource.loadByDay(day);
     }
 
-    public RealmResults<Threshold> loadById(final long thresholdId) {
+    public Threshold loadById(final long thresholdId) {
         return thresholdLocalDataSource.loadById(thresholdId);
     }
 

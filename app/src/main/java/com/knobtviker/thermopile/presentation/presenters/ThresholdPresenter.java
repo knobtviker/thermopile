@@ -7,8 +7,6 @@ import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 
 import io.reactivex.disposables.CompositeDisposable;
-import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
 
 /**
  * Created by bojan on 29/10/2017.
@@ -20,9 +18,6 @@ public class ThresholdPresenter implements ThresholdContract.Presenter {
 
     private ThresholdRepository thresholdRepository;
     private CompositeDisposable compositeDisposable;
-
-    private RealmResults<Threshold> resultsThresholds;
-    private RealmChangeListener<RealmResults<Threshold>> changeListenerThresholds;
 
     public ThresholdPresenter(@NonNull final ThresholdContract.View view) {
         this.view = view;
@@ -39,11 +34,6 @@ public class ThresholdPresenter implements ThresholdContract.Presenter {
         if (!compositeDisposable.isDisposed()) {
             compositeDisposable.dispose();
             compositeDisposable = null;
-        }
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            resultsThresholds.removeChangeListener(changeListenerThresholds);
-            resultsThresholds = null;
-            changeListenerThresholds = null;
         }
         ThresholdRepository.destroyInstance();
     }
@@ -69,16 +59,7 @@ public class ThresholdPresenter implements ThresholdContract.Presenter {
     public void loadById(long thresholdId) {
         started();
 
-        resultsThresholds = thresholdRepository.loadById(thresholdId);
-
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            changeListenerThresholds = thresholdsRealmResults -> {
-                if (!thresholdsRealmResults.isEmpty()) {
-                    view.onThreshold(thresholdsRealmResults.first());
-                }
-            };
-            resultsThresholds.addChangeListener(changeListenerThresholds);
-        }
+        view.onThreshold(thresholdRepository.loadById(thresholdId));
 
         completed();
     }

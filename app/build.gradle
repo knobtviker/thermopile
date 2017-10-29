@@ -45,11 +45,9 @@ dependencies {
     implementation 'com.google.guava:guava-primitives:r03'
     implementation 'com.google.guava:guava-annotations:r03'
     implementation 'com.google.guava:guava-collections:r03'
-
     //data
     //local
     implementation 'io.realm:android-adapters:2.0.0'
-
     //presentation
     implementation 'com.android.support:appcompat-v7:27.0.0'
     implementation 'com.android.support:design:27.0.0'
@@ -59,4 +57,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.bignerdranch.android:simple-item-decoration:1.0.0'
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+    //other
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+//    implementation 'com.github.knobtviker:stetho-realm:89a851dedb'
 }

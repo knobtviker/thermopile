@@ -40,6 +40,7 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
         super.onCreate();
 
         initRealm();
+        initStetho();
         initPresenter();
         initCalligraphy();
         initJodaTime();
@@ -70,6 +71,14 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
             .build();
 
         Realm.setDefaultConfiguration(config);
+    }
+
+    private void initStetho() {
+//        Stetho.initialize(
+//            Stetho.newInitializerBuilder(this)
+//                .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+//                .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+//                .build());
     }
 
     private void initPresenter() {

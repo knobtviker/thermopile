@@ -56,12 +56,13 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
     }
 
     @Override
-    public RealmResults<Threshold> loadById(long thresholdId) {
+    public Threshold loadById(long thresholdId) {
         return Realm
             .getDefaultInstance()
             .where(Threshold.class)
             .equalTo("id", thresholdId)
-            .findAllAsync();
+            .findAllAsync()
+            .first();
     }
 
     @Override
