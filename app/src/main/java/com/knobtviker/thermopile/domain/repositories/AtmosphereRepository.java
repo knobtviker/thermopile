@@ -64,7 +64,7 @@ public class AtmosphereRepository extends BaseRepository {
         atmosphereLocalDataSource.save(item);
     }
 
-    public RealmResults<Atmosphere> latest() {
+    public Atmosphere latest() {
         return atmosphereLocalDataSource.latest();
     }
 

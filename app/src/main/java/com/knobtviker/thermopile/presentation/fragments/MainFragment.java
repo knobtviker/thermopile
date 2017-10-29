@@ -118,7 +118,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         bind(this, view);
 
         presenter.startClock();
-        presenter.data();
         presenter.settings();
         presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
 
@@ -174,7 +173,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         maybeApplyThresholds(dateTime);
         moveHourLine(dateTime);
 
-        //TODO: Check if it is 00:00 of the day and reaload thresholds
+        presenter.data();
     }
 
     @SuppressLint("SetTextI18n")
@@ -262,7 +261,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         final int currentHour = dateTime.getHourOfDay();
         if (currentHour > 6 && currentHour < 17) {
             recyclerView.scrollToPosition(currentHour - 6);
-        } else if (currentHour <=6){
+        } else if (currentHour <= 6) {
             recyclerView.scrollToPosition(0);
         } else if (currentHour >= 17) {
             recyclerView.scrollToPosition(12);

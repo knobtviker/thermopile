@@ -25,7 +25,7 @@ public interface AtmosphereDataSource {
 
         RealmResults<Atmosphere> load();
 
-        RealmResults<Atmosphere> latest();
+        Atmosphere latest();
 
         void save(@NonNull final Atmosphere item);
     }

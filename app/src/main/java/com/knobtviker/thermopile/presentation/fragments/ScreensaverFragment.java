@@ -72,7 +72,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         bind(this, view);
 
         presenter.startClock();
-        presenter.data();
         presenter.settings();
 
         return view;
@@ -92,6 +91,8 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public void onClockTick() {
         //TODO: Move and get this timezone from Settings in Realm
         setDateTime(new DateTime(DateTimeZone.forID("Europe/Zagreb")));
+
+        presenter.data();
     }
 
     @SuppressLint("SetTextI18n")
