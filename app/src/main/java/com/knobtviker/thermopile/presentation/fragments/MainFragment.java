@@ -147,6 +147,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         return super.onOptionsItemSelected(item);
     }
 
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//
+//        new Handler().postDelayed(() -> mainCommunicator.showSchedule(), 2000);
+//    }
+
     @Override
     public void onDetach() {
 

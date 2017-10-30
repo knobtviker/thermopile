@@ -59,6 +59,14 @@ public class Settings extends RealmObject {
         this.unitPressure = unitPressure;
     }
 
+    public int getScreensaverDelay() {
+        return screensaverDelay;
+    }
+
+    public void setScreensaverDelay(int screensaverDelay) {
+        this.screensaverDelay = screensaverDelay;
+    }
+
     @PrimaryKey
     private long id = 0; //TODO: Hardcoded to 0 but should be userId for multiuser support. Every user has it's owm settings record
 
@@ -73,4 +81,6 @@ public class Settings extends RealmObject {
     private int unitTemperature;
 
     private int unitPressure;
+
+    private int screensaverDelay;
 }

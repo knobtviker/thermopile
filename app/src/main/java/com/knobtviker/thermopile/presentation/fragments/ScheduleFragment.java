@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -102,9 +103,13 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             mainCommunicator.back();
+            return true;
+        } else if (item.getItemId() == R.id.action_add) {
+            add();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -181,8 +186,9 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
 
                 final ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(0, 0);
-                params.topToTop = layout.getTop(); //TODO: Check if this works or not
-                params.bottomToBottom = layout.getBottom(); //TODO: Check if this works or not
+                params.topToTop = layout.getTop();
+                params.bottomToBottom = layout.getBottom();
+                params.startToStart = layout.getLeft();
                 params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margin_small), 0, getResources().getDimensionPixelSize(R.dimen.margin_small));
                 params.width = Math.round(
                     Minutes.minutesBetween(
@@ -200,5 +206,18 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
                 layout.addView(thresholdView);
             });
+    }
+
+    private void add() {
+        final CharSequence[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+        new AlertDialog.Builder(getContext())
+            .setTitle("Day picker")
+            .setMessage("Choose a day")
+            .setCancelable(true)
+            .setSingleChoiceItems(days, -1, (dialogInterface, index) -> Router.showThreshold(getContext(), index, 0, hourLayouts.get(0).getWidth()))
+            .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+            .create()
+            .show();
     }
 }

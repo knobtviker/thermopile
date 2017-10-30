@@ -25,6 +25,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * Created by bojan on 15/07/2017.
  */
 
+// /data/data/com.knobtviker.thermopile
 public class ThermopileApp extends Application implements ApplicationContract.View {
     private static final String TAG = ThermopileApp.class.getSimpleName();
 
@@ -49,6 +50,7 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     }
 
     public void createScreensaver() {
+        //TODO: Timer delay for screensaver should be loaded from Settings.
         screensaverDisposable = Completable.timer(60, TimeUnit.SECONDS, SchedulerProvider.getInstance().screensaver())
             .observeOn(SchedulerProvider.getInstance().ui())
             .subscribe(this::showScreensaver);
