@@ -11,14 +11,10 @@ public interface ApplicationContract {
 
     interface View extends BaseView {
 
-        void onClockTick();
-
         void onLuminosityData(final float luminosity);
     }
 
     interface Presenter extends BasePresenter {
-
-        void startClock();
 
         void collectData();
 

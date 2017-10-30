@@ -1,13 +1,13 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -186,10 +186,10 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
 
                 final ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(0, 0);
-                params.topToTop = layout.getTop();
-                params.bottomToBottom = layout.getBottom();
-                params.startToStart = layout.getLeft();
-                params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margin_small), 0, getResources().getDimensionPixelSize(R.dimen.margin_small));
+                params.topToTop = layout.getTop(); //TODO: This doesn't really work
+                params.bottomToBottom = layout.getBottom(); //TODO: This doesn't really work
+                params.startToStart = layout.getLeft(); //TODO: This doesn't really work
+                params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margin_small), 0, getResources().getDimensionPixelSize(R.dimen.margin_small)); //TODO: This doesn't really work
                 params.width = Math.round(
                     Minutes.minutesBetween(
                         new DateTime()
@@ -212,11 +212,13 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         final CharSequence[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
         new AlertDialog.Builder(getContext())
-            .setTitle("Day picker")
-            .setMessage("Choose a day")
+            .setTitle("Select a day")
             .setCancelable(true)
-            .setSingleChoiceItems(days, -1, (dialogInterface, index) -> Router.showThreshold(getContext(), index, 0, hourLayouts.get(0).getWidth()))
-            .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+            .setSingleChoiceItems(days, -1, (dialogInterface, index) -> {
+                dialogInterface.dismiss();
+                Router.showThreshold(getContext(), index, 0, hourLayouts.get(0).getWidth());
+            })
+            .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
             .create()
             .show();
     }

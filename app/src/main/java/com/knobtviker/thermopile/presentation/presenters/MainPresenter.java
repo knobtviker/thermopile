@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
@@ -30,6 +31,9 @@ public class MainPresenter implements MainContract.Presenter {
     private ThresholdRepository thresholdRepository;
     private CompositeDisposable compositeDisposable;
 
+    private RealmResults<Atmosphere> resultsAtmosphere;
+    private RealmChangeListener<RealmResults<Atmosphere>> changeListenerAtmosphere;
+
     private RealmResults<Settings> resultsSettings;
     private RealmChangeListener<RealmResults<Settings>> changeListenerSettings;
 
@@ -55,6 +59,11 @@ public class MainPresenter implements MainContract.Presenter {
             compositeDisposable = null;
         }
 
+        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
+            resultsAtmosphere.removeChangeListener(changeListenerAtmosphere);
+            resultsAtmosphere = null;
+            changeListenerAtmosphere = null;
+        }
         if (resultsSettings != null && resultsSettings.isValid()) {
             resultsSettings.removeChangeListener(changeListenerSettings);
             resultsSettings = null;
@@ -105,11 +114,16 @@ public class MainPresenter implements MainContract.Presenter {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void data() {
-        started();
+        resultsAtmosphere = atmosphereRepository.latest();
 
-        view.onDataChanged(atmosphereRepository.latest());
-
-        completed();
+        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
+            changeListenerAtmosphere = atmosphereRealmResults -> {
+                if (!atmosphereRealmResults.isEmpty()) {
+                    view.onDataChanged(atmosphereRealmResults.first());
+                }
+            };
+            resultsAtmosphere.addChangeListener(changeListenerAtmosphere);
+        }
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -120,9 +134,7 @@ public class MainPresenter implements MainContract.Presenter {
         if (resultsSettings != null && resultsSettings.isValid()) {
             changeListenerSettings = settingsRealmResults -> {
                 if (!settingsRealmResults.isEmpty()) {
-                    if (!settingsRealmResults.isEmpty()) {
-                        view.onSettingsChanged(settingsRealmResults.first());
-                    }
+                    view.onSettingsChanged(settingsRealmResults.first());
                 }
             };
             resultsSettings.addChangeListener(changeListenerSettings);
@@ -145,9 +157,7 @@ public class MainPresenter implements MainContract.Presenter {
         if (resultsThresholds != null && resultsThresholds.isValid()) {
             changeListenerThresholds = thresholdsRealmResults -> {
                 if (!thresholdsRealmResults.isEmpty()) {
-                    if (!thresholdsRealmResults.isEmpty()) {
-                        view.onThresholdsChanged(thresholdsRealmResults);
-                    }
+                    view.onThresholdsChanged(thresholdsRealmResults);
                 }
             };
             resultsThresholds.addChangeListener(changeListenerThresholds);

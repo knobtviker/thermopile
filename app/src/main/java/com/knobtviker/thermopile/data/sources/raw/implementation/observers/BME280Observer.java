@@ -47,7 +47,7 @@ public class BME280Observer implements SingleSource<Triplet<Float, Float, Float>
 
             bme280.close();
         } catch (IOException e) {
-            observer.onError(e);
+//            observer.onError(e); //TODO: Uncomment this line once Android Things really closes GPIO. It is a known issue.
         }
     }
 }

@@ -53,7 +53,7 @@ public class AtmosphereRepository extends BaseRepository {
             .toObservable()
             .subscribeOn(schedulerProvider.sensors())
             .map(atmosphereConverter::rawToLocal)
-            .observeOn(schedulerProvider.ui());
+            .observeOn(schedulerProvider.sensors());
     }
 
     public RealmResults<Atmosphere> load() {
@@ -64,7 +64,7 @@ public class AtmosphereRepository extends BaseRepository {
         atmosphereLocalDataSource.save(item);
     }
 
-    public Atmosphere latest() {
+    public RealmResults<Atmosphere> latest() {
         return atmosphereLocalDataSource.latest();
     }
 
@@ -73,6 +73,6 @@ public class AtmosphereRepository extends BaseRepository {
             .readLuminosity()
             .toObservable()
             .subscribeOn(schedulerProvider.sensors())
-            .observeOn(schedulerProvider.ui());
+            .observeOn(schedulerProvider.sensors());
     }
 }

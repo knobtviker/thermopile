@@ -3,13 +3,13 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
+import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -60,34 +60,22 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
     }
 
     @Override
-    public void startClock() {
+    public void collectData() {
         compositeDisposable.add(
             Observable
-                .interval(1L, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    tick -> view.onClockTick(),
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    @Override
-    public void collectData() {
-        started();
-
-        compositeDisposable.add(
-            Completable.mergeArrayDelayError(
-                atmosphereRepository
-                    .read()
-                    .doOnNext(atmosphereRepository::save)
-                    .ignoreElements(),
-                atmosphereRepository
-                    .luminosity()
-                    .doOnNext(view::onLuminosityData)
-                    .ignoreElements()
-            )
+                .interval(1L, TimeUnit.SECONDS, SchedulerProvider.getInstance().sensors())
+                .flatMapCompletable(tick ->
+                    Completable.mergeArrayDelayError(
+                        atmosphereRepository
+                            .read()
+                            .doOnNext(atmosphereRepository::save)
+                            .ignoreElements(),
+                        atmosphereRepository
+                            .luminosity()
+                            .doOnNext(view::onLuminosityData)
+                            .ignoreElements()
+                    ))
+                .observeOn(SchedulerProvider.getInstance().sensors())
                 .subscribe(
                     this::completed,
                     this::error

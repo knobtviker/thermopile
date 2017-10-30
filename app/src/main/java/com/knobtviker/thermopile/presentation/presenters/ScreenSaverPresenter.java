@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
@@ -27,6 +28,9 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
     private SettingsRepository settingsRepository;
     private CompositeDisposable compositeDisposable;
 
+    private RealmResults<Atmosphere> resultsAtmosphere;
+    private RealmChangeListener<RealmResults<Atmosphere>> changeListenerAtmosphere;
+
     private RealmResults<Settings> resultsSettings;
     private RealmChangeListener<RealmResults<Settings>> changeListenerSettings;
 
@@ -46,6 +50,11 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
         if (!compositeDisposable.isDisposed()) {
             compositeDisposable.dispose();
             compositeDisposable = null;
+        }
+        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
+            resultsAtmosphere.removeChangeListener(changeListenerAtmosphere);
+            resultsAtmosphere = null;
+            changeListenerAtmosphere = null;
         }
         if (resultsSettings != null && resultsSettings.isValid()) {
             resultsSettings.removeChangeListener(changeListenerSettings);
@@ -91,11 +100,16 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void data() {
-        started();
+        resultsAtmosphere = atmosphereRepository.latest();
 
-        view.onDataChanged(atmosphereRepository.latest());
-
-        completed();
+        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
+            changeListenerAtmosphere = atmosphereRealmResults -> {
+                if (!atmosphereRealmResults.isEmpty()) {
+                    view.onDataChanged(atmosphereRealmResults.first());
+                }
+            };
+            resultsAtmosphere.addChangeListener(changeListenerAtmosphere);
+        }
     }
 
     @SuppressWarnings("ConstantConditions")

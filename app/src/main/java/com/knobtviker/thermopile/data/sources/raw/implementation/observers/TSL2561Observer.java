@@ -37,7 +37,7 @@ public class TSL2561Observer implements SingleSource<Float> {
 
             tsl2561.close();
         } catch (Exception e) {
-            observer.onError(e);
+//            observer.onError(e); //TODO: Uncomment this line once Android Things really closes GPIO. It is a known issue.
         }
     }
 }

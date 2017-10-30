@@ -45,12 +45,11 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
     }
 
     @Override
-    public Atmosphere latest() {
+    public RealmResults<Atmosphere> latest() {
         return Realm
             .getDefaultInstance()
             .where(Atmosphere.class)
-            .findAllSortedAsync("timestamp", Sort.DESCENDING)
-            .first();
+            .findAllSortedAsync("timestamp", Sort.DESCENDING);
     }
 
     @Override

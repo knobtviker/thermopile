@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation;
 import android.app.Application;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
@@ -51,8 +52,8 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
     public void createScreensaver() {
         //TODO: Timer delay for screensaver should be loaded from Settings.
-        screensaverDisposable = Completable.timer(60, TimeUnit.SECONDS, SchedulerProvider.getInstance().screensaver())
-            .observeOn(SchedulerProvider.getInstance().ui())
+        screensaverDisposable = Completable.timer(300, TimeUnit.SECONDS, SchedulerProvider.getInstance().screensaver())
+            .observeOn(SchedulerProvider.getInstance().screensaver())
             .subscribe(this::showScreensaver);
     }
 
@@ -86,7 +87,7 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     private void initPresenter() {
         presenter = new ApplicationPresenter(this);
         presenter.subscribe();
-        presenter.startClock();
+        presenter.collectData();
     }
 
     private void initCalligraphy() {
@@ -111,17 +112,12 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-//        Log.e(TAG, throwable.getMessage(), throwable);
-    }
-
-    @Override
-    public void onClockTick() {
-        presenter.collectData();
+        Log.e(TAG, throwable.getMessage(), throwable);
     }
 
     @Override
     public void onLuminosityData(float luminosity) {
         //TODO: Normalize luminosity in lux from 0 to 40 000 to 0.0 to 1.0
-//        Log.i(TAG, "LUMINOSITY --- "+luminosity);
+//        Log.i(TAG, "LUMINOSITY --- "+luminosity/40000.0f);
     }
 }
