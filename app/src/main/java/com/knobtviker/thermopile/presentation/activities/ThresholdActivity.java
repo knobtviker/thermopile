@@ -1,8 +1,8 @@
 package com.knobtviker.thermopile.presentation.activities;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.ThresholdFragment;

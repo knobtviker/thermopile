@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="spread">
 
-        <android.support.v7.widget.Toolbar
+        <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -35,7 +35,7 @@
                 style="@style/TextTime"
                 tools:text="10:30"/>
 
-        </android.support.v7.widget.Toolbar>
+        </Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 

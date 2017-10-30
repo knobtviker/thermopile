@@ -9,7 +9,7 @@
     android:background="@color/gray"
     android:clickable="true">
 
-    <android.support.v7.widget.Toolbar
+    <Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
@@ -26,7 +26,7 @@
             android:text="Schedule"
             tools:text="Schedule"/>
 
-    </android.support.v7.widget.Toolbar>
+    </Toolbar>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
