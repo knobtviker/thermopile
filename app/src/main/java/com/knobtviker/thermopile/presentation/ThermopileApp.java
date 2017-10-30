@@ -107,7 +107,7 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
     @Override
     public void showLoading(boolean isLoading) {
-        //TODO: Propagate to each fragment loading method
+
     }
 
     @Override
@@ -117,7 +117,6 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
     @Override
     public void onLuminosityData(float luminosity) {
-        //TODO: Normalize luminosity in lux from 0 to 40 000 to 0.0 to 1.0
 //        Log.i(TAG, "LUMINOSITY --- "+luminosity/40000.0f);
     }
 }

@@ -62,6 +62,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private MiniPID miniPID;
 //    private float fakeIncrease = 0.05f;
 
+    private DateTimeZone dateTimeZone;
+
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
@@ -104,6 +106,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+
+        dateTimeZone = DateTimeZone.forID("Europe/Zagreb");
 
         presenter = new MainPresenter(this);
     }
@@ -158,7 +162,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void showLoading(boolean isLoading) {
-        //TODO:
     }
 
     @Override
@@ -169,7 +172,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @Override
     public void onClockTick() {
         //TODO: Move and get this timezone from Settings in Realm
-        final DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/Zagreb"));
+        final DateTime dateTime = new DateTime(dateTimeZone);
         setDateTime(dateTime);
         maybeApplyThresholds(dateTime);
         moveHourLine(dateTime);
@@ -213,6 +216,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
         //TODO: Change units and recalculate Atmosphere data
+        dateTimeZone = DateTimeZone.forID(settings.timezone());
         Log.i(TAG, settings.toString());
     }
 

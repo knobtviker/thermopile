@@ -42,7 +42,6 @@ public class ThresholdActivity extends BaseActivity {
         } else if (thresholdId != -1L) {
             showThresholdFragment(thresholdId);
         } else {
-            //TODO: Show incorrect params error
             finish();
         }
     }
