@@ -19,6 +19,8 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
 
     private static Optional<ThresholdLocalDataSource> INSTANCE = Optional.empty();
 
+    private static Realm realm = null;
+
     public static ThresholdLocalDataSource getInstance() {
         if (!INSTANCE.isPresent()) {
             INSTANCE = Optional.of(new ThresholdLocalDataSource());
@@ -28,17 +30,21 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
 
     public static void destroyInstance() {
         if (INSTANCE.isPresent()) {
+            if (realm != null && !realm.isClosed()) {
+                realm.close();
+                realm = null;
+            }
             INSTANCE = Optional.empty();
         }
     }
 
     private ThresholdLocalDataSource() {
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
     public RealmResults<Threshold> load() {
-        return Realm
-            .getDefaultInstance()
+        return realm
             .where(Threshold.class)
             .findAllAsync();
     }
@@ -48,8 +54,7 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
         final String[] fieldNames = {"startHour", "startMinute"};
         final Sort[] directions = {Sort.ASCENDING, Sort.ASCENDING};
 
-        return Realm
-            .getDefaultInstance()
+        return realm
             .where(Threshold.class)
             .equalTo("day", day)
             .findAllSortedAsync(fieldNames, directions);
@@ -57,8 +62,7 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
 
     @Override
     public Threshold loadById(long thresholdId) {
-        return Realm
-            .getDefaultInstance()
+        return realm
             .where(Threshold.class)
             .equalTo("id", thresholdId)
             .findAllAsync()
@@ -67,8 +71,7 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
 
     @Override
     public void save(@NonNull Threshold item) {
-        Realm
-            .getDefaultInstance()
+        realm
             .executeTransactionAsync(realm1 -> {
                 realm1.insertOrUpdate(item);
             });

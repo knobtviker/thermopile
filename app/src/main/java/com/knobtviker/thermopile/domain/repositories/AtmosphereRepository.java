@@ -53,7 +53,7 @@ public class AtmosphereRepository extends BaseRepository {
             .toObservable()
             .subscribeOn(schedulerProvider.sensors())
             .map(atmosphereConverter::rawToLocal)
-            .observeOn(schedulerProvider.sensors());
+            .observeOn(schedulerProvider.ui());
     }
 
     public RealmResults<Atmosphere> load() {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,6 +38,10 @@ import java.util.stream.IntStream;
 import butterknife.BindView;
 import butterknife.BindViews;
 import io.realm.RealmResults;
+
+import static android.support.constraint.ConstraintSet.BOTTOM;
+import static android.support.constraint.ConstraintSet.START;
+import static android.support.constraint.ConstraintSet.TOP;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -182,15 +187,15 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 final ConstraintLayout layout = hourLayouts.get(threshold.day());
 
                 final Button thresholdView = new Button(layout.getContext());
+                thresholdView.setId(View.generateViewId());
                 thresholdView.setBackgroundColor(threshold.color());
                 thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
 
-                final ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(0, 0);
-                params.topToTop = layout.getTop(); //TODO: This doesn't really work
-                params.bottomToBottom = layout.getBottom(); //TODO: This doesn't really work
-                params.startToStart = layout.getLeft(); //TODO: This doesn't really work
-                params.setMargins(Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f), getResources().getDimensionPixelSize(R.dimen.margin_small), 0, getResources().getDimensionPixelSize(R.dimen.margin_small)); //TODO: This doesn't really work
-                params.width = Math.round(
+                layout.addView(thresholdView);
+
+                final ConstraintSet set = new ConstraintSet();
+                set.clone(layout);
+                set.constrainWidth(thresholdView.getId(), Math.round(
                     Minutes.minutesBetween(
                         new DateTime()
                             .withHourOfDay(threshold.startHour())
@@ -199,12 +204,15 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                             .withHourOfDay(threshold.endHour())
                             .withMinuteOfHour(threshold.endMinute())
                     ).getMinutes() / 2.0f
-                );
+                ));
+                set.constrainHeight(thresholdView.getId(), ConstraintSet.MATCH_CONSTRAINT);
+                set.connect(thresholdView.getId(), START, ConstraintSet.PARENT_ID, START, Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f));
+                set.connect(thresholdView.getId(), TOP, ConstraintSet.PARENT_ID, TOP, 8);
+                set.connect(thresholdView.getId(), BOTTOM, ConstraintSet.PARENT_ID, BOTTOM, 8);
 
-                thresholdView.setLayoutParams(params);
+                set.applyTo(layout);
+
                 thresholdView.setOnClickListener(view -> Router.showThreshold(getContext(), threshold.id()));
-
-                layout.addView(thresholdView);
             });
     }
 

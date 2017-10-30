@@ -18,6 +18,8 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
 
     private static Optional<SettingsLocalDataSource> INSTANCE = Optional.empty();
 
+    private static Realm realm = null;
+
     public static SettingsLocalDataSource getInstance() {
         if (!INSTANCE.isPresent()) {
             INSTANCE = Optional.of(new SettingsLocalDataSource());
@@ -27,25 +29,28 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
 
     public static void destroyInstance() {
         if (INSTANCE.isPresent()) {
+            if (realm != null && !realm.isClosed()) {
+                realm.close();
+                realm = null;
+            }
             INSTANCE = Optional.empty();
         }
     }
 
     private SettingsLocalDataSource() {
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
     public RealmResults<Settings> load() {
-        return Realm
-            .getDefaultInstance()
+        return realm
             .where(Settings.class)
             .findAllAsync();
     }
 
     @Override
     public void save(@NonNull Settings item) {
-        Realm
-            .getDefaultInstance()
+        realm
             .executeTransactionAsync(realm1 -> realm1.insertOrUpdate(item));
     }
 }

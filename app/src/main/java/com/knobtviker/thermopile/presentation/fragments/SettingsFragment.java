@@ -77,7 +77,7 @@ public class SettingsFragment extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.schedule, menu);
+        inflater.inflate(R.menu.settings, menu);
     }
 
     @Override
