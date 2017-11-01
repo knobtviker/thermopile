@@ -72,7 +72,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:checked="true"
                     android:text="Celsius"/>
 
                 <RadioButton
@@ -80,7 +79,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Farenheit"/>
+                    android:text="Fahrenheit"/>
 
                 <RadioButton
                     android:id="@+id/unit_kelvin"
@@ -141,7 +140,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:checked="true"
                     android:text="Pascal"/>
 
                 <RadioButton

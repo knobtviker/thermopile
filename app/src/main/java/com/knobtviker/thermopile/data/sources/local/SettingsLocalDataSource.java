@@ -76,4 +76,38 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
             }
         );
     }
+
+    @Override
+    public void saveTemperatureUnit(long settingsId, int unit) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(
+            realm1 -> {
+                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
+                settings.unitTemperature(unit);
+                realm1.insertOrUpdate(settings);
+            },
+            realm::close,
+            error -> {
+                Log.e(TAG, error.getMessage(), error);
+                realm.close();
+            }
+        );
+    }
+
+    @Override
+    public void savePressureUnit(long settingsId, int unit) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(
+            realm1 -> {
+                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
+                settings.unitPressure(unit);
+                realm1.insertOrUpdate(settings);
+            },
+            realm::close,
+            error -> {
+                Log.e(TAG, error.getMessage(), error);
+                realm.close();
+            }
+        );
+    }
 }

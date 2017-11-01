@@ -92,4 +92,14 @@ public class SettingsPresenter implements SettingsContract.Presenter {
     public void saveClockMode(long settingsId, int clockMode) {
         settingsRepository.saveClockMode(settingsId, clockMode);
     }
+
+    @Override
+    public void saveTemperatureUnit(long settingsId, int unit) {
+        settingsRepository.saveTemperatureUnit(settingsId, unit);
+    }
+
+    @Override
+    public void savePressureUnit(long settingsId, int unit) {
+        settingsRepository.savePressureUnit(settingsId, unit);
+    }
 }

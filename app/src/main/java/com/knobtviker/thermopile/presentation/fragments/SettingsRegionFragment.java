@@ -111,6 +111,7 @@ public class SettingsRegionFragment extends BaseFragment<SettingsContract.Presen
                 radioButton24h.setChecked(true);
                 break;
         }
+
         spinnerTimezone.setEnabled(true);
         radioGroupClockMode.setEnabled(true);
     }

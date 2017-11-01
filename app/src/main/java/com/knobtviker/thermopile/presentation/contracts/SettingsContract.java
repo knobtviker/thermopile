@@ -24,5 +24,9 @@ public interface SettingsContract {
         void saveTimezone(final long settingsId, @NonNull final String timezone);
 
         void saveClockMode(final long settingsId, final int clockMode);
+
+        void saveTemperatureUnit(final long settingsId, final int unit);
+
+        void savePressureUnit(final long settingsId, final int unit);
     }
 }

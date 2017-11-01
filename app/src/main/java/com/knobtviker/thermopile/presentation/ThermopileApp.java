@@ -78,6 +78,8 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
                 settings.id(0L);
                 settings.timezone("Europe/Zagreb");
                 settings.formatClock(Constants.CLOCK_MODE_24H);
+                settings.unitTemperature(Constants.UNIT_TEMPERATURE_CELSIUS);
+                settings.unitPressure(Constants.UNIT_PRESSURE_PASCAL);
                 realm.insert(settings);
             })
             .build();

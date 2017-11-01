@@ -50,4 +50,12 @@ public class SettingsRepository extends BaseRepository {
     public void saveClockMode(final long settingsId, final int clockMode) {
         settingsLocalDataSource.saveClockMode(settingsId, clockMode);
     }
+
+    public void saveTemperatureUnit(final long settingsId, final int unit) {
+        settingsLocalDataSource.saveTemperatureUnit(settingsId, unit);
+    }
+
+    public void savePressureUnit(final long settingsId, final int unit) {
+        settingsLocalDataSource.savePressureUnit(settingsId, unit);
+    }
 }
