@@ -1,27 +1,24 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toolbar;
 
+import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
+import com.knobtviker.thermopile.presentation.views.adapters.SettingsPagerAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
-
-import org.joda.time.DateTimeZone;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -35,9 +32,13 @@ public class SettingsFragment extends BaseFragment {
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
-    @BindView(R.id.spinner_timezone)
-    public Spinner spinnerTimezone;
+    @BindView(R.id.tab_layout)
+    public TabLayout tabLayout;
 
+    @BindView(R.id.view_pager)
+    public ViewPager viewPager;
+
+    @Nullable
     private MainCommunicator mainCommunicator;
 
     public static Fragment newInstance() {
@@ -68,7 +69,7 @@ public class SettingsFragment extends BaseFragment {
         bind(this, view);
 
         setupToolbar();
-        setupSpinnerTimezone();
+        setupViewPager();
 
         return view;
     }
@@ -83,7 +84,10 @@ public class SettingsFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            mainCommunicator.back();
+
+            if (mainCommunicator != null) {
+                mainCommunicator.back();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -100,11 +104,10 @@ public class SettingsFragment extends BaseFragment {
         setupCustomActionBarWithHomeAsUp(toolbar);
     }
 
-    private void setupSpinnerTimezone() {
-        final List<String> timezones = new ArrayList<>(DateTimeZone.getAvailableIDs());
-        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, timezones);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerTimezone.setAdapter(spinnerAdapter);
-        spinnerTimezone.setPrompt("Timezone");
+    private void setupViewPager() {
+        viewPager.setOffscreenPageLimit(3);
+        viewPager.setAdapter(new SettingsPagerAdapter(getChildFragmentManager(), ImmutableList.of("Location", "Formats", "Units")));
+
+        tabLayout.setupWithViewPager(viewPager);
     }
 }
