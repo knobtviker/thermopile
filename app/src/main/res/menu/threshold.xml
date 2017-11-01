@@ -7,7 +7,7 @@
         android:id="@+id/action_save"
         android:icon="@drawable/ic_save"
         android:showAsAction="always"
-        android:title="@string/action_charts"
+        android:title="@string/action_save"
         tools:ignore="AppCompatResource"/>
 
 </menu>

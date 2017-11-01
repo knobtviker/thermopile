@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/action_help"
+        android:icon="@drawable/ic_help"
+        android:showAsAction="always"
+        android:title="@string/action_help"
+        tools:ignore="AppCompatResource"/>
+
+    <item
+        android:id="@+id/action_about"
+        android:icon="@drawable/ic_about"
+        android:showAsAction="always"
+        android:title="@string/action_about"
+        tools:ignore="AppCompatResource"/>
 
 </menu>

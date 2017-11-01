@@ -84,10 +84,18 @@ public class SettingsFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-
             if (mainCommunicator != null) {
                 mainCommunicator.back();
             }
+            return true;
+        }
+        if (item.getItemId() == R.id.action_help) {
+            //TODO: Show help activity
+            return true;
+        }
+        if (item.getItemId() == R.id.action_about) {
+            //TODO: Show about app activity
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -105,8 +113,10 @@ public class SettingsFragment extends BaseFragment {
     }
 
     private void setupViewPager() {
-        viewPager.setOffscreenPageLimit(3);
-        viewPager.setAdapter(new SettingsPagerAdapter(getChildFragmentManager(), ImmutableList.of("Location", "Formats", "Units")));
+        viewPager.setAdapter(new SettingsPagerAdapter(getChildFragmentManager(), ImmutableList.of(getString(R.string.label_region), getString(R.string.label_format), getString(R.string.label_unit))));
+        if (viewPager.getAdapter() != null) {
+            viewPager.setOffscreenPageLimit(viewPager.getAdapter().getCount());
+        }
 
         tabLayout.setupWithViewPager(viewPager);
     }
