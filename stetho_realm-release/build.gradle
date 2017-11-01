@@ -1,2 +1,0 @@
-configurations.maybeCreate("default")
-artifacts.add("default", file('stetho_realm-release.aar'))
