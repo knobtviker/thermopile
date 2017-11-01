@@ -7,9 +7,11 @@ import android.util.Log;
 
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -71,6 +73,13 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
             .name(BuildConfig.DATABASE_NAME)
             .schemaVersion(BuildConfig.DATABASE_VERSION)
             .deleteRealmIfMigrationNeeded()
+            .initialData(realm -> {
+                final Settings settings = new Settings();
+                settings.id(0L);
+                settings.timezone("Europe/Zagreb");
+                settings.formatClock(Constants.CLOCK_MODE_24H);
+                realm.insert(settings);
+            })
             .build();
 
         Realm.setDefaultConfiguration(config);

@@ -67,8 +67,16 @@ public class Settings extends RealmObject {
         this.screensaverDelay = screensaverDelay;
     }
 
+    public long id() {
+        return id;
+    }
+
+    public void id(long id) {
+        this.id = id;
+    }
+
     @PrimaryKey
-    private long id = 0; //TODO: Hardcoded to 0 but should be userId for multiuser support. Every user has it's owm settings record
+    private long id; //TODO: Should be userId for multiuser support. Every user has it's owm settings record
 
     private String timezone;
 

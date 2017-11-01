@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.sources.AtmosphereDataSource;
@@ -16,10 +17,9 @@ import io.realm.Sort;
  */
 
 public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
+    private final String TAG = AtmosphereLocalDataSource.class.getSimpleName();
 
     private static Optional<AtmosphereLocalDataSource> INSTANCE = Optional.empty();
-
-    private static Realm realm = null;
 
     public static AtmosphereLocalDataSource getInstance() {
         if (!INSTANCE.isPresent()) {
@@ -30,28 +30,23 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
 
     public static void destroyInstance() {
         if (INSTANCE.isPresent()) {
-            if (realm != null && !realm.isClosed()) {
-                realm.close();
-                realm = null;
-            }
             INSTANCE = Optional.empty();
         }
     }
 
     private AtmosphereLocalDataSource() {
-        realm = Realm.getDefaultInstance();
     }
 
     @Override
     public RealmResults<Atmosphere> load() {
-        return realm
+        return Realm.getDefaultInstance()
             .where(Atmosphere.class)
             .findAllAsync();
     }
 
     @Override
     public RealmResults<Atmosphere> latest() {
-        return realm
+        return Realm.getDefaultInstance()
             .where(Atmosphere.class)
             .findAllSortedAsync("timestamp", Sort.DESCENDING);
     }
@@ -59,7 +54,14 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
     @Override
     public void save(@NonNull Atmosphere item) {
 //        Log.i("ATMOSPHERE SAVE", item.timestamp() + " --- " + item.temperature());
-        realm
-            .executeTransactionAsync(realm1 -> realm1.insertOrUpdate(item));
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(
+            realm1 -> realm1.insertOrUpdate(item),
+            realm::close,
+            error -> {
+                Log.e(TAG, error.getMessage(), error);
+                realm.close();
+            }
+        );
     }
 }

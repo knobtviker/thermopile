@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.SettingsDataSource;
@@ -15,10 +16,9 @@ import io.realm.RealmResults;
  */
 
 public class SettingsLocalDataSource implements SettingsDataSource.Local {
+    private final String TAG = SettingsLocalDataSource.class.getSimpleName();
 
     private static Optional<SettingsLocalDataSource> INSTANCE = Optional.empty();
-
-    private static Realm realm = null;
 
     public static SettingsLocalDataSource getInstance() {
         if (!INSTANCE.isPresent()) {
@@ -29,28 +29,51 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
 
     public static void destroyInstance() {
         if (INSTANCE.isPresent()) {
-            if (realm != null && !realm.isClosed()) {
-                realm.close();
-                realm = null;
-            }
             INSTANCE = Optional.empty();
         }
     }
 
     private SettingsLocalDataSource() {
-        realm = Realm.getDefaultInstance();
     }
 
     @Override
     public RealmResults<Settings> load() {
-        return realm
+        return Realm.getDefaultInstance()
             .where(Settings.class)
             .findAllAsync();
     }
 
     @Override
-    public void save(@NonNull Settings item) {
-        realm
-            .executeTransactionAsync(realm1 -> realm1.insertOrUpdate(item));
+    public void saveTimezone(long settingsId, @NonNull String timezone) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(
+            realm1 -> {
+                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
+                settings.timezone(timezone);
+                realm1.insertOrUpdate(settings);
+            },
+            realm::close,
+            error -> {
+                Log.e(TAG, error.getMessage(), error);
+                realm.close();
+            }
+        );
+    }
+
+    @Override
+    public void saveClockMode(long settingsId, int clockMode) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(
+            realm1 -> {
+                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
+                settings.formatClock(clockMode);
+                realm1.insertOrUpdate(settings);
+            },
+            realm::close,
+            error -> {
+                Log.e(TAG, error.getMessage(), error);
+                realm.close();
+            }
+        );
     }
 }

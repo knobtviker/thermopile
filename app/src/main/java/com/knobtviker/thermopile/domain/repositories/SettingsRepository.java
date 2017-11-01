@@ -43,7 +43,11 @@ public class SettingsRepository extends BaseRepository {
         return settingsLocalDataSource.load();
     }
 
-    public void save(@NonNull final Settings item) {
-        settingsLocalDataSource.save(item);
+    public void saveTimezone(final long settingsId, @NonNull final String timezone) {
+        settingsLocalDataSource.saveTimezone(settingsId, timezone);
+    }
+
+    public void saveClockMode(final long settingsId, final int clockMode) {
+        settingsLocalDataSource.saveClockMode(settingsId, clockMode);
     }
 }

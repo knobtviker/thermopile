@@ -16,6 +16,8 @@ public interface SettingsDataSource {
 
         RealmResults<Settings> load();
 
-        void save(@NonNull final Settings item);
+        void saveTimezone(final long settingsId, @NonNull final String timezone);
+
+        void saveClockMode(final long settingsId, final int clockMode);
     }
 }

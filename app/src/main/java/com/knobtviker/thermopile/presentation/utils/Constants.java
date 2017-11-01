@@ -21,4 +21,7 @@ public class Constants {
     public static final String KEY_START_MINUTE = "key_start_minute";
     public static final String KEY_MAX_WIDTH = "key_max_width";
     public static final String KEY_THRESHOLD_ID = "key_threshold_id";
+
+    public static final int CLOCK_MODE_12H = 0;
+    public static final int CLOCK_MODE_24H = 1;
 }

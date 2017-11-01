@@ -4,7 +4,7 @@
     <string name="label_settings">Settings</string>
     <string name="label_region">Region</string>
     <string name="label_format">Format</string>
-    <string name="label_unit">Units</string>
+    <string name="label_unit">Unit</string>
 
     <string name="action_charts">Charts</string>
     <string name="action_schedule">Schedule</string>
