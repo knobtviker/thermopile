@@ -29,19 +29,6 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textview_date"
-            style="@style/TextAppearance.AppCompat.Display3"
-            fontPath="fonts/WorkSans-Bold.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|left"
-            android:textColor="?android:textColorPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingPrefix"
-            tools:text="22.10.2017."/>
-
-        <TextView
             android:id="@+id/textview_day"
             style="@style/TextAppearance.AppCompat.Display2"
             fontPath="fonts/WorkSans-Regular.ttf"
@@ -50,11 +37,24 @@
             android:gravity="center_vertical|left"
             android:textAllCaps="true"
             android:textColor="?android:textColorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_date"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix"
             tools:text="Sunday"/>
+
+        <TextView
+            android:id="@+id/textview_date"
+            style="@style/TextAppearance.AppCompat.Display3"
+            fontPath="fonts/WorkSans-Bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_day"
+            android:textColor="?android:textColorPrimary"
+            tools:ignore="MissingPrefix"
+            tools:text="22.10.2017."/>
 
     </android.support.constraint.ConstraintLayout>
 

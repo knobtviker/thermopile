@@ -18,6 +18,7 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +60,7 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        
+
         final View view = inflater.inflate(R.layout.fragment_settings_format, container, false);
 
         bind(this, view);
@@ -87,7 +88,7 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
         this.settingsId = settings.id();
 
         final String formatDate = settings.formatDate();
-        for (int i = 0; i<spinnerAdapterDate.getCount(); i++) {
+        for (int i = 0; i < spinnerAdapterDate.getCount(); i++) {
             if (spinnerAdapterDate.getItem(i).equalsIgnoreCase(formatDate)) {
                 spinnerFormatDate.setSelection(i);
                 break;
@@ -95,7 +96,7 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
         }
 
         final String formatTime = settings.formatTime();
-        for (int i = 0; i<spinnerAdapterTime.getCount(); i++) {
+        for (int i = 0; i < spinnerAdapterTime.getCount(); i++) {
             if (spinnerAdapterTime.getItem(i).equalsIgnoreCase(formatTime)) {
                 spinnerFormatTime.setSelection(i);
                 break;
@@ -123,8 +124,15 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
             }
         });
 
-        //TODO: This list needs to be predefined in Realm and tested. User must have a custom option at the end.
-        final List<String> formats = Arrays.asList("EEEE dd.MM.yyyy.", "dd.MM.yyyy.", "EEEE MM/dd/yyyy", "MM/dd/yyyy");
+        //TODO: Move this somewhere that is easy to maintain and not hardcoded
+        final List<String> formats = Arrays.asList(
+            "EEEE dd.MM.yyyy.",
+            "EE dd.MM.yyyy.",
+            "dd.MM.yyyy.",
+            "EEEE MM/dd/yyyy",
+            "EE MM/dd/yyyy",
+            "MM/dd/yyyy"
+        );
         spinnerAdapterDate = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, formats);
         spinnerAdapterDate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -148,8 +156,7 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
             }
         });
 
-        //TODO: This list needs to be predefined in Realm and tested. User must have a custom option at the end.
-        final List<String> formats = Arrays.asList("HH:mm", "HH:mm", "HH:mm");
+        final List<String> formats = Arrays.asList(Constants.FORMAT_TIME_LONG_24H, Constants.FORMAT_TIME_SHORT_24H);
         spinnerAdapterTime = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, formats);
         spinnerAdapterTime.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

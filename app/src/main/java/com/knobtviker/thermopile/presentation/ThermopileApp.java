@@ -76,12 +76,12 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
             .initialData(realm -> {
                 final Settings settings = new Settings();
                 settings.id(0L);
-                settings.timezone("Europe/Zagreb");
+                settings.timezone(Constants.DEFAULT_TIMEZONE);
                 settings.formatClock(Constants.CLOCK_MODE_24H);
                 settings.unitTemperature(Constants.UNIT_TEMPERATURE_CELSIUS);
                 settings.unitPressure(Constants.UNIT_PRESSURE_PASCAL);
-                settings.formatDate("EEEE dd.MM.yyyy.");
-                settings.formatTime("HH:mm");
+                settings.formatDate(Constants.DEFAULT_FORMAT_DATE);
+                settings.formatTime(Constants.FORMAT_TIME_LONG_24H);
                 realm.insert(settings);
             })
             .build();

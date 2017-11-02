@@ -63,6 +63,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //    private float fakeIncrease = 0.05f;
 
     private DateTimeZone dateTimeZone;
+    private int formatClock;
+    private String formatDate;
+    private String formatTime;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -107,7 +110,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         setHasOptionsMenu(true);
 
-        dateTimeZone = DateTimeZone.forID("Europe/Zagreb");
+        dateTimeZone = DateTimeZone.forID(Constants.DEFAULT_TIMEZONE);
+        formatClock = Constants.CLOCK_MODE_24H;
+        formatDate = Constants.DEFAULT_FORMAT_DATE;
+        formatTime = Constants.FORMAT_TIME_LONG_24H;
 
         presenter = new MainPresenter(this);
     }
@@ -171,7 +177,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onClockTick() {
-        //TODO: Move and get this timezone from Settings in Realm
         final DateTime dateTime = new DateTime(dateTimeZone);
         setDateTime(dateTime);
         maybeApplyThresholds(dateTime);
@@ -217,7 +222,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onSettingsChanged(@NonNull Settings settings) {
         //TODO: Change units and recalculate Atmosphere data
         dateTimeZone = DateTimeZone.forID(settings.timezone());
-        Log.i(TAG, settings.toString());
+        formatClock = settings.formatClock();
+        formatDate = settings.formatDate();
+        formatTime = settings.formatTime();
     }
 
     @Override
@@ -250,8 +257,16 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     public void setDateTime(@NonNull final DateTime dateTime) {
-        setDate(dateTime.toString("EEEE dd.MM.yyyy."));
-        setTime(dateTime.toString("HH:mm"));
+        setDate(dateTime.toString(formatDate));
+
+        if (formatClock == Constants.CLOCK_MODE_12H) {
+            if (formatTime.contains(Constants.FORMAT_TIME_LONG_24H)) {
+                formatTime = formatTime.replace(Constants.FORMAT_TIME_LONG_24H, Constants.FORMAT_TIME_LONG_12H);
+            } else if (formatTime.contains(Constants.FORMAT_TIME_SHORT_24H)) {
+                formatTime = formatTime.replace(Constants.FORMAT_TIME_SHORT_24H, Constants.FORMAT_TIME_SHORT_12H);
+            }
+        }
+        setTime(dateTime.toString(formatTime));
     }
 
     public void maybeApplyThresholds(@NonNull final DateTime dateTime) {

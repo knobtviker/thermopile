@@ -20,7 +20,18 @@ public class Constants {
     public static final int UNIT_TEMPERATURE_CELSIUS = 0;
     public static final int UNIT_TEMPERATURE_FAHRENHEIT = 1;
     public static final int UNIT_TEMPERATURE_KELVIN = 2;
+
     public static final int UNIT_PRESSURE_PASCAL = 0;
     public static final int UNIT_PRESSURE_BAR = 1;
     public static final int UNIT_PRESSURE_PSI = 2;
+
+    public static final String FORMAT_DAY_LONG = "EEEE";
+    public static final String FORMAT_DAY_SHORT = "EE";
+    public static final String FORMAT_TIME_LONG_24H = "HH:mm";
+    public static final String FORMAT_TIME_SHORT_24H = "H:m";
+    public static final String FORMAT_TIME_LONG_12H = "KK:mm a";
+    public static final String FORMAT_TIME_SHORT_12H = "K:m a";
+
+    public static final String DEFAULT_TIMEZONE = "Europe/Zagreb";
+    public static final String DEFAULT_FORMAT_DATE = String.format("%s dd.MM.yyyy.", FORMAT_DAY_LONG);
 }
