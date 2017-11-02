@@ -36,6 +36,8 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     private int formatClock;
     private String formatDate;
     private String formatTime;
+    private int unitTemperature;
+    private int unitPressure;
 
     @BindView(R.id.textview_clock)
     public TextView textViewClock;
@@ -55,6 +57,12 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     @BindView(R.id.textview_pressure)
     public TextView textViewPressure;
 
+    @BindView(R.id.textview_temperature_unit)
+    public TextView textViewTemperatureUnit;
+
+    @BindView(R.id.textview_pressure_unit)
+    public TextView textViewPressureUnit;
+
     public static Fragment newInstance() {
         return new ScreensaverFragment();
     }
@@ -69,6 +77,8 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         formatClock = Constants.CLOCK_MODE_24H;
         formatDate = Constants.DEFAULT_FORMAT_DATE;
         formatTime = Constants.FORMAT_TIME_LONG_24H;
+        unitTemperature = Constants.UNIT_TEMPERATURE_CELSIUS;
+        unitPressure = Constants.UNIT_PRESSURE_PASCAL;
 
         presenter = new ScreenSaverPresenter(this);
     }
@@ -108,19 +118,22 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     @SuppressLint("SetTextI18n")
     @Override
     public void onDataChanged(@NonNull Atmosphere data) {
-        //TODO: Change units and recalculate Atmosphere data according to Settings loaded
-        textViewTemperature.setText(MathKit.round(data.temperature(), 0).toString());
+        textViewTemperature.setText(MathKit.round(factorTemperature(data.temperature()), 0).toString());
         textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
-        textViewPressure.setText(MathKit.round(data.pressure(), 0).toString());
+        textViewPressure.setText(MathKit.round(factorPressure(data.pressure()), 0).toString());
     }
 
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
-        //TODO: Change units and recalculate Atmosphere data
         dateTimeZone = DateTimeZone.forID(settings.timezone());
         formatClock = settings.formatClock();
         formatDate = settings.formatDate();
         formatTime = settings.formatTime();
+        unitTemperature = settings.unitTemperature();
+        unitPressure = settings.unitPressure();
+
+        setTemperatureUnit();
+        setPressureUnit();
     }
 
     private void setDateTime(@NonNull final DateTime dateTime) {
@@ -155,5 +168,65 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     private void setDay(@NonNull final String date) {
         textViewDay.setText(date);
+    }
+
+    private float factorTemperature(final float measuredTemperature) {
+        switch (unitTemperature) {
+            case Constants.UNIT_TEMPERATURE_CELSIUS:
+                return measuredTemperature * 1.0f;
+            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
+                return measuredTemperature * 1.8f + 32.0f;
+            case Constants.UNIT_TEMPERATURE_KELVIN:
+                return measuredTemperature + 273.15f;
+            default:
+                return measuredTemperature * 1.0f;
+        }
+    }
+
+    private float factorPressure(final float measuredPressure) {
+        switch (unitPressure) {
+            case Constants.UNIT_PRESSURE_PASCAL:
+                return measuredPressure * 1.0f; //in hectopascals
+            case Constants.UNIT_PRESSURE_BAR:
+                return measuredPressure * 1.0f; //in milibars
+            case Constants.UNIT_PRESSURE_PSI:
+                return measuredPressure * 0.014503773773022f; //in psi
+            default:
+                return measuredPressure * 1.0f;
+        }
+    }
+
+    private void setTemperatureUnit() {
+        switch (unitTemperature) {
+            case Constants.UNIT_TEMPERATURE_CELSIUS:
+                textViewTemperatureUnit.setText(getString(R.string.unit_temperature_celsius));
+                break;
+            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
+                textViewTemperatureUnit.setText(getString(R.string.unit_temperature_fahrenheit));
+                break;
+            case Constants.UNIT_TEMPERATURE_KELVIN:
+                textViewTemperatureUnit.setText(getString(R.string.unit_temperature_kelvin));
+                break;
+            default:
+                textViewTemperatureUnit.setText(getString(R.string.unit_temperature_celsius));
+                break;
+        }
+    }
+
+    private void setPressureUnit() {
+        switch (unitPressure) {
+            case Constants.UNIT_PRESSURE_PASCAL:
+                textViewPressureUnit.setText(getString(R.string.unit_pressure_pascal));
+                break;
+            case Constants.UNIT_PRESSURE_BAR:
+                textViewPressureUnit.setText(getString(R.string.unit_pressure_bar));
+                break;
+            case Constants.UNIT_PRESSURE_PSI:
+                textViewPressureUnit.setText(getString(R.string.unit_pressure_psi));
+                break;
+            default:
+                textViewPressureUnit.setText(getString(R.string.unit_pressure_pascal));
+                break;
+        }
     }
 }

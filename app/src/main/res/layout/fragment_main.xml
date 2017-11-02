@@ -94,7 +94,7 @@
         <TextView
             android:id="@+id/textview_temperature_unit"
             style="@style/TextUnitTemperature"
-            android:text="°C"
+            android:text="@string/unit_temperature_celsius"
             app:layout_constraintBottom_toBottomOf="@id/textview_temperature"
             app:layout_constraintStart_toEndOf="@id/textview_temperature"
             app:layout_constraintTop_toTopOf="@id/textview_temperature"/>
@@ -132,7 +132,7 @@
         <TextView
             android:id="@+id/textview_humidity_unit"
             style="@style/TextUnitHumidity"
-            android:text="%"
+            android:text="@string/unit_humidity_percent"
             app:layout_constraintBottom_toBottomOf="@id/textview_humidity"
             app:layout_constraintStart_toEndOf="@id/textview_humidity"
             app:layout_constraintTop_toBottomOf="@id/imageview_humidity"
@@ -170,7 +170,7 @@
         <TextView
             android:id="@+id/textview_pressure_unit"
             style="@style/TextUnitPressure"
-            android:text="hPa"
+            android:text="@string/unit_pressure_pascal"
             app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
             app:layout_constraintStart_toEndOf="@id/textview_pressure"
             app:layout_constraintTop_toBottomOf="@id/imageview_pressure"
