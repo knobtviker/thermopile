@@ -80,6 +80,8 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
                 settings.formatClock(Constants.CLOCK_MODE_24H);
                 settings.unitTemperature(Constants.UNIT_TEMPERATURE_CELSIUS);
                 settings.unitPressure(Constants.UNIT_PRESSURE_PASCAL);
+                settings.formatDate("EEEE dd.MM.yyyy.");
+                settings.formatTime("HH:mm");
                 realm.insert(settings);
             })
             .build();

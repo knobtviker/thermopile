@@ -27,19 +27,19 @@ public class Settings extends RealmObject {
         this.formatClock = formatClock;
     }
 
-    public int formatDate() {
+    public String formatDate() {
         return formatDate;
     }
 
-    public void formatDate(final int formatDate) {
+    public void formatDate(final String formatDate) {
         this.formatDate = formatDate;
     }
 
-    public int formatTime() {
+    public String formatTime() {
         return formatTime;
     }
 
-    public void formatTime(final int formatTime) {
+    public void formatTime(final String formatTime) {
         this.formatTime = formatTime;
     }
 
@@ -82,9 +82,9 @@ public class Settings extends RealmObject {
 
     private int formatClock;
 
-    private int formatDate;
+    private String formatDate;
 
-    private int formatTime;
+    private String formatTime;
 
     private int unitTemperature;
 

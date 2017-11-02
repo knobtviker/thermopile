@@ -94,6 +94,16 @@ public class SettingsPresenter implements SettingsContract.Presenter {
     }
 
     @Override
+    public void saveFormatDate(long settingsId, @NonNull String item) {
+        settingsRepository.saveFormatDate(settingsId, item);
+    }
+
+    @Override
+    public void saveFormatTime(long settingsId, @NonNull String item) {
+        settingsRepository.saveFormatTime(settingsId, item);
+    }
+
+    @Override
     public void saveTemperatureUnit(long settingsId, int unit) {
         settingsRepository.saveTemperatureUnit(settingsId, unit);
     }

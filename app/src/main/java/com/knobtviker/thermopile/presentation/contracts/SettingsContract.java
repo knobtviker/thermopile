@@ -25,6 +25,10 @@ public interface SettingsContract {
 
         void saveClockMode(final long settingsId, final int clockMode);
 
+        void saveFormatDate(final long settingsId, @NonNull final String item);
+
+        void saveFormatTime(final long settingsId, @NonNull final String item);
+
         void saveTemperatureUnit(final long settingsId, final int unit);
 
         void savePressureUnit(final long settingsId, final int unit);

@@ -51,6 +51,14 @@ public class SettingsRepository extends BaseRepository {
         settingsLocalDataSource.saveClockMode(settingsId, clockMode);
     }
 
+    public void saveFormatDate(final long settingsId, @NonNull final String item) {
+        settingsLocalDataSource.saveFormatDate(settingsId, item);
+    }
+
+    public void saveFormatTime(final long settingsId, @NonNull final String item) {
+        settingsLocalDataSource.saveFormatTime(settingsId, item);
+    }
+
     public void saveTemperatureUnit(final long settingsId, final int unit) {
         settingsLocalDataSource.saveTemperatureUnit(settingsId, unit);
     }

@@ -14,4 +14,5 @@ public abstract class BaseRepository {
     protected BaseRepository() {
         this.schedulerProvider = SchedulerProvider.getInstance();
     }
+
 }

@@ -78,6 +78,40 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
     }
 
     @Override
+    public void saveFormatDate(long settingsId, @NonNull String item) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(
+            realm1 -> {
+                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
+                settings.formatDate(item);
+                realm1.insertOrUpdate(settings);
+            },
+            realm::close,
+            error -> {
+                Log.e(TAG, error.getMessage(), error);
+                realm.close();
+            }
+        );
+    }
+
+    @Override
+    public void saveFormatTime(long settingsId, @NonNull String item) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(
+            realm1 -> {
+                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
+                settings.formatTime(item);
+                realm1.insertOrUpdate(settings);
+            },
+            realm::close,
+            error -> {
+                Log.e(TAG, error.getMessage(), error);
+                realm.close();
+            }
+        );
+    }
+
+    @Override
     public void saveTemperatureUnit(long settingsId, int unit) {
         final Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(
