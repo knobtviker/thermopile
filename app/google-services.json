@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "823391835580",
+    "firebase_url": "https://thermopile-50cbe.firebaseio.com",
+    "project_id": "thermopile-50cbe",
+    "storage_bucket": "thermopile-50cbe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823391835580:android:d3eb5604382b65cd",
+        "android_client_info": {
+          "package_name": "com.knobtviker.thermopile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823391835580-lj65h7tjb9akkfd2bb53laibbuhlc199.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.knobtviker.thermopile",
+            "certificate_hash": "c3efc7319dc169de62e04962e96e0d350c55fc91"
+          }
+        },
+        {
+          "client_id": "823391835580-0q4rsgpedjnb0eljl1ppsjtpqjgd7d9v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAulc8lI1MB2exLbh1AAvdf7CSgmm7kGos"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "823391835580-0q4rsgpedjnb0eljl1ppsjtpqjgd7d9v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

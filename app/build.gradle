@@ -21,7 +21,7 @@ android {
         buildConfigField "int", 'DATABASE_VERSION', '1'
     }
     buildTypes {
-        debug{
+        debug {
         }
         release {
             minifyEnabled false
@@ -68,5 +68,8 @@ dependencies {
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
     //other
     implementation 'com.facebook.stetho:stetho:1.5.0'
-//    implementation 'com.github.knobtviker:stetho-realm:89a851dedb'
+    implementation 'com.uphyca:stetho_realm:2.2.0'
+    implementation 'com.google.firebase:firebase-crash:11.6.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

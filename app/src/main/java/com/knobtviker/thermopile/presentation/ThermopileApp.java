@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.facebook.stetho.Stetho;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -13,6 +14,7 @@ import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -90,11 +92,16 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     }
 
     private void initStetho() {
-//        Stetho.initialize(
-//            Stetho.newInitializerBuilder(this)
-//                .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-//                .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-//                .build());
+        Stetho.initialize(
+            Stetho.newInitializerBuilder(this)
+                .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                .enableWebKitInspector(
+                    RealmInspectorModulesProvider.builder(this)
+                        .withLimit(1000)
+                        .withDescendingOrder()
+                        .build()
+                )
+                .build());
     }
 
     private void initPresenter() {

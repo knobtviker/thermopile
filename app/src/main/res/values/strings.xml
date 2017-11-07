@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">Thermopile</string>
 
+    <string name="label_schedule">Schedule</string>
     <string name="label_settings">Settings</string>
     <string name="label_region">Region</string>
     <string name="label_format">Format</string>
     <string name="label_unit">Unit</string>
 
     <string name="action_charts">Charts</string>
-    <string name="action_schedule">Schedule</string>
+    <string name="action_schedule" translatable="false">@string/label_schedule</string>
     <string name="action_settings" translatable="false">@string/label_settings</string>
     <string name="action_save">Save</string>
     <string name="action_add">Add</string>

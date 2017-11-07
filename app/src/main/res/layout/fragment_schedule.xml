@@ -9,24 +9,29 @@
     android:background="@color/gray"
     android:clickable="true">
 
-    <Toolbar
-        android:id="@+id/toolbar"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/dark_gray"
-        app:contentInsetEnd="0dp"
-        app:contentInsetStart="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            style="@style/TextDate"
-            android:layout_gravity="center"
-            android:text="Schedule"
-            tools:text="Schedule"/>
+        <Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </Toolbar>
+            <TextView
+                style="@style/TextDate"
+                android:layout_gravity="center"
+                android:text="@string/label_schedule"
+                tools:text="Schedule"/>
+
+        </Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
@@ -34,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline_days"

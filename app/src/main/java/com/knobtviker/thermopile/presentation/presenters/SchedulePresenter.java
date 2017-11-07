@@ -2,7 +2,9 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 
@@ -18,8 +20,12 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
 
     private final ScheduleContract.View view;
 
+    private SettingsRepository settingsRepository;
     private ThresholdRepository thresholdRepository;
     private CompositeDisposable compositeDisposable;
+
+    private RealmResults<Settings> resultsSettings;
+    private RealmChangeListener<RealmResults<Settings>> changeListenerSettings;
 
     private RealmResults<Threshold> resultsThresholds;
     private RealmChangeListener<RealmResults<Threshold>> changeListenerThresholds;
@@ -30,6 +36,7 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
 
     @Override
     public void subscribe() {
+        settingsRepository = SettingsRepository.getInstance();
         thresholdRepository = ThresholdRepository.getInstance();
         compositeDisposable = new CompositeDisposable();
     }
@@ -40,11 +47,17 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.removeChangeListener(changeListenerSettings);
+            resultsSettings = null;
+            changeListenerSettings = null;
+        }
         if (resultsThresholds != null && resultsThresholds.isValid()) {
             resultsThresholds.removeChangeListener(changeListenerThresholds);
             resultsThresholds = null;
             changeListenerThresholds = null;
         }
+        SettingsRepository.destroyInstance();
         ThresholdRepository.destroyInstance();
     }
 
@@ -63,6 +76,20 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
     @Override
     public void completed() {
         view.showLoading(false);
+    }
+
+    @Override
+    public void settings() {
+        resultsSettings = settingsRepository.load();
+
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            changeListenerSettings = settingsRealmResults -> {
+                if (!settingsRealmResults.isEmpty()) {
+                    view.onSettingsChanged(settingsRealmResults.first());
+                }
+            };
+            resultsSettings.addChangeListener(changeListenerSettings);
+        }
     }
 
     @Override
