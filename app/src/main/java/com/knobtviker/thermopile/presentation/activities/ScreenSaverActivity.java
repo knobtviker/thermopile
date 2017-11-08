@@ -28,12 +28,12 @@ public class ScreenSaverActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             ((ThermopileApp)getApplication()).createScreensaver();
             finish();
         }
-        return super.onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     private void showScreensaver() {
