@@ -12,11 +12,16 @@ public interface ApplicationContract {
     interface View extends BaseView {
 
         void onLuminosityData(final float luminosity);
+
+        void showScreensaver();
     }
 
     interface Presenter extends BasePresenter {
 
         void collectData();
 
+        void createScreensaver();
+
+        void destroyScreensaver();
     }
 }

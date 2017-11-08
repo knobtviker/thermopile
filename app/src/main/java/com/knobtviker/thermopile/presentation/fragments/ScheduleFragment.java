@@ -156,7 +156,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                     } else {
                         textViewHours.get(i).setText(i < 13 ? (i < 10 ? String.format(Locale.getDefault(), "0%d", i) : String.valueOf(i)) : (i - 12 < 10 ? String.format(Locale.getDefault(), "0%d", i - 12) : String.valueOf(i - 12)));
                     }
-                    textViewMinutes.get(i).setText(i < 12 ? "AM" : "PM");
+                    textViewMinutes.get(i).setText(getString(i < 12 ? R.string.am : R.string.pm));
                 } else {
                     textViewHours.get(i).setText(i < 10 ? String.format(Locale.getDefault(), "0%d", i) : String.valueOf(i));
                     textViewMinutes.get(i).setText(getString(R.string._00));
@@ -219,7 +219,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 final Button thresholdView = new Button(layout.getContext());
                 thresholdView.setId(View.generateViewId());
                 thresholdView.setBackgroundColor(threshold.color());
-                thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
+                thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature()))); //TODO: Obey Settings temperature unit
 
                 layout.addView(thresholdView);
 

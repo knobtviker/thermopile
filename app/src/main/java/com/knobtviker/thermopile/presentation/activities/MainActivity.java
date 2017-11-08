@@ -21,13 +21,13 @@ public class MainActivity extends BaseActivity implements MainCommunicator {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             ((ThermopileApp)getApplication()).destroyScreensaver();
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             ((ThermopileApp)getApplication()).createScreensaver();
         }
-        return super.onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     @Override

@@ -2,14 +2,12 @@ package com.knobtviker.thermopile.presentation;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
@@ -18,10 +16,6 @@ import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Completable;
-import io.reactivex.disposables.Disposable;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -37,35 +31,43 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
     @NonNull
     private ApplicationContract.Presenter presenter;
 
-    //TODO: This needs to be moved to presenter
-    @Nullable
-    private Disposable screensaverDisposable;
-
     @Override
     public void onCreate() {
         super.onCreate();
 
         initRealm();
         initStetho();
-        initPresenter();
         initCalligraphy();
         initJodaTime();
+        initPresenter();
+    }
 
-        createScreensaver();
+    @Override
+    public void showLoading(boolean isLoading) {
+
+    }
+
+    @Override
+    public void showError(@NonNull Throwable throwable) {
+        Log.e(TAG, throwable.getMessage(), throwable);
+    }
+
+    @Override
+    public void onLuminosityData(float luminosity) {
+//        Log.i(TAG, "LUMINOSITY --- "+luminosity/40000.0f);
+    }
+
+    @Override
+    public void showScreensaver() {
+        Router.showScreensaver(this);
     }
 
     public void createScreensaver() {
-        //TODO: Timer delay for screensaver should be loaded from Settings.
-        screensaverDisposable = Completable.timer(300, TimeUnit.SECONDS, SchedulerProvider.getInstance().screensaver())
-            .observeOn(SchedulerProvider.getInstance().screensaver())
-            .subscribe(this::showScreensaver);
+        presenter.createScreensaver();
     }
 
     public void destroyScreensaver() {
-        if (screensaverDisposable != null && !screensaverDisposable.isDisposed()) {
-            screensaverDisposable.dispose();
-            screensaverDisposable = null;
-        }
+        presenter.destroyScreensaver();
     }
 
     private void initRealm() {
@@ -108,6 +110,7 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
         presenter = new ApplicationPresenter(this);
         presenter.subscribe();
         presenter.collectData();
+        presenter.createScreensaver();
     }
 
     private void initCalligraphy() {
@@ -119,24 +122,5 @@ public class ThermopileApp extends Application implements ApplicationContract.Vi
 
     private void initJodaTime() {
         JodaTimeAndroid.init(this);
-    }
-
-    private void showScreensaver() {
-        Router.showScreensaver(this);
-    }
-
-    @Override
-    public void showLoading(boolean isLoading) {
-
-    }
-
-    @Override
-    public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
-    }
-
-    @Override
-    public void onLuminosityData(float luminosity) {
-//        Log.i(TAG, "LUMINOSITY --- "+luminosity/40000.0f);
     }
 }

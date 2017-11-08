@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by bojan on 08/08/2017.
@@ -22,6 +24,9 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
 
     private AtmosphereRepository atmosphereRepository;
     private CompositeDisposable compositeDisposable;
+
+    @Nullable
+    private Disposable screensaverDisposable;
 
     public ApplicationPresenter(@NonNull final ApplicationContract.View view) {
         this.view = view;
@@ -81,5 +86,25 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
                     this::error
                 )
         );
+    }
+
+    @Override
+    public void createScreensaver() {
+//        //TODO: Timer delay for screensaver should be loaded from Settings.
+        screensaverDisposable = Completable
+            .timer(60, TimeUnit.SECONDS, SchedulerProvider.getInstance().screensaver())
+            .observeOn(SchedulerProvider.getInstance().screensaver())
+            .subscribe(
+                view::showScreensaver,
+                this::error
+            );
+    }
+
+    @Override
+    public void destroyScreensaver() {
+        if (screensaverDisposable != null && !screensaverDisposable.isDisposed()) {
+            screensaverDisposable.dispose();
+            screensaverDisposable = null;
+        }
     }
 }
