@@ -57,11 +57,8 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
         final Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(
             realm1 -> realm1.insertOrUpdate(item),
-            realm::close,
-            error -> {
-                Log.e(TAG, error.getMessage(), error);
-                realm.close();
-            }
+            error -> Log.e(TAG, error.getMessage(), error)
         );
+        realm.close();
     }
 }

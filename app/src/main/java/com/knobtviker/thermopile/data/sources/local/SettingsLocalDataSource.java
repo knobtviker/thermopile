@@ -49,15 +49,14 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
         realm.executeTransactionAsync(
             realm1 -> {
                 final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                settings.timezone(timezone);
-                realm1.insertOrUpdate(settings);
+                if (settings != null) {
+                    settings.timezone(timezone);
+                    realm1.insertOrUpdate(settings);
+                }
             },
-            realm::close,
-            error -> {
-                Log.e(TAG, error.getMessage(), error);
-                realm.close();
-            }
+            error -> Log.e(TAG, error.getMessage(), error)
         );
+        realm.close();
     }
 
     @Override
@@ -66,15 +65,14 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
         realm.executeTransactionAsync(
             realm1 -> {
                 final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                settings.formatClock(clockMode);
-                realm1.insertOrUpdate(settings);
+                if (settings != null) {
+                    settings.formatClock(clockMode);
+                    realm1.insertOrUpdate(settings);
+                }
             },
-            realm::close,
-            error -> {
-                Log.e(TAG, error.getMessage(), error);
-                realm.close();
-            }
+            error -> Log.e(TAG, error.getMessage(), error)
         );
+        realm.close();
     }
 
     @Override
@@ -83,15 +81,14 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
         realm.executeTransactionAsync(
             realm1 -> {
                 final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                settings.formatDate(item);
-                realm1.insertOrUpdate(settings);
+                if (settings != null) {
+                    settings.formatDate(item);
+                    realm1.insertOrUpdate(settings);
+                }
             },
-            realm::close,
-            error -> {
-                Log.e(TAG, error.getMessage(), error);
-                realm.close();
-            }
+            error -> Log.e(TAG, error.getMessage(), error)
         );
+        realm.close();
     }
 
     @Override
@@ -100,15 +97,14 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
         realm.executeTransactionAsync(
             realm1 -> {
                 final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                settings.formatTime(item);
-                realm1.insertOrUpdate(settings);
+                if (settings != null) {
+                    settings.formatTime(item);
+                    realm1.insertOrUpdate(settings);
+                }
             },
-            realm::close,
-            error -> {
-                Log.e(TAG, error.getMessage(), error);
-                realm.close();
-            }
+            error -> Log.e(TAG, error.getMessage(), error)
         );
+        realm.close();
     }
 
     @Override
@@ -117,15 +113,14 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
         realm.executeTransactionAsync(
             realm1 -> {
                 final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                settings.unitTemperature(unit);
-                realm1.insertOrUpdate(settings);
+                if (settings != null) {
+                    settings.unitTemperature(unit);
+                    realm1.insertOrUpdate(settings);
+                }
             },
-            realm::close,
-            error -> {
-                Log.e(TAG, error.getMessage(), error);
-                realm.close();
-            }
+            error -> Log.e(TAG, error.getMessage(), error)
         );
+        realm.close();
     }
 
     @Override
@@ -134,14 +129,13 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
         realm.executeTransactionAsync(
             realm1 -> {
                 final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                settings.unitPressure(unit);
-                realm1.insertOrUpdate(settings);
+                if (settings != null) {
+                    settings.unitPressure(unit);
+                    realm1.insertOrUpdate(settings);
+                }
             },
-            realm::close,
-            error -> {
-                Log.e(TAG, error.getMessage(), error);
-                realm.close();
-            }
+            error -> Log.e(TAG, error.getMessage(), error)
         );
+        realm.close();
     }
 }

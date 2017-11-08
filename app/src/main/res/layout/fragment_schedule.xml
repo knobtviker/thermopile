@@ -81,8 +81,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_00"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_00"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -107,8 +108,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_01"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_01"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -133,8 +135,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_02"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_02"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -159,8 +162,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_03"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_03"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -185,8 +189,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_04"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_04"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -211,8 +216,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_05"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_05"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -237,8 +243,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_06"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_06"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -263,8 +270,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_07"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_07"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -289,8 +297,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_08"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_08"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -315,8 +324,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_09"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_09"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -341,8 +351,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_10"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_10"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -367,8 +378,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_11"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_11"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -393,8 +405,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_12"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_12"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -419,8 +432,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_13"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_13"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -445,8 +459,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_14"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_14"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -471,8 +486,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_15"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_15"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -497,8 +513,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_16"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_16"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -523,8 +540,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_17"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_17"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -549,8 +567,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_18"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_18"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -575,8 +594,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_19"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_19"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -601,8 +621,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_20"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_20"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -627,8 +648,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_21"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_21"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -653,8 +675,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_22"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_22"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -679,8 +702,9 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
+                    android:id="@+id/textview_minute_23"
                     style="@style/ItemTextMinute"
-                    android:text=":00"
+                    android:text="@string/_00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_hour_23"
                     app:layout_constraintTop_toTopOf="parent"/>
