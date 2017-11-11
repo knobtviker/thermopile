@@ -118,9 +118,9 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     @SuppressLint("SetTextI18n")
     @Override
     public void onDataChanged(@NonNull Atmosphere data) {
-        textViewTemperature.setText(MathKit.round(factorTemperature(data.temperature()), 0).toString());
+        textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.temperature()), 0).toString());
         textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
-        textViewPressure.setText(MathKit.round(factorPressure(data.pressure()), 0).toString());
+        textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.pressure()), 0).toString());
     }
 
     @Override
@@ -168,32 +168,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     private void setDay(@NonNull final String date) {
         textViewDay.setText(date);
-    }
-
-    private float factorTemperature(final float measuredTemperature) {
-        switch (unitTemperature) {
-            case Constants.UNIT_TEMPERATURE_CELSIUS:
-                return measuredTemperature * 1.0f;
-            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
-                return measuredTemperature * 1.8f + 32.0f;
-            case Constants.UNIT_TEMPERATURE_KELVIN:
-                return measuredTemperature + 273.15f;
-            default:
-                return measuredTemperature * 1.0f;
-        }
-    }
-
-    private float factorPressure(final float measuredPressure) {
-        switch (unitPressure) {
-            case Constants.UNIT_PRESSURE_PASCAL:
-                return measuredPressure * 1.0f; //in hectopascals
-            case Constants.UNIT_PRESSURE_BAR:
-                return measuredPressure * 1.0f; //in milibars
-            case Constants.UNIT_PRESSURE_PSI:
-                return measuredPressure * 0.014503773773022f; //in psi
-            default:
-                return measuredPressure * 1.0f;
-        }
     }
 
     private void setTemperatureUnit() {

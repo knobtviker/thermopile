@@ -212,9 +212,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
             seekBarTemperature.setProgress(Math.round(data.temperature()));
         }
 
-        textViewCurrentTemperature.setText(MathKit.round(factorTemperature(data.temperature()), 0).toString());
+        textViewCurrentTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.temperature()), 0).toString());
         textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
-        textViewPressure.setText(MathKit.round(factorPressure(data.pressure()), 0).toString());
+        textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.pressure()), 0).toString());
 
 //        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
 //        final double measured = data.temperature() + fakeIncrease;
@@ -348,32 +348,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private void setTime(@NonNull final String time) {
         textViewClock.setText(time);
-    }
-
-    private float factorTemperature(final float measuredTemperature) {
-        switch (unitTemperature) {
-            case Constants.UNIT_TEMPERATURE_CELSIUS:
-                return measuredTemperature * 1.0f;
-            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
-                return measuredTemperature * 1.8f + 32.0f;
-            case Constants.UNIT_TEMPERATURE_KELVIN:
-                return measuredTemperature + 273.15f;
-            default:
-                return measuredTemperature * 1.0f;
-        }
-    }
-
-    private float factorPressure(final float measuredPressure) {
-        switch (unitPressure) {
-            case Constants.UNIT_PRESSURE_PASCAL:
-                return measuredPressure * 1.0f; //in hectopascals
-            case Constants.UNIT_PRESSURE_BAR:
-                return measuredPressure * 1.0f; //in milibars
-            case Constants.UNIT_PRESSURE_PSI:
-                return measuredPressure * 0.014503773773022f; //in psi
-            default:
-                return measuredPressure * 1.0f;
-        }
     }
 
     private void setTemperatureUnit() {

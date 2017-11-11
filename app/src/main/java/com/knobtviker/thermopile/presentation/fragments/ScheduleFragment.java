@@ -18,7 +18,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -31,6 +30,7 @@ import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
+import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
@@ -211,15 +211,19 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     private void populate(@NonNull final RealmResults<Threshold> thresholds) {
         hourLayouts.forEach(ViewGroup::removeAllViewsInLayout);
+        final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 
         thresholds
             .forEach(threshold -> {
                 final ConstraintLayout layout = hourLayouts.get(threshold.day());
 
-                final Button thresholdView = new Button(layout.getContext());
+                final View thresholdView = layoutInflater.inflate(R.layout.item_threshold, null);
+                final ThresholdViewHolder thresholdViewHolder = new ThresholdViewHolder(thresholdView);
+
                 thresholdView.setId(View.generateViewId());
-                thresholdView.setBackgroundColor(threshold.color());
-                thresholdView.setText(String.format("%s °C", String.valueOf(threshold.temperature()))); //TODO: Obey Settings temperature unit
+
+                thresholdViewHolder.setBackground(threshold.color(), layout.getHeight());
+                thresholdViewHolder.textViewTemperature.setText(String.format("%s °C", String.valueOf(threshold.temperature()))); //TODO: Obey Settings temperature unit
 
                 layout.addView(thresholdView);
 
@@ -242,12 +246,20 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
                 set.applyTo(layout);
 
-                thresholdView.setOnClickListener(view -> Router.showThreshold(getContext(), threshold.id()));
+                thresholdViewHolder.rootLayout.setOnClickListener(view -> Router.showThreshold(getContext(), threshold.id()));
             });
     }
 
     private void add() {
-        final CharSequence[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        final CharSequence[] days = {
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        };
 
         new AlertDialog.Builder(getContext())
             .setTitle("Select a day")
