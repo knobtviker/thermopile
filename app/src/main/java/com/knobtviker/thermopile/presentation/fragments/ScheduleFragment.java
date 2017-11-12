@@ -251,18 +251,10 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     }
 
     private void add() {
-        final CharSequence[] days = {
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday"
-        };
+        final CharSequence[] days = getResources().getStringArray(R.array.weekdays);
 
         new AlertDialog.Builder(getContext())
-            .setTitle("Select a day")
+            .setTitle(R.string.label_select_day)
             .setCancelable(true)
             .setSingleChoiceItems(days, -1, (dialogInterface, index) -> {
                 dialogInterface.dismiss();
