@@ -37,24 +37,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_temperature"
+        <Button
+            android:id="@+id/button_preview"
             android:layout_width="0dp"
             android:layout_height="?attr/listPreferredItemHeight"
+            android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/textview_temperature"
-                style="@style/ItemThresholdTemperature"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="30 °C"/>
-
-        </android.support.constraint.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/white"/>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_time_title"
@@ -63,7 +55,7 @@
             android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_temperature">
+            app:layout_constraintTop_toBottomOf="@id/button_preview">
 
             <TextView
                 android:id="@+id/textview_title_time"

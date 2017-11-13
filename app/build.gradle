@@ -36,7 +36,7 @@ android {
         abi {
             enable true
             reset()
-            include 'armeabi-v7a'
+            include 'armeabi-v7a', 'x86'
             universalApk false
         }
     }
@@ -69,6 +69,7 @@ dependencies {
     //other
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.uphyca:stetho_realm:2.2.0'
+    implementation 'com.google.firebase:firebase-core:11.0.4'
     implementation 'com.google.firebase:firebase-crash:11.0.4'
 }
 

@@ -1,16 +1,15 @@
 package com.knobtviker.thermopile.presentation.views.adapters;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.presentation.views.communicators.ColorCommunicator;
 import com.knobtviker.thermopile.presentation.views.viewholders.ColorViewHolder;
 
 /**
@@ -23,13 +22,13 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
     private final LayoutInflater layoutInflater;
 
-    private final Button targetView;
+    private final ColorCommunicator colorCommunicator;
 
     private int selectedColor = 0;
 
-    public ColorAdapter(@NonNull final Context context, @NonNull final Button targetView) {
+    public ColorAdapter(@NonNull final Context context, @NonNull final ColorCommunicator colorCommunicator) {
         this.layoutInflater = LayoutInflater.from(context);
-        this.targetView = targetView;
+        this.colorCommunicator = colorCommunicator;
 
         final TypedArray colors500TypedArray = context.getResources().obtainTypedArray(R.array.colors_500);
         final Integer[] colors500 = new Integer[colors500TypedArray.length()];
@@ -74,7 +73,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
     }
 
     public void setSelectedColor(final int color) {
-        targetView.setBackgroundTintList(ColorStateList.valueOf(color));
         selectedColor = color;
+        colorCommunicator.onSelectedColor(selectedColor);
     }
 }

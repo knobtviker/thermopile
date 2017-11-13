@@ -1,13 +1,13 @@
 <resources>
 
-    <string name="unit_temperature_celsius">°C</string>
-    <string name="unit_temperature_fahrenheit">F</string>
-    <string name="unit_temperature_kelvin">K</string>
+    <string name="unit_temperature_celsius" translatable="false">°C</string>
+    <string name="unit_temperature_fahrenheit" translatable="false">F</string>
+    <string name="unit_temperature_kelvin" translatable="false">K</string>
 
-    <string name="unit_humidity_percent">%</string>
+    <string name="unit_humidity_percent" translatable="false">%</string>
 
-    <string name="unit_pressure_pascal">hPa</string>
-    <string name="unit_pressure_bar">mbar</string>
-    <string name="unit_pressure_psi">psi</string>
+    <string name="unit_pressure_pascal" translatable="false">hPa</string>
+    <string name="unit_pressure_bar" translatable="false">mbar</string>
+    <string name="unit_pressure_psi" translatable="false">psi</string>
 
 </resources>

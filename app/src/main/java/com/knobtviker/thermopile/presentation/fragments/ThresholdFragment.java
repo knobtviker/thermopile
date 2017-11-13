@@ -1,9 +1,12 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.content.res.ColorStateList;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toolbar;
 
@@ -26,6 +29,7 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
+import com.knobtviker.thermopile.presentation.views.communicators.ColorCommunicator;
 
 import java.util.Optional;
 
@@ -36,7 +40,7 @@ import io.realm.Realm;
  * Created by bojan on 28/10/2017.
  */
 
-public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter> implements ThresholdContract.View {
+public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter> implements ThresholdContract.View, ColorCommunicator {
     public static String TAG = ThresholdFragment.class.getSimpleName();
 
     private int day = -1;
@@ -52,8 +56,11 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
-    @BindView(R.id.button_preview)
-    public Button buttonPreview;
+    @BindView(R.id.layout_temperature)
+    public ConstraintLayout layoutTemperature;
+
+    @BindView(R.id.textview_temperature)
+    public TextView textViewTemperature;
 
     @BindView(R.id.timepicker_start)
     public TimePicker timePickerStart;
@@ -186,12 +193,18 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         getActivity().finish();
     }
 
+    @Override
+    public void onSelectedColor(int color) {
+        applyColor(color);
+    }
+
     private void setupToolbar() {
         setupCustomActionBarWithHomeAsUp(toolbar);
     }
 
     private void setupPreview() {
-        buttonPreview.setText(String.format("%s °C", String.valueOf(seekBarTemperature.getProgress())));
+        //TODO: Obey Settings units
+        textViewTemperature.setText(String.format("%s °C", String.valueOf(seekBarTemperature.getProgress())));
     }
 
     private void setupTimePickers() {
@@ -203,7 +216,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         seekBarTemperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                buttonPreview.setText(String.format("%s °C", String.valueOf(i))); //TODO: This needs to be calculated with units from Settings
+                textViewTemperature.setText(String.format("%s °C", String.valueOf(i))); //TODO: This needs to be calculated with units from Settings
             }
 
             @Override
@@ -216,15 +229,16 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                 //DO NOTHING
             }
         });
-        buttonPreview.setBackgroundTintList(ColorStateList.valueOf(colorAdapter.getItem(0)));
     }
 
     private void setupRecyclerView() {
-        colorAdapter = new ColorAdapter(getContext(), buttonPreview);
+        colorAdapter = new ColorAdapter(getContext(), this);
 
         recyclerViewColors.setHasFixedSize(true);
         recyclerViewColors.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewColors.setAdapter(colorAdapter);
+
+        applyColor(colorAdapter.getItem(0));
     }
 
     private void save() {
@@ -264,5 +278,20 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
         timePickerStart.setHour(startHour);
         timePickerStart.setMinute(startMinute);
+    }
+
+    private void applyColor(final int color) {
+        final ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
+        shapeDrawable.setIntrinsicHeight(getResources().getDimensionPixelSize(R.dimen.corner_24dp));
+        shapeDrawable.setIntrinsicWidth(textViewTemperature.getHeight());
+        shapeDrawable.getPaint().setColor(color);
+
+        final GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[] {color, 0x00000000});
+        gradientDrawable.setAlpha(211);
+        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+        gradientDrawable.setCornerRadius(textViewTemperature.getHeight()/2.0f);
+
+        textViewTemperature.setBackground(shapeDrawable);
+        layoutTemperature.setBackground(gradientDrawable);
     }
 }
