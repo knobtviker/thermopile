@@ -267,7 +267,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         timePickerEnd.setHour(threshold.endHour());
         timePickerEnd.setMinute(threshold.endMinute());
         seekBarTemperature.setProgress(threshold.temperature());
-        colorAdapter.setSelectedColor(threshold.color());
+//        colorAdapter.setSelectedColor(threshold.color());
+
+        applyColor(threshold.color());
     }
 
     private void populate(final int startMinuteX, final int maxWidth) {
@@ -282,14 +284,14 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private void applyColor(final int color) {
         final ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
-        shapeDrawable.setIntrinsicHeight(getResources().getDimensionPixelSize(R.dimen.corner_24dp));
-        shapeDrawable.setIntrinsicWidth(textViewTemperature.getHeight());
+        shapeDrawable.setIntrinsicHeight(getResources().getDimensionPixelSize(R.dimen.corner_24dp)*2);
+        shapeDrawable.setIntrinsicWidth(getResources().getDimensionPixelSize(R.dimen.corner_24dp)*2);
         shapeDrawable.getPaint().setColor(color);
 
         final GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[] {color, 0x00000000});
         gradientDrawable.setAlpha(211);
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-        gradientDrawable.setCornerRadius(textViewTemperature.getHeight()/2.0f);
+        gradientDrawable.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.corner_24dp));
 
         textViewTemperature.setBackground(shapeDrawable);
         layoutTemperature.setBackground(gradientDrawable);
