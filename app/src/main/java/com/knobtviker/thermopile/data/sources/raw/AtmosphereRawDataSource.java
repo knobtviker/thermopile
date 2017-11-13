@@ -2,8 +2,6 @@ package com.knobtviker.thermopile.data.sources.raw;
 
 import com.knobtviker.thermopile.data.models.raw.Triplet;
 import com.knobtviker.thermopile.data.sources.AtmosphereDataSource;
-import com.knobtviker.thermopile.data.sources.raw.implementation.observers.BME280Observer;
-import com.knobtviker.thermopile.data.sources.raw.implementation.observers.TSL2561Observer;
 
 import java.util.Optional;
 
@@ -38,11 +36,13 @@ public class AtmosphereRawDataSource implements AtmosphereDataSource.Raw {
     @SuppressWarnings("UnnecessaryBoxing")
     @Override
     public Single<Triplet<Float, Float, Float>> read() {
-        return Single.defer(() -> BME280Observer.create(BUS_I2C));
+//        return Single.defer(() -> BME280Observer.create(BUS_I2C));
+        return Single.never();
     }
 
     @Override
     public Single<Float> readLuminosity() {
-        return Single.defer(() -> TSL2561Observer.create(BUS_I2C));
+//        return Single.defer(() -> TSL2561Observer.create(BUS_I2C));
+        return Single.never();
     }
 }
