@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.views.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.knobtviker.thermopile.R;
 
@@ -16,6 +17,9 @@ public class ColorViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.background_view)
     public View backgroundView;
+
+    @BindView(R.id.imageview_selected)
+    public ImageView imageViewSelected;
 
     public ColorViewHolder(View itemView) {
         super(itemView);

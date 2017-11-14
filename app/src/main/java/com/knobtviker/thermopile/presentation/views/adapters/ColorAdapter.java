@@ -2,9 +2,12 @@ package com.knobtviker.thermopile.presentation.views.adapters;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.common.collect.ImmutableList;
@@ -24,11 +27,14 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
     private final ColorCommunicator colorCommunicator;
 
+    private final int radius;
+
     private int selectedColor = 0;
 
     public ColorAdapter(@NonNull final Context context, @NonNull final ColorCommunicator colorCommunicator) {
         this.layoutInflater = LayoutInflater.from(context);
         this.colorCommunicator = colorCommunicator;
+        this.radius = context.getResources().getDimensionPixelSize(R.dimen.corner_24dp);
 
         final TypedArray colors500TypedArray = context.getResources().obtainTypedArray(R.array.colors_500);
         final Integer[] colors500 = new Integer[colors500TypedArray.length()];
@@ -49,13 +55,21 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
     @Override
     public void onBindViewHolder(ColorViewHolder colorViewHolder, int position) {
         final int color = colors.get(position);
-        colorViewHolder.backgroundView.setBackgroundColor(color);
+
+        final ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
+        shapeDrawable.setIntrinsicHeight(radius*2);
+        shapeDrawable.setIntrinsicWidth(radius*2);
+        shapeDrawable.getPaint().setColor(color);
+
+        colorViewHolder.backgroundView.setBackground(shapeDrawable);
+        colorViewHolder.imageViewSelected.setVisibility(selectedColor == color ? View.VISIBLE : View.GONE);
         colorViewHolder.backgroundView.setOnClickListener(view -> setSelectedColor(color));
     }
 
     @Override
     public void onViewRecycled(ColorViewHolder colorViewHolder) {
         colorViewHolder.backgroundView.setOnClickListener(null);
+        colorViewHolder.imageViewSelected.setVisibility(View.GONE);
         super.onViewRecycled(colorViewHolder);
     }
 
@@ -72,8 +86,11 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
         return selectedColor;
     }
 
-    public void setSelectedColor(final int color) {
+    private void setSelectedColor(final int color) {
         selectedColor = color;
+
+        notifyDataSetChanged();
+
         colorCommunicator.onSelectedColor(selectedColor);
     }
 }
