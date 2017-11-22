@@ -331,7 +331,7 @@ public class BME680 implements AutoCloseable {
 
         int regCtrl = mDevice.readRegByte(BME680_CONF_T_P_MODE_ADDR) & 0xff;
         regCtrl &= ~BME680_MODE_MSK;
-        regCtrl |= mode << MODE_POS;
+        regCtrl |= mode;
         mDevice.writeRegByte(BME680_CONF_T_P_MODE_ADDR, (byte) (regCtrl));
 
         this.mPowerMode = mode;
