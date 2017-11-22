@@ -156,15 +156,15 @@
             android:id="@+id/seekbar_temperature"
             style="@style/Widget.AppCompat.SeekBar"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
             android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_temperature_title"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
-            android:progressDrawable="@drawable/shape_background_seekbar_linear"
-            android:thumbTint="@color/white"/>
+            android:thumb=""
+            android:progressDrawable="@drawable/shape_background_seekbar_linear"/>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_color_title"
