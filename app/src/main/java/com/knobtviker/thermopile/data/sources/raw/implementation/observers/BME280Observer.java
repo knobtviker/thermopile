@@ -2,8 +2,8 @@ package com.knobtviker.thermopile.data.sources.raw.implementation.observers;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.android.things.contrib.driver.bme280.BME280;
 import com.knobtviker.thermopile.data.models.raw.Triplet;
-import com.knobtviker.thermopile.data.sources.raw.implementation.drivers.BME280;
 
 import java.io.IOException;
 

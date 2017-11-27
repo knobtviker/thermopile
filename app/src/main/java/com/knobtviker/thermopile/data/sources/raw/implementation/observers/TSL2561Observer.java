@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.data.sources.raw.implementation.observers;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.sources.raw.implementation.drivers.TSL2561;
+import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleSource;

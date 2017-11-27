@@ -163,7 +163,6 @@
             app:layout_constraintTop_toBottomOf="@id/layout_temperature_title"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
-            android:thumb=""
             android:progressDrawable="@drawable/shape_background_seekbar_linear"/>
 
         <android.support.constraint.ConstraintLayout
