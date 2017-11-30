@@ -3,9 +3,7 @@ package com.knobtviker.thermopile.data.sources;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
-import com.knobtviker.thermopile.data.models.raw.Triplet;
 
-import io.reactivex.Single;
 import io.realm.RealmResults;
 
 /**
@@ -13,13 +11,6 @@ import io.realm.RealmResults;
  */
 
 public interface AtmosphereDataSource {
-
-    interface Raw {
-
-        Single<Triplet<Float, Float, Float>> read();
-
-        Single<Float> readLuminosity();
-    }
 
     interface Local {
 

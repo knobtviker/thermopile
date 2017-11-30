@@ -53,7 +53,7 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
 
     @Override
     public void save(@NonNull Atmosphere item) {
-//        Log.i("ATMOSPHERE SAVE", item.timestamp() + " --- " + item.temperature());
+        Log.i("ATMOSPHERE SAVE", item.timestamp() + " --- " + item.temperature()+" --- "+item.humidity()+" --- "+item.pressure());
         final Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(
             realm1 -> realm1.insertOrUpdate(item),

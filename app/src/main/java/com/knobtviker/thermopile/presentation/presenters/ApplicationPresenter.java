@@ -3,14 +3,16 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 
+import org.joda.time.DateTimeUtils;
+
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -64,29 +66,25 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
         view.showLoading(false);
     }
 
-    @Override
-    public void collectData() {
-        compositeDisposable.add(
-            Observable
-                .interval(1L, TimeUnit.SECONDS, SchedulerProvider.getInstance().sensors())
-                .flatMapCompletable(tick ->
-                    Completable.mergeArrayDelayError(
-                        atmosphereRepository
-                            .read()
-                            .doOnNext(atmosphereRepository::save)
-                            .ignoreElements(),
-                        atmosphereRepository
-                            .luminosity()
-                            .doOnNext(view::onLuminosityData)
-                            .ignoreElements()
-                    ))
-                .observeOn(SchedulerProvider.getInstance().sensors())
-                .subscribe(
-                    this::completed,
-                    this::error
-                )
-        );
-    }
+//    @Override
+//    public void collectData() {
+//        compositeDisposable.add(
+//            Observable
+//                .interval(1L, TimeUnit.SECONDS, SchedulerProvider.getInstance().sensors())
+//                .flatMapCompletable(tick ->
+//                    Completable.mergeArrayDelayError(
+//                        atmosphereRepository
+//                            .read()
+//                            .doOnNext(atmosphereRepository::save)
+//                            .ignoreElements()
+//                    ))
+//                .observeOn(SchedulerProvider.getInstance().sensors())
+//                .subscribe(
+//                    this::completed,
+//                    this::error
+//                )
+//        );
+//    }
 
     @Override
     public void createScreensaver() {
@@ -106,5 +104,16 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
             screensaverDisposable.dispose();
             screensaverDisposable = null;
         }
+    }
+
+    @Override
+    public void saveData(float temperature, float humidity, float pressure) {
+        final Atmosphere atmosphere = new Atmosphere();
+        atmosphere.timestamp(DateTimeUtils.currentTimeMillis());
+        atmosphere.temperature(temperature);
+        atmosphere.humidity(humidity);
+        atmosphere.pressure(pressure);
+
+        atmosphereRepository.save(atmosphere);
     }
 }

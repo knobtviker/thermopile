@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.knobtviker.thermopile">
 
+    <uses-permission android:name="com.google.android.things.permission.MANAGE_SENSOR_DRIVERS"/>
+
     <application
         android:name=".presentation.ThermopileApp"
         android:theme="@style/AppTheme">
