@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.sources.AtmosphereDataSource;
@@ -17,7 +16,6 @@ import io.realm.Sort;
  */
 
 public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
-    private final String TAG = AtmosphereLocalDataSource.class.getSimpleName();
 
     private static Optional<AtmosphereLocalDataSource> INSTANCE = Optional.empty();
 
@@ -38,27 +36,19 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
     }
 
     @Override
-    public RealmResults<Atmosphere> load() {
-        return Realm.getDefaultInstance()
+    public RealmResults<Atmosphere> latest(@NonNull final Realm realm) {
+        return realm
             .where(Atmosphere.class)
-            .findAllAsync();
-    }
-
-    @Override
-    public RealmResults<Atmosphere> latest() {
-        return Realm.getDefaultInstance()
-            .where(Atmosphere.class)
-            .findAllSortedAsync("timestamp", Sort.DESCENDING);
+            .findAllSorted("timestamp", Sort.DESCENDING);
     }
 
     @Override
     public void save(@NonNull Atmosphere item) {
-        Log.i("ATMOSPHERE SAVE", item.timestamp() + " --- " + item.temperature()+" --- "+item.humidity()+" --- "+item.pressure());
+//        Log.i("ATMOSPHERE SAVE", item.timestamp() + " --- " + item.temperature()+" --- "+item.humidity()+" --- "+item.pressure());
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(
-            realm1 -> realm1.insertOrUpdate(item),
-            error -> Log.e(TAG, error.getMessage(), error)
-        );
+        realm.beginTransaction();
+        realm.insertOrUpdate(item);
+        realm.commitTransaction();
         realm.close();
     }
 }

@@ -2,10 +2,12 @@ package com.knobtviker.thermopile.presentation;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -142,7 +144,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     }
 
     public void onLuminosityData(float luminosity) {
-        Log.i(TAG, "LUMINOSITY --- "+luminosity/400000.0f);
+//        Log.i(TAG, "LUMINOSITY --- "+luminosity/400000.0f);
     }
 
     public void createScreensaver() {
@@ -250,5 +252,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         } catch (IOException e) {
             showError(e);
         }
+    }
+
+    public boolean isThingsDevice(@NonNull final Context context) {
+        return context
+            .getPackageManager()
+            .hasSystemFeature(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? PackageManager.FEATURE_EMBEDDED : "android.hardware.type.embedded");
     }
 }

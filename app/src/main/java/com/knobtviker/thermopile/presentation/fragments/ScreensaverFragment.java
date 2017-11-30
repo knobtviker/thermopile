@@ -93,8 +93,8 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         bind(this, view);
 
         presenter.startClock();
-        presenter.data();
-        presenter.settings();
+        presenter.data(realm);
+        presenter.settings(realm);
 
         return view;
     }

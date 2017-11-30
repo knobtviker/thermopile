@@ -76,7 +76,7 @@ public class SettingsRegionFragment extends BaseFragment<SettingsContract.Presen
         setupSpinnerTimezone();
         setupRadioGroupClockMode();
 
-        presenter.load();
+        presenter.load(realm);
 
         return view;
     }

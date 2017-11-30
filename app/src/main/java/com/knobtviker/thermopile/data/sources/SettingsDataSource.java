@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -14,7 +15,7 @@ public interface SettingsDataSource {
 
     interface Local {
 
-        RealmResults<Settings> load();
+        RealmResults<Settings> load(@NonNull final Realm realm);
 
         void saveTimezone(final long settingsId, @NonNull final String timezone);
 

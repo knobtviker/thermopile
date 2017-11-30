@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
@@ -99,8 +100,8 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void data() {
-        resultsAtmosphere = atmosphereRepository.latest();
+    public void data(@NonNull final Realm realm) {
+        resultsAtmosphere = atmosphereRepository.latest(realm);
 
         if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
             changeListenerAtmosphere = atmosphereRealmResults -> {
@@ -114,8 +115,8 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void settings() {
-        resultsSettings = settingsRepository.load();
+    public void settings(@NonNull final Realm realm) {
+        resultsSettings = settingsRepository.load(realm);
 
         if (resultsSettings != null && resultsSettings.isValid()) {
             changeListenerSettings = settingsRealmResults -> {

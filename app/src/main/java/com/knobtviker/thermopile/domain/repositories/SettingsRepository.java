@@ -8,6 +8,7 @@ import com.knobtviker.thermopile.domain.repositories.implementation.BaseReposito
 
 import java.util.Optional;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -39,8 +40,8 @@ public class SettingsRepository extends BaseRepository {
         this.settingsLocalDataSource = SettingsLocalDataSource.getInstance();
     }
 
-    public RealmResults<Settings> load() {
-        return settingsLocalDataSource.load();
+    public RealmResults<Settings> load(@NonNull final Realm realm) {
+        return settingsLocalDataSource.load(realm);
     }
 
     public void saveTimezone(final long settingsId, @NonNull final String timezone) {

@@ -4,6 +4,8 @@
     package="com.knobtviker.thermopile">
 
     <uses-permission android:name="com.google.android.things.permission.MANAGE_SENSOR_DRIVERS"/>
+    <uses-permission android:name="com.google.android.things.permission.MODIFY_SCREEN_SETTINGS"/>
+    <uses-permission android:name="com.google.android.things.permission.REBOOT"/>
 
     <application
         android:name=".presentation.ThermopileApp"

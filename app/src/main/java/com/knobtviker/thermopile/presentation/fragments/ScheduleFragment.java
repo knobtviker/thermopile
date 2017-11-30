@@ -102,8 +102,8 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         setupToolbar();
         setupDayTouchListeners();
 
-        presenter.settings();
-        presenter.thresholds();
+        presenter.settings(realm);
+        presenter.thresholds(realm);
 
         return view;
     }

@@ -9,6 +9,7 @@ import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
@@ -79,8 +80,8 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
     }
 
     @Override
-    public void settings() {
-        resultsSettings = settingsRepository.load();
+    public void settings(@NonNull final Realm realm) {
+        resultsSettings = settingsRepository.load(realm);
 
         if (resultsSettings != null && resultsSettings.isValid()) {
             changeListenerSettings = settingsRealmResults -> {
@@ -93,10 +94,10 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
     }
 
     @Override
-    public void thresholds() {
+    public void thresholds(@NonNull final Realm realm) {
         started();
 
-        resultsThresholds = thresholdRepository.load();
+        resultsThresholds = thresholdRepository.load(realm);
 
         if (resultsThresholds != null && resultsThresholds.isValid()) {
             changeListenerThresholds = thresholdsRealmResults -> {

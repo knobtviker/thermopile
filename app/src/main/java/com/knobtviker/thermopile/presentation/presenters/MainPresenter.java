@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
@@ -113,8 +114,8 @@ public class MainPresenter implements MainContract.Presenter {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void data() {
-        resultsAtmosphere = atmosphereRepository.latest();
+    public void data(@NonNull final Realm realm) {
+        resultsAtmosphere = atmosphereRepository.latest(realm);
 
         if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
             changeListenerAtmosphere = atmosphereRealmResults -> {
@@ -128,8 +129,8 @@ public class MainPresenter implements MainContract.Presenter {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void settings() {
-        resultsSettings = settingsRepository.load();
+    public void settings(@NonNull final Realm realm) {
+        resultsSettings = settingsRepository.load(realm);
 
         if (resultsSettings != null && resultsSettings.isValid()) {
             changeListenerSettings = settingsRealmResults -> {
@@ -142,7 +143,7 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void thresholdsForToday(int day) {
+    public void thresholdsForToday(@NonNull final Realm realm, int day) {
         //0 = 6
         //1 = 0
         //2 = 1
@@ -152,7 +153,7 @@ public class MainPresenter implements MainContract.Presenter {
         //6 = 5
         day = (day == 0 ? 6 : (day - 1));
 
-        resultsThresholds = thresholdRepository.loadByDay(day);
+        resultsThresholds = thresholdRepository.loadByDay(realm, day);
 
         if (resultsThresholds != null && resultsThresholds.isValid()) {
             changeListenerThresholds = thresholdsRealmResults -> {

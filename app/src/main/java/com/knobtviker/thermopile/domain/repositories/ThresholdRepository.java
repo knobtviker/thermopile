@@ -8,6 +8,7 @@ import com.knobtviker.thermopile.domain.repositories.implementation.BaseReposito
 
 import java.util.Optional;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -39,16 +40,16 @@ public class ThresholdRepository extends BaseRepository {
         this.thresholdLocalDataSource = ThresholdLocalDataSource.getInstance();
     }
 
-    public RealmResults<Threshold> load() {
-        return thresholdLocalDataSource.load();
+    public RealmResults<Threshold> load(@NonNull final Realm realm) {
+        return thresholdLocalDataSource.load(realm);
     }
 
-    public RealmResults<Threshold> loadByDay(final int day) {
-        return thresholdLocalDataSource.loadByDay(day);
+    public RealmResults<Threshold> loadByDay(@NonNull final Realm realm, final int day) {
+        return thresholdLocalDataSource.loadByDay(realm, day);
     }
 
-    public Threshold loadById(final long thresholdId) {
-        return thresholdLocalDataSource.loadById(thresholdId);
+    public Threshold loadById(@NonNull final Realm realm, final long thresholdId) {
+        return thresholdLocalDataSource.loadById(realm, thresholdId);
     }
 
     public void save(@NonNull final Threshold item) {

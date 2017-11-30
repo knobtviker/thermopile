@@ -68,7 +68,7 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
         setupSpinnerDate();
         setupSpinnerTime();
 
-        presenter.load();
+        presenter.load(realm);
 
         return view;
     }

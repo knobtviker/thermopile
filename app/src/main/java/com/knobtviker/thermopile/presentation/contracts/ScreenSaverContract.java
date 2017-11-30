@@ -7,6 +7,8 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
+import io.realm.Realm;
+
 /**
  * Created by bojan on 15/07/2017.
  */
@@ -26,8 +28,8 @@ public interface ScreenSaverContract {
 
         void startClock();
 
-        void data();
+        void data(@NonNull final Realm realm);
 
-        void settings();
+        void settings(@NonNull final Realm realm);
     }
 }

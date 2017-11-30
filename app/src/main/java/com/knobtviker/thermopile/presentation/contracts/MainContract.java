@@ -8,6 +8,7 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -31,10 +32,10 @@ public interface MainContract {
 
         void startClock();
 
-        void data();
+        void data(@NonNull final Realm realm);
 
-        void settings();
+        void settings(@NonNull final Realm realm);
 
-        void thresholdsForToday(final int day);
+        void thresholdsForToday(@NonNull final Realm realm, final int day);
     }
 }

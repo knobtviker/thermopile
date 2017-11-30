@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.SettingsDataSource;
@@ -16,7 +15,6 @@ import io.realm.RealmResults;
  */
 
 public class SettingsLocalDataSource implements SettingsDataSource.Local {
-    private final String TAG = SettingsLocalDataSource.class.getSimpleName();
 
     private static Optional<SettingsLocalDataSource> INSTANCE = Optional.empty();
 
@@ -37,105 +35,135 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
     }
 
     @Override
-    public RealmResults<Settings> load() {
-        return Realm.getDefaultInstance()
+    public RealmResults<Settings> load(@NonNull final Realm realm) {
+        return realm
             .where(Settings.class)
-            .findAllAsync();
+            .findAll();
     }
 
     @Override
     public void saveTimezone(long settingsId, @NonNull String timezone) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(
-            realm1 -> {
-                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                if (settings != null) {
-                    settings.timezone(timezone);
-                    realm1.insertOrUpdate(settings);
-                }
-            },
-            error -> Log.e(TAG, error.getMessage(), error)
-        );
+
+        final Settings settings = realm
+            .where(Settings.class)
+            .equalTo("id", settingsId)
+            .findFirst();
+
+        if (settings != null) {
+            realm.beginTransaction();
+
+            settings.timezone(timezone);
+
+            realm.insertOrUpdate(settings);
+            realm.commitTransaction();
+        }
+
         realm.close();
     }
 
     @Override
     public void saveClockMode(long settingsId, int clockMode) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(
-            realm1 -> {
-                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                if (settings != null) {
-                    settings.formatClock(clockMode);
-                    realm1.insertOrUpdate(settings);
-                }
-            },
-            error -> Log.e(TAG, error.getMessage(), error)
-        );
+
+        final Settings settings = realm
+            .where(Settings.class)
+            .equalTo("id", settingsId)
+            .findFirst();
+
+        if (settings != null) {
+            realm.beginTransaction();
+
+            settings.formatClock(clockMode);
+
+            realm.insertOrUpdate(settings);
+            realm.commitTransaction();
+        }
+
         realm.close();
     }
 
     @Override
     public void saveFormatDate(long settingsId, @NonNull String item) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(
-            realm1 -> {
-                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                if (settings != null) {
-                    settings.formatDate(item);
-                    realm1.insertOrUpdate(settings);
-                }
-            },
-            error -> Log.e(TAG, error.getMessage(), error)
-        );
+
+        final Settings settings = realm
+            .where(Settings.class)
+            .equalTo("id", settingsId)
+            .findFirst();
+
+        if (settings != null) {
+            realm.beginTransaction();
+
+            settings.formatDate(item);
+
+            realm.insertOrUpdate(settings);
+            realm.commitTransaction();
+        }
+
         realm.close();
     }
 
     @Override
     public void saveFormatTime(long settingsId, @NonNull String item) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(
-            realm1 -> {
-                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                if (settings != null) {
-                    settings.formatTime(item);
-                    realm1.insertOrUpdate(settings);
-                }
-            },
-            error -> Log.e(TAG, error.getMessage(), error)
-        );
+
+        final Settings settings = realm
+            .where(Settings.class)
+            .equalTo("id", settingsId)
+            .findFirst();
+
+        if (settings != null) {
+            realm.beginTransaction();
+
+            settings.formatTime(item);
+
+            realm.insertOrUpdate(settings);
+            realm.commitTransaction();
+        }
+
         realm.close();
     }
 
     @Override
     public void saveTemperatureUnit(long settingsId, int unit) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(
-            realm1 -> {
-                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                if (settings != null) {
-                    settings.unitTemperature(unit);
-                    realm1.insertOrUpdate(settings);
-                }
-            },
-            error -> Log.e(TAG, error.getMessage(), error)
-        );
+
+        final Settings settings = realm
+            .where(Settings.class)
+            .equalTo("id", settingsId)
+            .findFirst();
+
+        if (settings != null) {
+            realm.beginTransaction();
+
+            settings.unitTemperature(unit);
+
+            realm.insertOrUpdate(settings);
+            realm.commitTransaction();
+        }
+
         realm.close();
     }
 
     @Override
     public void savePressureUnit(long settingsId, int unit) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(
-            realm1 -> {
-                final Settings settings = realm1.where(Settings.class).equalTo("id", settingsId).findFirst();
-                if (settings != null) {
-                    settings.unitPressure(unit);
-                    realm1.insertOrUpdate(settings);
-                }
-            },
-            error -> Log.e(TAG, error.getMessage(), error)
-        );
+
+        final Settings settings = realm
+            .where(Settings.class)
+            .equalTo("id", settingsId)
+            .findFirst();
+
+        if (settings != null) {
+            realm.beginTransaction();
+
+            settings.unitPressure(unit);
+
+            realm.insertOrUpdate(settings);
+            realm.commitTransaction();
+        }
+
         realm.close();
     }
 }

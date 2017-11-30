@@ -8,6 +8,7 @@ import com.knobtviker.thermopile.domain.repositories.implementation.BaseReposito
 
 import java.util.Optional;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -39,15 +40,11 @@ public class AtmosphereRepository extends BaseRepository {
         this.atmosphereLocalDataSource = AtmosphereLocalDataSource.getInstance();
     }
 
-    public RealmResults<Atmosphere> load() {
-        return atmosphereLocalDataSource.load();
-    }
-
     public void save(@NonNull final Atmosphere item) {
         atmosphereLocalDataSource.save(item);
     }
 
-    public RealmResults<Atmosphere> latest() {
-        return atmosphereLocalDataSource.latest();
+    public RealmResults<Atmosphere> latest(@NonNull final Realm realm) {
+        return atmosphereLocalDataSource.latest(realm);
     }
 }

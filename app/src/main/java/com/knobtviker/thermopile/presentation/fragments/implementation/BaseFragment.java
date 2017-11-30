@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.Realm;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -26,12 +27,17 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
 
     protected P presenter;
 
+    protected Realm realm = null;
+
     private Unbinder unbinder = Unbinder.EMPTY;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (presenter != null) {
+            if (realm == null) {
+                realm = Realm.getDefaultInstance();
+            }
             presenter.subscribe();
         }
 
@@ -46,6 +52,11 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
 
         if (presenter != null) {
             presenter.unsubscribe();
+            if (realm != null) {
+                if (!realm.isClosed()) {
+                    realm.close();
+                }
+            }
         }
 
         super.onDestroyView();

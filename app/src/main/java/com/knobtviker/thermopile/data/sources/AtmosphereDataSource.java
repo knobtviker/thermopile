@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -14,9 +15,7 @@ public interface AtmosphereDataSource {
 
     interface Local {
 
-        RealmResults<Atmosphere> load();
-
-        RealmResults<Atmosphere> latest();
+        RealmResults<Atmosphere> latest(@NonNull final Realm realm);
 
         void save(@NonNull final Atmosphere item);
     }

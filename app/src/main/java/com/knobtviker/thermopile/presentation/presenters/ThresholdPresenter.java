@@ -7,6 +7,7 @@ import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.realm.Realm;
 
 /**
  * Created by bojan on 29/10/2017.
@@ -56,10 +57,10 @@ public class ThresholdPresenter implements ThresholdContract.Presenter {
     }
 
     @Override
-    public void loadById(long thresholdId) {
+    public void loadById(@NonNull final Realm realm, long thresholdId) {
         started();
 
-        view.onThreshold(thresholdRepository.loadById(thresholdId));
+        view.onThreshold(thresholdRepository.loadById(realm, thresholdId));
 
         completed();
     }

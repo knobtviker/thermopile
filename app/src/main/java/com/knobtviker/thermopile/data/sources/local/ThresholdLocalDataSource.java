@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.ThresholdDataSource;
@@ -17,7 +16,6 @@ import io.realm.Sort;
  */
 
 public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
-    private final String TAG = ThresholdLocalDataSource.class.getSimpleName();
 
     private static Optional<ThresholdLocalDataSource> INSTANCE = Optional.empty();
 
@@ -38,39 +36,38 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
     }
 
     @Override
-    public RealmResults<Threshold> load() {
-        return Realm.getDefaultInstance()
+    public RealmResults<Threshold> load(@NonNull final Realm realm) {
+        return realm
             .where(Threshold.class)
-            .findAllAsync();
+            .findAll();
     }
 
     @Override
-    public RealmResults<Threshold> loadByDay(int day) {
+    public RealmResults<Threshold> loadByDay(@NonNull final Realm realm, int day) {
         final String[] fieldNames = {"startHour", "startMinute"};
         final Sort[] directions = {Sort.ASCENDING, Sort.ASCENDING};
 
-        return Realm.getDefaultInstance()
+        return realm
             .where(Threshold.class)
             .equalTo("day", day)
-            .findAllSortedAsync(fieldNames, directions);
+            .findAllSorted(fieldNames, directions);
     }
 
     @Override
-    public Threshold loadById(long thresholdId) {
-        return Realm.getDefaultInstance()
+    public Threshold loadById(@NonNull final Realm realm, long thresholdId) {
+        return realm
             .where(Threshold.class)
             .equalTo("id", thresholdId)
-            .findAllAsync()
+            .findAll()
             .first();
     }
 
     @Override
     public void save(@NonNull Threshold item) {
         final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(
-            realm1 -> realm1.insertOrUpdate(item),
-            error -> Log.e(TAG, error.getMessage(), error)
-        );
+        realm.beginTransaction();
+        realm.insertOrUpdate(item);
+        realm.commitTransaction();
         realm.close();
     }
 }

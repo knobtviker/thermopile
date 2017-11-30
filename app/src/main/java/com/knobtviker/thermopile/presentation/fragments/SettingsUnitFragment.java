@@ -78,7 +78,7 @@ public class SettingsUnitFragment extends BaseFragment<SettingsContract.Presente
         setupRadioGroupTemperatureUnit();
         setupRadioGroupPressureUnit();
 
-        presenter.load();
+        presenter.load(realm);
 
         return view;
     }

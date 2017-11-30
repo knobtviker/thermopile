@@ -7,6 +7,7 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -24,8 +25,8 @@ public interface ScheduleContract {
 
     interface Presenter extends BasePresenter {
 
-        void settings();
+        void settings(@NonNull final Realm realm);
 
-        void thresholds();
+        void thresholds(@NonNull final Realm realm);
     }
 }

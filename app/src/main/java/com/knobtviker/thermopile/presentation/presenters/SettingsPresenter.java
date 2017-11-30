@@ -7,6 +7,7 @@ import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
@@ -66,10 +67,10 @@ public class SettingsPresenter implements SettingsContract.Presenter {
     }
 
     @Override
-    public void load() {
+    public void load(@NonNull final Realm realm) {
         started();
 
-        resultsSettings = settingsRepository.load();
+        resultsSettings = settingsRepository.load(realm);
 
         if (resultsSettings != null && resultsSettings.isValid()) {
             changeListenerSettings = thresholdsRealmResults -> {

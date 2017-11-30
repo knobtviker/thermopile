@@ -145,7 +145,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         setupSeekBar();
 
         if (thresholdId != -1L) {
-            presenter.loadById(thresholdId);
+            presenter.loadById(realm, thresholdId);
         } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
             populate(startMinute, maxWidth);
         } else {

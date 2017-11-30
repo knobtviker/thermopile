@@ -138,9 +138,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         bind(this, view);
 
         presenter.startClock();
-        presenter.data();
-        presenter.settings();
-        presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
+        presenter.data(realm);
+        presenter.settings(realm);
+        presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
 
         setupPID();
         setupToolbar();
@@ -159,7 +159,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_schedule) {
+        if (item.getItemId() == R.id.action_charts) {
+
+        } else if (item.getItemId() == R.id.action_schedule) {
             mainCommunicator.showSchedule();
         } else if (item.getItemId() == R.id.action_settings) {
             mainCommunicator.showSettings();
@@ -245,6 +247,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @OnClick(R.id.floatingactionbutton_down)
     public void onActionDownClicked() {
+        screen(2);
         if (seekBarTemperature.getProgress() > seekBarTemperature.getMin()) {
             seekBarTemperature.setProgress(seekBarTemperature.getProgress() - 1);
         }
@@ -257,6 +260,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @OnClick(R.id.floatingactionbutton_up)
     public void onActionUpClicked() {
+        screen(3);
         if (seekBarTemperature.getProgress() < seekBarTemperature.getMax()) {
             seekBarTemperature.setProgress(seekBarTemperature.getProgress() + 1);
         }
@@ -282,7 +286,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     public void maybeApplyThresholds(@NonNull final DateTime dateTime) {
         if (dateTime.getSecondOfDay() == 0) {
-            presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
+            presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
         }
     }
 
@@ -382,5 +386,22 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
                 textViewPressureUnit.setText(getString(R.string.unit_pressure_pascal));
                 break;
         }
+    }
+
+    private void screen(int b) {
+//        final DeviceManager deviceManager = new DeviceManager();
+//        deviceManager.reboot();
+
+//        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
+
+//        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL); //NOT WORKING
+//        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_AUTOMATIC); //NOT WORKING
+//        screenManager.setBrightness(b);
+//        screenManager.lockRotation(b); //NOT WORKING
+
+//        screenManager.setScreenOffTimeout(3, TimeUnit.SECONDS); //NOT WORKING
+
+//        screenManager.setDisplayDensity(b); //WORKS
+//        screenManager.setFontScale(b*1.0f); //WORKS
     }
 }
