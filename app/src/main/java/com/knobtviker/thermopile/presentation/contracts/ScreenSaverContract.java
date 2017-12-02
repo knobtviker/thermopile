@@ -17,16 +17,12 @@ public interface ScreenSaverContract {
 
     interface View extends BaseView {
 
-        void onClockTick();
-
         void onDataChanged(@NonNull final Atmosphere data);
 
         void onSettingsChanged(@NonNull final Settings settings);
     }
 
     interface Presenter extends BasePresenter {
-
-        void startClock();
 
         void data(@NonNull final Realm realm);
 

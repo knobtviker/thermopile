@@ -17,5 +17,9 @@ public interface BasePresenter {
     void started();
 
     void completed();
+
+    void addListeners();
+
+    void removeListeners();
 }
 

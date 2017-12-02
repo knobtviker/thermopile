@@ -23,7 +23,6 @@ public class SettingsPresenter implements SettingsContract.Presenter {
     private CompositeDisposable compositeDisposable;
 
     private RealmResults<Settings> resultsSettings;
-    private RealmChangeListener<RealmResults<Settings>> changeListenerSettings;
 
     public SettingsPresenter(@NonNull final SettingsContract.View view) {
         this.view = view;
@@ -41,11 +40,9 @@ public class SettingsPresenter implements SettingsContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.removeChangeListener(changeListenerSettings);
-            resultsSettings = null;
-            changeListenerSettings = null;
-        }
+
+        removeListeners();
+
         SettingsRepository.destroyInstance();
     }
 
@@ -67,18 +64,37 @@ public class SettingsPresenter implements SettingsContract.Presenter {
     }
 
     @Override
+    public void addListeners() {
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.addChangeListener(settings -> {
+                if (!settings.isEmpty()) {
+                    final Settings result = settings.first();
+                    if (result != null) {
+                        view.onLoad(result);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void removeListeners() {
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.removeAllChangeListeners();
+        }
+    }
+
+    @Override
     public void load(@NonNull final Realm realm) {
         started();
 
         resultsSettings = settingsRepository.load(realm);
 
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            changeListenerSettings = thresholdsRealmResults -> {
-                if (!thresholdsRealmResults.isEmpty()) {
-                    view.onLoad(thresholdsRealmResults.first());
-                }
-            };
-            resultsSettings.addChangeListener(changeListenerSettings);
+        if (!resultsSettings.isEmpty()) {
+            final Settings result = resultsSettings.first();
+            if (result != null) {
+                view.onLoad(result);
+            }
         }
 
         completed();

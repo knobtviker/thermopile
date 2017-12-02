@@ -8,6 +8,7 @@ import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 29/10/2017.
@@ -19,6 +20,8 @@ public class ThresholdPresenter implements ThresholdContract.Presenter {
 
     private ThresholdRepository thresholdRepository;
     private CompositeDisposable compositeDisposable;
+
+    private RealmResults<Threshold> resultsThresholds;
 
     public ThresholdPresenter(@NonNull final ThresholdContract.View view) {
         this.view = view;
@@ -36,6 +39,9 @@ public class ThresholdPresenter implements ThresholdContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
+
+        removeListeners();
+
         ThresholdRepository.destroyInstance();
     }
 
@@ -57,10 +63,38 @@ public class ThresholdPresenter implements ThresholdContract.Presenter {
     }
 
     @Override
+    public void addListeners() {
+        if (resultsThresholds != null && resultsThresholds.isValid()) {
+            resultsThresholds.addChangeListener(thresholds -> {
+                if (!thresholds.isEmpty()) {
+                    final Threshold result = thresholds.first();
+                    if (result != null) {
+                        view.onThreshold(result);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void removeListeners() {
+        if (resultsThresholds != null && resultsThresholds.isValid()) {
+            resultsThresholds.removeAllChangeListeners();
+        }
+    }
+
+    @Override
     public void loadById(@NonNull final Realm realm, long thresholdId) {
         started();
 
-        view.onThreshold(thresholdRepository.loadById(realm, thresholdId));
+        resultsThresholds = thresholdRepository.loadById(realm, thresholdId);
+
+        if (!resultsThresholds.isEmpty()) {
+            final Threshold result = resultsThresholds.first();
+            if (result != null) {
+                view.onThreshold(result);
+            }
+        }
 
         completed();
     }
@@ -70,8 +104,8 @@ public class ThresholdPresenter implements ThresholdContract.Presenter {
         started();
 
         thresholdRepository.save(threshold);
-        view.onSaved();
 
+        view.onSaved();
         completed();
     }
 }

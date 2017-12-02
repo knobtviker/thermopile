@@ -1,6 +1,10 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
@@ -32,6 +37,10 @@ import butterknife.BindView;
 public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presenter> implements ScreenSaverContract.View {
     public static final String TAG = ScreensaverFragment.class.getSimpleName();
 
+    private IntentFilter intentFilter;
+
+    private BroadcastReceiver dateChangedReceiver;
+
     private DateTimeZone dateTimeZone;
     private int formatClock;
     private String formatDate;
@@ -40,7 +49,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     private int unitPressure;
 
     @BindView(R.id.textview_clock)
-    public TextView textViewClock;
+    public TextClock textViewClock;
 
     @BindView(R.id.textview_day)
     public TextView textViewDay;
@@ -81,6 +90,20 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         unitPressure = Constants.UNIT_PRESSURE_PASCAL;
 
         presenter = new ScreenSaverPresenter(this);
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_DATE_CHANGED);
+
+        dateChangedReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
+
+                    setDate();
+                }
+            }
+        };
     }
 
     @Nullable
@@ -92,11 +115,24 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
         bind(this, view);
 
-        presenter.startClock();
         presenter.data(realm);
         presenter.settings(realm);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        getActivity().registerReceiver(dateChangedReceiver, intentFilter);
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getActivity().unregisterReceiver(dateChangedReceiver);
     }
 
     @Override
@@ -107,12 +143,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     @Override
     public void showError(@NonNull Throwable throwable) {
         Log.e(TAG, throwable.getMessage(), throwable);
-    }
-
-    @Override
-    public void onClockTick() {
-        final DateTime dateTime = new DateTime(dateTimeZone);
-        setDateTime(dateTime);
     }
 
     @SuppressLint("SetTextI18n")
@@ -132,42 +162,36 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         unitTemperature = settings.unitTemperature();
         unitPressure = settings.unitPressure();
 
+        setFormatClock();
         setTemperatureUnit();
         setPressureUnit();
+        setDate();
     }
 
-    private void setDateTime(@NonNull final DateTime dateTime) {
-        if (formatClock == Constants.CLOCK_MODE_12H) {
-            if (formatTime.contains(Constants.FORMAT_TIME_LONG_24H)) {
-                formatTime = formatTime.replace(Constants.FORMAT_TIME_LONG_24H, Constants.FORMAT_TIME_LONG_12H);
-            } else if (formatTime.contains(Constants.FORMAT_TIME_SHORT_24H)) {
-                formatTime = formatTime.replace(Constants.FORMAT_TIME_SHORT_24H, Constants.FORMAT_TIME_SHORT_12H);
-            }
-        }
-        setTime(dateTime.toString(formatTime));
+    private void setDate() {
+        final DateTime dateTime = new DateTime(dateTimeZone);
 
         if (formatDate.contains(Constants.FORMAT_DAY_LONG)) {
-            setDate(dateTime.toString(formatDate.replace(Constants.FORMAT_DAY_LONG, "").trim()));
-            setDay(dateTime.toString(Constants.FORMAT_DAY_LONG));
+            textViewDate.setText(dateTime.toString(formatDate.replace(Constants.FORMAT_DAY_LONG, "").trim()));
+            textViewDay.setText(dateTime.toString(Constants.FORMAT_DAY_LONG));
         } else if (formatDate.contains(Constants.FORMAT_DAY_SHORT)) {
-            setDate(dateTime.toString(formatDate.replace(Constants.FORMAT_DAY_SHORT, "").trim()));
-            setDay(dateTime.toString(Constants.FORMAT_DAY_SHORT));
+            textViewDate.setText(dateTime.toString(formatDate.replace(Constants.FORMAT_DAY_SHORT, "").trim()));
+            textViewDay.setText(dateTime.toString(Constants.FORMAT_DAY_SHORT));
         } else {
-            setDate(dateTime.toString(formatDate));
+            textViewDate.setText(dateTime.toString(formatDate));
             textViewDay.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void setTime(@NonNull final String time) {
-        textViewClock.setText(time);
-    }
-
-    private void setDate(@NonNull final String date) {
-        textViewDate.setText(date);
-    }
-
-    private void setDay(@NonNull final String date) {
-        textViewDay.setText(date);
+    private void setFormatClock() {
+        textViewClock.setTimeZone(dateTimeZone.toString());
+        if (formatClock == Constants.CLOCK_MODE_12H) {
+            textViewClock.setFormat12Hour(formatTime);
+            textViewClock.setFormat24Hour(null);
+        } else {
+            textViewClock.setFormat24Hour(formatTime);
+            textViewClock.setFormat12Hour(null);
+        }
     }
 
     private void setTemperatureUnit() {

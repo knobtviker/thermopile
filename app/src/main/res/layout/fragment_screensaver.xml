@@ -8,7 +8,7 @@
     android:background="@color/black"
     android:padding="@dimen/margin_default">
 
-    <TextView
+    <TextClock
         android:id="@+id/textview_clock"
         style="@style/TextAppearance.AppCompat.Display4"
         fontPath="fonts/WorkSans-Black.ttf"

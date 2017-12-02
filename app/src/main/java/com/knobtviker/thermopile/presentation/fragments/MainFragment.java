@@ -1,7 +1,10 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -40,8 +44,6 @@ import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicat
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.util.Optional;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.realm.RealmResults;
@@ -52,6 +54,10 @@ import io.realm.RealmResults;
 
 public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View {
     public static final String TAG = MainFragment.class.getSimpleName();
+
+    private IntentFilter intentFilter;
+
+    private BroadcastReceiver dateChangedReceiver;
 
     private MainCommunicator mainCommunicator;
 
@@ -76,7 +82,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public TextView textViewDate;
 
     @BindView(R.id.textview_clock)
-    public TextView textViewClock;
+    public TextClock textViewClock;
 
     @BindView(R.id.textview_humidity)
     public TextView textViewHumidity;
@@ -126,6 +132,21 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         unitPressure = Constants.UNIT_PRESSURE_PASCAL;
 
         presenter = new MainPresenter(this);
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_DATE_CHANGED);
+
+        dateChangedReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
+
+                    setDate();
+//                    maybeApplyThresholds(dateTime);
+                }
+            }
+        };
     }
 
     @Nullable
@@ -137,10 +158,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         bind(this, view);
 
-        presenter.startClock();
         presenter.data(realm);
         presenter.settings(realm);
-        presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
+//        presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
 
         setupPID();
         setupToolbar();
@@ -148,6 +168,20 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         setupRecyclerView();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        getActivity().registerReceiver(dateChangedReceiver, intentFilter);
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getActivity().unregisterReceiver(dateChangedReceiver);
     }
 
     @Override
@@ -187,32 +221,24 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-    @Override
-    public void onClockTick() {
-        final DateTime dateTime = new DateTime(dateTimeZone);
-        setDateTime(dateTime);
-        maybeApplyThresholds(dateTime);
-        moveHourLine(dateTime);
-    }
-
     @SuppressLint("SetTextI18n")
     @Override
     public void onDataChanged(@NonNull Atmosphere data) {
         //TODO: Find the right threshold if todays list is not empty.
-        final Optional<Threshold> thresholdOptional = thresholdsToday.stream()
-            .filter(threshold -> {
-                final DateTime now = DateTime.now();
-                return threshold.startHour() < now.getHourOfDay() && threshold.startMinute() < now.getMinuteOfHour()
-                    && now.getHourOfDay() <= threshold.endHour() && now.getMinuteOfHour() <= threshold.endMinute();
-            })
-            .findFirst();
-        if (thresholdOptional.isPresent()) {
-            //TODO: If threshold is found set it as progress on seekbar and/or use as target value
-            seekBarTemperature.setProgress(thresholdOptional.get().temperature());
-        } else {
-            //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
-            seekBarTemperature.setProgress(Math.round(data.temperature()));
-        }
+//        final Optional<Threshold> thresholdOptional = thresholdsToday.stream()
+//            .filter(threshold -> {
+//                final DateTime now = DateTime.now();
+//                return threshold.startHour() < now.getHourOfDay() && threshold.startMinute() < now.getMinuteOfHour()
+//                    && now.getHourOfDay() <= threshold.endHour() && now.getMinuteOfHour() <= threshold.endMinute();
+//            })
+//            .findFirst();
+//        if (thresholdOptional.isPresent()) {
+//            //TODO: If threshold is found set it as progress on seekbar and/or use as target value
+//            seekBarTemperature.setProgress(thresholdOptional.get().temperature());
+//        } else {
+//            //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
+//            seekBarTemperature.setProgress(Math.round(data.temperature()));
+//        }
 
         textViewCurrentTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.temperature()), 0).toString());
         textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
@@ -236,8 +262,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         unitTemperature = settings.unitTemperature();
         unitPressure = settings.unitPressure();
 
+        setFormatClock();
         setTemperatureUnit();
         setPressureUnit();
+        setDate();
     }
 
     @Override
@@ -247,7 +275,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @OnClick(R.id.floatingactionbutton_down)
     public void onActionDownClicked() {
-        screen(2);
         if (seekBarTemperature.getProgress() > seekBarTemperature.getMin()) {
             seekBarTemperature.setProgress(seekBarTemperature.getProgress() - 1);
         }
@@ -260,7 +287,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @OnClick(R.id.floatingactionbutton_up)
     public void onActionUpClicked() {
-        screen(3);
         if (seekBarTemperature.getProgress() < seekBarTemperature.getMax()) {
             seekBarTemperature.setProgress(seekBarTemperature.getProgress() + 1);
         }
@@ -269,19 +295,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
             .subscribeOn(SchedulerProvider.getInstance().ui())
             .observeOn(SchedulerProvider.getInstance().ui())
             .subscribe();
-    }
-
-    public void setDateTime(@NonNull final DateTime dateTime) {
-        setDate(dateTime.toString(formatDate));
-
-        if (formatClock == Constants.CLOCK_MODE_12H) {
-            if (formatTime.contains(Constants.FORMAT_TIME_LONG_24H)) {
-                formatTime = formatTime.replace(Constants.FORMAT_TIME_LONG_24H, Constants.FORMAT_TIME_LONG_12H);
-            } else if (formatTime.contains(Constants.FORMAT_TIME_SHORT_24H)) {
-                formatTime = formatTime.replace(Constants.FORMAT_TIME_SHORT_24H, Constants.FORMAT_TIME_SHORT_12H);
-            }
-        }
-        setTime(dateTime.toString(formatTime));
     }
 
     public void maybeApplyThresholds(@NonNull final DateTime dateTime) {
@@ -346,12 +359,15 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         snapHelper.attachToRecyclerView(recyclerView);
     }
 
-    private void setDate(@NonNull final String date) {
-        textViewDate.setText(date);
-    }
-
-    private void setTime(@NonNull final String time) {
-        textViewClock.setText(time);
+    private void setFormatClock() {
+        textViewClock.setTimeZone(dateTimeZone.toString());
+        if (formatClock == Constants.CLOCK_MODE_12H) {
+            textViewClock.setFormat12Hour(formatTime);
+            textViewClock.setFormat24Hour(null);
+        } else {
+            textViewClock.setFormat24Hour(formatTime);
+            textViewClock.setFormat12Hour(null);
+        }
     }
 
     private void setTemperatureUnit() {
@@ -388,7 +404,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         }
     }
 
-    private void screen(int b) {
+    private void setDate() {
+        final DateTime dateTime = new DateTime(dateTimeZone);
+        textViewDate.setText(dateTime.toString(formatDate));
+    }
+
+//    private void screen(int b) {
 //        final DeviceManager deviceManager = new DeviceManager();
 //        deviceManager.reboot();
 
@@ -403,5 +424,5 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
 //        screenManager.setDisplayDensity(b); //WORKS
 //        screenManager.setFontScale(b*1.0f); //WORKS
-    }
+//    }
 }

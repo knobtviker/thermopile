@@ -30,7 +30,7 @@
                 style="@style/TextDate"
                 tools:text="TUESDAY 31.05.2016."/>
 
-            <TextView
+            <TextClock
                 android:id="@+id/textview_clock"
                 style="@style/TextTime"
                 tools:text="10:30"/>

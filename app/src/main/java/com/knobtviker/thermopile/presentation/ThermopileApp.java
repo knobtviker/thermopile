@@ -53,7 +53,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         super.onCreate();
 
         initRealm();
-        initStetho();
+//        initStetho();
         initCalligraphy();
         initJodaTime();
         initPresenter();
@@ -102,9 +102,9 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             humidityBuffer.clear();
             pressureBuffer.clear();
 
-            float temperatureAverage = temperatureSum/BUFFER_SIZE;
-            float humidityAverage = humiditySum/BUFFER_SIZE;
-            float pressureAverage = pressureSum/BUFFER_SIZE;
+            final float temperatureAverage = temperatureSum/BUFFER_SIZE;
+            final float humidityAverage = humiditySum/BUFFER_SIZE;
+            final float pressureAverage = pressureSum/BUFFER_SIZE;
 
             presenter.saveData(temperatureAverage, humidityAverage, pressureAverage);
         }

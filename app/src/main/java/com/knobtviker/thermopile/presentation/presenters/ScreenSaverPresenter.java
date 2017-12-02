@@ -8,13 +8,8 @@ import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
@@ -30,10 +25,7 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
     private CompositeDisposable compositeDisposable;
 
     private RealmResults<Atmosphere> resultsAtmosphere;
-    private RealmChangeListener<RealmResults<Atmosphere>> changeListenerAtmosphere;
-
     private RealmResults<Settings> resultsSettings;
-    private RealmChangeListener<RealmResults<Settings>> changeListenerSettings;
 
     public ScreenSaverPresenter(@NonNull final ScreenSaverContract.View view) {
         this.view = view;
@@ -52,16 +44,8 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
-        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
-            resultsAtmosphere.removeChangeListener(changeListenerAtmosphere);
-            resultsAtmosphere = null;
-            changeListenerAtmosphere = null;
-        }
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.removeChangeListener(changeListenerSettings);
-            resultsSettings = null;
-            changeListenerSettings = null;
-        }
+
+        removeListeners();
 
         AtmosphereRepository.destroyInstance();
         SettingsRepository.destroyInstance();
@@ -85,48 +69,68 @@ public class ScreenSaverPresenter implements ScreenSaverContract.Presenter {
     }
 
     @Override
-    public void startClock() {
-        compositeDisposable.add(
-            Observable
-                .interval(1L, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    tick -> view.onClockTick(),
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public void data(@NonNull final Realm realm) {
-        resultsAtmosphere = atmosphereRepository.latest(realm);
-
+    public void addListeners() {
         if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
-            changeListenerAtmosphere = atmosphereRealmResults -> {
-                if (!atmosphereRealmResults.isEmpty()) {
-                    view.onDataChanged(atmosphereRealmResults.first());
-                }
-            };
-            resultsAtmosphere.addChangeListener(changeListenerAtmosphere);
-        }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public void settings(@NonNull final Realm realm) {
-        resultsSettings = settingsRepository.load(realm);
-
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            changeListenerSettings = settingsRealmResults -> {
-                if (!settingsRealmResults.isEmpty()) {
-                    if (!settingsRealmResults.isEmpty()) {
-                        view.onSettingsChanged(settingsRealmResults.first());
+            resultsAtmosphere.addChangeListener(atmospheres -> {
+                if (!atmospheres.isEmpty()) {
+                    final Atmosphere result = atmospheres.first();
+                    if (result != null) {
+                        view.onDataChanged(result);
                     }
                 }
-            };
-            resultsSettings.addChangeListener(changeListenerSettings);
+            });
         }
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.addChangeListener(settings -> {
+                if (!settings.isEmpty()) {
+                    final Settings result = settings.first();
+                    if (result != null) {
+                        view.onSettingsChanged(result);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void removeListeners() {
+        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
+            resultsAtmosphere.removeAllChangeListeners();
+        }
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.removeAllChangeListeners();
+        }
+    }
+
+    @Override
+    public void data(@NonNull final Realm realm) {
+        started();
+
+        resultsAtmosphere = atmosphereRepository.latest(realm);
+
+        if (!resultsAtmosphere.isEmpty()) {
+            final Atmosphere result = resultsAtmosphere.first();
+            if (result != null) {
+                view.onDataChanged(result);
+            }
+        }
+
+        completed();
+    }
+
+    @Override
+    public void settings(@NonNull final Realm realm) {
+        started();
+
+        resultsSettings = settingsRepository.load(realm);
+
+        if (!resultsSettings.isEmpty()) {
+            final Settings result = resultsSettings.first();
+            if (result != null) {
+                view.onSettingsChanged(result);
+            }
+        }
+
+        completed();
     }
 }

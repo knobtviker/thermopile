@@ -26,10 +26,7 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
     private CompositeDisposable compositeDisposable;
 
     private RealmResults<Settings> resultsSettings;
-    private RealmChangeListener<RealmResults<Settings>> changeListenerSettings;
-
     private RealmResults<Threshold> resultsThresholds;
-    private RealmChangeListener<RealmResults<Threshold>> changeListenerThresholds;
 
     public SchedulePresenter(@NonNull final ScheduleContract.View view) {
         this.view = view;
@@ -48,16 +45,9 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.removeChangeListener(changeListenerSettings);
-            resultsSettings = null;
-            changeListenerSettings = null;
-        }
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            resultsThresholds.removeChangeListener(changeListenerThresholds);
-            resultsThresholds = null;
-            changeListenerThresholds = null;
-        }
+
+        removeListeners();
+
         SettingsRepository.destroyInstance();
         ThresholdRepository.destroyInstance();
     }
@@ -80,17 +70,51 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
     }
 
     @Override
+    public void addListeners() {
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.addChangeListener(settings -> {
+                if (!settings.isEmpty()) {
+                    final Settings result = settings.first();
+                    if (result != null) {
+                        view.onSettingsChanged(result);
+                    }
+                }
+            });
+        }
+
+        if (resultsThresholds != null && resultsThresholds.isValid()) {
+            resultsThresholds.addChangeListener(thresholds -> {
+                if (!thresholds.isEmpty()) {
+                    view.onThresholds(thresholds);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void removeListeners() {
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.removeAllChangeListeners();
+        }
+        if (resultsThresholds != null && resultsThresholds.isValid()) {
+            resultsThresholds.removeAllChangeListeners();
+        }
+    }
+
+    @Override
     public void settings(@NonNull final Realm realm) {
+        started();
+
         resultsSettings = settingsRepository.load(realm);
 
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            changeListenerSettings = settingsRealmResults -> {
-                if (!settingsRealmResults.isEmpty()) {
-                    view.onSettingsChanged(settingsRealmResults.first());
-                }
-            };
-            resultsSettings.addChangeListener(changeListenerSettings);
+        if (!resultsSettings.isEmpty()) {
+            final Settings result = resultsSettings.first();
+            if (result != null) {
+                view.onSettingsChanged(result);
+            }
         }
+
+        completed();
     }
 
     @Override
@@ -99,13 +123,8 @@ public class SchedulePresenter implements ScheduleContract.Presenter {
 
         resultsThresholds = thresholdRepository.load(realm);
 
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            changeListenerThresholds = thresholdsRealmResults -> {
-                if (!thresholdsRealmResults.isEmpty()) {
-                    view.onThresholds(thresholdsRealmResults);
-                }
-            };
-            resultsThresholds.addChangeListener(changeListenerThresholds);
+        if (!resultsThresholds.isEmpty()) {
+            view.onThresholds(resultsThresholds);
         }
 
         completed();

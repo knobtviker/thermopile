@@ -45,6 +45,24 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (presenter != null) {
+            presenter.addListeners();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (presenter != null) {
+            presenter.removeListeners();
+        }
+
+        super.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
         if (!unbinder.equals(Unbinder.EMPTY)) {
             unbinder.unbind();

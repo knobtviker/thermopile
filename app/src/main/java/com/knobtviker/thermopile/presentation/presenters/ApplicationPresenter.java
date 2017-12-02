@@ -66,25 +66,15 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
         view.showLoading(false);
     }
 
-//    @Override
-//    public void collectData() {
-//        compositeDisposable.add(
-//            Observable
-//                .interval(1L, TimeUnit.SECONDS, SchedulerProvider.getInstance().sensors())
-//                .flatMapCompletable(tick ->
-//                    Completable.mergeArrayDelayError(
-//                        atmosphereRepository
-//                            .read()
-//                            .doOnNext(atmosphereRepository::save)
-//                            .ignoreElements()
-//                    ))
-//                .observeOn(SchedulerProvider.getInstance().sensors())
-//                .subscribe(
-//                    this::completed,
-//                    this::error
-//                )
-//        );
-//    }
+    @Override
+    public void addListeners() {
+        //DO NOTHING
+    }
+
+    @Override
+    public void removeListeners() {
+        //DO NOTHING
+    }
 
     @Override
     public void createScreensaver() {
