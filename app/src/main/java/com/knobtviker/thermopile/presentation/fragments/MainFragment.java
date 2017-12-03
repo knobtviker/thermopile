@@ -37,7 +37,7 @@ import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.utils.MiniPID;
-import com.knobtviker.thermopile.presentation.views.CircularSeekBar;
+import com.knobtviker.thermopile.presentation.views.ArcView;
 import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
@@ -90,11 +90,17 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @BindView(R.id.textview_pressure)
     public TextView textViewPressure;
 
-    @BindView(R.id.seekbar_temperature)
-    public CircularSeekBar seekBarTemperature;
+    @BindView(R.id.arc_temperature)
+    public ArcView arcViewTemperature;
+
+    @BindView(R.id.arc_humidity)
+    public ArcView arcViewHumidity;
+
+    @BindView(R.id.arc_pressure)
+    public ArcView arcViewPressure;
 
     @BindView(R.id.textview_temperature)
-    public TextView textViewCurrentTemperature;
+    public TextView textViewTemperature;
 
     @BindView(R.id.textview_temperature_unit)
     public TextView textViewTemperatureUnit;
@@ -234,17 +240,21 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //            .findFirst();
 //        if (thresholdOptional.isPresent()) {
 //            //TODO: If threshold is found set it as progress on seekbar and/or use as target value
-//            seekBarTemperature.setProgress(thresholdOptional.get().temperature());
+//            arcViewTemperature.setProgress(thresholdOptional.get().temperature());
 //        } else {
 //            //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
-//            seekBarTemperature.setProgress(Math.round(data.temperature()));
+//            arcViewTemperature.setProgress(Math.round(data.temperature()));
 //        }
 
-        textViewCurrentTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.temperature()), 0).toString());
+        arcViewTemperature.setProgress(data.temperature() / Constants.MEASURED_TEMPERATURE_MAX);
+        arcViewHumidity.setProgress(data.humidity()/Constants.MEASURED_HUMIDITY_MAX);
+        arcViewPressure.setProgress(data.pressure()/Constants.MEASURED_PRESSURE_MAX);
+
+        textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.temperature()), 0).toString());
         textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
         textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.pressure()), 0).toString());
 
-//        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
+//        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (arcViewTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
 //        final double measured = data.temperature() + fakeIncrease;
 //        if (measured < target) {
 //            fakeIncrease = fakeIncrease + 0.05f;
@@ -275,9 +285,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @OnClick(R.id.floatingactionbutton_down)
     public void onActionDownClicked() {
-        if (seekBarTemperature.getProgress() > seekBarTemperature.getMin()) {
-            seekBarTemperature.setProgress(seekBarTemperature.getProgress() - 1);
-        }
+        //BOJAN
+//        if (arcViewTemperature.getProgress() > arcViewTemperature.getMin()) {
+//            arcViewTemperature.setProgress(arcViewTemperature.getProgress() - 1);
+//        }
         RelayRawDataSource.getInstance()
             .on()
             .subscribeOn(SchedulerProvider.getInstance().ui())
@@ -287,9 +298,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @OnClick(R.id.floatingactionbutton_up)
     public void onActionUpClicked() {
-        if (seekBarTemperature.getProgress() < seekBarTemperature.getMax()) {
-            seekBarTemperature.setProgress(seekBarTemperature.getProgress() + 1);
-        }
+        //BOJAN
+//        if (arcViewTemperature.getProgress() < arcViewTemperature.getMax()) {
+//            arcViewTemperature.setProgress(arcViewTemperature.getProgress() + 1);
+//        }
         RelayRawDataSource.getInstance()
             .off()
             .subscribeOn(SchedulerProvider.getInstance().ui())
@@ -329,23 +341,24 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setupSeekBar() {
-        seekBarTemperature.setProgressString(MathKit.round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
-        seekBarTemperature.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
-                seekBarTemperature.setProgressString(MathKit.round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (seekBarTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
-            }
-
-            @Override
-            public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(CircularSeekBar seekBar) {
-
-            }
-        });
+        //BOJAN
+//        arcViewTemperature.setProgressString(MathKit.round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (arcViewTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
+//        arcViewTemperature.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+//                arcViewTemperature.setProgressString(MathKit.round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (arcViewTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(CircularSeekBar seekBar) {
+//
+//            }
+//        });
     }
 
     private void setupRecyclerView() {

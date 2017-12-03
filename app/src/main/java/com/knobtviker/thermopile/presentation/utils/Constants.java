@@ -13,6 +13,8 @@ public class Constants {
 
     public static final float MEASURED_TEMPERATURE_MIN = 5.0f;
     public static final float MEASURED_TEMPERATURE_MAX = 35.0f;
+    public static final float MEASURED_HUMIDITY_MAX = 100.0f;
+    public static final float MEASURED_PRESSURE_MAX = 1100.0f;
 
     public static final int CLOCK_MODE_12H = 0;
     public static final int CLOCK_MODE_24H = 1;

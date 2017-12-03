@@ -70,7 +70,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @BindView(R.id.timepicker_end)
     public TimePicker timePickerEnd;
 
-    @BindView(R.id.seekbar_temperature)
+    @BindView(R.id.arc_temperature)
     public SeekBar seekBarTemperature;
 
     @BindView(R.id.recyclerview_colors)

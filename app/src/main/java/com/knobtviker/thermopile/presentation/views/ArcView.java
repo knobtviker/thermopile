@@ -1,0 +1,142 @@
+package com.knobtviker.thermopile.presentation.views;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.view.View;
+
+import com.knobtviker.thermopile.R;
+
+/**
+ * Created by bojan on 03/12/2017.
+ */
+
+public class ArcView extends View {
+
+    private final int START_ANGLE = 135;
+    private final int END_ANGLE = 275;
+
+    private int padding = 0;
+    private int width = 0;
+    private int height = 0;
+
+    @Nullable
+    private final TypedArray typedArray;
+
+    private float progress = 0.0f;
+    private int progressColor = 0;
+    private int trackColor = 0;
+    private float thickness = 0.0f;
+//    private String unit = "";
+
+    private Paint paint;
+    private RectF arc;
+
+    public ArcView(Context context) {
+        super(context);
+
+        typedArray = null;
+        attributes();
+        setup();
+    }
+
+    public ArcView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+
+        typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ArcView, 0, 0);
+
+        attributes();
+        setup();
+    }
+
+    public ArcView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+
+        typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ArcView, 0, 0);
+
+        attributes();
+        setup();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        arc.set((thickness/2) + padding, (thickness/2) + padding, width-padding-(thickness/2), height-padding-(thickness/2));
+
+        //Paint for text values.
+//        Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        mTextPaint.setTextSize((int) (context.getResources().getDimension(R.dimen.widget_text_large_value) / density));
+//        mTextPaint.setColor(Color.WHITE);
+//        mTextPaint.setTextAlign(Paint.Align.CENTER);
+
+        //First draw full arc as background.
+        paint.setColor(trackColor);
+        canvas.drawArc(arc, 135, 275, false, paint);
+
+        //Then draw arc progress with actual value.
+        paint.setColor(progressColor);
+        canvas.drawArc(arc, 135, calculateProgressSweepAngle(), false, paint);
+
+        //Draw text value.
+//        canvas.drawText(percentage + "%", bitmap.getWidth() / 2, (bitmap.getHeight() - mTextPaint.ascent()) / 2, mTextPaint);
+    }
+
+    @Override
+    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+        super.onSizeChanged(width, height, oldWidth, oldHeight);
+
+        final int size = Math.min(width, height);
+
+        this.width = size;
+        this.height = size;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(heightMeasureSpec, heightMeasureSpec);
+    }
+
+    private int calculateProgressSweepAngle() {
+        return Math.round(((END_ANGLE - START_ANGLE) * progress) + START_ANGLE);
+    }
+
+    public void setProgress(final float progress) {
+        this.progress = progress;
+
+        invalidate();
+        requestLayout();
+    }
+
+    public float getProgress() {
+        return progress;
+    }
+
+    private void attributes() {
+        if (typedArray != null) {
+            progress = typedArray.getFloat(R.styleable.ArcView_progress, 0.0f);
+            progressColor = typedArray.getColor(R.styleable.ArcView_progressColor, 0);
+            trackColor = typedArray.getColor(R.styleable.ArcView_trackColor, 0);
+            thickness = typedArray.getDimensionPixelSize(R.styleable.ArcView_stroke_thickness, 0);
+//            unit = typedArray.getString(R.styleable.ArcView_unit);
+
+            typedArray.recycle();
+        }
+    }
+
+    private void setup() {
+        int padding = 0;
+
+        //Paint for arc stroke.
+        paint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG | Paint.ANTI_ALIAS_FLAG);
+        paint.setStrokeWidth(thickness);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+
+        arc = new RectF();
+    }
+}

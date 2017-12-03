@@ -16,6 +16,7 @@ import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.Accuracy;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
@@ -42,6 +43,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     @NonNull
     private ApplicationContract.Presenter presenter;
+
+    private Accuracy accuracy = Accuracy.EMPTY;
 
     private FloatBuffer temperatureBuffer = FloatBuffer.allocate(Constants.BUFFER_SIZE);
     private FloatBuffer humidityBuffer = FloatBuffer.allocate(Constants.BUFFER_SIZE);
@@ -113,16 +116,16 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         switch (sensor.getType()) {
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                Log.i(TAG, "TEMPERATURE ACCURACY: --- " + accuracy);
+                this.accuracy.withTemperature(accuracy);
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
-                Log.i(TAG, "HUMIDITY ACCURACY: --- " + accuracy);
+                this.accuracy.withHumidity(accuracy);
                 break;
             case Sensor.TYPE_PRESSURE:
-                Log.i(TAG, "PRESSURE ACCURACY: --- " + accuracy);
+                this.accuracy.withPressure(accuracy);
                 break;
             case Sensor.TYPE_LIGHT:
-                Log.i(TAG, "LIGHT ACCURACY: --- " + accuracy);
+                this.accuracy.withLight(accuracy);
                 break;
         }
     }

@@ -4,8 +4,14 @@
     <dimen name="margin_xsmall">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_default">16dp</dimen>
+    <dimen name="margin_medium">24dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
+    <dimen name="margin_xlarge">48dp</dimen>
 
     <dimen name="corner_24dp">24dp</dimen>
     <dimen name="corner_16dp">16dp</dimen>
+
+    <dimen name="thickness_16">16dp</dimen>
+    <dimen name="thickness_24">24dp</dimen>
     
 </resources>
