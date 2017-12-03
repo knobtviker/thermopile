@@ -12,6 +12,7 @@ public interface ApplicationContract {
     interface View extends BaseView {
 
         void showScreensaver();
+
     }
 
     interface Presenter extends BasePresenter {

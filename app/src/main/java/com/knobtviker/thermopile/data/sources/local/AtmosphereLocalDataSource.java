@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.sources.AtmosphereDataSource;
 
-import org.joda.time.DateTimeUtils;
-
 import java.util.Optional;
 
 import io.realm.Realm;

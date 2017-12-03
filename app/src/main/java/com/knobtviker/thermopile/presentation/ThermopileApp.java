@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
-import com.knobtviker.android.things.contrib.driver.bme280.BME280SensorDriver;
+import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
@@ -43,10 +43,9 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @NonNull
     private ApplicationContract.Presenter presenter;
 
-    private final int BUFFER_SIZE = 25;
-    private FloatBuffer temperatureBuffer = FloatBuffer.allocate(BUFFER_SIZE);
-    private FloatBuffer humidityBuffer = FloatBuffer.allocate(BUFFER_SIZE);
-    private FloatBuffer pressureBuffer = FloatBuffer.allocate(BUFFER_SIZE);
+    private FloatBuffer temperatureBuffer = FloatBuffer.allocate(Constants.BUFFER_SIZE);
+    private FloatBuffer humidityBuffer = FloatBuffer.allocate(Constants.BUFFER_SIZE);
+    private FloatBuffer pressureBuffer = FloatBuffer.allocate(Constants.BUFFER_SIZE);
 
     @Override
     public void onCreate() {
@@ -92,7 +91,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             float humiditySum = 0;
             float pressureSum = 0;
 
-            for (int i=0; i< BUFFER_SIZE; i++) {
+            for (int i=0; i< Constants.BUFFER_SIZE; i++) {
                 temperatureSum += temperatureBuffer.get(i);
                 humiditySum += humidityBuffer.get(i);
                 pressureSum += pressureBuffer.get(i);
@@ -102,10 +101,10 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             humidityBuffer.clear();
             pressureBuffer.clear();
 
-            final float temperatureAverage = temperatureSum/BUFFER_SIZE;
-            final float humidityAverage = humiditySum/BUFFER_SIZE;
-            final float pressureAverage = pressureSum/BUFFER_SIZE;
-
+            final float temperatureAverage = temperatureSum/Constants.BUFFER_SIZE;
+            final float humidityAverage = humiditySum/Constants.BUFFER_SIZE;
+            final float pressureAverage = pressureSum/Constants.BUFFER_SIZE;
+//            Log.i(TAG, temperatureAverage +" --- "+humidityAverage+" --- "+pressureAverage);
             presenter.saveData(temperatureAverage, humidityAverage, pressureAverage);
         }
     }
@@ -226,7 +225,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         case Sensor.TYPE_RELATIVE_HUMIDITY:
                         case Sensor.TYPE_PRESSURE:
                         case Sensor.TYPE_LIGHT:
-                            sensorManager.registerListener(ThermopileApp.this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                            sensorManager.registerListener(ThermopileApp.this, sensor, SensorManager.SENSOR_DELAY_UI);
                             break;
                     }
                 }
@@ -236,10 +235,14 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     private void initBME280() {
         try {
-            final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver("I2C1");
-            bme280SensorDriver.registerTemperatureSensor();
-            bme280SensorDriver.registerHumiditySensor();
-            bme280SensorDriver.registerPressureSensor();
+//            final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver("I2C1");
+//            bme280SensorDriver.registerTemperatureSensor();
+//            bme280SensorDriver.registerHumiditySensor();
+//            bme280SensorDriver.registerPressureSensor();
+            final Bmx280SensorDriver bmx280SensorDriver = new Bmx280SensorDriver("I2C1");
+            bmx280SensorDriver.registerTemperatureSensor();
+            bmx280SensorDriver.registerHumiditySensor();
+            bmx280SensorDriver.registerPressureSensor();
         } catch (IOException e) {
             showError(e);
         }
