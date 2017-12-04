@@ -10,9 +10,11 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.Display;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
+import com.google.android.things.device.ScreenManager;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
@@ -60,6 +62,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         initJodaTime();
         initPresenter();
         initSensors();
+
+        screen();
     }
 
     @Override
@@ -264,5 +268,22 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         return context
             .getPackageManager()
             .hasSystemFeature(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? PackageManager.FEATURE_EMBEDDED : "android.hardware.type.embedded");
+    }
+
+    private void screen() {
+//        final DeviceManager deviceManager = new DeviceManager();
+//        deviceManager.reboot();
+
+        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
+
+//        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL); //NOT WORKING
+//        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_AUTOMATIC); //NOT WORKING
+//        screenManager.setBrightness(10);
+        screenManager.lockRotation(ScreenManager.ROTATION_180); //NOT WORKING
+
+//        screenManager.setScreenOffTimeout(3, TimeUnit.SECONDS); //NOT WORKING
+
+//        screenManager.setDisplayDensity(b); //WORKS
+//        screenManager.setFontScale(b*1.0f); //WORKS
     }
 }

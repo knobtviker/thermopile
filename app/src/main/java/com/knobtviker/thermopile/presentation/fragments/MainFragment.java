@@ -421,21 +421,4 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         final DateTime dateTime = new DateTime(dateTimeZone);
         textViewDate.setText(dateTime.toString(formatDate));
     }
-
-//    private void screen(int b) {
-//        final DeviceManager deviceManager = new DeviceManager();
-//        deviceManager.reboot();
-
-//        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
-
-//        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL); //NOT WORKING
-//        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_AUTOMATIC); //NOT WORKING
-//        screenManager.setBrightness(b);
-//        screenManager.lockRotation(b); //NOT WORKING
-
-//        screenManager.setScreenOffTimeout(3, TimeUnit.SECONDS); //NOT WORKING
-
-//        screenManager.setDisplayDensity(b); //WORKS
-//        screenManager.setFontScale(b*1.0f); //WORKS
-//    }
 }
