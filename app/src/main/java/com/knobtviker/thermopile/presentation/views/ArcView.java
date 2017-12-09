@@ -31,7 +31,6 @@ public class ArcView extends View {
     private int progressColor = 0;
     private int trackColor = 0;
     private float thickness = 0.0f;
-//    private String unit = "";
 
     private Paint paint;
     private RectF arc;
@@ -66,13 +65,7 @@ public class ArcView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        arc.set((thickness/2) + padding, (thickness/2) + padding, width-padding-(thickness/2), height-padding-(thickness/2));
-
-        //Paint for text values.
-//        Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        mTextPaint.setTextSize((int) (context.getResources().getDimension(R.dimen.widget_text_large_value) / density));
-//        mTextPaint.setColor(Color.WHITE);
-//        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        arc.set((thickness / 2) + padding, (thickness / 2) + padding, width - padding - (thickness / 2), height - padding - (thickness / 2));
 
         //First draw full arc as background.
         paint.setColor(trackColor);
@@ -81,9 +74,6 @@ public class ArcView extends View {
         //Then draw arc progress with actual value.
         paint.setColor(progressColor);
         canvas.drawArc(arc, 135, calculateProgressSweepAngle(), false, paint);
-
-        //Draw text value.
-//        canvas.drawText(percentage + "%", bitmap.getWidth() / 2, (bitmap.getHeight() - mTextPaint.ascent()) / 2, mTextPaint);
     }
 
     @Override
@@ -98,7 +88,11 @@ public class ArcView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(heightMeasureSpec, heightMeasureSpec);
+        final int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+        final int height = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+        final int size = Math.min(width, height);
+
+        setMeasuredDimension(size, size);
     }
 
     private int calculateProgressSweepAngle() {
@@ -122,15 +116,12 @@ public class ArcView extends View {
             progressColor = typedArray.getColor(R.styleable.ArcView_progressColor, 0);
             trackColor = typedArray.getColor(R.styleable.ArcView_trackColor, 0);
             thickness = typedArray.getDimensionPixelSize(R.styleable.ArcView_stroke_thickness, 0);
-//            unit = typedArray.getString(R.styleable.ArcView_unit);
 
             typedArray.recycle();
         }
     }
 
     private void setup() {
-        int padding = 0;
-
         //Paint for arc stroke.
         paint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG | Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(thickness);
