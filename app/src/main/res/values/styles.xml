@@ -18,6 +18,8 @@
     </style>
 
     <style name="ScheduleDayHours">
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:background">@drawable/layerlist_background_schedule</item>
         <item name="android:paddingTop">1dp</item>
         <item name="android:paddingBottom">1dp</item>

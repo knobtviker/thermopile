@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.data.models;
+package com.knobtviker.thermopile.data.models.presentation;
 
 import com.google.auto.value.AutoValue;
 
@@ -60,7 +60,7 @@ public abstract class Accuracy {
             .build();
     }
 
-    public static Accuracy EMPTY = AutoValue_Accuracy.builder()
+    public static Accuracy EMPTY = new AutoValue_Accuracy.Builder()
         .temperature(-1)
         .humidity(-1)
         .pressure(-1)

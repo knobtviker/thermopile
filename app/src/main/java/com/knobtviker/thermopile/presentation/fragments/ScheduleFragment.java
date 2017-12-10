@@ -102,9 +102,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         setupToolbar();
         setupDayTouchListeners();
 
-        presenter.settings(realm);
-        presenter.thresholds(realm);
-
         return view;
     }
 
@@ -126,6 +123,13 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onResume() {
+        presenter.settings(realm);
+        presenter.thresholds(realm);
+        super.onResume();
     }
 
     @Override
@@ -169,10 +173,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         populate(thresholds);
     }
 
-    private void setupToolbar() {
-        setupCustomActionBarWithHomeAsUp(toolbar);
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private void setupDayTouchListeners() {
         final int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
@@ -209,8 +209,13 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                     }));
     }
 
+    private void setupToolbar() {
+        setupCustomActionBarWithHomeAsUp(toolbar);
+    }
+
     private void populate(@NonNull final RealmResults<Threshold> thresholds) {
         hourLayouts.forEach(ViewGroup::removeAllViewsInLayout);
+
         final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 
         thresholds

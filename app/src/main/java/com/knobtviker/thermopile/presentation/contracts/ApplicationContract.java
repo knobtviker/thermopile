@@ -21,6 +21,7 @@ public interface ApplicationContract {
 
         void destroyScreensaver();
 
-        void saveData(final float temperature, final float humidity, final float pressure);
+        void saveData(final float temperature, final float humidity, final float pressure,
+                      final int temperatureAccuracy, final int humidityAccuracy, final int pressureAccuracy);
     }
 }

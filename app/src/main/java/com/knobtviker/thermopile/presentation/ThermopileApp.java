@@ -16,8 +16,8 @@ import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.Accuracy;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.data.models.presentation.Accuracy;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
@@ -58,7 +58,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         super.onCreate();
 
         initRealm();
-//        initStetho();
+        initStetho();
         initCalligraphy();
         initJodaTime();
         initPresenter();
@@ -79,6 +79,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 }
                 break;
             case Sensor.TYPE_PRESSURE:
+//                Log.i(TAG, sensorEvent.values[0]+"");
                 if (pressureBuffer.size() < Constants.BUFFER_SIZE) {
                     pressureBuffer.add(sensorEvent.values[0]);
                 }
@@ -110,7 +111,10 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                             .stream()
                             .collect(Collectors.averagingDouble(n -> Double.parseDouble(Float.toString(n))))
                     )
-                    .floatValue()
+                    .floatValue(),
+                this.accuracy.temperature(),
+                this.accuracy.humidity(),
+                this.accuracy.pressure()
             );
 
             temperatureBuffer.clear();
@@ -166,7 +170,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         final RealmConfiguration config = new RealmConfiguration.Builder()
             .name(BuildConfig.DATABASE_NAME)
             .schemaVersion(BuildConfig.DATABASE_VERSION)
-            .deleteRealmIfMigrationNeeded()
+//            .deleteRealmIfMigrationNeeded()
             .initialData(realm -> {
                 final Settings settings = new Settings();
                 settings.id(0L);

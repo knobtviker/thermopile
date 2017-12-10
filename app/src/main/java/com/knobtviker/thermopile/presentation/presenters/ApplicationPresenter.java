@@ -97,12 +97,15 @@ public class ApplicationPresenter implements ApplicationContract.Presenter {
     }
 
     @Override
-    public void saveData(float temperature, float humidity, float pressure) {
+    public void saveData(float temperature, float humidity, float pressure, final int temperatureAccuracy, final int humidityAccuracy, final int pressureAccuracy) {
         final Atmosphere atmosphere = new Atmosphere();
         atmosphere.timestamp(DateTimeUtils.currentTimeMillis());
         atmosphere.temperature(temperature);
         atmosphere.humidity(humidity);
         atmosphere.pressure(pressure);
+        atmosphere.temperatureAccuracy(temperatureAccuracy);
+        atmosphere.humidityAccuracy(humidityAccuracy);
+        atmosphere.pressureAccuracy(pressureAccuracy);
 
         atmosphereRepository.save(atmosphere);
     }

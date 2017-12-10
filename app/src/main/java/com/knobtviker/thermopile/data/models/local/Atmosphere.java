@@ -40,6 +40,30 @@ public class Atmosphere extends RealmObject {
         this.pressure = pressure;
     }
 
+    public int temperatureAccuracy() {
+        return temperatureAccuracy;
+    }
+
+    public void temperatureAccuracy(final int temperatureAccuracy) {
+        this.temperatureAccuracy = temperatureAccuracy;
+    }
+
+    public int humidityAccuracy() {
+        return humidityAccuracy;
+    }
+
+    public void humidityAccuracy(final int humidityAccuracy) {
+        this.humidityAccuracy = humidityAccuracy;
+    }
+
+    public int pressureAccuracy() {
+        return pressureAccuracy;
+    }
+
+    public void pressureAccuracy(final int pressureAccuracy) {
+        this.pressureAccuracy = pressureAccuracy;
+    }
+
     private long timestamp;
 
     private float temperature;
@@ -47,4 +71,10 @@ public class Atmosphere extends RealmObject {
     private float humidity;
 
     private float pressure;
+
+    private int temperatureAccuracy;
+
+    private int humidityAccuracy;
+
+    private int pressureAccuracy;
 }

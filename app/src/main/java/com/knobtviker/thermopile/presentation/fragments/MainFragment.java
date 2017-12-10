@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -181,6 +182,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         getActivity().registerReceiver(dateChangedReceiver, intentFilter);
 
         super.onResume();
+
+        new Handler()
+            .postDelayed(
+                () -> mainCommunicator.showSchedule(),
+                2000
+            );
     }
 
     @Override
@@ -247,8 +254,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //        }
 
         arcViewTemperature.setProgress(data.temperature() / Constants.MEASURED_TEMPERATURE_MAX);
-        arcViewHumidity.setProgress(data.humidity()/Constants.MEASURED_HUMIDITY_MAX);
-        arcViewPressure.setProgress(data.pressure()/Constants.MEASURED_PRESSURE_MAX);
+        arcViewHumidity.setProgress(data.humidity() / Constants.MEASURED_HUMIDITY_MAX);
+        arcViewPressure.setProgress(data.pressure() / Constants.MEASURED_PRESSURE_MAX);
 
         textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.temperature()), 0).toString());
         textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
