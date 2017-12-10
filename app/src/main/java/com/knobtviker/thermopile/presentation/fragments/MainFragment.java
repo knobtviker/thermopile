@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -150,7 +149,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
                 if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
 
                     setDate();
-//                    maybeApplyThresholds(dateTime);
+                    thresholds();
                 }
             }
         };
@@ -165,9 +164,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         bind(this, view);
 
-        presenter.data(realm);
-        presenter.settings(realm);
-//        presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
 
         setupPID();
         setupToolbar();
@@ -181,13 +177,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onResume() {
         getActivity().registerReceiver(dateChangedReceiver, intentFilter);
 
-        super.onResume();
+        data();
+        thresholds();
 
-        new Handler()
-            .postDelayed(
-                () -> mainCommunicator.showSchedule(),
-                2000
-            );
+        super.onResume();
     }
 
     @Override
@@ -287,15 +280,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onThresholdsChanged(@NonNull RealmResults<Threshold> thresholds) {
+        Log.i(TAG, thresholds.size()+"");
 //        hoursAdapter.applyThreasholds(thresholds); //TODO: Fix this bad logic
     }
 
     @OnClick(R.id.floatingactionbutton_down)
     public void onActionDownClicked() {
-        //BOJAN
-//        if (arcViewTemperature.getProgress() > arcViewTemperature.getMin()) {
-//            arcViewTemperature.setProgress(arcViewTemperature.getProgress() - 1);
-//        }
         RelayRawDataSource.getInstance()
             .on()
             .subscribeOn(SchedulerProvider.getInstance().ui())
@@ -305,21 +295,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @OnClick(R.id.floatingactionbutton_up)
     public void onActionUpClicked() {
-        //BOJAN
-//        if (arcViewTemperature.getProgress() < arcViewTemperature.getMax()) {
-//            arcViewTemperature.setProgress(arcViewTemperature.getProgress() + 1);
-//        }
         RelayRawDataSource.getInstance()
             .off()
             .subscribeOn(SchedulerProvider.getInstance().ui())
             .observeOn(SchedulerProvider.getInstance().ui())
             .subscribe();
-    }
-
-    public void maybeApplyThresholds(@NonNull final DateTime dateTime) {
-        if (dateTime.getSecondOfDay() == 0) {
-            presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
-        }
     }
 
     public void moveHourLine(@NonNull final DateTime dateTime) {
@@ -427,5 +407,14 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private void setDate() {
         final DateTime dateTime = new DateTime(dateTimeZone);
         textViewDate.setText(dateTime.toString(formatDate));
+    }
+
+    private void data() {
+        presenter.data(realm);
+        presenter.settings(realm);
+    }
+
+    private void thresholds() {
+        presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
     }
 }

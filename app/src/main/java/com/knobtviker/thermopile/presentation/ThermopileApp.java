@@ -58,7 +58,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         super.onCreate();
 
         initRealm();
-        initStetho();
+//        initStetho();
         initCalligraphy();
         initJodaTime();
         initPresenter();

@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -11,14 +10,8 @@ import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 
-import java.lang.ref.WeakReference;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
@@ -172,9 +165,9 @@ public class MainPresenter implements MainContract.Presenter {
 
         resultsThresholds = thresholdRepository.loadByDay(realm, day);
 
-        if (!resultsThresholds.isEmpty()) {
+//        if (!resultsThresholds.isEmpty()) {
             view.onThresholdsChanged(resultsThresholds);
-        }
+//        }
 
         completed();
     }

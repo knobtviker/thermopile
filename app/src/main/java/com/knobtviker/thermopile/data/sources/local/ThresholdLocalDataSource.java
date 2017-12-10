@@ -50,7 +50,8 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
         return realm
             .where(Threshold.class)
             .equalTo("day", day)
-            .findAllSorted(fieldNames, directions);
+            .sort(fieldNames, directions)
+            .findAll();
     }
 
     @Override

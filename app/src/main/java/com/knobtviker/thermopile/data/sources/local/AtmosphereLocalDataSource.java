@@ -39,7 +39,8 @@ public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
     public RealmResults<Atmosphere> latest(@NonNull final Realm realm) {
         return realm
             .where(Atmosphere.class)
-            .findAllSorted("timestamp", Sort.DESCENDING);
+            .sort("timestamp", Sort.DESCENDING)
+            .findAll();
     }
 
     @Override

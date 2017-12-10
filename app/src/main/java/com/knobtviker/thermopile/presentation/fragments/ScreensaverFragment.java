@@ -115,15 +115,14 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
         bind(this, view);
 
-        presenter.data(realm);
-        presenter.settings(realm);
-
         return view;
     }
 
     @Override
     public void onResume() {
         getActivity().registerReceiver(dateChangedReceiver, intentFilter);
+
+        data();
 
         super.onResume();
     }
@@ -181,6 +180,11 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
             textViewDate.setText(dateTime.toString(formatDate));
             textViewDay.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void data() {
+        presenter.data(realm);
+        presenter.settings(realm);
     }
 
     private void setFormatClock() {
