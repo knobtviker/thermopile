@@ -13,7 +13,7 @@ import dagger.Provides;
 public class SettingsDataModule {
 
     @Provides
-    static SettingsLocalDataSource provideSettingsLocalDataSource() {
+    static SettingsLocalDataSource provideLocalDataSource() {
         return new SettingsLocalDataSource();
     }
 }

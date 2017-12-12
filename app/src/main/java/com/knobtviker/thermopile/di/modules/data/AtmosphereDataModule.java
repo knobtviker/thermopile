@@ -13,7 +13,7 @@ import dagger.Provides;
 public class AtmosphereDataModule {
 
     @Provides
-    static AtmosphereLocalDataSource provideAtmosphereLocalDataSource() {
+    static AtmosphereLocalDataSource provideLocalDataSource() {
         return new AtmosphereLocalDataSource();
     }
 }

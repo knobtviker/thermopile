@@ -13,7 +13,7 @@ import dagger.Provides;
 public class ThresholdDataModule {
 
     @Provides
-    static ThresholdLocalDataSource provideThresholdLocalDataSource() {
+    static ThresholdLocalDataSource provideLocalDataSource() {
         return new ThresholdLocalDataSource();
     }
 }
