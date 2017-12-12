@@ -6,7 +6,7 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.local.SettingsLocalDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.BaseRepository;
 
-import java.util.Optional;
+import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -17,27 +17,11 @@ import io.realm.RealmResults;
 
 public class SettingsRepository extends BaseRepository {
 
-    private static Optional<SettingsRepository> INSTANCE = Optional.empty();
+    @Inject
+    SettingsLocalDataSource settingsLocalDataSource;
 
-    private final SettingsLocalDataSource settingsLocalDataSource;
-
-    public static SettingsRepository getInstance() {
-        if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new SettingsRepository());
-        }
-
-        return INSTANCE.get();
-    }
-
-    public static void destroyInstance() {
-        if (INSTANCE.isPresent()) {
-            SettingsLocalDataSource.destroyInstance();
-            INSTANCE = Optional.empty();
-        }
-    }
-
-    private SettingsRepository() {
-        this.settingsLocalDataSource = SettingsLocalDataSource.getInstance();
+    @Inject
+    SettingsRepository() {
     }
 
     public RealmResults<Settings> load(@NonNull final Realm realm) {

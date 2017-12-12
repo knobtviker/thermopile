@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
@@ -32,7 +33,7 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
     public void subscribe() {
         super.subscribe();
 
-        settingsRepository = SettingsRepository.getInstance();
+        settingsRepository = DaggerSettingsDataComponent.create().repository();
     }
 
     @Override
@@ -40,8 +41,6 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
         super.unsubscribe();
 
         removeListeners();
-
-        SettingsRepository.destroyInstance();
     }
 
     @Override

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.SettingsDataSource;
 
-import java.util.Optional;
+import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -16,22 +16,8 @@ import io.realm.RealmResults;
 
 public class SettingsLocalDataSource implements SettingsDataSource.Local {
 
-    private static Optional<SettingsLocalDataSource> INSTANCE = Optional.empty();
-
-    public static SettingsLocalDataSource getInstance() {
-        if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new SettingsLocalDataSource());
-        }
-        return INSTANCE.get();
-    }
-
-    public static void destroyInstance() {
-        if (INSTANCE.isPresent()) {
-            INSTANCE = Optional.empty();
-        }
-    }
-
-    private SettingsLocalDataSource() {
+    @Inject
+    public SettingsLocalDataSource() {
     }
 
     @Override

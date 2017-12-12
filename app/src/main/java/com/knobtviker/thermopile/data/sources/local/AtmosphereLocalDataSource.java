@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.sources.AtmosphereDataSource;
 
-import java.util.Optional;
+import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -17,22 +17,8 @@ import io.realm.Sort;
 
 public class AtmosphereLocalDataSource implements AtmosphereDataSource.Local {
 
-    private static Optional<AtmosphereLocalDataSource> INSTANCE = Optional.empty();
-
-    public static AtmosphereLocalDataSource getInstance() {
-        if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new AtmosphereLocalDataSource());
-        }
-        return INSTANCE.get();
-    }
-
-    public static void destroyInstance() {
-        if (INSTANCE.isPresent()) {
-            INSTANCE = Optional.empty();
-        }
-    }
-
-    private AtmosphereLocalDataSource() {
+    @Inject
+    public AtmosphereLocalDataSource() {
     }
 
     @Override

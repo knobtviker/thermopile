@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
+import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
@@ -36,8 +38,8 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
     public void subscribe() {
         super.subscribe();
 
-        atmosphereRepository = AtmosphereRepository.getInstance();
-        settingsRepository = SettingsRepository.getInstance();
+        atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
+        settingsRepository = DaggerSettingsDataComponent.create().repository();
     }
 
     @Override
@@ -45,9 +47,6 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
         super.unsubscribe();
 
         removeListeners();
-
-        AtmosphereRepository.destroyInstance();
-        SettingsRepository.destroyInstance();
     }
 
     @Override

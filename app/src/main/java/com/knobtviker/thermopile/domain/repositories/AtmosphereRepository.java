@@ -6,7 +6,7 @@ import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.sources.local.AtmosphereLocalDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.BaseRepository;
 
-import java.util.Optional;
+import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -17,27 +17,11 @@ import io.realm.RealmResults;
 
 public class AtmosphereRepository extends BaseRepository {
 
-    private static Optional<AtmosphereRepository> INSTANCE = Optional.empty();
+    @Inject
+    AtmosphereLocalDataSource atmosphereLocalDataSource;
 
-    private final AtmosphereLocalDataSource atmosphereLocalDataSource;
-
-    public static AtmosphereRepository getInstance() {
-        if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new AtmosphereRepository());
-        }
-
-        return INSTANCE.get();
-    }
-
-    public static void destroyInstance() {
-        if (INSTANCE.isPresent()) {
-            AtmosphereLocalDataSource.destroyInstance();
-            INSTANCE = Optional.empty();
-        }
-    }
-
-    private AtmosphereRepository() {
-        this.atmosphereLocalDataSource = AtmosphereLocalDataSource.getInstance();
+    @Inject
+    AtmosphereRepository() {
     }
 
     public void save(@NonNull final Atmosphere item) {

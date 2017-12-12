@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
@@ -39,14 +40,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     public void subscribe() {
         super.subscribe();
 
-        atmosphereRepository = AtmosphereRepository.getInstance();
-    }
-
-    @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        AtmosphereRepository.destroyInstance();
+        atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
     }
 
     @Override

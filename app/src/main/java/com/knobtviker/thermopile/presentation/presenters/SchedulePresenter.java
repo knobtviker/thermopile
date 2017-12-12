@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
+import com.knobtviker.thermopile.di.components.data.DaggerThresholdDataComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
@@ -36,8 +38,8 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
     public void subscribe() {
         super.subscribe();
 
-        settingsRepository = SettingsRepository.getInstance();
-        thresholdRepository = ThresholdRepository.getInstance();
+        settingsRepository = DaggerSettingsDataComponent.create().repository();
+        thresholdRepository = DaggerThresholdDataComponent.create().repository();
     }
 
     @Override
@@ -45,9 +47,6 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
         super.unsubscribe();
 
         removeListeners();
-
-        SettingsRepository.destroyInstance();
-        ThresholdRepository.destroyInstance();
     }
 
     @Override

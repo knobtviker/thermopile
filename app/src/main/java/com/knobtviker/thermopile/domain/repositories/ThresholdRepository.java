@@ -6,7 +6,7 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.local.ThresholdLocalDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.BaseRepository;
 
-import java.util.Optional;
+import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -17,27 +17,11 @@ import io.realm.RealmResults;
 
 public class ThresholdRepository extends BaseRepository {
 
-    private static Optional<ThresholdRepository> INSTANCE = Optional.empty();
+    @Inject
+    ThresholdLocalDataSource thresholdLocalDataSource;
 
-    private final ThresholdLocalDataSource thresholdLocalDataSource;
-
-    public static ThresholdRepository getInstance() {
-        if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new ThresholdRepository());
-        }
-
-        return INSTANCE.get();
-    }
-
-    public static void destroyInstance() {
-        if (INSTANCE.isPresent()) {
-            ThresholdLocalDataSource.destroyInstance();
-            INSTANCE = Optional.empty();
-        }
-    }
-
-    private ThresholdRepository() {
-        this.thresholdLocalDataSource = ThresholdLocalDataSource.getInstance();
+    @Inject
+    ThresholdRepository() {
     }
 
     public RealmResults<Threshold> load(@NonNull final Realm realm) {

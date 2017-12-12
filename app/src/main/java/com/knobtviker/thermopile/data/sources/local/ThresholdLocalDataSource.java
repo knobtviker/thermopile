@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.ThresholdDataSource;
 
-import java.util.Optional;
+import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -17,22 +17,8 @@ import io.realm.Sort;
 
 public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
 
-    private static Optional<ThresholdLocalDataSource> INSTANCE = Optional.empty();
-
-    public static ThresholdLocalDataSource getInstance() {
-        if (!INSTANCE.isPresent()) {
-            INSTANCE = Optional.of(new ThresholdLocalDataSource());
-        }
-        return INSTANCE.get();
-    }
-
-    public static void destroyInstance() {
-        if (INSTANCE.isPresent()) {
-            INSTANCE = Optional.empty();
-        }
-    }
-
-    private ThresholdLocalDataSource() {
+    @Inject
+    public ThresholdLocalDataSource() {
     }
 
     @Override

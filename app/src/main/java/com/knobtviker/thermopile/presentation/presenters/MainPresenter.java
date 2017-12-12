@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
+import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
+import com.knobtviker.thermopile.di.components.data.DaggerThresholdDataComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
@@ -40,9 +43,9 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     public void subscribe() {
         super.subscribe();
 
-        atmosphereRepository = AtmosphereRepository.getInstance();
-        settingsRepository = SettingsRepository.getInstance();
-        thresholdRepository = ThresholdRepository.getInstance();
+        atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
+        settingsRepository = DaggerSettingsDataComponent.create().repository();
+        thresholdRepository = DaggerThresholdDataComponent.create().repository();
     }
 
     @Override
@@ -50,10 +53,6 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         super.unsubscribe();
 
         removeListeners();
-
-        AtmosphereRepository.destroyInstance();
-        SettingsRepository.destroyInstance();
-        ThresholdRepository.destroyInstance();
     }
 
     @Override
