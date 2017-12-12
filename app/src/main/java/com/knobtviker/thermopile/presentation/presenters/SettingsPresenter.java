@@ -5,62 +5,43 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
+import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
-import io.reactivex.disposables.CompositeDisposable;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
  * Created by bojan on 15/07/2017.
  */
 
-public class SettingsPresenter implements SettingsContract.Presenter {
+public class SettingsPresenter extends AbstractPresenter implements SettingsContract.Presenter {
 
     private final SettingsContract.View view;
 
     private SettingsRepository settingsRepository;
-    private CompositeDisposable compositeDisposable;
 
     private RealmResults<Settings> resultsSettings;
 
     public SettingsPresenter(@NonNull final SettingsContract.View view) {
+        super(view);
+
         this.view = view;
     }
 
     @Override
     public void subscribe() {
+        super.subscribe();
+
         settingsRepository = SettingsRepository.getInstance();
-        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
     public void unsubscribe() {
-        if (!compositeDisposable.isDisposed()) {
-            compositeDisposable.dispose();
-            compositeDisposable = null;
-        }
+        super.unsubscribe();
 
         removeListeners();
 
         SettingsRepository.destroyInstance();
-    }
-
-    @Override
-    public void error(@NonNull Throwable throwable) {
-        completed();
-
-        view.showError(throwable);
-    }
-
-    @Override
-    public void started() {
-        view.showLoading(true);
-    }
-
-    @Override
-    public void completed() {
-        view.showLoading(false);
     }
 
     @Override

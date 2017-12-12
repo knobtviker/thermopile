@@ -7,63 +7,46 @@ import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
+import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
 import org.joda.time.DateTimeUtils;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 /**
  * Created by bojan on 08/08/2017.
  */
 
-public class ApplicationPresenter implements ApplicationContract.Presenter {
+public class ApplicationPresenter extends AbstractPresenter implements ApplicationContract.Presenter {
 
     private final ApplicationContract.View view;
 
     private AtmosphereRepository atmosphereRepository;
-    private CompositeDisposable compositeDisposable;
 
     @Nullable
     private Disposable screensaverDisposable;
 
     public ApplicationPresenter(@NonNull final ApplicationContract.View view) {
+        super(view);
+
         this.view = view;
     }
 
     @Override
     public void subscribe() {
+        super.subscribe();
+
         atmosphereRepository = AtmosphereRepository.getInstance();
-        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
     public void unsubscribe() {
-        if (!compositeDisposable.isDisposed()) {
-            compositeDisposable.dispose();
-            compositeDisposable = null;
-        }
+        super.unsubscribe();
+
         AtmosphereRepository.destroyInstance();
-    }
-
-    @Override
-    public void error(@NonNull Throwable throwable) {
-        completed();
-
-        view.showError(throwable);
-    }
-
-    @Override
-    public void started() {
-        view.showLoading(true);
-    }
-
-    @Override
-    public void completed() {
-        view.showLoading(false);
     }
 
     @Override

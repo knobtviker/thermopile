@@ -9,8 +9,8 @@ import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
+import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
-import io.reactivex.disposables.CompositeDisposable;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -18,60 +18,42 @@ import io.realm.RealmResults;
  * Created by bojan on 15/07/2017.
  */
 
-public class MainPresenter implements MainContract.Presenter {
+public class MainPresenter extends AbstractPresenter implements MainContract.Presenter {
 
     private final MainContract.View view;
 
     private AtmosphereRepository atmosphereRepository;
     private SettingsRepository settingsRepository;
     private ThresholdRepository thresholdRepository;
-    private CompositeDisposable compositeDisposable;
 
     private RealmResults<Atmosphere> resultsAtmosphere;
     private RealmResults<Settings> resultsSettings;
     private RealmResults<Threshold> resultsThresholds;
 
     public MainPresenter(@NonNull final MainContract.View view) {
+        super(view);
+
         this.view = view;
     }
 
     @Override
     public void subscribe() {
+        super.subscribe();
+
         atmosphereRepository = AtmosphereRepository.getInstance();
         settingsRepository = SettingsRepository.getInstance();
         thresholdRepository = ThresholdRepository.getInstance();
-        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
     public void unsubscribe() {
-        if (!compositeDisposable.isDisposed()) {
-            compositeDisposable.dispose();
-            compositeDisposable = null;
-        }
+        super.unsubscribe();
 
         removeListeners();
 
         AtmosphereRepository.destroyInstance();
         SettingsRepository.destroyInstance();
         ThresholdRepository.destroyInstance();
-    }
-
-    @Override
-    public void error(@NonNull Throwable throwable) {
-        completed();
-
-        view.showError(throwable);
-    }
-
-    @Override
-    public void started() {
-        view.showLoading(true);
-    }
-
-    @Override
-    public void completed() {
-        view.showLoading(false);
     }
 
     @Override

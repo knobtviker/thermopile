@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
+import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
-import io.reactivex.disposables.CompositeDisposable;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -14,52 +14,34 @@ import io.realm.RealmResults;
  * Created by bojan on 29/10/2017.
  */
 
-public class ThresholdPresenter implements ThresholdContract.Presenter {
+public class ThresholdPresenter extends AbstractPresenter implements ThresholdContract.Presenter {
 
     private final ThresholdContract.View view;
 
     private ThresholdRepository thresholdRepository;
-    private CompositeDisposable compositeDisposable;
 
     private RealmResults<Threshold> resultsThresholds;
 
     public ThresholdPresenter(@NonNull final ThresholdContract.View view) {
+        super(view);
+
         this.view = view;
     }
 
     @Override
     public void subscribe() {
+        super.subscribe();
+
         thresholdRepository = ThresholdRepository.getInstance();
-        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
     public void unsubscribe() {
-        if (!compositeDisposable.isDisposed()) {
-            compositeDisposable.dispose();
-            compositeDisposable = null;
-        }
+        super.unsubscribe();
 
         removeListeners();
 
         ThresholdRepository.destroyInstance();
-    }
-
-    @Override
-    public void error(@NonNull Throwable throwable) {
-        completed();
-
-        view.showError(throwable);
-    }
-
-    @Override
-    public void started() {
-        view.showLoading(true);
-    }
-
-    @Override
-    public void completed() {
-        view.showLoading(false);
     }
 
     @Override
