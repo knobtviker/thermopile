@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
+import com.knobtviker.thermopile.di.components.domain.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
-import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
@@ -15,6 +15,7 @@ import org.joda.time.DateTimeUtils;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
+import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -30,6 +31,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Nullable
     private Disposable screensaverDisposable;
 
+    private Scheduler scheduler;
+
     public ApplicationPresenter(@NonNull final ApplicationContract.View view) {
         super(view);
 
@@ -41,6 +44,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         super.subscribe();
 
         atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
+        scheduler = DaggerSchedulerProviderComponent.create().scheduler().screensaver;
     }
 
     @Override
@@ -57,8 +61,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     public void createScreensaver() {
 //        //TODO: Timer delay for screensaver should be loaded from Settings.
         screensaverDisposable = Completable
-            .timer(60, TimeUnit.SECONDS, SchedulerProvider.getInstance().screensaver())
-            .observeOn(SchedulerProvider.getInstance().screensaver())
+            .timer(60, TimeUnit.SECONDS, scheduler)
+            .observeOn(scheduler)
             .subscribe(
                 view::showScreensaver,
                 this::error

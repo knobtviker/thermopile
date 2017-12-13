@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.local.SettingsLocalDataSource;
-import com.knobtviker.thermopile.domain.repositories.implementation.BaseRepository;
+import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
 
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ import io.realm.RealmResults;
  * Created by bojan on 17/07/2017.
  */
 
-public class SettingsRepository extends BaseRepository {
+public class SettingsRepository extends AbstractRepository {
 
     @Inject
     SettingsLocalDataSource settingsLocalDataSource;

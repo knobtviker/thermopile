@@ -14,10 +14,10 @@ import io.reactivex.disposables.CompositeDisposable;
 public abstract class AbstractPresenter implements BasePresenter {
 
     @NonNull
-    private final BaseView view;
+    protected final BaseView view;
 
     @Nullable
-    private CompositeDisposable compositeDisposable;
+    protected CompositeDisposable compositeDisposable;
 
     public AbstractPresenter(@NonNull final BaseView view) {
         this.view = view;

@@ -30,7 +30,6 @@ import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.raw.RelayRawDataSource;
-import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
@@ -288,8 +287,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onActionDownClicked() {
         RelayRawDataSource.getInstance()
             .on()
-            .subscribeOn(SchedulerProvider.getInstance().ui())
-            .observeOn(SchedulerProvider.getInstance().ui())
+//            .subscribeOn(ui)
+//            .observeOn(ui)
             .subscribe();
     }
 
@@ -297,8 +296,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onActionUpClicked() {
         RelayRawDataSource.getInstance()
             .off()
-            .subscribeOn(SchedulerProvider.getInstance().ui())
-            .observeOn(SchedulerProvider.getInstance().ui())
+//            .subscribeOn(ui)
+//            .observeOn(ui)
             .subscribe();
     }
 
