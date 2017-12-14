@@ -44,7 +44,7 @@ android {
 
 dependencies {
     //base
-    compileOnly 'com.google.android.things:androidthings:0.6-devpreview'
+    compileOnly 'com.google.android.things:androidthings:0.6.1-devpreview'
     implementation 'com.google.android.things.contrib:driver-button:0.4'
     implementation 'com.github.knobtviker:bme280:1.0.6'
     implementation 'com.google.android.things.contrib:driver-bmx280:0.4'

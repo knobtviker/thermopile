@@ -10,9 +10,11 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.Display;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
+import com.google.android.things.device.ScreenManager;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.realm.Realm;
@@ -53,10 +56,13 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     private List<Float> humidityBuffer = new ArrayList<>(Constants.BUFFER_SIZE);
     private List<Float> pressureBuffer = new ArrayList<>(Constants.BUFFER_SIZE);
 
+//    private ScreenManager screenManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
+        initScreen();
         initRealm();
 //        initStetho();
         initCalligraphy();
@@ -154,14 +160,30 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @Override
     public void showScreensaver() {
         Router.showScreensaver(this);
+        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
+        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL);
+        screenManager.setBrightness(24);
     }
 
     public void createScreensaver() {
+        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
+        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL);
+        screenManager.setBrightness(255);
         presenter.createScreensaver();
     }
 
     public void destroyScreensaver() {
         presenter.destroyScreensaver();
+    }
+
+    private void initScreen() {
+        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
+        screenManager.setDisplayDensity(160);
+        screenManager.lockRotation(ScreenManager.ROTATION_180);
+//        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_AUTOMATIC);
+        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL);
+        screenManager.setBrightness(255);
+        screenManager.setScreenOffTimeout(180L, TimeUnit.SECONDS);
     }
 
     private void initRealm() {
