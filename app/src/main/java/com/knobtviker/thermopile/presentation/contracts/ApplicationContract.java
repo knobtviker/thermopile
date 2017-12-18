@@ -23,5 +23,9 @@ public interface ApplicationContract {
 
         void saveData(final float temperature, final float humidity, final float pressure,
                       final int temperatureAccuracy, final int humidityAccuracy, final int pressureAccuracy);
+
+        void initScreen(final int density, final int rotation, final long timeout);
+
+        void brightness(final int brightness);
     }
 }

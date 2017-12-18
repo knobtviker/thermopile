@@ -2,8 +2,10 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Display;
 
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.sources.raw.RxScreenManager;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.domain.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
@@ -28,6 +30,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     private AtmosphereRepository atmosphereRepository;
 
+    private RxScreenManager rxScreenManager;
+
     @Nullable
     private Disposable screensaverDisposable;
 
@@ -45,6 +49,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
         atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
         scheduler = DaggerSchedulerProviderComponent.create().scheduler().screensaver;
+
+        rxScreenManager = RxScreenManager.create(Display.DEFAULT_DISPLAY);
     }
 
     @Override
@@ -89,5 +95,30 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         atmosphere.pressureAccuracy(pressureAccuracy);
 
         atmosphereRepository.save(atmosphere);
+    }
+
+    @Override
+    public void initScreen(int density, int rotation, long timeout) {
+        Completable.concatArray(
+            rxScreenManager.lockRotation(rotation),
+            rxScreenManager.displayDensity(density),
+            rxScreenManager.screenOffTimeout(timeout)
+        )
+            .subscribe(
+                this::completed,
+                this::error
+            );
+    }
+
+    @Override
+    public void brightness(int brightness) {
+        Completable.concatArray(
+            rxScreenManager.brightnessMode(RxScreenManager.MANUAL),
+            rxScreenManager.brightness(brightness)
+        )
+            .subscribe(
+                this::completed,
+                this::error
+            );
     }
 }
