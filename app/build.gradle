@@ -67,7 +67,7 @@ dependencies {
     //presentation
     implementation 'com.android.support:design:27.0.2'
     implementation 'com.android.support:recyclerview-v7:27.0.2'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.bignerdranch.android:simple-item-decoration:1.0.0'
@@ -75,8 +75,8 @@ dependencies {
     //other
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.uphyca:stetho_realm:2.2.2'
-    implementation 'com.google.firebase:firebase-core:11.0.4'
-    implementation 'com.google.firebase:firebase-crash:11.0.4'
+//    implementation 'com.google.firebase:firebase-core:11.6.0'
+//    implementation 'com.google.firebase:firebase-crash:11.6.0'
 }
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

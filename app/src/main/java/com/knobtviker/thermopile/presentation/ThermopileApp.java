@@ -22,6 +22,7 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.presentation.Accuracy;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
+import com.knobtviker.thermopile.presentation.utils.BoardDefaults;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
@@ -55,8 +56,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     private List<Float> temperatureBuffer = new ArrayList<>(Constants.BUFFER_SIZE);
     private List<Float> humidityBuffer = new ArrayList<>(Constants.BUFFER_SIZE);
     private List<Float> pressureBuffer = new ArrayList<>(Constants.BUFFER_SIZE);
-
-//    private ScreenManager screenManager;
 
     @Override
     public void onCreate() {
@@ -160,15 +159,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @Override
     public void showScreensaver() {
         Router.showScreensaver(this);
-        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
-        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL);
-        screenManager.setBrightness(24);
+        brightness(24);
     }
 
     public void createScreensaver() {
-        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
-        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL);
-        screenManager.setBrightness(255);
+        brightness(255);
         presenter.createScreensaver();
     }
 
@@ -181,9 +176,9 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         screenManager.setDisplayDensity(160);
         screenManager.lockRotation(ScreenManager.ROTATION_180);
 //        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_AUTOMATIC);
-        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL);
-        screenManager.setBrightness(255);
         screenManager.setScreenOffTimeout(180L, TimeUnit.SECONDS);
+
+        brightness(255);
     }
 
     private void initRealm() {
@@ -267,11 +262,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     private void initBME280() {
         try {
-//            final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver("I2C1");
+//            final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver(BoardDefaults.getI2CPort());
 //            bme280SensorDriver.registerTemperatureSensor();
 //            bme280SensorDriver.registerHumiditySensor();
 //            bme280SensorDriver.registerPressureSensor();
-            final Bmx280SensorDriver bmx280SensorDriver = new Bmx280SensorDriver("I2C1");
+            final Bmx280SensorDriver bmx280SensorDriver = new Bmx280SensorDriver(BoardDefaults.getI2CPort());
             bmx280SensorDriver.registerTemperatureSensor();
             bmx280SensorDriver.registerHumiditySensor();
             bmx280SensorDriver.registerPressureSensor();
@@ -282,7 +277,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     private void initTSL2561() {
         try {
-            final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver("I2C1");
+            final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(BoardDefaults.getI2CPort());
             tsl2561SensorDriver.registerLuminositySensor();
         } catch (IOException e) {
             showError(e);
@@ -296,6 +291,12 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     }
 
     private void onLuminosityData(final float value) {
-//        Log.i(TAG, value+"");
+        //Log.i(TAG, value+"");
+    }
+
+    private void brightness(final int value) {
+        final ScreenManager screenManager = new ScreenManager(Display.DEFAULT_DISPLAY);
+        screenManager.setBrightnessMode(ScreenManager.BRIGHTNESS_MODE_MANUAL);
+        screenManager.setBrightness(value);
     }
 }
