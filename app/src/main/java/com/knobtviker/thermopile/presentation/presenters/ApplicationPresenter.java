@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Display;
 
+import com.knobtviker.android.things.device.RxScreenManager;
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
-import com.knobtviker.thermopile.data.sources.raw.RxScreenManager;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.domain.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
@@ -102,7 +102,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         Completable.concatArray(
             rxScreenManager.lockRotation(rotation),
             rxScreenManager.displayDensity(density),
-            rxScreenManager.screenOffTimeout(timeout)
+            rxScreenManager.screenOffTimeout(timeout, TimeUnit.MILLISECONDS)
         )
             .subscribe(
                 this::completed,
@@ -114,7 +114,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     public void brightness(int brightness) {
         Completable.concatArray(
             rxScreenManager.brightnessMode(RxScreenManager.MANUAL),
-            rxScreenManager.brightness(brightness)
+            rxScreenManager.brightness(500)
         )
             .subscribe(
                 this::completed,
