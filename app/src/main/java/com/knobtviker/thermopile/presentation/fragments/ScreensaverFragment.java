@@ -145,23 +145,23 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public void showError(@NonNull Throwable throwable) {
         Log.e(TAG, throwable.getMessage(), throwable);
     }
-    
+
     @SuppressLint("SetTextI18n")
     @Override
     public void onTemperatureChanged(@NonNull Temperature data) {
-        textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.value()), 0).toString());
+        textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.value()))));
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onHumidityChanged(@NonNull Humidity data) {
-        textViewHumidity.setText(MathKit.round(data.value(), 0).toString());
+        textViewHumidity.setText(String.valueOf(MathKit.round(data.value())));
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onPressueChanged(@NonNull Pressure data) {
-        textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.value()), 0).toString());
+        textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.value()))));
     }
 
     @Override

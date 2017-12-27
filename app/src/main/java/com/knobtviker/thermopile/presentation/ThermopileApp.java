@@ -13,6 +13,7 @@ import android.util.Log;
 import com.facebook.stetho.Stetho;
 import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
 import com.google.common.collect.ImmutableList;
+import com.knobtviker.android.things.contrib.driver.bme680.Bme680SensorDriver;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.device.RxScreenManager;
 import com.knobtviker.thermopile.BuildConfig;
@@ -89,6 +90,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 }
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
+//                Log.i(TAG, "humidity: "+sensorEvent.values[0]+"");
                 if (humidityBuffer.size() < Constants.BUFFER_SIZE) {
                     final Humidity item = new Humidity();
                     item.timestamp(DateTimeUtils.currentTimeMillis());
@@ -105,7 +107,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 }
                 break;
             case Sensor.TYPE_PRESSURE:
-//                Log.i(TAG, sensorEvent.values[0]+"");
+//                Log.i(TAG, "pressure: "+sensorEvent.values[0]+"");
                 if (pressureBuffer.size() < Constants.BUFFER_SIZE) {
                     final Pressure item = new Pressure();
                     item.timestamp(DateTimeUtils.currentTimeMillis());
@@ -207,6 +209,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         registerSensorCallback();
 
         initBME280();
+//        initBME680();
         initTSL2561();
     }
 
@@ -244,6 +247,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         }
     }
 
+    //CHIP_ID_BME280 = 0x60 | DEFAULT_I2C_ADDRESS = 0x77
     private void initBME280() {
         try {
             final Bmx280SensorDriver bmx280SensorDriver = new Bmx280SensorDriver(BoardDefaults.getI2CPort());
@@ -255,6 +259,19 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         }
     }
 
+    //CHIP_ID_BME680 = 0x61 | DEFAULT_I2C_ADDRESS = 0x76 (or 0x77)
+    private void initBME680() {
+        try {
+            final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.getI2CPort());
+            bme680SensorDriver.registerTemperatureSensor();
+            bme680SensorDriver.registerHumiditySensor();
+            bme680SensorDriver.registerPressureSensor();
+        } catch (IOException e) {
+            showError(e);
+        }
+    }
+
+    //CHIP_ID_TSL2561 = 0x?? | DEFAULT_I2C_ADDRESS = 0x39 (or 0x29 or 0x49)
     private void initTSL2561() {
         try {
             final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(BoardDefaults.getI2CPort());

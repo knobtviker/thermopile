@@ -225,21 +225,21 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @Override
     public void onTemperatureChanged(@NonNull Temperature data) {
         arcViewTemperature.setProgress(data.value() / Constants.MEASURED_TEMPERATURE_MAX);
-        textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.value()), 0).toString());
+        textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.value()))));
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onHumidityChanged(@NonNull Humidity data) {
         arcViewHumidity.setProgress(data.value() / Constants.MEASURED_HUMIDITY_MAX);
-        textViewHumidity.setText(MathKit.round(data.value(), 0).toString());
+        textViewHumidity.setText(String.valueOf(MathKit.round(data.value())));
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onPressueChanged(@NonNull Pressure data) {
         arcViewPressure.setProgress(data.value() / Constants.MEASURED_PRESSURE_MAX);
-        textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.value()), 0).toString());
+        textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.value()))));
     }
 
     @Override
