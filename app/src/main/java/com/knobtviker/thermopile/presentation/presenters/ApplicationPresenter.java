@@ -5,15 +5,16 @@ import android.support.annotation.Nullable;
 import android.view.Display;
 
 import com.knobtviker.android.things.device.RxScreenManager;
-import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Pressure;
+import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.domain.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
-import org.joda.time.DateTimeUtils;
-
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
@@ -84,17 +85,18 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     }
 
     @Override
-    public void saveData(float temperature, float humidity, float pressure, final int temperatureAccuracy, final int humidityAccuracy, final int pressureAccuracy) {
-        final Atmosphere atmosphere = new Atmosphere();
-        atmosphere.timestamp(DateTimeUtils.currentTimeMillis());
-        atmosphere.temperature(temperature);
-        atmosphere.humidity(humidity);
-        atmosphere.pressure(pressure);
-        atmosphere.temperatureAccuracy(temperatureAccuracy);
-        atmosphere.humidityAccuracy(humidityAccuracy);
-        atmosphere.pressureAccuracy(pressureAccuracy);
+    public void saveTemperatures(@NonNull List<Temperature> items) {
+        atmosphereRepository.saveTemperatures(items);
+    }
 
-        atmosphereRepository.save(atmosphere);
+    @Override
+    public void saveHumidities(@NonNull List<Humidity> items) {
+        atmosphereRepository.saveHumidities(items);
+    }
+
+    @Override
+    public void savePressures(@NonNull List<Pressure> items) {
+        atmosphereRepository.savePressures(items);
     }
 
     @Override
@@ -114,7 +116,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     public void brightness(int brightness) {
         Completable.concatArray(
             rxScreenManager.brightnessMode(RxScreenManager.MANUAL),
-            rxScreenManager.brightness(500)
+            rxScreenManager.brightness(255)
         )
             .subscribe(
                 this::completed,

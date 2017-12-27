@@ -1,6 +1,8 @@
 package com.knobtviker.thermopile.di.modules.data;
 
-import com.knobtviker.thermopile.data.sources.local.AtmosphereLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.HumidityLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,7 +15,17 @@ import dagger.Provides;
 public class AtmosphereDataModule {
 
     @Provides
-    static AtmosphereLocalDataSource provideLocalDataSource() {
-        return new AtmosphereLocalDataSource();
+    static TemperatureLocalDataSource provideTemperatureLocalDataSource() {
+        return new TemperatureLocalDataSource();
+    }
+
+    @Provides
+    static HumidityLocalDataSource provideHumidityLocalDataSource() {
+        return new HumidityLocalDataSource();
+    }
+
+    @Provides
+    static PressureLocalDataSource providePressureLocalDataSource() {
+        return new PressureLocalDataSource();
     }
 }

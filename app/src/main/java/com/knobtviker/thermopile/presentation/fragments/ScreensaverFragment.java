@@ -17,8 +17,10 @@ import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
@@ -143,13 +145,23 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public void showError(@NonNull Throwable throwable) {
         Log.e(TAG, throwable.getMessage(), throwable);
     }
+    
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onTemperatureChanged(@NonNull Temperature data) {
+        textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.value()), 0).toString());
+    }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onDataChanged(@NonNull Atmosphere data) {
-        textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.temperature()), 0).toString());
-        textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
-        textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.pressure()), 0).toString());
+    public void onHumidityChanged(@NonNull Humidity data) {
+        textViewHumidity.setText(MathKit.round(data.value(), 0).toString());
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onPressueChanged(@NonNull Pressure data) {
+        textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.value()), 0).toString());
     }
 
     @Override
@@ -183,7 +195,9 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     private void data() {
-        presenter.data(realm);
+        presenter.temperature(realm);
+        presenter.humidity(realm);
+        presenter.pressure(realm);
         presenter.settings(realm);
     }
 

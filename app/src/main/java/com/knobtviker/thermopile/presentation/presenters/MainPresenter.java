@@ -2,8 +2,10 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
@@ -29,7 +31,9 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     private SettingsRepository settingsRepository;
     private ThresholdRepository thresholdRepository;
 
-    private RealmResults<Atmosphere> resultsAtmosphere;
+    private RealmResults<Temperature> resultsTemperature;
+    private RealmResults<Humidity> resultsHumidity;
+    private RealmResults<Pressure> resultsPressure;
     private RealmResults<Settings> resultsSettings;
     private RealmResults<Threshold> resultsThresholds;
 
@@ -57,12 +61,32 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
     @Override
     public void addListeners() {
-        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
-            resultsAtmosphere.addChangeListener(atmospheres -> {
-                if (!atmospheres.isEmpty()) {
-                    final Atmosphere result = atmospheres.first();
+        if (resultsTemperature != null && resultsTemperature.isValid()) {
+            resultsTemperature.addChangeListener(temperatures -> {
+                if (!temperatures.isEmpty()) {
+                    final Temperature result = temperatures.first();
                     if (result != null) {
-                        view.onDataChanged(result);
+                        view.onTemperatureChanged(result);
+                    }
+                }
+            });
+        }
+        if (resultsHumidity != null && resultsHumidity.isValid()) {
+            resultsHumidity.addChangeListener(humidities -> {
+                if (!humidities.isEmpty()) {
+                    final Humidity result = humidities.first();
+                    if (result != null) {
+                        view.onHumidityChanged(result);
+                    }
+                }
+            });
+        }
+        if (resultsPressure != null && resultsPressure.isValid()) {
+            resultsPressure.addChangeListener(pressures -> {
+                if (!pressures.isEmpty()) {
+                    final Pressure result = pressures.first();
+                    if (result != null) {
+                        view.onPressueChanged(result);
                     }
                 }
             });
@@ -88,8 +112,14 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
     @Override
     public void removeListeners() {
-        if (resultsAtmosphere != null && resultsAtmosphere.isValid()) {
-            resultsAtmosphere.removeAllChangeListeners();
+        if (resultsTemperature != null && resultsTemperature.isValid()) {
+            resultsTemperature.removeAllChangeListeners();
+        }
+        if (resultsHumidity != null && resultsHumidity.isValid()) {
+            resultsHumidity.removeAllChangeListeners();
+        }
+        if (resultsPressure != null && resultsPressure.isValid()) {
+            resultsPressure.removeAllChangeListeners();
         }
         if (resultsSettings != null && resultsSettings.isValid()) {
             resultsSettings.removeAllChangeListeners();
@@ -100,15 +130,47 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     }
 
     @Override
-    public void data(@NonNull final Realm realm) {
+    public void temperature(@NonNull final Realm realm) {
         started();
 
-        resultsAtmosphere = atmosphereRepository.latest(realm);
+        resultsTemperature = atmosphereRepository.latestTemperature(realm);
 
-        if (!resultsAtmosphere.isEmpty()) {
-            final Atmosphere result = resultsAtmosphere.first();
+        if (!resultsTemperature.isEmpty()) {
+            final Temperature result = resultsTemperature.first();
             if (result != null) {
-                view.onDataChanged(result);
+                view.onTemperatureChanged(result);
+            }
+        }
+
+        completed();
+    }
+
+    @Override
+    public void humidity(@NonNull Realm realm) {
+        started();
+
+        resultsHumidity = atmosphereRepository.latestHumidity(realm);
+
+        if (!resultsHumidity.isEmpty()) {
+            final Humidity result = resultsHumidity.first();
+            if (result != null) {
+                view.onHumidityChanged(result);
+            }
+        }
+
+        completed();
+    }
+
+    @Override
+    public void pressure(@NonNull Realm realm) {
+        started();
+
+        resultsPressure = atmosphereRepository.latestPressure(realm);
+
+        if (!resultsPressure.isEmpty()) {
+            final Pressure result = resultsPressure.first();
+            if (result != null) {
+                view.onPressueChanged(result);
             }
         }
 
@@ -147,7 +209,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         resultsThresholds = thresholdRepository.loadByDay(realm, day);
 
 //        if (!resultsThresholds.isEmpty()) {
-            view.onThresholdsChanged(resultsThresholds);
+        view.onThresholdsChanged(resultsThresholds);
 //        }
 
         completed();

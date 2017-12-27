@@ -26,8 +26,10 @@ import android.widget.Toolbar;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.raw.RelayRawDataSource;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
@@ -35,7 +37,6 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
-import com.knobtviker.thermopile.presentation.utils.MiniPID;
 import com.knobtviker.thermopile.presentation.views.ArcView;
 import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
@@ -63,9 +64,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private HoursAdapter hoursAdapter;
 
     private ImmutableList<Threshold> thresholdsToday = ImmutableList.of();
-
-    private MiniPID miniPID;
-//    private float fakeIncrease = 0.05f;
 
     private DateTimeZone dateTimeZone;
     private int formatClock;
@@ -163,10 +161,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         bind(this, view);
 
-
-        setupPID();
         setupToolbar();
-        setupSeekBar();
         setupRecyclerView();
 
         return view;
@@ -228,38 +223,23 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onDataChanged(@NonNull Atmosphere data) {
-        //TODO: Find the right threshold if todays list is not empty.
-//        final Optional<Threshold> thresholdOptional = thresholdsToday.stream()
-//            .filter(threshold -> {
-//                final DateTime now = DateTime.now();
-//                return threshold.startHour() < now.getHourOfDay() && threshold.startMinute() < now.getMinuteOfHour()
-//                    && now.getHourOfDay() <= threshold.endHour() && now.getMinuteOfHour() <= threshold.endMinute();
-//            })
-//            .findFirst();
-//        if (thresholdOptional.isPresent()) {
-//            //TODO: If threshold is found set it as progress on seekbar and/or use as target value
-//            arcViewTemperature.setProgress(thresholdOptional.get().temperature());
-//        } else {
-//            //TODO: Else set seekbar progress to be the current measured temperature data. Do not start PID.
-//            arcViewTemperature.setProgress(Math.round(data.temperature()));
-//        }
+    public void onTemperatureChanged(@NonNull Temperature data) {
+        arcViewTemperature.setProgress(data.value() / Constants.MEASURED_TEMPERATURE_MAX);
+        textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.value()), 0).toString());
+    }
 
-        arcViewTemperature.setProgress(data.temperature() / Constants.MEASURED_TEMPERATURE_MAX);
-        arcViewHumidity.setProgress(data.humidity() / Constants.MEASURED_HUMIDITY_MAX);
-        arcViewPressure.setProgress(data.pressure() / Constants.MEASURED_PRESSURE_MAX);
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onHumidityChanged(@NonNull Humidity data) {
+        arcViewHumidity.setProgress(data.value() / Constants.MEASURED_HUMIDITY_MAX);
+        textViewHumidity.setText(MathKit.round(data.value(), 0).toString());
+    }
 
-        textViewTemperature.setText(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.temperature()), 0).toString());
-        textViewHumidity.setText(MathKit.round(data.humidity(), 0).toString());
-        textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.pressure()), 0).toString());
-
-//        final double target = (Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (arcViewTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN;
-//        final double measured = data.temperature() + fakeIncrease;
-//        if (measured < target) {
-//            fakeIncrease = fakeIncrease + 0.05f;
-//            final double output = miniPID.getOutput(measured, target);
-//            Log.i(TAG, String.format("Measured: %3.2f , Target: %3.2f , Error: %3.2f , Output: %3.2f\n", measured, target, (target - measured), output));
-//        }
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onPressueChanged(@NonNull Pressure data) {
+        arcViewPressure.setProgress(data.value() / Constants.MEASURED_PRESSURE_MAX);
+        textViewPressure.setText(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.value()), 0).toString());
     }
 
     @Override
@@ -279,7 +259,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onThresholdsChanged(@NonNull RealmResults<Threshold> thresholds) {
-        Log.i(TAG, thresholds.size()+"");
+        Log.i(TAG, thresholds.size() + "");
 //        hoursAdapter.applyThreasholds(thresholds); //TODO: Fix this bad logic
     }
 
@@ -287,8 +267,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onActionDownClicked() {
         RelayRawDataSource.getInstance()
             .on()
-//            .subscribeOn(ui)
-//            .observeOn(ui)
             .subscribe();
     }
 
@@ -296,8 +274,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onActionUpClicked() {
         RelayRawDataSource.getInstance()
             .off()
-//            .subscribeOn(ui)
-//            .observeOn(ui)
             .subscribe();
     }
 
@@ -312,39 +288,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         }
     }
 
-    //TODO: this needs more calibration to work properly but it does behave promising...
-    private void setupPID() {
-        miniPID = new MiniPID(1.0, 0.5, 0.0);
-        miniPID.setOutputLimits(5, 35);
-        //miniPID.setMaxIOutput(2);
-        miniPID.setOutputRampRate(3);
-        //miniPID.setOutputFilter(.3);
-//        miniPID.setSetpointRange(5);
-    }
-
     private void setupToolbar() {
         setupCustomActionBar(toolbar);
-    }
-
-    private void setupSeekBar() {
-        //BOJAN
-//        arcViewTemperature.setProgressString(MathKit.round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (arcViewTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
-//        arcViewTemperature.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
-//                arcViewTemperature.setProgressString(MathKit.round((Constants.MEASURED_TEMPERATURE_MAX - Constants.MEASURED_TEMPERATURE_MIN) * (arcViewTemperature.getProgress() / 100.0f) + Constants.MEASURED_TEMPERATURE_MIN, 1).toString());
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(CircularSeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(CircularSeekBar seekBar) {
-//
-//            }
-//        });
     }
 
     private void setupRecyclerView() {
@@ -409,7 +354,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void data() {
-        presenter.data(realm);
+        presenter.temperature(realm);
+        presenter.humidity(realm);
+        presenter.pressure(realm);
         presenter.settings(realm);
     }
 
