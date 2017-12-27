@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.models.local;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 
 /**
  * Created by bojan on 27/12/2017.
@@ -8,7 +9,7 @@ import io.realm.RealmObject;
 
 public class Pressure extends RealmObject {
 
-    public long tmestamp() {
+    public long timestamp() {
         return timestamp;
     }
 
@@ -48,6 +49,7 @@ public class Pressure extends RealmObject {
         this.name = name;
     }
 
+    @Index
     private long timestamp;
 
     private float value;

@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.models.local;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -76,10 +77,13 @@ public class Threshold extends RealmObject {
     @PrimaryKey
     private long id;
 
+    @Index
     private int day;
 
+    @Index
     private int startHour;
 
+    @Index
     private int startMinute;
 
     private int endHour;
