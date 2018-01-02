@@ -6,6 +6,7 @@ import com.knobtviker.thermopile.data.models.local.Humidity;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -19,6 +20,6 @@ public interface HumidityDataSource {
 
         RealmResults<Humidity> latest(@NonNull final Realm realm);
 
-        void save(@NonNull final List<Humidity> items);
+        Completable save(@NonNull final Realm realm, @NonNull final List<Humidity> items);
     }
 }

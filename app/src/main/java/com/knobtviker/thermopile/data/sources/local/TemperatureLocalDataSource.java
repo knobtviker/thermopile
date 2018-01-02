@@ -32,11 +32,20 @@ public class TemperatureLocalDataSource implements TemperatureDataSource.Local {
     }
 
     @Override
-    public void save(@NonNull List<Temperature> items) {
-        final Realm realm = Realm.getDefaultInstance();
+    public void save(@NonNull final Realm realm, @NonNull final List<Temperature> items) {
         realm.beginTransaction();
         realm.insertOrUpdate(items);
         realm.commitTransaction();
-        realm.close();
+//        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(items));
+//        return Completable.create(emitter -> {
+//            if (!emitter.isDisposed()) {
+//                try {
+//                    realm.executeTransaction(realm1 -> realm1.insertOrUpdate(items));
+//                    emitter.onComplete();
+//                } catch (Exception e) {
+//                    emitter.onError(e);
+//                }
+//            }
+//        });
     }
 }

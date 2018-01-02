@@ -18,6 +18,7 @@ import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.device.RxScreenManager;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -54,74 +55,52 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @NonNull
     private ApplicationContract.Presenter presenter;
 
-    private List<Temperature> temperatureBuffer = new ArrayList<>(Constants.BUFFER_SIZE);
-    private List<Humidity> humidityBuffer = new ArrayList<>(Constants.BUFFER_SIZE);
-    private List<Pressure> pressureBuffer = new ArrayList<>(Constants.BUFFER_SIZE);
+    private Atmosphere atmosphere = new Atmosphere();
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        initSensors();
         initRealm();
         initStetho();
         initCalligraphy();
         initJodaTime();
         initPresenter();
-        initSensors();
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         switch (sensorEvent.sensor.getType()) {
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                if (temperatureBuffer.size() < Constants.BUFFER_SIZE) {
-                    final Temperature item = new Temperature();
-                    item.timestamp(DateTimeUtils.currentTimeMillis());
-                    item.value(sensorEvent.values[0]);
-                    item.accuracy(sensorEvent.accuracy);
-                    item.vendor(sensorEvent.sensor.getVendor());
-                    item.name(sensorEvent.sensor.getName());
+                final Temperature temperature = new Temperature();
+                temperature.timestamp(DateTimeUtils.currentTimeMillis());
+                temperature.value(sensorEvent.values[0]);
+                temperature.accuracy(sensorEvent.accuracy);
+                temperature.vendor(sensorEvent.sensor.getVendor());
+                temperature.name(sensorEvent.sensor.getName());
 
-                    temperatureBuffer.add(item);
-                }
-                if (temperatureBuffer.size() == Constants.BUFFER_SIZE) {
-                    presenter.saveTemperatures(temperatureBuffer);
-                    temperatureBuffer.clear();
-                }
+                this.atmosphere.temperature(temperature);
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
-//                Log.i(TAG, "humidity: "+sensorEvent.values[0]+"");
-                if (humidityBuffer.size() < Constants.BUFFER_SIZE) {
-                    final Humidity item = new Humidity();
-                    item.timestamp(DateTimeUtils.currentTimeMillis());
-                    item.value(sensorEvent.values[0]);
-                    item.accuracy(sensorEvent.accuracy);
-                    item.vendor(sensorEvent.sensor.getVendor());
-                    item.name(sensorEvent.sensor.getName());
+                final Humidity humidity = new Humidity();
+                humidity.timestamp(DateTimeUtils.currentTimeMillis());
+                humidity.value(sensorEvent.values[0]);
+                humidity.accuracy(sensorEvent.accuracy);
+                humidity.vendor(sensorEvent.sensor.getVendor());
+                humidity.name(sensorEvent.sensor.getName());
 
-                    humidityBuffer.add(item);
-                }
-                if (humidityBuffer.size() == Constants.BUFFER_SIZE) {
-                    presenter.saveHumidities(humidityBuffer);
-                    humidityBuffer.clear();
-                }
+                this.atmosphere.humidity(humidity);
                 break;
             case Sensor.TYPE_PRESSURE:
-//                Log.i(TAG, "pressure: "+sensorEvent.values[0]+"");
-                if (pressureBuffer.size() < Constants.BUFFER_SIZE) {
-                    final Pressure item = new Pressure();
-                    item.timestamp(DateTimeUtils.currentTimeMillis());
-                    item.value(sensorEvent.values[0]);
-                    item.accuracy(sensorEvent.accuracy);
-                    item.vendor(sensorEvent.sensor.getVendor());
-                    item.name(sensorEvent.sensor.getName());
+                final Pressure pressure = new Pressure();
+                pressure.timestamp(DateTimeUtils.currentTimeMillis());
+                pressure.value(sensorEvent.values[0]);
+                pressure.accuracy(sensorEvent.accuracy);
+                pressure.vendor(sensorEvent.sensor.getVendor());
+                pressure.name(sensorEvent.sensor.getName());
 
-                    pressureBuffer.add(item);
-                }
-                if (pressureBuffer.size() == Constants.BUFFER_SIZE) {
-                    presenter.savePressures(pressureBuffer);
-                    pressureBuffer.clear();
-                }
+                this.atmosphere.pressure(pressure);
                 break;
             case Sensor.TYPE_LIGHT:
 //                Log.i(TAG, sensorEvent.values[0]+" lux");
@@ -151,6 +130,13 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @Override
     public void showError(@NonNull Throwable throwable) {
         Log.e(TAG, throwable.getMessage(), throwable);
+    }
+
+    @Override
+    public void onTick() {
+        if (this.atmosphere.temperature() != null && this.atmosphere.humidity() != null && this.atmosphere.pressure() != null) {
+            presenter.saveAtmosphere(atmosphere);
+        }
     }
 
     @Override
@@ -200,6 +186,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     private void initPresenter() {
         presenter = new ApplicationPresenter(this);
         presenter.subscribe();
+        presenter.tick();
         presenter.initScreen(160, RxScreenManager.ROTATION_180, 1800000L);
         presenter.createScreensaver();
         presenter.brightness(255);
@@ -254,6 +241,10 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             bmx280SensorDriver.registerTemperatureSensor();
             bmx280SensorDriver.registerHumiditySensor();
             bmx280SensorDriver.registerPressureSensor();
+//            final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver(BoardDefaults.getI2CPort());
+//            bme280SensorDriver.registerTemperatureSensor();
+//            bme280SensorDriver.registerHumiditySensor();
+//            bme280SensorDriver.registerPressureSensor();
         } catch (IOException e) {
             showError(e);
         }

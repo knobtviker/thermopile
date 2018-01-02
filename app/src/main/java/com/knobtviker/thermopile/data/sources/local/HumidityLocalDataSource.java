@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -32,11 +33,16 @@ public class HumidityLocalDataSource implements HumidityDataSource.Local {
     }
 
     @Override
-    public void save(@NonNull List<Humidity> items) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.insertOrUpdate(items);
-        realm.commitTransaction();
-        realm.close();
+    public Completable save(@NonNull final Realm realm, @NonNull final List<Humidity> items) {
+        return Completable.create(emitter -> {
+            if (!emitter.isDisposed()) {
+                try {
+                    realm.executeTransaction(realm1 -> realm1.insertOrUpdate(items));
+                    emitter.onComplete();
+                } catch (Exception e) {
+                    emitter.onError(e);
+                }
+            }
+        });
     }
 }

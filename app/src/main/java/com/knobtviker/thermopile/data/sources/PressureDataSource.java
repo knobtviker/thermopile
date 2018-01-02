@@ -6,6 +6,7 @@ import com.knobtviker.thermopile.data.models.local.Pressure;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -19,6 +20,6 @@ public interface PressureDataSource {
 
         RealmResults<Pressure> latest(@NonNull final Realm realm);
 
-        void save(@NonNull final List<Pressure> items);
+        Completable save(@NonNull final Realm realm, @NonNull final List<Pressure> items);
     }
 }
