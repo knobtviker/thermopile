@@ -106,7 +106,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
-                    Log.i(TAG, Bme680.CHIP_SENSOR_TYPE_IAQ + " --- Percentage: " + sensorEvent.values[0]+" --- IAQ index: " + Math.round(sensorEvent.values[0] * 500));
+                    Log.i(TAG, Bme680.CHIP_SENSOR_TYPE_IAQ + " --- Percentage: " + sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]+" --- IAQ index: " + Math.round(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX] * 500));
 
                     final AirQuality airQuality = new AirQuality();
                     airQuality.timestamp(DateTimeUtils.currentTimeMillis());
