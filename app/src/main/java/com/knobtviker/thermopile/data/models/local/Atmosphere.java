@@ -32,9 +32,19 @@ public class Atmosphere extends RealmObject {
         this.pressure = pressure;
     }
 
+    public AirQuality airQuality() {
+        return airQuality;
+    }
+
+    public void airQuality(AirQuality airQuality) {
+        this.airQuality = airQuality;
+    }
+
     private Temperature temperature;
 
     private Humidity humidity;
 
     private Pressure pressure;
+
+    private AirQuality airQuality;
 }
