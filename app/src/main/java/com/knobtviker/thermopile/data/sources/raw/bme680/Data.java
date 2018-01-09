@@ -31,4 +31,7 @@ public class Data {
 
     // Indoor air quality score index
     public float airQualityScore;
+
+    // Altitude base on measured pressure and set sea level
+    public float altitude;
 }

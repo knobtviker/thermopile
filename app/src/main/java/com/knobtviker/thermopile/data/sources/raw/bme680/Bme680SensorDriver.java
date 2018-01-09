@@ -17,6 +17,8 @@ import java.util.UUID;
 public class Bme680SensorDriver implements AutoCloseable {
     private static final String TAG = Bme680SensorDriver.class.getSimpleName();
 
+    public static final int PRESSURE = 0;
+    public static final int ALTITUDE = 1;
     public static final int INDOOR_AIR_QUALITY_GAS_RESISTANCE = 0;
     public static final int INDOOR_AIR_QUALITY_INDEX = 1;
 
@@ -223,7 +225,8 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            return new UserSensorReading(new float[]{mDevice.getSensorData().pressure});
+            final Data data = mDevice.getSensorData();
+            return new UserSensorReading(new float[]{data.pressure, data.altitude});
         }
 
         @Override
@@ -370,7 +373,8 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            return new UserSensorReading(new float[]{mDevice.getSensorData().gasResistance, mDevice.getSensorData().airQualityScore});
+            final Data data = mDevice.getSensorData();
+            return new UserSensorReading(new float[]{data.gasResistance, data.airQualityScore});
         }
 
         @Override

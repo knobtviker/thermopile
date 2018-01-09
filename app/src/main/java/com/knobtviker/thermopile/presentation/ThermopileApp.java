@@ -18,6 +18,7 @@ import com.knobtviker.android.things.device.RxScreenManager;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
+import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
@@ -101,12 +102,20 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             case Sensor.TYPE_PRESSURE:
                 final Pressure pressure = new Pressure();
                 pressure.timestamp(DateTimeUtils.currentTimeMillis());
-                pressure.value(sensorEvent.values[0]);
+                pressure.value(sensorEvent.values[Bme680SensorDriver.PRESSURE]);
                 pressure.accuracy(sensorEvent.accuracy);
                 pressure.vendor(sensorEvent.sensor.getVendor());
                 pressure.name(sensorEvent.sensor.getName());
 
+                final Altitude altitude = new Altitude();
+                altitude.timestamp(DateTimeUtils.currentTimeMillis());
+                altitude.value(sensorEvent.values[Bme680SensorDriver.ALTITUDE]);
+                altitude.accuracy(sensorEvent.accuracy);
+                altitude.vendor(sensorEvent.sensor.getVendor());
+                altitude.name(sensorEvent.sensor.getName());
+
                 this.atmosphere.pressure(pressure);
+                this.atmosphere.altitude(altitude);
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {

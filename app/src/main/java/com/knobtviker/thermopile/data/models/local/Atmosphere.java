@@ -40,6 +40,14 @@ public class Atmosphere extends RealmObject {
         this.airQuality = airQuality;
     }
 
+    public Altitude altitude() {
+        return altitude;
+    }
+
+    public void altitude(Altitude altitude) {
+        this.altitude = altitude;
+    }
+
     private Temperature temperature;
 
     private Humidity humidity;
@@ -47,4 +55,6 @@ public class Atmosphere extends RealmObject {
     private Pressure pressure;
 
     private AirQuality airQuality;
+
+    private Altitude altitude;
 }

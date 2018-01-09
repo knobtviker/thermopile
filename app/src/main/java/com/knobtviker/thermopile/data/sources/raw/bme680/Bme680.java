@@ -331,6 +331,7 @@ public class Bme680 implements AutoCloseable {
 
     private int DATA_READ_ATTEMPTS = 10;
     private int DATA_GAS_BURN_IN = 50;
+    private int SEA_LEVEL = 158; //meters
 
     private boolean enabled = false;
     private int chipId;
@@ -746,6 +747,12 @@ public class Bme680 implements AutoCloseable {
     public Data getSensorData() throws IOException {
         setPowerMode(MODE_FORCED);
 
+        try {
+            TimeUnit.MILLISECONDS.sleep(BME680_POLL_PERIOD_MILLISECONDS);
+        } catch (InterruptedException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
         final Data data = new Data();
 
         data.status = device.readRegByte(BME680_FIELD0_ADDRESS);
@@ -779,6 +786,7 @@ public class Bme680 implements AutoCloseable {
             final float airQuality = calculateAirQuality(gas_resistance, data.humidity);
             data.airQualityScore = airQuality == 0.0f ? lastAirQuality : airQuality;
             lastAirQuality = airQuality;
+            data.altitude = calculateAltitude(pressure/100.0f);
 
 //            Log.i(TAG, temperature + " --- " + data.temperature + " --- " + data.humidity + " --- " + data.pressure + " --- " + data.airQualityScore);
             Log.i(TAG, temperature + " --- " + data.temperature);
@@ -792,6 +800,7 @@ public class Bme680 implements AutoCloseable {
 
     private int concatBytes(final byte msb, final byte lsb, final boolean isSigned) {
         int word = ((msb << 8) | lsb);
+
         if (!isSigned) {
             word = word & 0xFFFF;
         }
@@ -919,6 +928,15 @@ public class Bme680 implements AutoCloseable {
 
             return 0.0f;
         }
+    }
+
+    // Equation taken from BMP180 datasheet (page 16):
+    // http://www.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
+
+    // Note that using the equation from wikipedia can give bad results at high altitude. See this thread for more information:
+    // http://forums.adafruit.com/viewtopic.php?f=22&t=58064
+    private float calculateAltitude(final float pressure) {
+        return (float) (44330.0f * (1.0f - Math.pow(pressure / SEA_LEVEL, 0.1903)));
     }
 
     private int calculateHeaterResistance(final int temperature) {
