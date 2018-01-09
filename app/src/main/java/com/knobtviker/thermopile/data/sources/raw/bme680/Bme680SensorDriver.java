@@ -351,7 +351,6 @@ public class Bme680SensorDriver implements AutoCloseable {
         private UserSensor getUserSensor() {
             if (mUserSensor == null) {
                 mUserSensor = new UserSensor.Builder()
-//                    .setType(Sensor.TYPE_RELATIVE_HUMIDITY)
                     .setCustomType(Sensor.TYPE_DEVICE_PRIVATE_BASE, Bme680.CHIP_SENSOR_TYPE_IAQ, Sensor.REPORTING_MODE_ON_CHANGE)
                     .setName(DRIVER_NAME)
                     .setVendor(DRIVER_VENDOR)

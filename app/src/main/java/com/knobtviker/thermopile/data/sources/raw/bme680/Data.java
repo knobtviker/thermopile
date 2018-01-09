@@ -7,15 +7,15 @@ package com.knobtviker.thermopile.data.sources.raw.bme680;
 public class Data {
 
     // Contains new_data, gasm_valid & heat_stab
-    public int status = -1;
+    public byte status;
 
     public boolean heaterStable = false;
 
     // The index of the heater profile used
-    public int gasIndex = -1;
+    public byte gasIndex = -1;
 
     // Measurement index to track order
-    public int measureIndex = -1;
+    public byte measureIndex = -1;
 
     // Temperature in degree celsius x100
     public float temperature;
