@@ -21,7 +21,7 @@ public class Data {
     public float temperature;
 
     // Pressure in Pascal
-    public int pressure = -1;
+    public float pressure = -1;
 
     // Humidity in % relative humidity x1000
     public float humidity;
