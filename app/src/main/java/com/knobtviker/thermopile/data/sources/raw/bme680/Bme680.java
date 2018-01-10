@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Locale;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -339,9 +340,8 @@ public class Bme680 implements AutoCloseable {
     private GasSettings gasSettings;
     private SensorSettings sensorSettings;
     private Data data;
-    private long[] gasResistanceData = new long[DATA_GAS_BURN_IN];
+    private LinkedBlockingQueue<Long> gasResistanceData = new LinkedBlockingQueue<>(DATA_GAS_BURN_IN);
     private long ambientTemperature;
-    private float lastAirQuality = 0.0f;
 
     /**
      * Create a new BME680 sensor driver connected on the given bus.
@@ -406,7 +406,7 @@ public class Bme680 implements AutoCloseable {
         gasSettings = new GasSettings();
         data = new Data();
 
-        fillGasDataResistance();
+        prefillGasDataResistance();
 
         this.device = device;
 
@@ -787,82 +787,109 @@ public class Bme680 implements AutoCloseable {
         return (device.readRegByte(BME680_CONFIG_ODR_RUN_GAS_NBC_ADDRESS) & BME680_RUN_GAS_MASK) >> RUN_GAS_POSITION;
     }
 
+    public float readTemperature() throws IOException {
+        getSensorData();
+
+        return this.data.temperature;
+    }
+
+    public float readPressure() throws IOException {
+        getSensorData();
+
+        return this.data.pressure;
+    }
+
+    public float readHumidity() throws IOException {
+        getSensorData();
+
+        return this.data.humidity;
+    }
+
+    public float readGasResistance() throws IOException {
+        getSensorData();
+
+        return this.data.gasResistance;
+    }
+
+    public float readAirQuality() throws IOException {
+        getSensorData();
+
+        return this.data.airQualityScore;
+    }
+
+    public float readAltitude() throws IOException {
+        getSensorData();
+
+        return this.data.altitude;
+    }
+
     // Get sensor data
-    public Data getSensorData() throws IOException {
+    private void getSensorData() throws IOException {
         setPowerMode(MODE_FORCED);
         //        adc_press: 384488 adc_temp: 506786 adc_hum: 17600 adc_gas_res: 342 gas_range: 4
         //        adc_press: 384392 adc_temp: 506340 adc_hum: 17669 adc_gas_res: 102 gas_range: 5
         //        adc_press: 384183 adc_temp: 505522 adc_hum: 17755 adc_gas_res: 513 gas_range: 8
         //        adc_press: 384192 adc_temp: 505560 adc_hum: 17749 adc_gas_res: 156 gas_range: 10
         //        adc_press: 384213 adc_temp: 505634 adc_hum: 17746 adc_gas_res: 128 gas_range: 10
+        for (int i = 0; i < DATA_READ_ATTEMPTS; i++) {
+            final byte status = device.readRegByte(BME680_FIELD0_ADDRESS);
 
-        try {
-            TimeUnit.MILLISECONDS.sleep(200);
-        } catch (InterruptedException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
+            //if sensor has new data available
+            if ((status & BME680_NEW_DATA_MASK) == 0) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(BME680_POLL_PERIOD_MILLISECONDS); //TODO: get and calculate real interval based on datasheet and Adafruit library.
+                } catch (InterruptedException e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
 
+                data.status = status;
 
-        final byte status = device.readRegByte(BME680_FIELD0_ADDRESS);
+                final byte[] buffer = new byte[BME680_FIELD_LENGTH];
+                device.readRegBuffer(BME680_FIELD0_ADDRESS, buffer, BME680_FIELD_LENGTH);
 
-        if ((status & BME680_NEW_DATA_MASK) == 0) {
-            final Data data = new Data();
+                data.status = (byte) (buffer[0] & BME680_NEW_DATA_MASK);
+                data.gasIndex = (buffer[0] & BME680_GAS_INDEX_MASK);
+                data.measureIndex = buffer[1];
 
-            data.status = status;
-
-            final byte[] buffer = new byte[BME680_FIELD_LENGTH];
-            device.readRegBuffer(BME680_FIELD0_ADDRESS, buffer, BME680_FIELD_LENGTH);
-
-            data.status = (byte) (buffer[0] & BME680_NEW_DATA_MASK);
-            data.gasIndex = (byte) (buffer[0] & BME680_GAS_INDEX_MASK);
-            data.measureIndex = buffer[1];
-
-            // read the raw data from the sensor
-            //Bosch C
+                // read the raw data from the sensor
+                //Bosch C
 //            adc_pres = (uint32_t) (((uint32_t) buff[2] * 4096) | ((uint32_t) buff[3] * 16) | ((uint32_t) buff[4] / 16));
 //            adc_temp = (uint32_t) (((uint32_t) buff[5] * 4096) | ((uint32_t) buff[6] * 16) | ((uint32_t) buff[7] / 16));
 //            adc_hum = (uint16_t) (((uint32_t) buff[8] * 256) | (uint32_t) buff[9]);
 //            adc_gas_res = (uint16_t) ((uint32_t) buff[13] * 4 | (((uint32_t) buff[14]) / 64));
 //            gas_range = buff[14] & BME680_GAS_RANGE_MSK;
 
-            //Pimoroni Python
+                //Pimoroni Python
 //            adc_pres = (regs[2] << 12) | (regs[3] << 4) | (regs[4] >> 4)
 //            adc_temp = (regs[5] << 12) | (regs[6] << 4) | (regs[7] >> 4)
 //            adc_hum = (regs[8] << 8) | regs[9]
 //            adc_gas_res = (regs[13] << 2) | (regs[14] >> 6)
 //            gas_range = regs[14] & GAS_RANGE_MSK
 
-            final int pressure = ((buffer[2] & 0xff) << 12) | ((buffer[3] & 0xff) << 4) | ((buffer[4] & 0xff) >> 4);
-            final int temperature = ((buffer[5] & 0xff) << 12) | ((buffer[6] & 0xff) << 4) | ((buffer[7] & 0xff) >> 4);
-            final int humidity = (buffer[8] & 0xff) << 8 | (buffer[9] & 0xff);
-            final int gas_resistance = ((buffer[13] & 0xff) << 2) | ((buffer[14] & 0xff) >> 6);
-            final int gas_range = buffer[14] & BME680_GAS_RANGE_MASK;
+                final int pressure = ((buffer[2] & 0xff) << 12) | ((buffer[3] & 0xff) << 4) | ((buffer[4] & 0xff) >> 4);
+                final int temperature = ((buffer[5] & 0xff) << 12) | ((buffer[6] & 0xff) << 4) | ((buffer[7] & 0xff) >> 4);
+                final int humidity = (buffer[8] & 0xff) << 8 | (buffer[9] & 0xff);
+                final int gas_resistance = ((buffer[13] & 0xff) << 2) | ((buffer[14] & 0xff) >> 6);
+                final int gas_range = buffer[14] & BME680_GAS_RANGE_MASK;
 
 //            Log.i(TAG, pressure + " --- " + temperature + " --- " + humidity + " --- " + gas_resistance + " --- " + gas_range);
 
-            ambientTemperature = temperature;
+                ambientTemperature = temperature;
 
-            data.status |= buffer[14] & BME680_GASM_VALID_MASK;
-            data.status |= buffer[14] & BME680_HEAT_STABLE_MASK;
+                data.status |= buffer[14] & BME680_GASM_VALID_MASK;
+                data.status |= buffer[14] & BME680_HEAT_STABLE_MASK;
 
-            data.heaterStable = (data.status & BME680_HEAT_STABLE_MASK) > 0;
+                data.heaterStable = (data.status & BME680_HEAT_STABLE_MASK) > 0;
 
-            data.temperature = compensateTemperature(temperature) / 100.0f;
-            data.pressure = compensatePressure(pressure, temperature) / 100.0f;
-            data.humidity = compensateHumidity(humidity, temperature) / 1000.0f;
-            data.gasResistance = compensateGasResistance(gas_resistance, gas_range);
-            final float airQuality = calculateAirQuality(gas_resistance, data.humidity);
-            data.airQualityScore = airQuality == 0.0f ? lastAirQuality : airQuality;
-            lastAirQuality = airQuality;
-            data.altitude = calculateAltitude(pressure / 100.0f);
+                data.temperature = compensateTemperature(temperature) / 100.0f;
+                data.pressure = compensatePressure(pressure, temperature) / 100.0f;
+                data.humidity = compensateHumidity(humidity, temperature) / 1000.0f;
+                data.gasResistance = compensateGasResistance(gas_resistance, gas_range);
+                data.airQualityScore = calculateAirQuality(gas_resistance, data.humidity);
+                data.altitude = calculateAltitude(pressure / 100.0f);
 
-            Log.i(TAG, data.temperature + " --- " + data.humidity + " --- " + data.pressure + " --- " + data.airQualityScore + " --- " + data.altitude);
-            this.data = data;
-
-            return data;
-        } else {
-//            Log.i(TAG, "fallback data --- " + data.temperature + " --- " + data.humidity + " --- " + data.pressure + " --- " + data.airQualityScore + " --- " + data.altitude);
-            return this.data;
+                Log.i(TAG, data.temperature + " --- " + data.humidity + " --- " + data.pressure + " --- " + data.airQualityScore + " --- " + data.altitude);
+            }
         }
     }
 
@@ -934,17 +961,17 @@ public class Bme680 implements AutoCloseable {
         return (int) ((var3 + (var2 >> 1)) / var2);
     }
 
-
     private float calculateAirQuality(final long gasResistance, final float humidity) {
         // Set the humidity baseline to 40%, an optimal indoor humidity.
         final float humidityBaseline = 40.0f;
         // This sets the balance between humidity and gas reading in the calculation of airQualityScore (25:75, humidity:gas)
         final float humidityWeighting = 0.25f;
 
-        //Collect gas resistance burn-in values, then use the average of the last n values to set the upper limit for calculating gasBaseline.
-        if (gasResistanceData[DATA_GAS_BURN_IN - 1] != 0) {
-//            Log.i(TAG, "gasResistanceData[DATA_GAS_BURN_IN - 1] --- "+gasResistanceData[DATA_GAS_BURN_IN - 1]);
-            final int gasBaseline = Math.round(sumGasDataResistance() / (float) DATA_GAS_BURN_IN);
+        try {
+            gasResistanceData.take();
+            gasResistanceData.put(gasResistance);
+            //Collect gas resistance burn-in values, then use the average of the last n values to set the upper limit for calculating gasBaseline.
+            final int gasBaseline = Math.round(sumGasDataResistance(gasResistanceData) / (float) DATA_GAS_BURN_IN);
 
             final long gasOffset = gasBaseline - gasResistance;
 
@@ -966,19 +993,11 @@ public class Bme680 implements AutoCloseable {
                 gasScore = 100.0f - (humidityWeighting * 100.0f);
             }
 
-            fillGasDataResistance();
-
             return humidityScore + gasScore;
-        } else {
-            for (int i = 0; i < DATA_GAS_BURN_IN; i++) {
-                if (gasResistanceData[i] == 0) {
-                    gasResistanceData[i] = gasResistance;
-//                    Log.i(TAG, "gasResistanceData["+i+"] --- "+gasResistanceData[i]);
-                    break;
-                }
-            }
-
-            return 0.0f;
+        } catch (InterruptedException e) {
+            Log.e(TAG, e.getMessage(), e);
+            // Fallback to previous data
+            return data.airQualityScore;
         }
     }
 
@@ -1020,16 +1039,19 @@ public class Bme680 implements AutoCloseable {
         return newDuration;
     }
 
-    private void fillGasDataResistance() {
+    private void prefillGasDataResistance() {
         for (int i = 0; i < DATA_GAS_BURN_IN; i++) {
-            gasResistanceData[i] = 0;
+            gasResistanceData.add(0L);
         }
     }
 
-    private int sumGasDataResistance() {
-        int sum = 0;
+    private long sumGasDataResistance(@NonNull final LinkedBlockingQueue<Long> queue) {
+        long sum = 0;
+        
         for (int i = 0; i < DATA_GAS_BURN_IN; i++) {
-            sum += gasResistanceData[i];
+            final long n = queue.remove();
+            sum += n;
+            queue.add(n);
         }
 
         return sum;

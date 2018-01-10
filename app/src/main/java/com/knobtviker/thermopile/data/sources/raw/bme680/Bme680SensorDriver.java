@@ -225,8 +225,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            final Data data = mDevice.getSensorData();
-            return new UserSensorReading(new float[]{data.pressure, data.altitude});
+            return new UserSensorReading(new float[]{mDevice.readTemperature(), mDevice.readAltitude()});
         }
 
         @Override
@@ -275,7 +274,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            return new UserSensorReading(new float[]{mDevice.getSensorData().temperature});
+            return new UserSensorReading(new float[]{mDevice.readTemperature()});
         }
 
         @Override
@@ -324,7 +323,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            return new UserSensorReading(new float[]{mDevice.getSensorData().humidity});
+            return new UserSensorReading(new float[]{mDevice.readHumidity()});
         }
 
         @Override
@@ -373,8 +372,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            final Data data = mDevice.getSensorData();
-            return new UserSensorReading(new float[]{data.gasResistance, data.airQualityScore});
+            return new UserSensorReading(new float[]{mDevice.readGasResistance(), mDevice.readAirQuality()});
         }
 
         @Override

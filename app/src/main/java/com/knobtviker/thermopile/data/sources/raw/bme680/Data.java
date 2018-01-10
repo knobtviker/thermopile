@@ -12,7 +12,7 @@ public class Data {
     public boolean heaterStable = false;
 
     // The index of the heater profile used
-    public byte gasIndex = -1;
+    public int gasIndex = -1;
 
     // Measurement index to track order
     public byte measureIndex = -1;
