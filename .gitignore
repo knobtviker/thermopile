@@ -7,3 +7,5 @@
 /build
 /captures
 .externalNativeBuild
+/connect_remote
+/uninstall_remote

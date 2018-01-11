@@ -76,10 +76,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void onSensorChanged(SensorEvent sensorEvent) {
         switch (sensorEvent.sensor.getType()) {
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                if (sensorEvent.sensor.getName().equals(Bme680.CHIP_NAME)) {
-//                    Log.i(TAG, sensorEvent.values[0]+" --- ");
-                    break;
-                }
                 final Temperature temperature = new Temperature();
                 temperature.timestamp(DateTimeUtils.currentTimeMillis());
                 temperature.value(sensorEvent.values[0]);
@@ -102,34 +98,38 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             case Sensor.TYPE_PRESSURE:
                 final Pressure pressure = new Pressure();
                 pressure.timestamp(DateTimeUtils.currentTimeMillis());
-                pressure.value(sensorEvent.values[Bme680SensorDriver.PRESSURE]);
                 pressure.accuracy(sensorEvent.accuracy);
                 pressure.vendor(sensorEvent.sensor.getVendor());
                 pressure.name(sensorEvent.sensor.getName());
 
-                final Altitude altitude = new Altitude();
-                altitude.timestamp(DateTimeUtils.currentTimeMillis());
-                altitude.value(sensorEvent.values[Bme680SensorDriver.ALTITUDE]);
-                altitude.accuracy(sensorEvent.accuracy);
-                altitude.vendor(sensorEvent.sensor.getVendor());
-                altitude.name(sensorEvent.sensor.getName());
+                if (sensorEvent.sensor.getName().equals(Bme680.CHIP_NAME)) {
+                    pressure.value(sensorEvent.values[Bme680SensorDriver.PRESSURE]);
 
+                    final Altitude altitude = new Altitude();
+                    altitude.timestamp(DateTimeUtils.currentTimeMillis());
+                    altitude.value(sensorEvent.values[Bme680SensorDriver.ALTITUDE]);
+                    altitude.accuracy(sensorEvent.accuracy);
+                    altitude.vendor(sensorEvent.sensor.getVendor());
+                    altitude.name(sensorEvent.sensor.getName());
+
+                    this.atmosphere.altitude(altitude);
+                } else {
+                    pressure.value(sensorEvent.values[0]);
+                }
                 this.atmosphere.pressure(pressure);
-                this.atmosphere.altitude(altitude);
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
-                    //Log.i(TAG, Bme680.CHIP_SENSOR_TYPE_IAQ + " --- Percentage: " + sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]+" --- IAQ index: " + Math.round(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX] * 500));
+                    if (sensorEvent.sensor.getName().equals(Bme680.CHIP_NAME)) {
+                        final AirQuality airQuality = new AirQuality();
+                        airQuality.timestamp(DateTimeUtils.currentTimeMillis());
+                        airQuality.value(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
+                        airQuality.accuracy(sensorEvent.accuracy);
+                        airQuality.vendor(sensorEvent.sensor.getVendor());
+                        airQuality.name(sensorEvent.sensor.getName());
 
-                    final AirQuality airQuality = new AirQuality();
-                    airQuality.timestamp(DateTimeUtils.currentTimeMillis());
-                    airQuality.value(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
-                    airQuality.accuracy(sensorEvent.accuracy);
-                    airQuality.vendor(sensorEvent.sensor.getVendor());
-                    airQuality.name(sensorEvent.sensor.getName());
-
-                    this.atmosphere.airQuality(airQuality);
-
+                        this.atmosphere.airQuality(airQuality);
+                    }
                     //IAQ classification and color-coding
                     /*
                         0 - 50 - good - #00e400
@@ -142,7 +142,25 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 }
                 break;
             case Sensor.TYPE_LIGHT:
-//                Log.i(TAG, sensorEvent.values[0]+" lux");adb
+//                Log.i(TAG, sensorEvent.values[0]+" lux");
+
+//                /** Maximum luminance of sunlight in lux */
+//                public static final float LIGHT_SUNLIGHT_MAX = 120000.0f;
+//                /** luminance of sunlight in lux */
+//                public static final float LIGHT_SUNLIGHT     = 110000.0f;
+//                /** luminance in shade in lux */
+//                public static final float LIGHT_SHADE        = 20000.0f;
+//                /** luminance under an overcast sky in lux */
+//                public static final float LIGHT_OVERCAST     = 10000.0f;
+//                /** luminance at sunrise in lux */
+//                public static final float LIGHT_SUNRISE      = 400.0f;
+//                /** luminance under a cloudy sky in lux */
+//                public static final float LIGHT_CLOUDY       = 100.0f;
+//                /** luminance at night with full moon in lux */
+//                public static final float LIGHT_FULLMOON     = 0.25f;
+//                /** luminance at night with no moon in lux*/
+//                public static final float LIGHT_NO_MOON      = 0.001f;
+//                */
                 break;
         }
     }
@@ -178,7 +196,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     @Override
     public void onTick() {
-        if (this.atmosphere.temperature() != null && this.atmosphere.humidity() != null && this.atmosphere.pressure() != null && this.atmosphere.airQuality() != null) {
+        if (this.atmosphere.temperature() != null && this.atmosphere.humidity() != null && this.atmosphere.pressure() != null) {
             presenter.saveAtmosphere(atmosphere);
         }
     }
@@ -301,7 +319,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.getI2CPort());
             bme680SensorDriver.registerTemperatureSensor();
             bme680SensorDriver.registerHumiditySensor();
-            bme680SensorDriver.registerPressureSensor();
+//            bme680SensorDriver.registerPressureSensor();
             bme680SensorDriver.registerGasSensor();
         } catch (IOException e) {
             showError(e);

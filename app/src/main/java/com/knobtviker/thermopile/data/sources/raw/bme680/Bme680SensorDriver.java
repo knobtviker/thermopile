@@ -20,7 +20,8 @@ public class Bme680SensorDriver implements AutoCloseable {
     public static final int PRESSURE = 0;
     public static final int ALTITUDE = 1;
     public static final int INDOOR_AIR_QUALITY_GAS_RESISTANCE = 0;
-    public static final int INDOOR_AIR_QUALITY_INDEX = 1;
+    public static final int INDOOR_AIR_QUALITY_SCORE = 1;
+    public static final int INDOOR_AIR_QUALITY_INDEX = 2;
 
     private Bme680 mDevice;
 
@@ -225,7 +226,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            return new UserSensorReading(new float[]{mDevice.readTemperature(), mDevice.readAltitude()});
+            return new UserSensorReading(new float[]{mDevice.readPressure(), mDevice.readAltitude()});
         }
 
         @Override
@@ -372,7 +373,8 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            return new UserSensorReading(new float[]{mDevice.readGasResistance(), mDevice.readAirQuality()});
+            final float airQuality = mDevice.readAirQuality();
+            return new UserSensorReading(new float[]{mDevice.readGasResistance(), airQuality, Math.round(((100.0f -airQuality)/100.0f)*500)});
         }
 
         @Override

@@ -21,17 +21,17 @@ public class Data {
     public float temperature;
 
     // Pressure in Pascal
-    public float pressure = -1;
+    public float pressure;
 
     // Humidity in % relative humidity x1000
     public float humidity;
 
     // Gas resistance in Ohms
-    public int gasResistance = -1;
+    public int gasResistance = 0;
 
     // Indoor air quality score index
-    public float airQualityScore;
+    public float airQualityScore = 0.0f;
 
     // Altitude base on measured pressure and set sea level
-    public float altitude;
+    public float altitude = 0.0f;
 }
