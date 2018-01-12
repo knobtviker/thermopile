@@ -52,11 +52,11 @@
         android:id="@+id/arc_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_default"
         app:layout_constrainedHeight="true"
         app:layout_constrainedWidth="true"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintBottom_toTopOf="@+id/floatingactionbutton_down"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,37 +65,195 @@
         app:stroke_thickness="@dimen/thickness_16"
         app:trackColor="@color/light_gray"/>
 
-    <com.knobtviker.thermopile.presentation.views.ArcView
-        android:id="@+id/arc_humidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintDimensionRatio="1:1"
-        android:layout_marginLeft="@dimen/margin_medium"
-        android:layout_marginRight="@dimen/margin_medium"
+    <TextView
+        android:text="Temperature"
+        android:textAllCaps="true"
+        app:layout_constraintStart_toStartOf="@id/arc_temperature"
+        app:layout_constraintEnd_toEndOf="@id/arc_temperature"
         app:layout_constraintBottom_toBottomOf="@id/arc_temperature"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/margin_default"
+        app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
         app:layout_constraintEnd_toStartOf="@id/arc_temperature"
         app:layout_constraintStart_toStartOf="parent"
-        app:progressColor="@color/arc_humidity"
-        app:stroke_thickness="@dimen/thickness_16"
-        app:trackColor="@color/light_gray"/>
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
-    <com.knobtviker.thermopile.presentation.views.ArcView
-        android:id="@+id/arc_pressure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
-        app:layout_constrainedWidth="true"
-        android:layout_marginLeft="@dimen/margin_medium"
-        android:layout_marginRight="@dimen/margin_medium"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintBottom_toBottomOf="@id/arc_temperature"
+        <com.knobtviker.thermopile.presentation.views.ArcView
+            android:id="@+id/arc_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/arc_iaq"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:progressColor="@color/arc_humidity"
+            app:stroke_thickness="@dimen/thickness_16"
+            app:trackColor="@color/light_gray"/>
+
+        <com.knobtviker.thermopile.presentation.views.ArcView
+            android:id="@+id/arc_iaq"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/arc_humidity"
+            app:progressColor="@color/arc_iaq"
+            app:stroke_thickness="@dimen/thickness_16"
+            app:trackColor="@color/light_gray"/>
+
+        <TextView
+            android:text="Humidity"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="@id/arc_humidity"
+            app:layout_constraintEnd_toEndOf="@id/arc_humidity"
+            app:layout_constraintBottom_toBottomOf="@id/arc_humidity"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="Air quality"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="@id/arc_iaq"
+            app:layout_constraintEnd_toEndOf="@id/arc_iaq"
+            app:layout_constraintBottom_toBottomOf="@id/arc_iaq"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/arc_humidity"
+            app:layout_constraintEnd_toEndOf="@id/arc_humidity"
+            app:layout_constraintStart_toStartOf="@id/arc_humidity"
+            app:layout_constraintTop_toTopOf="@id/arc_humidity">
+
+            <TextView
+                android:id="@+id/textview_humidity"
+                style="@style/TextHumidity"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="68"/>
+
+            <TextView
+                android:id="@+id/textview_humidity_unit"
+                style="@style/TextUnitHumidity"
+                android:text="@string/unit_humidity_percent"
+                app:layout_constraintBottom_toBottomOf="@id/textview_humidity"
+                app:layout_constraintStart_toEndOf="@id/textview_humidity"
+                app:layout_constraintTop_toTopOf="@id/textview_humidity"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/margin_default"
+        app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/arc_temperature"
-        app:progressColor="@color/arc_pressure"
-        app:stroke_thickness="@dimen/thickness_16"
-        app:trackColor="@color/light_gray"/>
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
+
+        <com.knobtviker.thermopile.presentation.views.ArcView
+            android:id="@+id/arc_pressure"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/arc_seismic"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:progressColor="@color/arc_pressure"
+            app:stroke_thickness="@dimen/thickness_16"
+            app:trackColor="@color/light_gray"/>
+
+        <com.knobtviker.thermopile.presentation.views.ArcView
+            android:id="@+id/arc_seismic"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/arc_pressure"
+            app:progressColor="@color/arc_seismic"
+            app:stroke_thickness="@dimen/thickness_16"
+            app:trackColor="@color/light_gray"/>
+
+        <TextView
+            android:text="Pressure"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="@id/arc_pressure"
+            app:layout_constraintEnd_toEndOf="@id/arc_pressure"
+            app:layout_constraintBottom_toBottomOf="@id/arc_pressure"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="Motion"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="@id/arc_seismic"
+            app:layout_constraintEnd_toEndOf="@id/arc_seismic"
+            app:layout_constraintBottom_toBottomOf="@id/arc_seismic"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/arc_pressure"
+            app:layout_constraintEnd_toEndOf="@id/arc_pressure"
+            app:layout_constraintStart_toStartOf="@id/arc_pressure"
+            app:layout_constraintTop_toTopOf="@id/arc_pressure">
+
+            <TextView
+                android:id="@+id/textview_pressure"
+                style="@style/TextPressure"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1003"/>
+
+            <TextView
+                android:id="@+id/textview_pressure_unit"
+                style="@style/TextUnitPressure"
+                android:text="@string/unit_pressure_pascal"
+                app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
+                app:layout_constraintStart_toEndOf="@id/textview_pressure"
+                app:layout_constraintTop_toTopOf="@id/textview_pressure"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
@@ -121,60 +279,6 @@
             app:layout_constraintBottom_toBottomOf="@id/textview_temperature"
             app:layout_constraintStart_toEndOf="@id/textview_temperature"
             app:layout_constraintTop_toTopOf="@id/textview_temperature"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/arc_humidity"
-        app:layout_constraintEnd_toEndOf="@id/arc_humidity"
-        app:layout_constraintStart_toStartOf="@id/arc_humidity"
-        app:layout_constraintTop_toTopOf="@id/arc_humidity">
-
-        <TextView
-            android:id="@+id/textview_humidity"
-            style="@style/TextHumidity"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="68"/>
-
-        <TextView
-            android:id="@+id/textview_humidity_unit"
-            style="@style/TextUnitHumidity"
-            android:text="@string/unit_humidity_percent"
-            app:layout_constraintBottom_toBottomOf="@id/textview_humidity"
-            app:layout_constraintStart_toEndOf="@id/textview_humidity"
-            app:layout_constraintTop_toTopOf="@id/textview_humidity"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/arc_pressure"
-        app:layout_constraintEnd_toEndOf="@id/arc_pressure"
-        app:layout_constraintStart_toStartOf="@id/arc_pressure"
-        app:layout_constraintTop_toTopOf="@id/arc_pressure">
-
-        <TextView
-            android:id="@+id/textview_pressure"
-            style="@style/TextPressure"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="1003"/>
-
-        <TextView
-            android:id="@+id/textview_pressure_unit"
-            style="@style/TextUnitPressure"
-            android:text="@string/unit_pressure_pascal"
-            app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
-            app:layout_constraintStart_toEndOf="@id/textview_pressure"
-            app:layout_constraintTop_toTopOf="@id/textview_pressure"/>
 
     </android.support.constraint.ConstraintLayout>
 

@@ -144,6 +144,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             case Sensor.TYPE_LIGHT:
                 Log.i(TAG, "Measured: " + sensorEvent.values[TSL2561SensorDriver.LUMINANCE] + " lx --- Fitted: " + sensorEvent.values[TSL2561SensorDriver.LUMINANCE_FITTED]+ " lx --- Screen brightness: " + (int)sensorEvent.values[TSL2561SensorDriver.SCREEN_BRIGHTNESS]);
                 break;
+
+            //TODO: Add seismic accelearation approx. per:
+            //https://en.wikipedia.org/wiki/Richter_magnitude_scale
+            //https://en.wikipedia.org/wiki/Peak_ground_acceleration
+            //https://en.wikipedia.org/wiki/Mercalli_intensity_scale#Modified_Mercalli_Intensity_scale
         }
     }
 
