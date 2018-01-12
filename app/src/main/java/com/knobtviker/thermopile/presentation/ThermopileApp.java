@@ -142,25 +142,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 }
                 break;
             case Sensor.TYPE_LIGHT:
-//                Log.i(TAG, sensorEvent.values[0]+" lux");
-
-//                /** Maximum luminance of sunlight in lux */
-//                public static final float LIGHT_SUNLIGHT_MAX = 120000.0f;
-//                /** luminance of sunlight in lux */
-//                public static final float LIGHT_SUNLIGHT     = 110000.0f;
-//                /** luminance in shade in lux */
-//                public static final float LIGHT_SHADE        = 20000.0f;
-//                /** luminance under an overcast sky in lux */
-//                public static final float LIGHT_OVERCAST     = 10000.0f;
-//                /** luminance at sunrise in lux */
-//                public static final float LIGHT_SUNRISE      = 400.0f;
-//                /** luminance under a cloudy sky in lux */
-//                public static final float LIGHT_CLOUDY       = 100.0f;
-//                /** luminance at night with full moon in lux */
-//                public static final float LIGHT_FULLMOON     = 0.25f;
-//                /** luminance at night with no moon in lux*/
-//                public static final float LIGHT_NO_MOON      = 0.001f;
-//                */
+                Log.i(TAG, "Measured: " + sensorEvent.values[TSL2561SensorDriver.LUMINANCE] + " lx --- Fitted: " + sensorEvent.values[TSL2561SensorDriver.LUMINANCE_FITTED]+ " lx --- Screen brightness: " + (int)sensorEvent.values[TSL2561SensorDriver.SCREEN_BRIGHTNESS]);
                 break;
         }
     }
