@@ -61,7 +61,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar_layout"
-        app:progressColor="@color/red_500"
+        app:progressColor="@color/arc_temperature"
         app:stroke_thickness="@dimen/thickness_16"
         app:trackColor="@color/light_gray"/>
 
@@ -77,7 +77,7 @@
         app:layout_constraintBottom_toBottomOf="@id/arc_temperature"
         app:layout_constraintEnd_toStartOf="@id/arc_temperature"
         app:layout_constraintStart_toStartOf="parent"
-        app:progressColor="@color/blue_500"
+        app:progressColor="@color/arc_humidity"
         app:stroke_thickness="@dimen/thickness_16"
         app:trackColor="@color/light_gray"/>
 
@@ -93,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="@id/arc_temperature"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/arc_temperature"
-        app:progressColor="@color/amber_500"
+        app:progressColor="@color/arc_pressure"
         app:stroke_thickness="@dimen/thickness_16"
         app:trackColor="@color/light_gray"/>
 
