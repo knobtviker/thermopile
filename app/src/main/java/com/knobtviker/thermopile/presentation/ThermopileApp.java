@@ -257,7 +257,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     private void initSensors() {
         registerSensorCallback();
 
-//        initBME280();
+        initBME280();
         initBME680();
         initTSL2561();
     }

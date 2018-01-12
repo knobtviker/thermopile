@@ -7,6 +7,7 @@ package com.knobtviker.thermopile.data.sources.raw.bme680;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -189,6 +190,14 @@ public class Bme680 implements AutoCloseable {
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({PROFILE_0, PROFILE_1, PROFILE_2, PROFILE_3, PROFILE_4, PROFILE_5, PROFILE_6, PROFILE_7, PROFILE_8, PROFILE_9})
     public @interface HeaterProfile {
+    }
+
+    /**
+     * Gas heater duration.
+     */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntRange(from = 1, to = 4032)
+    public @interface HeaterDuration {
     }
 
     public static final int PROFILE_0 = 0;
@@ -423,21 +432,10 @@ public class Bme680 implements AutoCloseable {
         // Read calibration data in 2 parts and concat them into 1 array
         final byte[] mCalibrationArray = calibrate();
 
-//        for (int i = 0; i < mCalibrationArray.length; i++) {
-//            Log.i(TAG, "mCalibrationArray[" + i + "] = " + mCalibrationArray[i]);
-//        }
-
         // Read temperature calibration data (3 words)
         calibration.par_t1 = concatBytes(mCalibrationArray[BME680_T1_MSB_REGISTER], mCalibrationArray[BME680_T1_LSB_REGISTER], false);
         calibration.par_t2 = concatBytes(mCalibrationArray[BME680_T2_MSB_REGISTER], mCalibrationArray[BME680_T2_LSB_REGISTER], true);
         calibration.par_t3 = mCalibrationArray[BME680_T3_REGISTER];
-
-        /*
-        par_t1: 27013
-        par_t2: 26625
-        par_t3: 3
-         */
-//        Log.i(TAG, "par_t --- " + calibration.par_t1 + " --- " + calibration.par_t2 + " --- " + calibration.par_t3);
 
         // Read pressure calibration data (10 words)
         calibration.par_p1 = concatBytes(mCalibrationArray[BME680_P1_MSB_REGISTER], mCalibrationArray[BME680_P1_LSB_REGISTER], false);
@@ -451,20 +449,6 @@ public class Bme680 implements AutoCloseable {
         calibration.par_p9 = concatBytes(mCalibrationArray[BME680_P9_MSB_REGISTER], mCalibrationArray[BME680_P9_LSB_REGISTER], true);
         calibration.par_p10 = mCalibrationArray[BME680_P10_REGISTER] & 0xFF;
 
-        /*
-        par_p1: 34698
-        par_p2: -10425
-        par_p3: 88
-        par_p4: 6559
-        par_p5: -8
-        par_p6: 30
-        par_p7: 12
-        par_p8: 948
-        par_p9: -4069
-        par_p10: 30
-         */
-//        Log.i(TAG, "par_p --- " + calibration.par_p1 + " --- " + calibration.par_p2 + " --- " + calibration.par_p3 + " --- " + calibration.par_p4 + " --- " + calibration.par_p5 + " --- " + calibration.par_p6 + " --- " + calibration.par_p7 + " --- " + calibration.par_p8 + " --- " + calibration.par_p9 + " --- " + calibration.par_p10);
-
         // Read humidity calibration data (7 words)
         calibration.par_h1 = (((mCalibrationArray[BME680_H1_MSB_REGISTER] & 0xffff) << BME680_HUMIDITY_REGISTER_SHIFT_VALUE) | (mCalibrationArray[BME680_H1_LSB_REGISTER] & BME680_BIT_H1_DATA_MASK)) & 0xffff;
         calibration.par_h2 = (((mCalibrationArray[BME680_H2_MSB_REGISTER] & 0xffff) << BME680_HUMIDITY_REGISTER_SHIFT_VALUE) | (mCalibrationArray[BME680_H2_LSB_REGISTER] >> BME680_HUMIDITY_REGISTER_SHIFT_VALUE)) & 0xffff;
@@ -474,46 +458,23 @@ public class Bme680 implements AutoCloseable {
         calibration.par_h6 = mCalibrationArray[BME680_H6_REGISTER] & 0xFF;
         calibration.par_h7 = mCalibrationArray[BME680_H7_REGISTER];
 
-        /*
-        par_h1: 609
-        par_h2: 1041
-        par_h3: 0
-        par_h4: 45
-        par_h5: 20
-        par_h6: 120
-        par_h7: -100
-         */
-//        Log.i(TAG, "par_h --- " + calibration.par_h1 + " --- " + calibration.par_h2 + " --- " + calibration.par_h3 + " --- " + calibration.par_h4 + " --- " + calibration.par_h5 + " --- " + calibration.par_h6 + " --- " + calibration.par_h7);
-
         // Read gas heater calibration data (3 words)
         calibration.par_gh1 = mCalibrationArray[BME680_GH1_REGISTER];
         calibration.par_gh2 = concatBytes(mCalibrationArray[BME680_GH2_MSB_REGISTER], mCalibrationArray[BME680_GH2_LSB_REGISTER], true);
         calibration.par_gh3 = mCalibrationArray[BME680_GH3_REGISTER];
-
-        /*
-        par_gh1: -5
-        par_gh2: -23899 -
-        par_gh3: 18
-         */
-//        Log.i(TAG, "par_gh --- " + calibration.par_gh1 + " --- " + calibration.par_gh2 + " --- " + calibration.par_gh3);
 
         // Read other heater calibration data
         heaterResistanceRange = ((this.device.readRegByte(BME680_ADDRESS_RESISTANCE_HEAT_RANGE_ADDRESS) & BME680_RHRANGE_MASK) & 0xFF) / 16;
         heaterResistanceValue = this.device.readRegByte(BME680_ADDRESS_RESISTANCE_HEAT_VALUE_ADDRESS);
         errorRange = ((this.device.readRegByte(BME680_ADDRESS_RANGE_SOFTWARE_ERROR_ADDRESS) & 0xFF) & (BME680_RSERROR_MASK & 0xFF)) / 16;
 
-        /*
-        res_heat_range: 1
-        res_heat_val: 54
-        range_sw_err: 1
-         */
-//        Log.i(TAG, "par_sett --- " + heaterResistanceRange + " --- " + heaterResistanceValue + " --- " + errorRange);
-
         setTemperatureOversample(OVERSAMPLING_8X);
-        setHumidityOversample(OVERSAMPLING_2X);
+        setHumidityOversample(OVERSAMPLING_4X);
         setPressureOversample(OVERSAMPLING_4X);
         setFilter(FILTER_SIZE_3);
         setGasStatus(ENABLE_GAS);
+        setGasHeaterProfile(Bme680.PROFILE_0, 320, 150);
+        selectGasHeaterProfile(Bme680.PROFILE_0);
     }
 
     // Initiate a soft reset
@@ -745,7 +706,7 @@ public class Bme680 implements AutoCloseable {
     // Approximately 20 - 30 ms are necessary for the heater to reach the intended target temperature.
     // Heating duration in milliseconds.
     // When setting a profile other than 0, make sure to select it with selectGasHeaterProfile.
-    public void setGasHeaterDuration(@HeaterProfile final int profile, final int value) throws IOException {
+    public void setGasHeaterDuration(@HeaterProfile final int profile, @HeaterDuration final int value) throws IOException {
         if (device == null) {
             throw new IllegalStateException("I2C device not open");
         }
@@ -753,9 +714,50 @@ public class Bme680 implements AutoCloseable {
             throw new IllegalStateException(String.format(Locale.getDefault(), "Profile '%d should be between %d and %d", value, PROFILE_0, PROFILE_9));
         }
 
-        device.writeRegByte(BME680_GAS_WAIT0_ADDRESS + profile, (byte) calculateHeaterDuration(value));
+        final int calculatedDuration = calculateHeaterDuration(value);
+        device.writeRegByte(BME680_GAS_WAIT0_ADDRESS + profile, (byte) calculatedDuration);
 
-        gasSettings.heaterDuration = value;
+        gasSettings.heaterDuration = calculatedDuration;
+    }
+
+    public int getProfileDuration() throws IOException {
+        int duration = 0;
+        // Calculate oversample measurement cycles
+        final int[] oversamplingToCycles = {0, 1, 2, 4, 8, 16};
+
+        int cycles = 0;
+
+        final int temperatureOversample = getTemperatureOversample();
+        final int pressureOversample = getPressureOversample();
+        final int humidityOversample = getHumidityOversample();
+
+        if (temperatureOversample != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[temperatureOversample];
+        }
+        if (pressureOversample != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[pressureOversample];
+        }
+        if (humidityOversample != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[humidityOversample];
+        }
+
+        /// Temperature, pressure and humidity measurement duration calculated in microseconds [us]
+        int newDuration = cycles * 1963;
+        newDuration += (477 * 4); // Temperature, pressure and humidity switching duration
+        newDuration += (477 * 5); // Gas measurement duration
+        newDuration += (500); // Get it to the closest whole number
+        newDuration /= (1000); // Convert to milisecond [ms]
+        newDuration += (1); // Wake up duration of 1ms
+
+        duration = newDuration;
+
+        // Get the gas duration only when the run gas is enabled
+        if (gasSettings.runGas == 1) {
+            // The remaining time should be used for heating */
+            duration += gasSettings.heaterDuration;
+        }
+
+        return duration;
     }
 
     // Enable/disable gas sensor
@@ -820,67 +822,46 @@ public class Bme680 implements AutoCloseable {
     // Get sensor data
     private void getSensorData() throws IOException {
         setPowerMode(MODE_FORCED);
-        //Bosch C
-//            adc_pres = (uint32_t) (((uint32_t) buff[2] * 4096) | ((uint32_t) buff[3] * 16) | ((uint32_t) buff[4] / 16));
-//            adc_temp = (uint32_t) (((uint32_t) buff[5] * 4096) | ((uint32_t) buff[6] * 16) | ((uint32_t) buff[7] / 16));
-//            adc_hum = (uint16_t) (((uint32_t) buff[8] * 256) | (uint32_t) buff[9]);
-//            adc_gas_res = (uint16_t) ((uint32_t) buff[13] * 4 | (((uint32_t) buff[14]) / 64));
-//            gas_range = buff[14] & BME680_GAS_RANGE_MSK;
 
-        //Pimoroni Python
-//            adc_pres = (regs[2] << 12) | (regs[3] << 4) | (regs[4] >> 4)
-//            adc_temp = (regs[5] << 12) | (regs[6] << 4) | (regs[7] >> 4)
-//            adc_hum = (regs[8] << 8) | regs[9]
-//            adc_gas_res = (regs[13] << 2) | (regs[14] >> 6)
-//            gas_range = regs[14] & GAS_RANGE_MSK
+        // Get the total measurement duration so as to sleep or wait till the measurement is complete
+        // Delay till the measurement is ready.
+        SystemClock.sleep(getProfileDuration() * 2);
 
-        //        adc_press: 384488 adc_temp: 506786 adc_hum: 17600 adc_gas_res: 342 gas_range: 4
-        //        adc_press: 384392 adc_temp: 506340 adc_hum: 17669 adc_gas_res: 102 gas_range: 5
-        //        adc_press: 384183 adc_temp: 505522 adc_hum: 17755 adc_gas_res: 513 gas_range: 8
-        //        adc_press: 384192 adc_temp: 505560 adc_hum: 17749 adc_gas_res: 156 gas_range: 10
-        //        adc_press: 384213 adc_temp: 505634 adc_hum: 17746 adc_gas_res: 128 gas_range: 10
+//        for (int i = 0; i < DATA_READ_ATTEMPTS; i++) {
+        final byte status = device.readRegByte(BME680_FIELD0_ADDRESS);
 
-        for (int i = 0; i < DATA_READ_ATTEMPTS; i++) {
-            final byte status = device.readRegByte(BME680_FIELD0_ADDRESS);
+        //if sensor has new data available
+        if ((status & BME680_NEW_DATA_MASK) == 0) {
 
-            //if sensor has new data available
-            if ((status & BME680_NEW_DATA_MASK) == 0) {
-                SystemClock.sleep(BME680_POLL_PERIOD_MILLISECONDS * 20); //TODO: get and calculate real interval based on datasheet and Adafruit library.
+            data.status = status;
 
-                data.status = status;
+            final byte[] buffer = new byte[BME680_FIELD_LENGTH];
+            device.readRegBuffer(BME680_FIELD0_ADDRESS, buffer, BME680_FIELD_LENGTH);
 
-                final byte[] buffer = new byte[BME680_FIELD_LENGTH];
-                device.readRegBuffer(BME680_FIELD0_ADDRESS, buffer, BME680_FIELD_LENGTH);
+            data.status = (byte) (buffer[0] & BME680_NEW_DATA_MASK);
+            data.gasIndex = (buffer[0] & BME680_GAS_INDEX_MASK);
+            data.measureIndex = buffer[1];
 
-                data.status = (byte) (buffer[0] & BME680_NEW_DATA_MASK);
-                data.gasIndex = (buffer[0] & BME680_GAS_INDEX_MASK);
-                data.measureIndex = buffer[1];
+            // read the raw data from the sensor
+            final int temperature = ((buffer[5] & 0xff) << 12) | ((buffer[6] & 0xff) << 4) | ((buffer[7] & 0xff) >> 4);
+            final int pressure = ((buffer[2] & 0xff) << 12) | ((buffer[3] & 0xff) << 4) | ((buffer[4] & 0xff) >> 4);
+            final int humidity = ((buffer[8] & 0xff) << 8) | (buffer[9]);
+            final int gas_resistance = ((buffer[13] & 0xff) << 2) | ((buffer[14] & 0xff) >> 6);
+            final int gas_range = buffer[14] & BME680_GAS_RANGE_MASK;
 
-                // read the raw data from the sensor
-                final int temperature = ((buffer[5] & 0xff) << 12) | ((buffer[6] & 0xff) << 4) | ((buffer[7] & 0xff) >> 4); // & 0xff;
-                final int pressure = ((buffer[2] & 0xff) << 12) | ((buffer[3] & 0xff) << 4) | ((buffer[4] & 0xff) >> 4); // & 0xff;
-                final int humidity = ((buffer[8]& 0xff) << 8) | (buffer[9]);
-                final int gas_resistance = ((buffer[13] & 0xff) << 2) | ((buffer[14] & 0xff) >> 6);
-                final int gas_range = buffer[14] & BME680_GAS_RANGE_MASK;
+            ambientTemperature = temperature;
 
-//                Log.i(TAG, i+" --- "+temperature+" --- "+pressure+" --- "+humidity+" --- "+buffer[8]+" --- "+buffer[9]);
+            data.status |= buffer[14] & BME680_GASM_VALID_MASK;
+            data.status |= buffer[14] & BME680_HEAT_STABLE_MASK;
 
-                ambientTemperature = temperature;
+            data.heaterStable = (data.status & BME680_HEAT_STABLE_MASK) > 0;
 
-                data.status |= buffer[14] & BME680_GASM_VALID_MASK;
-                data.status |= buffer[14] & BME680_HEAT_STABLE_MASK;
-
-                data.heaterStable = (data.status & BME680_HEAT_STABLE_MASK) > 0;
-
-                data.temperature = compensateTemperature(temperature) / 100.0f;
-                data.pressure = compensatePressure(pressure) / 100.0f;
-                data.humidity = compensateHumidity(humidity) / 1000.0f;
-                data.altitude = calculateAltitude(data.pressure);
-                data.gasResistance = compensateGasResistance(gas_resistance, gas_range);
-                data.airQualityScore = calculateAirQuality(gas_resistance, data.humidity);
-
-//                Log.i(TAG, i + " --- " + data.temperature + " --- " + data.humidity + " --- " + data.pressure + " --- " + data.altitude + " --- " + data.gasResistance + " --- " + data.airQualityScore);
-            }
+            data.temperature = compensateTemperature(temperature) / 100.0f;
+            data.pressure = compensatePressure(pressure) / 100.0f;
+            data.humidity = compensateHumidity(humidity) / 1000.0f;
+            data.altitude = calculateAltitude(data.pressure);
+            data.gasResistance = compensateGasResistance(gas_resistance, gas_range);
+            data.airQualityScore = calculateAirQuality(gas_resistance, data.humidity);
         }
     }
 
@@ -961,30 +942,30 @@ public class Bme680 implements AutoCloseable {
             gasResistanceData.take();
             gasResistanceData.put(gasResistance);
 
-        //Collect gas resistance burn-in values, then use the average of the last n values to set the upper limit for calculating gasBaseline.
-        final int gasBaseline = 0; //Math.round(sumGasDataResistance(gasResistanceData) / (float) DATA_GAS_BURN_IN);
+            //Collect gas resistance burn-in values, then use the average of the last n values to set the upper limit for calculating gasBaseline.
+            final int gasBaseline = Math.round(sumGasDataResistance(gasResistanceData) / (float) DATA_GAS_BURN_IN);
 
-        final long gasOffset = gasBaseline - gasResistance;
+            final long gasOffset = gasBaseline - gasResistance;
 
-        final float humidityOffset = humidity - humidityBaseline;
+            final float humidityOffset = humidity - humidityBaseline;
 
-        // Calculate humidityScore as the distance from the humidityBaseline
-        final float humidityScore;
-        if (humidityOffset > 0) {
-            humidityScore = (100.0f - humidityBaseline - humidityOffset) / (100.0f - humidityBaseline) * (humidityWeighting * 100.0f);
-        } else {
-            humidityScore = (humidityBaseline + humidityOffset) / humidityBaseline * (humidityWeighting * 100.0f);
-        }
+            // Calculate humidityScore as the distance from the humidityBaseline
+            final float humidityScore;
+            if (humidityOffset > 0) {
+                humidityScore = (100.0f - humidityBaseline - humidityOffset) / (100.0f - humidityBaseline) * (humidityWeighting * 100.0f);
+            } else {
+                humidityScore = (humidityBaseline + humidityOffset) / humidityBaseline * (humidityWeighting * 100.0f);
+            }
 
-        // Calculate gasScore as the distance from the gasBaseline
-        final float gasScore;
-        if (gasOffset > 0) {
-            gasScore = (gasResistance / gasBaseline) * (100.0f - (humidityWeighting * 100.0f));
-        } else {
-            gasScore = 100.0f - (humidityWeighting * 100.0f);
-        }
+            // Calculate gasScore as the distance from the gasBaseline
+            final float gasScore;
+            if (gasOffset > 0) {
+                gasScore = (gasResistance / gasBaseline) * (100.0f - (humidityWeighting * 100.0f));
+            } else {
+                gasScore = 100.0f - (humidityWeighting * 100.0f);
+            }
 
-        return humidityScore + gasScore;
+            return humidityScore + gasScore;
         } catch (InterruptedException e) {
             Log.e(TAG, e.getMessage(), e);
             return data.airQualityScore;
@@ -1012,21 +993,36 @@ public class Bme680 implements AutoCloseable {
         return (short) ((heater_res_x100 + 50) / 100);
     }
 
-    private int calculateHeaterDuration(int duration) {
-        int factor = 0;
-        short newDuration;
+    private int calculateHeaterDuration(int duration) throws IOException {
+        // Calculate oversample measurement cycles
+        final int[] oversamplingToCycles = {0, 1, 2, 4, 8, 16};
 
-        if (duration >= 0xfc0) {
-            newDuration = 0xff; // Max duration
-        } else {
-            while (duration > 0x3F) {
-                duration = duration / 4;
-                factor += 1;
-            }
-            newDuration = (short) (duration + (factor * 64));
+        int cycles = 0;
+
+        final int temperatureOversample = getTemperatureOversample();
+        final int pressureOversample = getPressureOversample();
+        final int humidityOversample = getHumidityOversample();
+
+        if (temperatureOversample != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[temperatureOversample];
+        }
+        if (pressureOversample != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[pressureOversample];
+        }
+        if (humidityOversample != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[humidityOversample];
         }
 
-        return newDuration;
+        /// TPH measurement duration calculated in microseconds [us]
+        int newDuration = cycles * 1963;
+        newDuration += (477 * 4); // TPH switching duration
+        newDuration += (477 * 5); // Gas measurement duration
+        newDuration += (500); // Get it to the closest whole number
+        newDuration /= (1000); // Convert to milisecond [ms]
+        newDuration += (1); // Wake up duration of 1ms
+
+        // The remaining time should be used for heating
+        return (duration - newDuration);
     }
 
     private void prefillGasDataResistance() {
