@@ -727,18 +727,14 @@ public class Bme680 implements AutoCloseable {
 
         int cycles = 0;
 
-        final int temperatureOversample = getTemperatureOversample();
-        final int pressureOversample = getPressureOversample();
-        final int humidityOversample = getHumidityOversample();
-
-        if (temperatureOversample != OVERSAMPLING_SKIPPED) {
-            cycles += oversamplingToCycles[temperatureOversample];
+        if (sensorSettings.oversamplingTemperature != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[sensorSettings.oversamplingTemperature];
         }
-        if (pressureOversample != OVERSAMPLING_SKIPPED) {
-            cycles += oversamplingToCycles[pressureOversample];
+        if (sensorSettings.oversamplingPressure != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[sensorSettings.oversamplingPressure];
         }
-        if (humidityOversample != OVERSAMPLING_SKIPPED) {
-            cycles += oversamplingToCycles[humidityOversample];
+        if (sensorSettings.oversamplingHumidity != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[sensorSettings.oversamplingHumidity];
         }
 
         /// Temperature, pressure and humidity measurement duration calculated in microseconds [us]
@@ -999,18 +995,14 @@ public class Bme680 implements AutoCloseable {
 
         int cycles = 0;
 
-        final int temperatureOversample = getTemperatureOversample();
-        final int pressureOversample = getPressureOversample();
-        final int humidityOversample = getHumidityOversample();
-
-        if (temperatureOversample != OVERSAMPLING_SKIPPED) {
-            cycles += oversamplingToCycles[temperatureOversample];
+        if (sensorSettings.oversamplingTemperature != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[sensorSettings.oversamplingTemperature];
         }
-        if (pressureOversample != OVERSAMPLING_SKIPPED) {
-            cycles += oversamplingToCycles[pressureOversample];
+        if (sensorSettings.oversamplingPressure != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[sensorSettings.oversamplingPressure];
         }
-        if (humidityOversample != OVERSAMPLING_SKIPPED) {
-            cycles += oversamplingToCycles[humidityOversample];
+        if (sensorSettings.oversamplingHumidity != OVERSAMPLING_SKIPPED) {
+            cycles += oversamplingToCycles[sensorSettings.oversamplingHumidity];
         }
 
         /// TPH measurement duration calculated in microseconds [us]

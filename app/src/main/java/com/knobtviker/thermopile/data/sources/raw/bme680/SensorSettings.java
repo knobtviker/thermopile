@@ -6,15 +6,15 @@ package com.knobtviker.thermopile.data.sources.raw.bme680;
 
 class SensorSettings {
 
-    /*! Humidity oversampling */
+    // Humidity oversampling
     int oversamplingHumidity;
 
-    /*! Temperature oversampling */
+    // Temperature oversampling
     int oversamplingTemperature;
 
-    /*! Pressure oversampling */
+    // Pressure oversampling
     int oversamplingPressure;
 
-    /*! Filter coefficient */
+    // Filter coefficient
     int filter;
 }
