@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.raw.bme680;
 
 import android.hardware.Sensor;
+import android.hardware.SensorManager;
 
 import com.google.android.things.userdriver.UserDriverManager;
 import com.google.android.things.userdriver.UserSensor;
@@ -17,8 +18,6 @@ import java.util.UUID;
 public class Bme680SensorDriver implements AutoCloseable {
     private static final String TAG = Bme680SensorDriver.class.getSimpleName();
 
-    public static final int PRESSURE = 0;
-    public static final int ALTITUDE = 1;
     public static final int INDOOR_AIR_QUALITY_GAS_RESISTANCE = 0;
     public static final int INDOOR_AIR_QUALITY_SCORE = 1;
     public static final int INDOOR_AIR_QUALITY_INDEX = 2;
@@ -226,7 +225,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
         @Override
         public UserSensorReading read() throws IOException {
-            return new UserSensorReading(new float[]{mDevice.readPressure(), mDevice.readAltitude()});
+            return new UserSensorReading(new float[]{mDevice.readPressure()});
         }
 
         @Override
@@ -393,4 +392,7 @@ public class Bme680SensorDriver implements AutoCloseable {
         }
     }
 
+    public static float getAltitudeFromPressure(final float pressure) {
+        return SensorManager.getAltitude(pressure, SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
+    }
 }

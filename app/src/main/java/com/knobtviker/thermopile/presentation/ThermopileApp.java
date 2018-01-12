@@ -96,27 +96,24 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 this.atmosphere.humidity(humidity);
                 break;
             case Sensor.TYPE_PRESSURE:
+                final long now = DateTimeUtils.currentTimeMillis();
+
                 final Pressure pressure = new Pressure();
-                pressure.timestamp(DateTimeUtils.currentTimeMillis());
+                pressure.timestamp(now);
+                pressure.value(sensorEvent.values[0]);
                 pressure.accuracy(sensorEvent.accuracy);
                 pressure.vendor(sensorEvent.sensor.getVendor());
                 pressure.name(sensorEvent.sensor.getName());
 
-                if (sensorEvent.sensor.getName().equals(Bme680.CHIP_NAME)) {
-                    pressure.value(sensorEvent.values[Bme680SensorDriver.PRESSURE]);
+                final Altitude altitude = new Altitude();
+                altitude.timestamp(now);
+                altitude.value(Bme680SensorDriver.getAltitudeFromPressure(sensorEvent.values[0]));
+                altitude.accuracy(sensorEvent.accuracy);
+                altitude.vendor(sensorEvent.sensor.getVendor());
+                altitude.name(sensorEvent.sensor.getName());
 
-                    final Altitude altitude = new Altitude();
-                    altitude.timestamp(DateTimeUtils.currentTimeMillis());
-                    altitude.value(sensorEvent.values[Bme680SensorDriver.ALTITUDE]);
-                    altitude.accuracy(sensorEvent.accuracy);
-                    altitude.vendor(sensorEvent.sensor.getVendor());
-                    altitude.name(sensorEvent.sensor.getName());
-
-                    this.atmosphere.altitude(altitude);
-                } else {
-                    pressure.value(sensorEvent.values[0]);
-                }
                 this.atmosphere.pressure(pressure);
+                this.atmosphere.altitude(altitude);
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
@@ -142,7 +139,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 }
                 break;
             case Sensor.TYPE_LIGHT:
-                Log.i(TAG, "Measured: " + sensorEvent.values[TSL2561SensorDriver.LUMINANCE] + " lx --- Fitted: " + sensorEvent.values[TSL2561SensorDriver.LUMINANCE_FITTED]+ " lx --- Screen brightness: " + (int)sensorEvent.values[TSL2561SensorDriver.SCREEN_BRIGHTNESS]);
+                //TODO: Fix this when Google fixes automatic brightness. This shows way bigger values than sensor maximum
+//                Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0])+ " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
                 break;
 
             //TODO: Add seismic accelearation approx. per:
@@ -306,7 +304,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.getI2CPort());
             bme680SensorDriver.registerTemperatureSensor();
             bme680SensorDriver.registerHumiditySensor();
-//            bme680SensorDriver.registerPressureSensor();
+            bme680SensorDriver.registerPressureSensor();
             bme680SensorDriver.registerGasSensor();
         } catch (IOException e) {
             showError(e);
