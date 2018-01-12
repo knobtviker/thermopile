@@ -974,7 +974,8 @@ public class Bme680 implements AutoCloseable {
     // Note that using the equation from wikipedia can give bad results at high altitude. See this thread for more information:
     // http://forums.adafruit.com/viewtopic.php?f=22&t=58064
     private float calculateAltitude(final float pressure) {
-        return (float) (44330 * (1.0 - Math.pow(pressure / SensorManager.PRESSURE_STANDARD_ATMOSPHERE, 0.1903)));
+//        return (float) (44330 * (1.0 - Math.pow(pressure / SensorManager.PRESSURE_STANDARD_ATMOSPHERE, 0.1903)));
+        return SensorManager.getAltitude(pressure, SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
     }
 
     private int calculateHeaterResistance(final int temperature) {
