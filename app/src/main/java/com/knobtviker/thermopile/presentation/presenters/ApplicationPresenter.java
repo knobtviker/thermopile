@@ -5,7 +5,11 @@ import android.support.annotation.Nullable;
 import android.view.Display;
 
 import com.knobtviker.android.things.device.RxScreenManager;
-import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.AirQuality;
+import com.knobtviker.thermopile.data.models.local.Altitude;
+import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Pressure;
+import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.domain.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
@@ -120,7 +124,27 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     }
 
     @Override
-    public void saveAtmosphere(@NonNull final Atmosphere atmosphere) {
-        atmosphereRepository.saveAtmosphere(atmosphere);
+    public void saveTemperature(@NonNull Temperature item) {
+        atmosphereRepository.saveTemperature(item);
+    }
+
+    @Override
+    public void savePressure(@NonNull Pressure item) {
+        atmosphereRepository.savePressure(item);
+    }
+
+    @Override
+    public void saveHumidity(@NonNull Humidity item) {
+        atmosphereRepository.saveHumidity(item);
+    }
+
+    @Override
+    public void saveAltitude(@NonNull Altitude item) {
+        atmosphereRepository.saveAltitude(item);
+    }
+
+    @Override
+    public void saveAirQuality(@NonNull AirQuality item) {
+        atmosphereRepository.saveAirQuality(item);
     }
 }

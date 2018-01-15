@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.di.modules.data;
 
-import com.knobtviker.thermopile.data.sources.local.AtmosphereLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.AirQualityLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.AltitudeLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.HumidityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
@@ -16,11 +17,6 @@ import dagger.Provides;
 public class AtmosphereDataModule {
 
     @Provides
-    static AtmosphereLocalDataSource provideAtmosphereLocalDataSource() {
-        return new AtmosphereLocalDataSource();
-    }
-
-    @Provides
     static TemperatureLocalDataSource provideTemperatureLocalDataSource() {
         return new TemperatureLocalDataSource();
     }
@@ -33,5 +29,15 @@ public class AtmosphereDataModule {
     @Provides
     static PressureLocalDataSource providePressureLocalDataSource() {
         return new PressureLocalDataSource();
+    }
+
+    @Provides
+    static AltitudeLocalDataSource provideAltitudeLocalDataSource() {
+        return new AltitudeLocalDataSource();
+    }
+
+    @Provides
+    static AirQualityLocalDataSource provideAirQualityLocalDataSource() {
+        return new AirQualityLocalDataSource();
     }
 }

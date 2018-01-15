@@ -21,7 +21,6 @@ import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
-import com.knobtviker.thermopile.data.models.local.Atmosphere;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -58,7 +57,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @NonNull
     private ApplicationContract.Presenter presenter;
 
-    private Atmosphere atmosphere = new Atmosphere();
+    private Temperature temperature;
+    private Pressure pressure;
+    private Humidity humidity;
+    private Altitude altitude;
+    private AirQuality airQuality;
 
     @Override
     public void onCreate() {
@@ -83,7 +86,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 temperature.vendor(sensorEvent.sensor.getVendor());
                 temperature.name(sensorEvent.sensor.getName());
 
-                this.atmosphere.temperature(temperature);
+                this.temperature = temperature;
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
                 final Humidity humidity = new Humidity();
@@ -93,7 +96,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 humidity.vendor(sensorEvent.sensor.getVendor());
                 humidity.name(sensorEvent.sensor.getName());
 
-                this.atmosphere.humidity(humidity);
+                this.humidity = humidity;
                 break;
             case Sensor.TYPE_PRESSURE:
                 final long now = DateTimeUtils.currentTimeMillis();
@@ -112,8 +115,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 altitude.vendor(sensorEvent.sensor.getVendor());
                 altitude.name(sensorEvent.sensor.getName());
 
-                this.atmosphere.pressure(pressure);
-                this.atmosphere.altitude(altitude);
+                this.pressure = pressure;
+                this.altitude = altitude;
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
@@ -125,7 +128,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         airQuality.vendor(sensorEvent.sensor.getVendor());
                         airQuality.name(sensorEvent.sensor.getName());
 
-                        this.atmosphere.airQuality(airQuality);
+                        this.airQuality = airQuality;
+                        Log.i(TAG, "IAQ --- "+airQuality.value());
                     }
                     //IAQ classification and color-coding
                     /*
@@ -181,8 +185,20 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     @Override
     public void onTick() {
-        if (this.atmosphere.temperature() != null && this.atmosphere.humidity() != null && this.atmosphere.pressure() != null) {
-            presenter.saveAtmosphere(atmosphere);
+        if (this.temperature != null) {
+            presenter.saveTemperature(this.temperature);
+        }
+        if (this.pressure != null) {
+            presenter.savePressure(this.pressure);
+        }
+        if (this.humidity != null) {
+            presenter.saveHumidity(this.humidity);
+        }
+        if (this.altitude != null) {
+            presenter.saveAltitude(this.altitude);
+        }
+        if (this.airQuality != null) {
+            presenter.saveAirQuality(this.airQuality);
         }
     }
 
@@ -205,6 +221,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         Realm.init(this);
         //TODO: Enable encryption
         final RealmConfiguration config = new RealmConfiguration.Builder()
+//            .inMemory()
             .name(BuildConfig.DATABASE_NAME)
             .schemaVersion(BuildConfig.DATABASE_VERSION)
 //            .deleteRealmIfMigrationNeeded()
@@ -234,7 +251,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         presenter = new ApplicationPresenter(this);
         presenter.subscribe();
         presenter.tick();
-        presenter.initScreen(160, RxScreenManager.ROTATION_180, 1800000L);
+        presenter.initScreen(160, RxScreenManager.ROTATION_180, 3600000L);
         presenter.createScreensaver();
         presenter.brightness(255);
     }
@@ -276,11 +293,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             case Sensor.TYPE_RELATIVE_HUMIDITY:
             case Sensor.TYPE_PRESSURE:
             case Sensor.TYPE_LIGHT:
-                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
-                    sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+                    sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                 }
                 break;
         }

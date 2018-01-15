@@ -2,11 +2,13 @@ package com.knobtviker.thermopile.domain.repositories;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.AirQuality;
+import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
-import com.knobtviker.thermopile.data.sources.local.AtmosphereLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.AirQualityLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.AltitudeLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.HumidityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
@@ -24,9 +26,6 @@ import io.realm.RealmResults;
 public class AtmosphereRepository extends AbstractRepository {
 
     @Inject
-    AtmosphereLocalDataSource atmosphereLocalDataSource;
-
-    @Inject
     TemperatureLocalDataSource temperatureLocalDataSource;
 
     @Inject
@@ -34,6 +33,12 @@ public class AtmosphereRepository extends AbstractRepository {
 
     @Inject
     PressureLocalDataSource pressureLocalDataSource;
+
+    @Inject
+    AltitudeLocalDataSource altitudeLocalDataSource;
+
+    @Inject
+    AirQualityLocalDataSource airQualityLocalDataSource;
 
     @Inject
     AtmosphereRepository() {
@@ -51,7 +56,31 @@ public class AtmosphereRepository extends AbstractRepository {
         return pressureLocalDataSource.latest(realm);
     }
 
-    public void saveAtmosphere(@NonNull final Atmosphere item) {
-        atmosphereLocalDataSource.save(item);
+    public RealmResults<Altitude> latestAltitude(@NonNull final Realm realm) {
+        return altitudeLocalDataSource.latest(realm);
+    }
+
+    public RealmResults<AirQuality> latestAirQuality(@NonNull final Realm realm) {
+        return airQualityLocalDataSource.latest(realm);
+    }
+
+    public void saveTemperature(@NonNull final Temperature item) {
+        temperatureLocalDataSource.save(item);
+    }
+
+    public void savePressure(@NonNull final Pressure item) {
+        pressureLocalDataSource.save(item);
+    }
+
+    public void saveHumidity(@NonNull final Humidity item) {
+        humidityLocalDataSource.save(item);
+    }
+
+    public void saveAltitude(@NonNull final Altitude item) {
+        altitudeLocalDataSource.save(item);
+    }
+
+    public void saveAirQuality(@NonNull final AirQuality item) {
+        airQualityLocalDataSource.save(item);
     }
 }

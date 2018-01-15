@@ -2,7 +2,11 @@ package com.knobtviker.thermopile.presentation.contracts;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.Atmosphere;
+import com.knobtviker.thermopile.data.models.local.AirQuality;
+import com.knobtviker.thermopile.data.models.local.Altitude;
+import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Pressure;
+import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
@@ -31,6 +35,14 @@ public interface ApplicationContract {
 
         void brightness(final int brightness);
 
-        void saveAtmosphere(@NonNull final Atmosphere atmosphere);
+        void saveTemperature(@NonNull final Temperature item);
+
+        void savePressure(@NonNull final Pressure item);
+
+        void saveHumidity(@NonNull final Humidity item);
+
+        void saveAltitude(@NonNull final Altitude item);
+
+        void saveAirQuality(@NonNull final AirQuality item);
     }
 }

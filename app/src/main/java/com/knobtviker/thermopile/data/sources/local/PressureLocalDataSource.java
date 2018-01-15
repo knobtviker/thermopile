@@ -5,11 +5,8 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.sources.PressureDataSource;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -33,16 +30,9 @@ public class PressureLocalDataSource implements PressureDataSource.Local {
     }
 
     @Override
-    public Completable save(@NonNull final Realm realm, @NonNull final List<Pressure> items) {
-        return Completable.create(emitter -> {
-            if (!emitter.isDisposed()) {
-                try {
-                    realm.executeTransaction(realm1 -> realm1.insertOrUpdate(items));
-                    emitter.onComplete();
-                } catch (Exception e) {
-                    emitter.onError(e);
-                }
-            }
-        });
+    public void save(@NonNull final Pressure item) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> realm1.insert(item));
+        realm.close();
     }
 }
