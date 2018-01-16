@@ -41,13 +41,16 @@ android {
             universalApk false
         }
     }
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
 }
 
 dependencies {
     //base
     compileOnly 'com.google.android.things:androidthings:0.6.1-devpreview'
     implementation 'com.google.android.things.contrib:driver-button:0.4'
-    implementation 'com.google.android.things.contrib:driver-bmx280:0.4'
+    implementation 'com.knobtviker:bme280:1.0.9'
     implementation 'com.knobtviker:bme680:1.0.6'
     implementation 'com.knobtviker:tsl2561:1.0.7'
     implementation 'com.knobtviker:RxScreenManager:1.0.0'

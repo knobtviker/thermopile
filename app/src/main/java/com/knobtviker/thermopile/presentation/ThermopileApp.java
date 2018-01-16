@@ -11,8 +11,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
-import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
 import com.google.common.collect.ImmutableList;
+import com.knobtviker.android.things.contrib.driver.bme280.BME280SensorDriver;
 import com.knobtviker.android.things.contrib.driver.bme680.Bme680;
 import com.knobtviker.android.things.contrib.driver.bme680.Bme680SensorDriver;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
@@ -86,6 +86,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 temperature.vendor(sensorEvent.sensor.getVendor());
                 temperature.name(sensorEvent.sensor.getName());
 
+//                Log.i(TAG, "Temperature -> "+temperature.value());
+
                 this.temperature = temperature;
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
@@ -95,6 +97,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 humidity.accuracy(sensorEvent.accuracy);
                 humidity.vendor(sensorEvent.sensor.getVendor());
                 humidity.name(sensorEvent.sensor.getName());
+
+//                Log.i(TAG, "Humidity -> "+humidity.value());
 
                 this.humidity = humidity;
                 break;
@@ -108,9 +112,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 pressure.vendor(sensorEvent.sensor.getVendor());
                 pressure.name(sensorEvent.sensor.getName());
 
+//                Log.i(TAG, "Pressure -> "+pressure.value());
+
                 final Altitude altitude = new Altitude();
                 altitude.timestamp(now);
-                altitude.value(Bme680SensorDriver.getAltitudeFromPressure(sensorEvent.values[0]));
+                altitude.value(SensorManager.getAltitude(sensorEvent.values[0], SensorManager.PRESSURE_STANDARD_ATMOSPHERE));
                 altitude.accuracy(sensorEvent.accuracy);
                 altitude.vendor(sensorEvent.sensor.getVendor());
                 altitude.name(sensorEvent.sensor.getName());
@@ -129,7 +135,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         airQuality.name(sensorEvent.sensor.getName());
 
                         this.airQuality = airQuality;
-                        Log.i(TAG, "IAQ --- "+airQuality.value());
+                        Log.i(TAG, "IAQ --- " + airQuality.value());
                     }
                     //IAQ classification and color-coding
                     /*
@@ -259,9 +265,13 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     private void initSensors() {
         registerSensorCallback();
 
-        initBME280();
-        initBME680();
-        initTSL2561();
+        try {
+            initBME280();
+//            initBME680();
+//            initTSL2561();
+        } catch (IOException e) {
+            showError(e);
+        }
     }
 
     private void initCalligraphy() {
@@ -304,38 +314,26 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     }
 
     //CHIP_ID_BME280 = 0x60 | DEFAULT_I2C_ADDRESS = 0x77
-    private void initBME280() {
-        try {
-            final Bmx280SensorDriver bmx280SensorDriver = new Bmx280SensorDriver(BoardDefaults.getI2CPort());
-            bmx280SensorDriver.registerTemperatureSensor();
-            bmx280SensorDriver.registerHumiditySensor();
-            bmx280SensorDriver.registerPressureSensor();
-        } catch (IOException e) {
-            showError(e);
-        }
+    private void initBME280() throws IOException {
+        final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver(BoardDefaults.getI2CPort());
+        bme280SensorDriver.registerTemperatureSensor();
+        bme280SensorDriver.registerPressureSensor();
+        bme280SensorDriver.registerHumiditySensor();
     }
 
     //CHIP_ID_BME680 = 0x61 | DEFAULT_I2C_ADDRESS = 0x76 (or 0x77)
-    private void initBME680() {
-        try {
-            final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.getI2CPort());
-            bme680SensorDriver.registerTemperatureSensor();
-            bme680SensorDriver.registerHumiditySensor();
-            bme680SensorDriver.registerPressureSensor();
-            bme680SensorDriver.registerGasSensor();
-        } catch (IOException e) {
-            showError(e);
-        }
+    private void initBME680() throws IOException {
+        final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.getI2CPort());
+        bme680SensorDriver.registerTemperatureSensor();
+        bme680SensorDriver.registerHumiditySensor();
+        bme680SensorDriver.registerPressureSensor();
+        bme680SensorDriver.registerGasSensor();
     }
 
     //CHIP_ID_TSL2561 = 0x?? | DEFAULT_I2C_ADDRESS = 0x39 (or 0x29 or 0x49)
-    private void initTSL2561() {
-        try {
-            final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(BoardDefaults.getI2CPort());
-            tsl2561SensorDriver.registerLuminositySensor();
-        } catch (IOException e) {
-            showError(e);
-        }
+    private void initTSL2561() throws IOException {
+        final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(BoardDefaults.getI2CPort());
+        tsl2561SensorDriver.registerLuminositySensor();
     }
 
     private void brightness(final int value) {
