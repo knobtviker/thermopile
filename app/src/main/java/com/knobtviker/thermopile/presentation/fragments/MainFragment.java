@@ -15,14 +15,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
@@ -71,9 +67,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private String formatTime;
     private int unitTemperature;
     private int unitPressure;
-
-    @BindView(R.id.toolbar)
-    public Toolbar toolbar;
 
     @BindView(R.id.textview_date)
     public TextView textViewDate;
@@ -125,7 +118,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
 
         dateTimeZone = DateTimeZone.forID(Constants.DEFAULT_TIMEZONE);
         formatClock = Constants.CLOCK_MODE_24H;
@@ -161,7 +154,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         bind(this, view);
 
-        setupToolbar();
         setupRecyclerView();
 
         return view;
@@ -182,26 +174,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         super.onPause();
 
         getActivity().unregisterReceiver(dateChangedReceiver);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.main, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_charts) {
-
-        } else if (item.getItemId() == R.id.action_schedule) {
-            mainCommunicator.showSchedule();
-        } else if (item.getItemId() == R.id.action_settings) {
-            mainCommunicator.showSettings();
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -263,18 +235,29 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //        hoursAdapter.applyThreasholds(thresholds); //TODO: Fix this bad logic
     }
 
-    @OnClick(R.id.floatingactionbutton_down)
-    public void onActionDownClicked() {
-        RelayRawDataSource.getInstance()
-            .on()
-            .subscribe();
-    }
-
-    @OnClick(R.id.floatingactionbutton_up)
-    public void onActionUpClicked() {
-        RelayRawDataSource.getInstance()
-            .off()
-            .subscribe();
+    @OnClick({R.id.floatingactionbutton_down, R.id.floatingactionbutton_up, R.id.button_charts, R.id.button_schedule, R.id.button_settings})
+    public void onActionDownClicked(@NonNull final View view) {
+        switch (view.getId()) {
+            case R.id.floatingactionbutton_down:
+                RelayRawDataSource.getInstance()
+                    .on()
+                    .subscribe();
+                break;
+            case R.id.floatingactionbutton_up:
+                RelayRawDataSource.getInstance()
+                    .off()
+                    .subscribe();
+                break;
+            case R.id.button_charts:
+                //TBD...
+                break;
+            case R.id.button_schedule:
+                mainCommunicator.showSchedule();
+                break;
+            case R.id.button_settings:
+                mainCommunicator.showSettings();
+                break;
+        }
     }
 
     public void moveHourLine(@NonNull final DateTime dateTime) {
@@ -286,10 +269,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         } else if (currentHour >= 17) {
             recyclerView.scrollToPosition(12);
         }
-    }
-
-    private void setupToolbar() {
-        setupCustomActionBar(toolbar);
     }
 
     private void setupRecyclerView() {

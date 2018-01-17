@@ -268,7 +268,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         try {
             initBME280();
 //            initBME680();
-//            initTSL2561();
+            initTSL2561();
         } catch (IOException e) {
             showError(e);
         }
