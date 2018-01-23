@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -80,11 +82,17 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @BindView(R.id.textview_pressure)
     public TextView textViewPressure;
 
+    @BindView(R.id.textview_iaq)
+    public TextView textViewIAQ;
+
     @BindView(R.id.arc_temperature)
     public ArcView arcViewTemperature;
 
     @BindView(R.id.arc_humidity)
     public ArcView arcViewHumidity;
+
+    @BindView(R.id.arc_iaq)
+    public ArcView arcViewIAQ;
 
     @BindView(R.id.arc_pressure)
     public ArcView arcViewPressure;
@@ -209,9 +217,18 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onPressueChanged(@NonNull Pressure data) {
+    public void onPressureChanged(@NonNull Pressure data) {
         arcViewPressure.setProgress(data.value() / Constants.MEASURED_PRESSURE_MAX);
         textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.value()))));
+    }
+
+    @Override
+    public void onAirQualityChanged(@NonNull AirQuality data) {
+        final Pair<String, Integer> pair = convertIAQValueToLabelAndColor(data.value());
+
+        textViewIAQ.setText(pair.first);
+        arcViewIAQ.setProgressColor(pair.second);
+        arcViewIAQ.setProgress((500.0f - data.value()) / 500.0f);
     }
 
     @Override
@@ -336,10 +353,39 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.temperature(realm);
         presenter.humidity(realm);
         presenter.pressure(realm);
+        presenter.airQuality(realm);
         presenter.settings(realm);
     }
 
     private void thresholds() {
         presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
+    }
+
+    //IAQ classification and color-coding
+    /*
+        0 - 50 - good - #00e400
+        51 - 100 - average - #ffff00
+        101 - 200 - little bad - #ff7e00
+        201 - 300 - bad - #ff0000
+        301 - 400 - worse - #99004c
+        401 - 500 - very bad - #000000
+     */
+    //TODO: Move this somewhere else and cleanup strings
+    private Pair<String, Integer> convertIAQValueToLabelAndColor(final float value) {
+        if (value >= 401 && value <= 500) {
+            return Pair.create("Very bad", R.color.black);
+        } else if (value >= 301 && value <= 400) {
+            return Pair.create("Worse", R.color.pink_500);
+        } else if (value >= 201 && value <= 300) {
+            return Pair.create("Bad", R.color.red_500);
+        } else if (value >= 101 && value <= 200) {
+            return Pair.create("Little bad", R.color.orange_500);
+        } else if (value >= 51 && value <= 100) {
+            return Pair.create("Average", R.color.yellow_500);
+        } else if (value >= 0 && value <= 50) {
+            return Pair.create("Good", R.color.light_green_500);
+        } else {
+            return Pair.create("Unknown", R.color.light_gray);
+        }
     }
 }

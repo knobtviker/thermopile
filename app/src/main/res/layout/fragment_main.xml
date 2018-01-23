@@ -224,6 +224,19 @@
 
         </android.support.constraint.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/textview_iaq"
+            style="@style/TextHumidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:elevation="@dimen/margin_default"
+            app:layout_constraintBottom_toBottomOf="@id/arc_iaq"
+            app:layout_constraintEnd_toEndOf="@id/arc_iaq"
+            app:layout_constraintStart_toStartOf="@id/arc_iaq"
+            app:layout_constraintTop_toTopOf="@id/arc_iaq"
+            tools:text="good"/>
+
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -239,7 +252,6 @@
             android:id="@+id/arc_pressure"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:elevation="24dp"
             app:layout_constrainedHeight="true"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/arc_seismic"

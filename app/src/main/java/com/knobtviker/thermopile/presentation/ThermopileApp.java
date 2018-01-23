@@ -13,8 +13,6 @@ import android.util.Log;
 import com.facebook.stetho.Stetho;
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.driver.bme280.BME280SensorDriver;
-import com.knobtviker.android.things.contrib.driver.bme680.Bme680;
-import com.knobtviker.android.things.contrib.driver.bme680.Bme680SensorDriver;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.device.RxScreenManager;
 import com.knobtviker.thermopile.BuildConfig;
@@ -26,6 +24,8 @@ import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.data.sources.raw.bme680.Bme680;
+import com.knobtviker.thermopile.data.sources.raw.bme680.Bme680SensorDriver;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.BoardDefaults;
@@ -86,8 +86,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 temperature.vendor(sensorEvent.sensor.getVendor());
                 temperature.name(sensorEvent.sensor.getName());
 
-//                Log.i(TAG, "Temperature -> "+temperature.value());
-
                 this.temperature = temperature;
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
@@ -97,8 +95,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 humidity.accuracy(sensorEvent.accuracy);
                 humidity.vendor(sensorEvent.sensor.getVendor());
                 humidity.name(sensorEvent.sensor.getName());
-
-//                Log.i(TAG, "Humidity -> "+humidity.value());
 
                 this.humidity = humidity;
                 break;
@@ -111,8 +107,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 pressure.accuracy(sensorEvent.accuracy);
                 pressure.vendor(sensorEvent.sensor.getVendor());
                 pressure.name(sensorEvent.sensor.getName());
-
-//                Log.i(TAG, "Pressure -> "+pressure.value());
 
                 final Altitude altitude = new Altitude();
                 altitude.timestamp(now);
@@ -135,17 +129,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         airQuality.name(sensorEvent.sensor.getName());
 
                         this.airQuality = airQuality;
-                        Log.i(TAG, "IAQ --- " + airQuality.value());
+                        Log.i(TAG, "IAQ --- " + airQuality.timestamp() + " --- " + airQuality.value());
                     }
-                    //IAQ classification and color-coding
-                    /*
-                        0 - 50 - good - #00e400
-                        51 - 100 - average - #ffff00
-                        101 - 200 - little bad - #ff7e00
-                        201 - 300 - bad - #ff0000
-                        301 - 400 - worse - #99004c
-                        401 - 500 - very bad - #000000
-                     */
                 }
                 break;
             case Sensor.TYPE_LIGHT:
@@ -266,8 +251,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         registerSensorCallback();
 
         try {
-            initBME280();
-//            initBME680();
+//            initBME280();
+            initBME680();
             initTSL2561();
         } catch (IOException e) {
             showError(e);

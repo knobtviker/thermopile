@@ -19,6 +19,10 @@ android {
 
         buildConfigField "String", 'DATABASE_NAME', '"thermopile.realm"'
         buildConfigField "int", 'DATABASE_VERSION', '1'
+
+//        configurations.all {
+//            resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//        }
     }
     buildTypes {
         debug {
@@ -41,17 +45,14 @@ android {
             universalApk false
         }
     }
-    configurations.all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }
 }
 
 dependencies {
     //base
     compileOnly 'com.google.android.things:androidthings:0.6.1-devpreview'
     implementation 'com.google.android.things.contrib:driver-button:0.4'
-    implementation 'com.knobtviker:bme280:1.0.9'
-    implementation 'com.knobtviker:bme680:1.0.6'
+    implementation 'com.knobtviker:bme280:1.1.0'
+//    implementation 'com.knobtviker:bme680:master-SNAPSHOT'
     implementation 'com.knobtviker:tsl2561:1.0.7'
     implementation 'com.knobtviker:RxScreenManager:1.0.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.8'

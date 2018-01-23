@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -34,6 +35,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     private RealmResults<Temperature> resultsTemperature;
     private RealmResults<Humidity> resultsHumidity;
     private RealmResults<Pressure> resultsPressure;
+    private RealmResults<AirQuality> resultsAirQuality;
     private RealmResults<Settings> resultsSettings;
     private RealmResults<Threshold> resultsThresholds;
 
@@ -86,7 +88,17 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
                 if (!pressures.isEmpty()) {
                     final Pressure result = pressures.first();
                     if (result != null) {
-                        view.onPressueChanged(result);
+                        view.onPressureChanged(result);
+                    }
+                }
+            });
+        }
+        if (resultsAirQuality != null && resultsAirQuality.isValid()) {
+            resultsAirQuality.addChangeListener(airQualities -> {
+                if (!airQualities.isEmpty()) {
+                    final AirQuality result = airQualities.first();
+                    if (result != null) {
+                        view.onAirQualityChanged(result);
                     }
                 }
             });
@@ -120,6 +132,9 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         }
         if (resultsPressure != null && resultsPressure.isValid()) {
             resultsPressure.removeAllChangeListeners();
+        }
+        if (resultsAirQuality != null && resultsAirQuality.isValid()) {
+            resultsAirQuality.removeAllChangeListeners();
         }
         if (resultsSettings != null && resultsSettings.isValid()) {
             resultsSettings.removeAllChangeListeners();
@@ -170,7 +185,23 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         if (!resultsPressure.isEmpty()) {
             final Pressure result = resultsPressure.first();
             if (result != null) {
-                view.onPressueChanged(result);
+                view.onPressureChanged(result);
+            }
+        }
+
+        completed();
+    }
+
+    @Override
+    public void airQuality(@NonNull Realm realm) {
+        started();
+
+        resultsAirQuality = atmosphereRepository.latestAirQuality(realm);
+
+        if (!resultsAirQuality.isEmpty()) {
+            final AirQuality result = resultsAirQuality.first();
+            if (result != null) {
+                view.onAirQualityChanged(result);
             }
         }
 
