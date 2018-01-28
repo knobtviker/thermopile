@@ -31,9 +31,4 @@ public class Data {
 
     // Indoor air quality score index
     public float airQualityScore = 0.0f;
-
-    @Override
-    public String toString() {
-        return String.format("T --> %s P --> %s H --> %s G --> %d", temperature, pressure, humidity, gasResistance);
-    }
 }

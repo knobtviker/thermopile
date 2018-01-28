@@ -39,6 +39,7 @@ public class Bme680SensorDriver implements AutoCloseable {
      * Create a new framework sensor driver connected on the given bus.
      * The driver emits {@link Sensor} with pressure and temperature data when
      * registered.
+     *
      * @param bus I2C bus the sensor is connected to.
      * @throws IOException
      * @see #registerPressureSensor()
@@ -52,7 +53,8 @@ public class Bme680SensorDriver implements AutoCloseable {
      * Create a new framework sensor driver connected on the given bus and address.
      * The driver emits {@link Sensor} with pressure and temperature data when
      * registered.
-     * @param bus I2C bus the sensor is connected to.
+     *
+     * @param bus     I2C bus the sensor is connected to.
      * @param address I2C address of the sensor.
      * @throws IOException
      * @see #registerPressureSensor()
@@ -64,6 +66,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
     /**
      * Close the driver and the underlying device.
+     *
      * @throws IOException
      */
     @Override
@@ -82,6 +85,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
     /**
      * Register a {@link UserSensor} that pipes temperature readings into the Android SensorManager.
+     *
      * @see #unregisterTemperatureSensor()
      */
     public void registerTemperatureSensor() {
@@ -97,6 +101,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
     /**
      * Register a {@link UserSensor} that pipes pressure readings into the Android SensorManager.
+     *
      * @see #unregisterPressureSensor()
      */
     public void registerPressureSensor() {
@@ -112,6 +117,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
     /**
      * Register a {@link UserSensor} that pipes humidity readings into the Android SensorManager.
+     *
      * @see #unregisterHumiditySensor()
      */
     public void registerHumiditySensor() {
@@ -127,6 +133,7 @@ public class Bme680SensorDriver implements AutoCloseable {
 
     /**
      * Register a {@link UserSensor} that pipes indoor air quality readings into the Android SensorManager.
+     *
      * @see #unregisterGasSensor()
      */
     public void registerGasSensor() {
@@ -180,17 +187,6 @@ public class Bme680SensorDriver implements AutoCloseable {
         }
     }
 
-    private void maybeSleep() throws IOException {
-        if ((mTemperatureUserDriver == null || !mTemperatureUserDriver.isEnabled())
-            && (mPressureUserDriver == null || !mPressureUserDriver.isEnabled())
-            && (mHumidityUserDriver == null || !mHumidityUserDriver.isEnabled())
-            && (mGasUserDriver == null || !mGasUserDriver.isEnabled())) {
-            mDevice.setPowerMode(Bme680.MODE_SLEEP);
-        } else {
-            mDevice.setPowerMode(Bme680.MODE_FORCED);
-        }
-    }
-
     private class PressureUserDriver extends UserSensorDriver {
         // DRIVER parameters
         // documented at https://source.android.com/devices/sensors/hal-interface.html#sensor_t
@@ -232,7 +228,6 @@ public class Bme680SensorDriver implements AutoCloseable {
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
             mDevice.setPressureOversample(enabled ? Bme680.OVERSAMPLING_16X : Bme680.OVERSAMPLING_SKIPPED);
-            maybeSleep();
         }
 
         private boolean isEnabled() {
@@ -281,7 +276,6 @@ public class Bme680SensorDriver implements AutoCloseable {
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
             mDevice.setTemperatureOversample(enabled ? Bme680.OVERSAMPLING_16X : Bme680.OVERSAMPLING_SKIPPED);
-//            maybeSleep();
         }
 
         private boolean isEnabled() {
@@ -330,7 +324,6 @@ public class Bme680SensorDriver implements AutoCloseable {
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
             mDevice.setHumidityOversample(enabled ? Bme680.OVERSAMPLING_16X : Bme680.OVERSAMPLING_SKIPPED);
-            maybeSleep();
         }
 
         private boolean isEnabled() {
@@ -373,18 +366,17 @@ public class Bme680SensorDriver implements AutoCloseable {
         @Override
         public UserSensorReading read() throws IOException {
             final float airQuality = mDevice.readAirQuality();
-            return new UserSensorReading(new float[]{mDevice.readGasResistance(), airQuality, Math.round(((100.0f -airQuality)/100.0f)*500)});
+            return new UserSensorReading(new float[]{mDevice.readGasResistance(), airQuality, Math.round(((100.0f - airQuality) / 100.0f) * 500)});
         }
 
         @Override
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
-            mDevice.setGasStatus(enabled ? Bme680.ENABLE_GAS: Bme680.DISABLE_GAS);
+            mDevice.setGasStatus(enabled ? Bme680.ENABLE_GAS : Bme680.DISABLE_GAS);
             if (enabled) {
                 mDevice.setGasHeaterProfile(Bme680.PROFILE_0, 320, 150);
                 mDevice.selectGasHeaterProfile(Bme680.PROFILE_0);
             }
-            maybeSleep();
         }
 
         private boolean isEnabled() {

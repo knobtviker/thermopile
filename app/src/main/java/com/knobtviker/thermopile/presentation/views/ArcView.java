@@ -70,11 +70,11 @@ public class ArcView extends View {
 
         //First draw full arc as background.
         paint.setColor(trackColor);
-        canvas.drawArc(arc, 135, 275, false, paint);
+        canvas.drawArc(arc, START_ANGLE, END_ANGLE, false, paint);
 
         //Then draw arc progress with actual value.
         paint.setColor(progressColor);
-        canvas.drawArc(arc, 135, calculateProgressSweepAngle(), false, paint);
+        canvas.drawArc(arc, START_ANGLE, calculateProgressSweepAngle(), false, paint);
     }
 
     @Override

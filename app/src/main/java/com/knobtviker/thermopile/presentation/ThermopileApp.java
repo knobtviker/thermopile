@@ -129,7 +129,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         airQuality.name(sensorEvent.sensor.getName());
 
                         this.airQuality = airQuality;
-                        Log.i(TAG, "IAQ --- " + airQuality.timestamp() + " --- " + airQuality.value());
                     }
                 }
                 break;
@@ -309,9 +308,9 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     //CHIP_ID_BME680 = 0x61 | DEFAULT_I2C_ADDRESS = 0x76 (or 0x77)
     private void initBME680() throws IOException {
         final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.getI2CPort());
-        bme680SensorDriver.registerTemperatureSensor();
-        bme680SensorDriver.registerHumiditySensor();
         bme680SensorDriver.registerPressureSensor();
+        bme680SensorDriver.registerHumiditySensor();
+        bme680SensorDriver.registerTemperatureSensor();
         bme680SensorDriver.registerGasSensor();
     }
 

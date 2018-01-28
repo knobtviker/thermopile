@@ -12,6 +12,6 @@
     <dimen name="corner_16dp">16dp</dimen>
 
     <dimen name="thickness_16">16dp</dimen>
-    <dimen name="thickness_24">24dp</dimen>
+    <dimen name="thickness_8">8dp</dimen>
     
 </resources>

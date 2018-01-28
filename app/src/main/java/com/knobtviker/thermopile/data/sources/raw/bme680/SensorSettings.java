@@ -1,20 +1,29 @@
 package com.knobtviker.thermopile.data.sources.raw.bme680;
 
+import static com.knobtviker.thermopile.data.sources.raw.bme680.Bme680.FILTER_SIZE_NONE;
+import static com.knobtviker.thermopile.data.sources.raw.bme680.Bme680.Filter;
+import static com.knobtviker.thermopile.data.sources.raw.bme680.Bme680.OVERSAMPLING_SKIPPED;
+import static com.knobtviker.thermopile.data.sources.raw.bme680.Bme680.Oversampling;
+
 /**
  * Created by bojan on 27/11/2017.
  */
 
-class SensorSettings {
+public class SensorSettings {
 
     // Humidity oversampling
-    int oversamplingHumidity;
+    @Oversampling
+    public int oversamplingHumidity = OVERSAMPLING_SKIPPED;
 
     // Temperature oversampling
-    int oversamplingTemperature;
+    @Oversampling
+    public int oversamplingTemperature = OVERSAMPLING_SKIPPED;
 
     // Pressure oversampling
-    int oversamplingPressure;
+    @Oversampling
+    public int oversamplingPressure = OVERSAMPLING_SKIPPED;
 
     // Filter coefficient
-    int filter;
+    @Filter
+    public int filter = FILTER_SIZE_NONE;
 }
