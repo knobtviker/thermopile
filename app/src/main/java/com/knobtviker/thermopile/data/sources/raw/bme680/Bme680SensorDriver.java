@@ -228,6 +228,7 @@ public class Bme680SensorDriver implements AutoCloseable {
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
             mDevice.setPressureOversample(enabled ? Bme680.OVERSAMPLING_16X : Bme680.OVERSAMPLING_SKIPPED);
+            maybeSleep();
         }
 
         private boolean isEnabled() {
@@ -276,6 +277,7 @@ public class Bme680SensorDriver implements AutoCloseable {
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
             mDevice.setTemperatureOversample(enabled ? Bme680.OVERSAMPLING_16X : Bme680.OVERSAMPLING_SKIPPED);
+            maybeSleep();
         }
 
         private boolean isEnabled() {
@@ -324,6 +326,7 @@ public class Bme680SensorDriver implements AutoCloseable {
         public void setEnabled(boolean enabled) throws IOException {
             mEnabled = enabled;
             mDevice.setHumidityOversample(enabled ? Bme680.OVERSAMPLING_16X : Bme680.OVERSAMPLING_SKIPPED);
+            maybeSleep();
         }
 
         private boolean isEnabled() {
@@ -377,10 +380,20 @@ public class Bme680SensorDriver implements AutoCloseable {
                 mDevice.setGasHeaterProfile(Bme680.PROFILE_0, 320, 150);
                 mDevice.selectGasHeaterProfile(Bme680.PROFILE_0);
             }
+            maybeSleep();
         }
 
         private boolean isEnabled() {
             return mEnabled;
+        }
+    }
+
+    private void maybeSleep() throws IOException {
+        if ((mTemperatureUserDriver == null || !mTemperatureUserDriver.isEnabled())
+            && (mPressureUserDriver == null || !mPressureUserDriver.isEnabled())
+            && (mHumidityUserDriver == null || !mHumidityUserDriver.isEnabled())
+            && (mGasUserDriver == null || !mGasUserDriver.isEnabled())) {
+            mDevice.setPowerMode(Bme680.MODE_SLEEP);
         }
     }
 }
