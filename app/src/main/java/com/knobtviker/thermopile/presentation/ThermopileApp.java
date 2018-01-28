@@ -13,6 +13,8 @@ import android.util.Log;
 import com.facebook.stetho.Stetho;
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.driver.bme280.BME280SensorDriver;
+import com.knobtviker.android.things.contrib.driver.bme680.Bme680;
+import com.knobtviker.android.things.contrib.driver.bme680.Bme680SensorDriver;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.device.RxScreenManager;
 import com.knobtviker.thermopile.BuildConfig;
@@ -24,8 +26,6 @@ import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.Threshold;
-import com.knobtviker.thermopile.data.sources.raw.bme680.Bme680;
-import com.knobtviker.thermopile.data.sources.raw.bme680.Bme680SensorDriver;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.BoardDefaults;
@@ -86,6 +86,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 temperature.vendor(sensorEvent.sensor.getVendor());
                 temperature.name(sensorEvent.sensor.getName());
 
+//                Log.i(TAG, "Temperature ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
+
                 this.temperature = temperature;
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
@@ -95,6 +97,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 humidity.accuracy(sensorEvent.accuracy);
                 humidity.vendor(sensorEvent.sensor.getVendor());
                 humidity.name(sensorEvent.sensor.getName());
+
+//                Log.i(TAG, "Humidity ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
 
                 this.humidity = humidity;
                 break;
@@ -107,6 +111,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 pressure.accuracy(sensorEvent.accuracy);
                 pressure.vendor(sensorEvent.sensor.getVendor());
                 pressure.name(sensorEvent.sensor.getName());
+
+//                Log.i(TAG, "Pressure ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
 
                 final Altitude altitude = new Altitude();
                 altitude.timestamp(now);
