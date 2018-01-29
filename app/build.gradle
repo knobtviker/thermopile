@@ -52,7 +52,7 @@ dependencies {
     compileOnly 'com.google.android.things:androidthings:0.6.1-devpreview'
     implementation 'com.google.android.things.contrib:driver-button:0.4'
     implementation 'com.knobtviker:bme280:1.1.0'
-    implementation 'com.knobtviker:bme680:1.0.7'
+    implementation 'com.knobtviker:bme680:1.0.8'
     implementation 'com.knobtviker:tsl2561:1.0.7'
     implementation 'com.knobtviker:RxScreenManager:1.0.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
