@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.sources.AirQualityDataSource;
+import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -30,9 +33,9 @@ public class AirQualityLocalDataSource implements AirQualityDataSource.Local {
     }
 
     @Override
-    public void save(@NonNull final AirQuality item) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(realm1 -> realm1.insert(item));
+    public void save(@NonNull List<AirQuality> items) {
+        final Realm realm = Database.getDefaultInstance();
+        realm.executeTransaction(realm1 -> realm1.insert(items));
         realm.close();
     }
 }

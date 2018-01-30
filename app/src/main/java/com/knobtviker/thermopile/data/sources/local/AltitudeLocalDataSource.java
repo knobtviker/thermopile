@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.sources.AltitudeDataSource;
+import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -30,9 +33,9 @@ public class AltitudeLocalDataSource implements AltitudeDataSource.Local {
     }
 
     @Override
-    public void save(@NonNull final Altitude item) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(realm1 -> realm1.insert(item));
+    public void save(@NonNull List<Altitude> items) {
+        final Realm realm = Database.getDefaultInstance();
+        realm.executeTransaction(realm1 -> realm1.insert(items));
         realm.close();
     }
 }

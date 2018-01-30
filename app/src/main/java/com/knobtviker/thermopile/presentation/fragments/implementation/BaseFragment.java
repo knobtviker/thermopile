@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toolbar;
 
+import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 
 import java.util.Optional;
@@ -36,7 +37,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (presenter != null) {
             if (realm == null) {
-                realm = Realm.getDefaultInstance();
+                realm = Database.getDefaultInstance();
             }
             presenter.subscribe();
         }

@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Pressure;
 
+import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -17,6 +19,6 @@ public interface PressureDataSource {
 
         RealmResults<Pressure> latest(@NonNull final Realm realm);
 
-        void save(@NonNull final Pressure item);
+        void save(@NonNull final List<Pressure> items);
     }
 }

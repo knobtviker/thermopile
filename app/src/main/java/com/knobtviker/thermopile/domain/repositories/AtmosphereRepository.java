@@ -14,6 +14,8 @@ import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.realm.Realm;
@@ -64,23 +66,23 @@ public class AtmosphereRepository extends AbstractRepository {
         return airQualityLocalDataSource.latest(realm);
     }
 
-    public void saveTemperature(@NonNull final Temperature item) {
-        temperatureLocalDataSource.save(item);
+    public void saveTemperature(@NonNull final List<Temperature> items) {
+        temperatureLocalDataSource.save(items);
     }
 
-    public void savePressure(@NonNull final Pressure item) {
-        pressureLocalDataSource.save(item);
+    public void savePressure(@NonNull final List<Pressure> items) {
+        pressureLocalDataSource.save(items);
     }
 
-    public void saveHumidity(@NonNull final Humidity item) {
-        humidityLocalDataSource.save(item);
+    public void saveHumidity(@NonNull final List<Humidity> items) {
+        humidityLocalDataSource.save(items);
     }
 
-    public void saveAltitude(@NonNull final Altitude item) {
-        altitudeLocalDataSource.save(item);
+    public void saveAltitude(@NonNull final List<Altitude> items) {
+        altitudeLocalDataSource.save(items);
     }
 
-    public void saveAirQuality(@NonNull final AirQuality item) {
-        airQualityLocalDataSource.save(item);
+    public void saveAirQuality(@NonNull final List<AirQuality> items) {
+        airQualityLocalDataSource.save(items);
     }
 }

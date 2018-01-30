@@ -16,6 +16,7 @@ import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
@@ -124,27 +125,27 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     }
 
     @Override
-    public void saveTemperature(@NonNull Temperature item) {
-        atmosphereRepository.saveTemperature(item);
+    public void saveTemperature(@NonNull List<Temperature> items) {
+        atmosphereRepository.saveTemperature(items);
     }
 
     @Override
-    public void savePressure(@NonNull Pressure item) {
-        atmosphereRepository.savePressure(item);
+    public void savePressure(@NonNull List<Pressure> items) {
+        atmosphereRepository.savePressure(items);
     }
 
     @Override
-    public void saveHumidity(@NonNull Humidity item) {
-        atmosphereRepository.saveHumidity(item);
+    public void saveHumidity(@NonNull List<Humidity> items) {
+        atmosphereRepository.saveHumidity(items);
     }
 
     @Override
-    public void saveAltitude(@NonNull Altitude item) {
-        atmosphereRepository.saveAltitude(item);
+    public void saveAltitude(@NonNull List<Altitude> items) {
+        atmosphereRepository.saveAltitude(items);
     }
 
     @Override
-    public void saveAirQuality(@NonNull AirQuality item) {
-        atmosphereRepository.saveAirQuality(item);
+    public void saveAirQuality(@NonNull List<AirQuality> items) {
+        atmosphereRepository.saveAirQuality(items);
     }
 }

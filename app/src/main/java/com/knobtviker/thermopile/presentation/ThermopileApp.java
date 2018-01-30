@@ -11,25 +11,21 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.driver.bme280.BME280SensorDriver;
 import com.knobtviker.android.things.contrib.driver.bme680.Bme680;
 import com.knobtviker.android.things.contrib.driver.bme680.Bme680SensorDriver;
 import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.device.RxScreenManager;
-import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
-import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
-import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.BoardDefaults;
-import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
@@ -39,11 +35,9 @@ import org.joda.time.DateTimeUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -57,18 +51,24 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @NonNull
     private ApplicationContract.Presenter presenter;
 
-    private Temperature temperature;
-    private Pressure pressure;
-    private Humidity humidity;
-    private Altitude altitude;
-    private AirQuality airQuality;
+//    private Temperature temperature;
+//    private Pressure pressure;
+//    private Humidity humidity;
+//    private Altitude altitude;
+//    private AirQuality airQuality;
+
+    private List<Temperature> temperatures = Collections.synchronizedList(new ArrayList<>());
+    private List<Pressure> pressures = Collections.synchronizedList(new ArrayList<>());
+    private List<Humidity> humidities = Collections.synchronizedList(new ArrayList<>());
+    private List<Altitude> altitudes = Collections.synchronizedList(new ArrayList<>());
+    private List<AirQuality> airQualities = Collections.synchronizedList(new ArrayList<>());
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         initSensors();
-        initRealm();
+        initDatabase();
         initStetho();
         initCalligraphy();
         initJodaTime();
@@ -88,7 +88,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
 //                Log.i(TAG, "Temperature ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
 
-                this.temperature = temperature;
+//                this.temperature = temperature;
+                temperatures.add(temperature);
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
                 final Humidity humidity = new Humidity();
@@ -100,7 +101,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
 //                Log.i(TAG, "Humidity ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
 
-                this.humidity = humidity;
+//                this.humidity = humidity;
+                humidities.add(humidity);
                 break;
             case Sensor.TYPE_PRESSURE:
                 final long now = DateTimeUtils.currentTimeMillis();
@@ -113,6 +115,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 pressure.name(sensorEvent.sensor.getName());
 
 //                Log.i(TAG, "Pressure ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
+                pressures.add(pressure);
 
                 final Altitude altitude = new Altitude();
                 altitude.timestamp(now);
@@ -121,8 +124,9 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 altitude.vendor(sensorEvent.sensor.getVendor());
                 altitude.name(sensorEvent.sensor.getName());
 
-                this.pressure = pressure;
-                this.altitude = altitude;
+//                this.pressure = pressure;
+//                this.altitude = altitude;
+                altitudes.add(altitude);
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
@@ -136,7 +140,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
 //                        Log.i(TAG, "AirQuality ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
 
-                        this.airQuality = airQuality;
+//                        this.airQuality = airQuality;
+                        airQualities.add(airQuality);
                     }
                 }
                 break;
@@ -183,21 +188,22 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     @Override
     public void onTick() {
-        if (this.temperature != null) {
-            presenter.saveTemperature(this.temperature);
-        }
-        if (this.pressure != null) {
-            presenter.savePressure(this.pressure);
-        }
-        if (this.humidity != null) {
-            presenter.saveHumidity(this.humidity);
-        }
-        if (this.altitude != null) {
-            presenter.saveAltitude(this.altitude);
-        }
-        if (this.airQuality != null) {
-            presenter.saveAirQuality(this.airQuality);
-        }
+//        if (this.temperature != null) {
+//            presenter.saveTemperature(this.temperature);
+//        }
+//        if (this.pressure != null) {
+//            presenter.savePressure(this.pressure);
+//        }
+//        if (this.humidity != null) {
+//            presenter.saveHumidity(this.humidity);
+//        }
+//        if (this.altitude != null) {
+//            presenter.saveAltitude(this.altitude);
+//        }
+//        if (this.airQuality != null) {
+//            presenter.saveAirQuality(this.airQuality);
+//        }
+        save();
     }
 
     @Override
@@ -215,21 +221,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         presenter.destroyScreensaver();
     }
 
-    private void initRealm() {
-        Realm.init(this);
-        //TODO: Enable encryption
-        final RealmConfiguration config = new RealmConfiguration.Builder()
-//            .inMemory()
-            .name(BuildConfig.DATABASE_NAME)
-            .schemaVersion(BuildConfig.DATABASE_VERSION)
-//            .deleteRealmIfMigrationNeeded()
-            .initialData(realm -> {
-                realm.insert(defaultSettings());
-                realm.insert(mockThresholds());
-            })
-            .build();
-
-        Realm.setDefaultConfiguration(config);
+    private void initDatabase() {
+        Database.init(this);
     }
 
     private void initStetho() {
@@ -258,7 +251,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         registerSensorCallback();
 
         try {
-//            initBME280();
+            initBME280();
             initBME680();
             initTSL2561();
         } catch (IOException e) {
@@ -338,144 +331,26 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             .hasSystemFeature(PackageManager.FEATURE_EMBEDDED);
     }
 
-    private Settings defaultSettings() {
-        final Settings settings = new Settings();
-
-        settings.id(0L);
-        settings.timezone(Constants.DEFAULT_TIMEZONE);
-        settings.formatClock(Constants.CLOCK_MODE_24H);
-        settings.unitTemperature(Constants.UNIT_TEMPERATURE_CELSIUS);
-        settings.unitPressure(Constants.UNIT_PRESSURE_PASCAL);
-        settings.formatDate(Constants.DEFAULT_FORMAT_DATE);
-        settings.formatTime(Constants.FORMAT_TIME_LONG_24H);
-
-        return settings;
-    }
-
-    private ImmutableList<Threshold> mockThresholds() {
-        final List<Threshold> mocks = new ArrayList<>(0);
-        IntStream.range(0, 7)
-            .forEach(
-                day -> {
-                    final Threshold mockThreshold = new Threshold();
-                    mockThreshold.day(day);
-                    if (day == 0) {
-                        mockThreshold.id(10L);
-                        mockThreshold.color(R.color.blue_500);
-                        mockThreshold.startHour(0);
-                        mockThreshold.startMinute(0);
-                        mockThreshold.endHour(17);
-                        mockThreshold.endMinute(0);
-
-                        mocks.add(mockThreshold);
-
-                        mockThreshold.id(11L);
-                        mockThreshold.color(R.color.red_500);
-                        mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
-                        mockThreshold.endHour(23);
-                        mockThreshold.endMinute(59);
-
-                        mocks.add(mockThreshold);
-                    }
-                    if (day == 1) {
-                        mockThreshold.id(20L);
-                        mockThreshold.color(R.color.grey_500);
-                        mockThreshold.startHour(0);
-                        mockThreshold.startMinute(0);
-                        mockThreshold.endHour(17);
-                        mockThreshold.endMinute(0);
-
-                        mocks.add(mockThreshold);
-
-                        mockThreshold.id(21L);
-                        mockThreshold.color(R.color.purple_500);
-                        mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
-                        mockThreshold.endHour(23);
-                        mockThreshold.endMinute(59);
-
-                        mocks.add(mockThreshold);
-                    }
-                    if (day == 2) {
-                        mockThreshold.id(30L);
-                        mockThreshold.color(R.color.light_green_500);
-                        mockThreshold.startHour(0);
-                        mockThreshold.startMinute(0);
-                        mockThreshold.endHour(17);
-                        mockThreshold.endMinute(0);
-
-                        mocks.add(mockThreshold);
-
-                        mockThreshold.id(31L);
-                        mockThreshold.color(R.color.pink_500);
-                        mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
-                        mockThreshold.endHour(23);
-                        mockThreshold.endMinute(59);
-
-                        mocks.add(mockThreshold);
-                    }
-                    if (day == 3) {
-                        mockThreshold.id(40L);
-                        mockThreshold.color(R.color.light_blue_500);
-                        mockThreshold.startHour(0);
-                        mockThreshold.startMinute(0);
-                        mockThreshold.endHour(17);
-                        mockThreshold.endMinute(0);
-
-                        mocks.add(mockThreshold);
-
-                        mockThreshold.id(41L);
-                        mockThreshold.color(R.color.deep_orange_500);
-                        mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
-                        mockThreshold.endHour(23);
-                        mockThreshold.endMinute(59);
-
-                        mocks.add(mockThreshold);
-                    }
-                    if (day == 4) {
-                        mockThreshold.id(50L);
-                        mockThreshold.color(R.color.teal_500);
-                        mockThreshold.startHour(0);
-                        mockThreshold.startMinute(0);
-                        mockThreshold.endHour(17);
-                        mockThreshold.endMinute(0);
-
-                        mocks.add(mockThreshold);
-
-                        mockThreshold.id(51L);
-                        mockThreshold.color(R.color.amber_500);
-                        mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
-                        mockThreshold.endHour(23);
-                        mockThreshold.endMinute(59);
-
-                        mocks.add(mockThreshold);
-                    }
-                    if (day == 5) {
-                        mockThreshold.id(60L);
-                        mockThreshold.color(R.color.indigo_500);
-                        mockThreshold.startHour(0);
-                        mockThreshold.startMinute(0);
-                        mockThreshold.endHour(20);
-                        mockThreshold.endMinute(0);
-
-                        mocks.add(mockThreshold);
-                    }
-                    if (day == 6) {
-                        mockThreshold.id(70L);
-                        mockThreshold.color(R.color.green_500);
-                        mockThreshold.startHour(0);
-                        mockThreshold.startMinute(0);
-                        mockThreshold.endHour(19);
-                        mockThreshold.endMinute(0);
-
-                        mocks.add(mockThreshold);
-                    }
-                }
-            );
-        return ImmutableList.copyOf(mocks);
+    private synchronized void save() {
+        if (!temperatures.isEmpty()) {
+            presenter.saveTemperature(new ArrayList<>(temperatures));
+            temperatures.clear();
+        }
+        if (!pressures.isEmpty()) {
+            presenter.savePressure(new ArrayList<>(pressures));
+            pressures.clear();
+        }
+        if (!humidities.isEmpty()) {
+            presenter.saveHumidity(new ArrayList<>(humidities));
+            humidities.clear();
+        }
+        if (!altitudes.isEmpty()) {
+            presenter.saveAltitude(new ArrayList<>(altitudes));
+            altitudes.clear();
+        }
+        if (!airQualities.isEmpty()) {
+            presenter.saveAirQuality(new ArrayList<>(airQualities));
+            airQualities.clear();
+        }
     }
 }

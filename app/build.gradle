@@ -17,12 +17,9 @@ android {
             }
         }
 
+        buildConfigField "String", 'MEMORY_DATABASE_NAME', '"thermopile_memory.realm"'
         buildConfigField "String", 'DATABASE_NAME', '"thermopile.realm"'
         buildConfigField "int", 'DATABASE_VERSION', '1'
-
-//        configurations.all {
-//            resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-//        }
     }
     buildTypes {
         debug {
