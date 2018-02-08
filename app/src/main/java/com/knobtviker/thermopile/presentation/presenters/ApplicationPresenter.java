@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -72,6 +73,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         compositeDisposable.add(
             Observable
                 .interval(1L, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     ack -> view.onTick(),
                     this::error
