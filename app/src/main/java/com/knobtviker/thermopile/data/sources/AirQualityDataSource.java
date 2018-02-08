@@ -17,7 +17,7 @@ public interface AirQualityDataSource {
 
     interface Local {
 
-        RealmResults<AirQuality> latest(@NonNull final Realm realm);
+        RealmResults<AirQuality> load(@NonNull final Realm realm);
 
         void save(@NonNull final List<AirQuality> items);
     }

@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.sources.HumidityDataSource;
@@ -25,7 +26,8 @@ public class HumidityLocalDataSource implements HumidityDataSource.Local {
     }
 
     @Override
-    public RealmResults<Humidity> latest(@NonNull final Realm realm) {
+    public RealmResults<Humidity> load(@NonNull final Realm realm) {
+        Log.w("BOJAN", "Loading all eventually results in out of memory.");
         return realm
             .where(Humidity.class)
             .sort("timestamp", Sort.DESCENDING)

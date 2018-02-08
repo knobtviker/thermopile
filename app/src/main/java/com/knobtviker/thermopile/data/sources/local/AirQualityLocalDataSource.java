@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.sources.AirQualityDataSource;
@@ -25,7 +26,8 @@ public class AirQualityLocalDataSource implements AirQualityDataSource.Local {
     }
 
     @Override
-    public RealmResults<AirQuality> latest(@NonNull final Realm realm) {
+    public RealmResults<AirQuality> load(@NonNull final Realm realm) {
+        Log.w("BOJAN", "Loading all eventually results in out of memory.");
         return realm
             .where(AirQuality.class)
             .sort("timestamp", Sort.DESCENDING)

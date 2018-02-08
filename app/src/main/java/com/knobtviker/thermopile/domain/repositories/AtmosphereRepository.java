@@ -46,24 +46,24 @@ public class AtmosphereRepository extends AbstractRepository {
     AtmosphereRepository() {
     }
 
-    public RealmResults<Temperature> latestTemperature(@NonNull final Realm realm) {
-        return temperatureLocalDataSource.latest(realm);
+    public RealmResults<Temperature> loadTemperature(@NonNull final Realm realm) {
+        return temperatureLocalDataSource.load(realm);
     }
 
-    public RealmResults<Humidity> latestHumidity(@NonNull final Realm realm) {
-        return humidityLocalDataSource.latest(realm);
+    public RealmResults<Humidity> loadHumidity(@NonNull final Realm realm) {
+        return humidityLocalDataSource.load(realm);
     }
 
-    public RealmResults<Pressure> latestPressure(@NonNull final Realm realm) {
-        return pressureLocalDataSource.latest(realm);
+    public RealmResults<Pressure> loadPressure(@NonNull final Realm realm) {
+        return pressureLocalDataSource.load(realm);
     }
 
-    public RealmResults<Altitude> latestAltitude(@NonNull final Realm realm) {
-        return altitudeLocalDataSource.latest(realm);
+    public RealmResults<Altitude> loadAltitude(@NonNull final Realm realm) {
+        return altitudeLocalDataSource.load(realm);
     }
 
-    public RealmResults<AirQuality> latestAirQuality(@NonNull final Realm realm) {
-        return airQualityLocalDataSource.latest(realm);
+    public RealmResults<AirQuality> loadAirQuality(@NonNull final Realm realm) {
+        return airQualityLocalDataSource.load(realm);
     }
 
     public void saveTemperature(@NonNull final List<Temperature> items) {

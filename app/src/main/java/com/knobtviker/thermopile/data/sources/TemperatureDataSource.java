@@ -17,7 +17,7 @@ public interface TemperatureDataSource {
 
     interface Local {
 
-        RealmResults<Temperature> latest(@NonNull final Realm realm);
+        RealmResults<Temperature> load(@NonNull final Realm realm);
 
         void save(@NonNull final List<Temperature> items);
     }

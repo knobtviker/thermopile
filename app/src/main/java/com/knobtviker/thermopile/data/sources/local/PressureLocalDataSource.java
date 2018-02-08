@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.sources.PressureDataSource;
@@ -25,7 +26,8 @@ public class PressureLocalDataSource implements PressureDataSource.Local {
     }
 
     @Override
-    public RealmResults<Pressure> latest(@NonNull final Realm realm) {
+    public RealmResults<Pressure> load(@NonNull final Realm realm) {
+        Log.w("BOJAN", "Loading all eventually results in out of memory.");
         return realm
             .where(Pressure.class)
             .sort("timestamp", Sort.DESCENDING)

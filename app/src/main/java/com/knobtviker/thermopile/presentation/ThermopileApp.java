@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,6 +9,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
@@ -22,11 +25,17 @@ import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
+import com.knobtviker.thermopile.presentation.activities.MainActivity;
+import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
+import com.knobtviker.thermopile.presentation.fragments.MainFragment;
+import com.knobtviker.thermopile.presentation.fragments.ScreensaverFragment;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.BoardDefaults;
 import com.knobtviker.thermopile.presentation.utils.Router;
+import com.knobtviker.thermopile.presentation.views.listeners.ApplicationState;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -35,8 +44,7 @@ import org.joda.time.DateTimeUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -45,28 +53,28 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 
 // /data/data/com.knobtviker.thermopile
-public class ThermopileApp extends Application implements SensorEventListener, ApplicationContract.View {
+public class ThermopileApp extends Application implements SensorEventListener, ApplicationContract.View, ApplicationState.Listener {
     private static final String TAG = ThermopileApp.class.getSimpleName();
+
+    @Nullable
+    private Activity currentActivity;
 
     @NonNull
     private ApplicationContract.Presenter presenter;
 
-//    private Temperature temperature;
-//    private Pressure pressure;
-//    private Humidity humidity;
-//    private Altitude altitude;
-//    private AirQuality airQuality;
+    private Atmosphere atmosphere = Atmosphere.EMPTY();
 
-    private List<Temperature> temperatures = Collections.synchronizedList(new ArrayList<>());
-    private List<Pressure> pressures = Collections.synchronizedList(new ArrayList<>());
-    private List<Humidity> humidities = Collections.synchronizedList(new ArrayList<>());
-    private List<Altitude> altitudes = Collections.synchronizedList(new ArrayList<>());
-    private List<AirQuality> airQualities = Collections.synchronizedList(new ArrayList<>());
+    private ConcurrentLinkedQueue<Temperature> temperatures = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<Pressure> pressures = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<Humidity> humidities = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<Altitude> altitudes = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<AirQuality> airQualities = new ConcurrentLinkedQueue<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        initApplicationState();
         initSensors();
         initDatabase();
         initStetho();
@@ -79,6 +87,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void onSensorChanged(SensorEvent sensorEvent) {
         switch (sensorEvent.sensor.getType()) {
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                atmosphere = atmosphere.withTemperature(sensorEvent.values[0]);
+
                 final Temperature temperature = new Temperature();
                 temperature.timestamp(DateTimeUtils.currentTimeMillis());
                 temperature.value(sensorEvent.values[0]);
@@ -88,10 +98,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
 //                Log.i(TAG, "Temperature ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
 
-//                this.temperature = temperature;
                 temperatures.add(temperature);
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
+                atmosphere = atmosphere.withHumidity(sensorEvent.values[0]);
+
                 final Humidity humidity = new Humidity();
                 humidity.timestamp(DateTimeUtils.currentTimeMillis());
                 humidity.value(sensorEvent.values[0]);
@@ -101,11 +112,12 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
 //                Log.i(TAG, "Humidity ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
 
-//                this.humidity = humidity;
                 humidities.add(humidity);
                 break;
             case Sensor.TYPE_PRESSURE:
                 final long now = DateTimeUtils.currentTimeMillis();
+
+                atmosphere = atmosphere.withPressure(sensorEvent.values[0]);
 
                 final Pressure pressure = new Pressure();
                 pressure.timestamp(now);
@@ -117,20 +129,23 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 //                Log.i(TAG, "Pressure ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
                 pressures.add(pressure);
 
+                final float altitudeValue = SensorManager.getAltitude(sensorEvent.values[0], SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
+                atmosphere = atmosphere.withAltitude(altitudeValue);
+
                 final Altitude altitude = new Altitude();
                 altitude.timestamp(now);
-                altitude.value(SensorManager.getAltitude(sensorEvent.values[0], SensorManager.PRESSURE_STANDARD_ATMOSPHERE));
+                altitude.value(altitudeValue);
                 altitude.accuracy(sensorEvent.accuracy);
                 altitude.vendor(sensorEvent.sensor.getVendor());
                 altitude.name(sensorEvent.sensor.getName());
 
-//                this.pressure = pressure;
-//                this.altitude = altitude;
                 altitudes.add(altitude);
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
                     if (sensorEvent.sensor.getName().equals(Bme680.CHIP_NAME)) {
+                        atmosphere = atmosphere.withAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
+
                         final AirQuality airQuality = new AirQuality();
                         airQuality.timestamp(DateTimeUtils.currentTimeMillis());
                         airQuality.value(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
@@ -140,7 +155,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
 //                        Log.i(TAG, "AirQuality ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
 
-//                        this.airQuality = airQuality;
                         airQualities.add(airQuality);
                     }
                 }
@@ -188,21 +202,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     @Override
     public void onTick() {
-//        if (this.temperature != null) {
-//            presenter.saveTemperature(this.temperature);
-//        }
-//        if (this.pressure != null) {
-//            presenter.savePressure(this.pressure);
-//        }
-//        if (this.humidity != null) {
-//            presenter.saveHumidity(this.humidity);
-//        }
-//        if (this.altitude != null) {
-//            presenter.saveAltitude(this.altitude);
-//        }
-//        if (this.airQuality != null) {
-//            presenter.saveAirQuality(this.airQuality);
-//        }
         save();
     }
 
@@ -210,6 +209,40 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void showScreensaver() {
         Router.showScreensaver(this);
         brightness(24);
+    }
+
+    @Override
+    public void onForeground() {
+        //DO NOTHING
+    }
+
+    @Override
+    public void onBackground() {
+        //DO NOTHING
+    }
+
+    @Override
+    public void onMainActivityShown(@NonNull MainActivity activity) {
+        this.currentActivity = activity;
+
+        populateFragment();
+    }
+
+    @Override
+    public void onScreensaverActivityShown(@NonNull ScreenSaverActivity activity) {
+        this.currentActivity = activity;
+
+        populateFragment();
+    }
+
+    @Override
+    public void onMainActivityHidden() {
+        this.currentActivity = null;
+    }
+
+    @Override
+    public void onScreensaverActivityHidden() {
+        this.currentActivity = null;
     }
 
     public void createScreensaver() {
@@ -247,11 +280,15 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         presenter.brightness(255);
     }
 
+    private void initApplicationState() {
+        ApplicationState.init(this);
+    }
+
     private void initSensors() {
         registerSensorCallback();
 
         try {
-            initBME280();
+//            initBME280();
             initBME680();
             initTSL2561();
         } catch (IOException e) {
@@ -331,7 +368,27 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             .hasSystemFeature(PackageManager.FEATURE_EMBEDDED);
     }
 
-    private synchronized void save() {
+    private void populateFragment() {
+        if (currentActivity != null) {
+            if (currentActivity instanceof MainActivity) {
+                final Fragment fragment = ((MainActivity) currentActivity).findFragment(MainFragment.TAG);
+                if (fragment != null) {
+                    ((MainFragment) fragment).setAtmosphere(atmosphere);
+                }
+            } else if (currentActivity instanceof ScreenSaverActivity) {
+                final Fragment fragment = ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG);
+                if (fragment != null) {
+                    ((ScreensaverFragment) fragment).setAtmosphere(atmosphere);
+                }
+            }
+        }
+    }
+
+    private void save() {
+        atmosphere = atmosphere.withTimestamp(DateTimeUtils.currentTimeMillis());
+
+        populateFragment();
+
         if (!temperatures.isEmpty()) {
             presenter.saveTemperature(new ArrayList<>(temperatures));
             temperatures.clear();

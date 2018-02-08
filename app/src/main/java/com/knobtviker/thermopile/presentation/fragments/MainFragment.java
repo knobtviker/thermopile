@@ -23,12 +23,9 @@ import android.widget.TextView;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.AirQuality;
-import com.knobtviker.thermopile.data.models.local.Humidity;
-import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.raw.RelayRawDataSource;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
@@ -201,36 +198,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onTemperatureChanged(@NonNull Temperature data) {
-        arcViewTemperature.setProgress(data.value() / Constants.MEASURED_TEMPERATURE_MAX);
-        textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, data.value()))));
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onHumidityChanged(@NonNull Humidity data) {
-        arcViewHumidity.setProgress(data.value() / Constants.MEASURED_HUMIDITY_MAX);
-        textViewHumidity.setText(String.valueOf(MathKit.round(data.value())));
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onPressureChanged(@NonNull Pressure data) {
-        arcViewPressure.setProgress(data.value() / Constants.MEASURED_PRESSURE_MAX);
-        textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, data.value()))));
-    }
-
-    @Override
-    public void onAirQualityChanged(@NonNull AirQuality data) {
-        final Pair<String, Integer> pair = convertIAQValueToLabelAndColor(data.value());
-
-        textViewIAQ.setText(pair.first);
-        arcViewIAQ.setProgressColor(pair.second);
-        arcViewIAQ.setProgress((500.0f - data.value()) / 500.0f);
-    }
-
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
         dateTimeZone = DateTimeZone.forID(settings.timezone());
@@ -277,6 +244,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         }
     }
 
+    public void setAtmosphere(@NonNull final Atmosphere atmosphere) {
+        onTemperatureChanged(atmosphere.temperature());
+        onHumidityChanged(atmosphere.humidity());
+        onPressureChanged(atmosphere.pressure());
+        onAirQualityChanged(atmosphere.airQuality());
+    }
+
     public void moveHourLine(@NonNull final DateTime dateTime) {
         final int currentHour = dateTime.getHourOfDay();
         if (currentHour > 6 && currentHour < 17) {
@@ -297,6 +271,32 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         final SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void onTemperatureChanged(final float value) {
+        arcViewTemperature.setProgress(value / Constants.MEASURED_TEMPERATURE_MAX);
+        textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))));
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void onHumidityChanged(final float value) {
+        arcViewHumidity.setProgress(value / Constants.MEASURED_HUMIDITY_MAX);
+        textViewHumidity.setText(String.valueOf(MathKit.round(value)));
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void onPressureChanged(final float value) {
+        arcViewPressure.setProgress(value / Constants.MEASURED_PRESSURE_MAX);
+        textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, value))));
+    }
+
+    private void onAirQualityChanged(final float value) {
+        final Pair<String, Integer> pair = convertIAQValueToLabelAndColor(value);
+
+        textViewIAQ.setText(pair.first);
+        arcViewIAQ.setProgressColor(pair.second);
+        arcViewIAQ.setProgress((500.0f - value) / 500.0f);
     }
 
     private void setFormatClock() {
@@ -350,10 +350,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void data() {
-        presenter.temperature(realm);
-        presenter.humidity(realm);
-        presenter.pressure(realm);
-        presenter.airQuality(realm);
         presenter.settings(realm);
     }
 

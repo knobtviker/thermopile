@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.sources.AltitudeDataSource;
@@ -25,7 +26,8 @@ public class AltitudeLocalDataSource implements AltitudeDataSource.Local {
     }
 
     @Override
-    public RealmResults<Altitude> latest(@NonNull final Realm realm) {
+    public RealmResults<Altitude> load(@NonNull final Realm realm) {
+        Log.w("BOJAN", "Loading all eventually results in out of memory.");
         return realm
             .where(Altitude.class)
             .sort("timestamp", Sort.DESCENDING)

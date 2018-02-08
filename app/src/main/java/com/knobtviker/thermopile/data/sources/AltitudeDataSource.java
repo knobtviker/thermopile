@@ -17,7 +17,7 @@ public interface AltitudeDataSource {
 
     interface Local {
 
-        RealmResults<Altitude> latest(@NonNull final Realm realm);
+        RealmResults<Altitude> load(@NonNull final Realm realm);
 
         void save(@NonNull final List<Altitude> items);
     }

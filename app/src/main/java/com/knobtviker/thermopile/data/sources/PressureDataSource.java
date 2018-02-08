@@ -17,7 +17,7 @@ public interface PressureDataSource {
 
     interface Local {
 
-        RealmResults<Pressure> latest(@NonNull final Realm realm);
+        RealmResults<Pressure> load(@NonNull final Realm realm);
 
         void save(@NonNull final List<Pressure> items);
     }

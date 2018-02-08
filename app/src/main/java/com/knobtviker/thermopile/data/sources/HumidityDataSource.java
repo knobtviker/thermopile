@@ -17,7 +17,7 @@ public interface HumidityDataSource {
 
     interface Local {
 
-        RealmResults<Humidity> latest(@NonNull final Realm realm);
+        RealmResults<Humidity> load(@NonNull final Realm realm);
 
         void save(@NonNull final List<Humidity> items);
     }

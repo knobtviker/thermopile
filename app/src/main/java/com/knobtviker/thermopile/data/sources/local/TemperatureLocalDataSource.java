@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.sources.TemperatureDataSource;
@@ -25,7 +26,8 @@ public class TemperatureLocalDataSource implements TemperatureDataSource.Local {
     }
 
     @Override
-    public RealmResults<Temperature> latest(@NonNull final Realm realm) {
+    public RealmResults<Temperature> load(@NonNull final Realm realm) {
+        Log.w("BOJAN", "Loading all eventually results in out of memory.");
         return realm
             .where(Temperature.class)
             .sort("timestamp", Sort.DESCENDING)
