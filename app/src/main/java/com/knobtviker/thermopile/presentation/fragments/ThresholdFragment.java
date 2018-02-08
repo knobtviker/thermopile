@@ -164,14 +164,15 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            getActivity().finish();
-            return true;
-        } else if (item.getItemId() == R.id.action_save) {
-            save();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().finish();
+                return true;
+            case R.id.action_save:
+                save();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

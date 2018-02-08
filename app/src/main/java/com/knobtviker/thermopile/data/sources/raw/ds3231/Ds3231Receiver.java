@@ -25,12 +25,18 @@ public class Ds3231Receiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
-        if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
-            handleBootComplete(context);
-        } else if (Intent.ACTION_TIME_CHANGED.equals(action)) {
-            handleTimeChanged(context);
-        } else {
-            Log.e(TAG, "Unexpected broadcast action: " + action);
+        if (!TextUtils.isEmpty(action)) {
+            switch (action) {
+                case Intent.ACTION_BOOT_COMPLETED:
+                    handleBootComplete(context);
+                    break;
+                case Intent.ACTION_TIME_CHANGED:
+                    handleTimeChanged(context);
+                    break;
+                default:
+                    Log.e(TAG, "Unexpected broadcast action: " + action);
+                    break;
+            }
         }
     }
 

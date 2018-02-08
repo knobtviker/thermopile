@@ -114,14 +114,15 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            mainCommunicator.back();
-            return true;
-        } else if (item.getItemId() == R.id.action_add) {
-            add();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mainCommunicator.back();
+                return true;
+            case R.id.action_add:
+                add();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

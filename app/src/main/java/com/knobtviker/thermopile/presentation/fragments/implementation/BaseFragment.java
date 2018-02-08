@@ -34,7 +34,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (presenter != null) {
             if (realm == null) {
                 realm = Database.getDefaultInstance();

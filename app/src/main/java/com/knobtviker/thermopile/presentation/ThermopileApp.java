@@ -288,7 +288,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         registerSensorCallback();
 
         try {
-//            initBME280();
+            initBME280();
             initBME680();
             initTSL2561();
         } catch (IOException e) {
@@ -373,12 +373,12 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             if (currentActivity instanceof MainActivity) {
                 final Fragment fragment = ((MainActivity) currentActivity).findFragment(MainFragment.TAG);
                 if (fragment != null) {
-                    ((MainFragment) fragment).setAtmosphere(atmosphere);
+                    currentActivity.runOnUiThread(() -> ((MainFragment) fragment).setAtmosphere(atmosphere));
                 }
             } else if (currentActivity instanceof ScreenSaverActivity) {
                 final Fragment fragment = ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG);
                 if (fragment != null) {
-                    ((ScreensaverFragment) fragment).setAtmosphere(atmosphere);
+                    currentActivity.runOnUiThread(() -> ((ScreensaverFragment) fragment).setAtmosphere(atmosphere));
                 }
             }
         }
