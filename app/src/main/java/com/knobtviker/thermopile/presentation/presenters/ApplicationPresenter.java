@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Display;
 
-import com.knobtviker.android.things.device.RxScreenManager;
+import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.models.local.Humidity;

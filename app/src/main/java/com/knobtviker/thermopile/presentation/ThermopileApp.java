@@ -8,17 +8,22 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
-import com.knobtviker.android.things.contrib.driver.bme280.BME280SensorDriver;
-import com.knobtviker.android.things.contrib.driver.bme680.Bme680;
-import com.knobtviker.android.things.contrib.driver.bme680.Bme680SensorDriver;
-import com.knobtviker.android.things.contrib.driver.tsl2561.TSL2561SensorDriver;
-import com.knobtviker.android.things.device.RxScreenManager;
+import com.google.android.things.device.TimeManager;
+import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
+import com.knobtviker.android.things.contrib.community.driver.bme280.BME280SensorDriver;
+import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680;
+import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680SensorDriver;
+import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231;
+import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231SensorDriver;
+import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
+import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
@@ -33,7 +38,6 @@ import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.fragments.MainFragment;
 import com.knobtviker.thermopile.presentation.fragments.ScreensaverFragment;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
-import com.knobtviker.thermopile.presentation.utils.BoardDefaults;
 import com.knobtviker.thermopile.presentation.utils.Router;
 import com.knobtviker.thermopile.presentation.views.listeners.ApplicationState;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
@@ -290,6 +294,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         try {
             initBME280();
             initBME680();
+            initDS3231();
             initTSL2561();
         } catch (IOException e) {
             showError(e);
@@ -352,6 +357,32 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         bme680SensorDriver.registerGasSensor();
     }
 
+    //CHIP_ID_DS3231 = 0x?? | DEFAULT_I2C_ADDRESS = 0x68
+    private void initDS3231() throws IOException {
+        final Ds3231SensorDriver ds3231SensorDriver = new Ds3231SensorDriver(BoardDefaults.getI2CPort());
+        ds3231SensorDriver.registerTemperatureSensor();
+
+        final Ds3231 ds3231 = ds3231SensorDriver.device();
+        if (ds3231 != null) {
+            final long ds3231Timestamp = ds3231.getTimeInMillis();
+            final long systemTimeStamp = System.currentTimeMillis();
+            // If the DS3231 has a sane timestamp, set the system clock using the DS3231.
+            // Otherwise, set the DS3231 using the system time if the system time appears sane
+            if (isSaneTimestamp(ds3231Timestamp)) {
+                Log.i(TAG, "Setting system clock using DS3231");
+                final TimeManager timeManager = new TimeManager();
+                timeManager.setTime(ds3231Timestamp);
+
+                // Re-enable NTP updates.
+                // The call to setTime() disables them automatically, but that's what we use to update our DS3231.
+                timeManager.setAutoTimeEnabled(true);
+            } else if (isSaneTimestamp(systemTimeStamp)) {
+                Log.i(TAG, "Setting DS3231 time using system clock");
+                ds3231.setTime(systemTimeStamp);
+            }
+        }
+    }
+
     //CHIP_ID_TSL2561 = 0x?? | DEFAULT_I2C_ADDRESS = 0x39 (or 0x29 or 0x49)
     private void initTSL2561() throws IOException {
         final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(BoardDefaults.getI2CPort());
@@ -409,5 +440,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             presenter.saveAirQuality(new ArrayList<>(airQualities));
             airQualities.clear();
         }
+    }
+
+    // Assume timestamp is not sane if the timestamp predates the build time of this image. Borrowed this logic from AlarmManagerService
+    private boolean isSaneTimestamp(final long timestamp) {
+        final long systemBuildTime = Environment.getRootDirectory().lastModified();
+        return timestamp >= systemBuildTime;
     }
 }

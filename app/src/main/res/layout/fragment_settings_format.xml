@@ -5,7 +5,6 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
     android:clickable="true">
 
     <android.support.v4.widget.NestedScrollView
@@ -38,7 +37,6 @@
                     android:layout_height="wrap_content"
                     android:text="Date format"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -48,7 +46,7 @@
                     android:layout_height="1dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/margin_small"
-                    android:background="@color/white"
+                    android:background="?android:textColorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_title_date_format"
@@ -81,7 +79,6 @@
                     android:layout_height="wrap_content"
                     android:text="Time format"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -91,7 +88,7 @@
                     android:layout_height="1dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/margin_small"
-                    android:background="@color/white"
+                    android:background="?android:textColorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/textview_title_time_format"

@@ -85,4 +85,7 @@
         <item>@color/black</item>
     </array>
 
+    <color name="background_arc_track">#E5E4E2</color>
+    <color name="background_fab">#EEEEEE</color>
+
 </resources>

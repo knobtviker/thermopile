@@ -6,13 +6,12 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
     tools:context=".presentation.activities.MainActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/appbar_layout"
         android:layout_width="0dp"
-        android:layout_height="32dp"
+        android:layout_height="35dp"
         android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,12 +24,12 @@
             android:gravity="center"
             android:paddingLeft="@dimen/margin_large"
             android:paddingRight="@dimen/margin_large"
-            android:layout_height="32dp"
+            android:layout_height="35dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/shape_background_clock"
+            android:background="@drawable/slice_middle"
             tools:text="10:30"/>
 
         <TextView
@@ -43,14 +42,14 @@
             app:layout_constraintHorizontal_bias="0.0"
             android:paddingLeft="@dimen/margin_default"
             android:paddingRight="@dimen/margin_large"
-            android:background="@drawable/shape_background_date"
+            android:background="@drawable/left_slice"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="TUESDAY 31.05.2016."/>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:background="@drawable/shape_background_actions"
+            android:background="@drawable/right_slice"
             app:layout_constraintHorizontal_bias="1.0"
             android:paddingLeft="@dimen/margin_large"
             android:paddingRight="@dimen/margin_default"
@@ -122,7 +121,7 @@
         app:layout_constraintTop_toBottomOf="@id/appbar_layout"
         app:progressColor="@color/arc_temperature"
         app:stroke_thickness="@dimen/thickness_16"
-        app:trackColor="@color/light_gray"/>
+        app:trackColor="@color/background_arc_track"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -157,7 +156,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:progressColor="@color/arc_humidity"
             app:stroke_thickness="@dimen/thickness_8"
-            app:trackColor="@color/light_gray"/>
+            app:trackColor="@color/background_arc_track"/>
 
         <com.knobtviker.thermopile.presentation.views.ArcView
             android:id="@+id/arc_iaq"
@@ -173,7 +172,7 @@
             app:layout_constraintTop_toBottomOf="@+id/arc_humidity"
             app:progressColor="@color/arc_iaq"
             app:stroke_thickness="@dimen/thickness_8"
-            app:trackColor="@color/light_gray"/>
+            app:trackColor="@color/background_arc_track"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -261,7 +260,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:progressColor="@color/arc_pressure"
             app:stroke_thickness="@dimen/thickness_8"
-            app:trackColor="@color/light_gray"/>
+            app:trackColor="@color/background_arc_track"/>
 
         <com.knobtviker.thermopile.presentation.views.ArcView
             android:id="@+id/arc_seismic"
@@ -277,7 +276,7 @@
             app:layout_constraintTop_toBottomOf="@id/arc_pressure"
             app:progressColor="@color/arc_seismic"
             app:stroke_thickness="@dimen/thickness_8"
-            app:trackColor="@color/light_gray"/>
+            app:trackColor="@color/background_arc_track"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -361,7 +360,7 @@
         android:id="@+id/floatingactionbutton_down"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
-        app:backgroundTint="@color/light_gray"
+        app:backgroundTint="@color/background_fab"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
         app:layout_constraintEnd_toStartOf="@+id/floatingactionbutton_up"
@@ -372,7 +371,7 @@
         android:id="@+id/floatingactionbutton_up"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
-        app:backgroundTint="@color/light_gray"
+        app:backgroundTint="@color/background_fab"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
         app:layout_constraintEnd_toEndOf="@id/arc_temperature"
