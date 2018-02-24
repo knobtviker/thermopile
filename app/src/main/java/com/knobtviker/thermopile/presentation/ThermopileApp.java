@@ -435,16 +435,16 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             final long systemTimeStamp = System.currentTimeMillis();
             // If the DS3231 has a sane timestamp, set the system clock using the DS3231.
             // Otherwise, set the DS3231 using the system time if the system time appears sane
-            if (isSaneTimestamp(ds3231Timestamp)) {
-                Log.i(TAG, "Setting system clock using DS3231");
+            if (ds3231Timestamp >= Environment.getRootDirectory().lastModified()) {
+//                Log.i(TAG, "Setting system clock using DS3231");
                 final TimeManager timeManager = new TimeManager();
                 timeManager.setTime(ds3231Timestamp);
 
                 // Re-enable NTP updates.
                 // The call to setTime() disables them automatically, but that's what we use to update our DS3231.
                 timeManager.setAutoTimeEnabled(true);
-            } else if (isSaneTimestamp(systemTimeStamp)) {
-                Log.i(TAG, "Setting DS3231 time using system clock");
+            } else if (systemTimeStamp >= Environment.getRootDirectory().lastModified()) {
+//                Log.i(TAG, "Setting DS3231 time using system clock");
                 ds3231.setTime(systemTimeStamp);
             }
         }
@@ -456,6 +456,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         tsl2561SensorDriver.registerLuminositySensor();
     }
 
+    //CHIP_ID_LSM9DS1 = 0x?? | DEFAULT_I2C_ADDRESS_ACCEL_GYRO = 0x6B | DEFAULT_I2C_ADDRESS_MAG = 0x1E
     private void initLSM9DS1() throws IOException {
         final Lsm9ds1SensorDriver lsm9ds1SensorDriver = new Lsm9ds1SensorDriver(BoardDefaults.getI2CPort());
         lsm9ds1SensorDriver.registerTemperatureSensor();
@@ -527,11 +528,5 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             presenter.saveMagneticFields(new ArrayList<>(magneticFields));
             magneticFields.clear();
         }
-    }
-
-    // Assume timestamp is not sane if the timestamp predates the build time of this image. Borrowed this logic from AlarmManagerService
-    private boolean isSaneTimestamp(final long timestamp) {
-        final long systemBuildTime = Environment.getRootDirectory().lastModified();
-        return timestamp >= systemBuildTime;
     }
 }

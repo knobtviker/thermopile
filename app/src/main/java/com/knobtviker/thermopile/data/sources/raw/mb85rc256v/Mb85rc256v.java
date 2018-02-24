@@ -15,12 +15,12 @@ import java.io.IOException;
 
 public class Mb85rc256v implements Closeable {
     /**
-     * Chip vendor for the DS3231
+     * Chip vendor for the MB85RC256V
      */
     public static final String CHIP_VENDOR = "Maxim Integrated Products";
 
     /**
-     * Chip name for the DS3231
+     * Chip name for the MB85RC256V
      */
     public static final String CHIP_NAME = "DS3231";
 
