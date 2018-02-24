@@ -47,6 +47,7 @@ dependencies {
     implementation 'com.knobtviker.android.things.contrib.community.driver:bme680:1.0.9'
     implementation 'com.knobtviker.android.things.contrib.community.driver:tsl2561:1.0.9'
     implementation 'com.knobtviker.android.things.contrib.community.driver:ds3231:1.0.2'
+    implementation 'com.knobtviker.android.things.contrib.community.driver:lsm9ds1:1.0.0'
     implementation 'com.knobtviker.android.things.contrib.community.support:rxscreenmanager:1.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
