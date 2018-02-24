@@ -1,8 +1,11 @@
 package com.knobtviker.thermopile.di.modules.data;
 
+import com.knobtviker.thermopile.data.sources.local.AccelerationLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AirQualityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AltitudeLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.AngularVelocityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.HumidityLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
 
@@ -39,5 +42,20 @@ public class AtmosphereDataModule {
     @Provides
     static AirQualityLocalDataSource provideAirQualityLocalDataSource() {
         return new AirQualityLocalDataSource();
+    }
+
+    @Provides
+    static AccelerationLocalDataSource provideAccelerationLocalDataSource() {
+        return new AccelerationLocalDataSource();
+    }
+
+    @Provides
+    static AngularVelocityLocalDataSource provideAngularVelocityLocalDataSource() {
+        return new AngularVelocityLocalDataSource();
+    }
+
+    @Provides
+    static MagneticFieldLocalDataSource provideMagneticFieldLocalDataSource() {
+        return new MagneticFieldLocalDataSource();
     }
 }

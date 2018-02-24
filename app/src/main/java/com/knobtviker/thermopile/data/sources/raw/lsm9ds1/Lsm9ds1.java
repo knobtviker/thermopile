@@ -4,6 +4,7 @@ import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 
 import com.google.android.things.pio.I2cDevice;
 import com.google.android.things.pio.PeripheralManagerService;
@@ -89,6 +90,7 @@ public class Lsm9ds1 implements Closeable {
     public static final int GYRO_INVERT_AXIS_Y = 0b00010000;
     public static final int GYRO_INVERT_AXIS_Z = 0b00001000;
     public static final int FIFO_MAX_THRESHOLD = 31;
+
     static final float MAX_FREQ_HZ_XG = 952f;
     static final float MIN_FREQ_HZ_XG = 14.9f;
     static final float MAX_FREQ_HZ_M = 80f;
@@ -201,898 +203,10 @@ public class Lsm9ds1 implements Closeable {
     private float mMagMgaussLsb;
     private float mGyroDpsDigit;
     private float mGravity = SensorManager.GRAVITY_EARTH;
+
     private I2cDevice mAccelGyroDevice;
     private I2cDevice mMagDevice;
 
-    /**
-     * Use the {@link Builder} to create a new LSM9DS1 sensor driver instance.
-     *
-     * @throws IOException
-     */
-    private Lsm9ds1(Builder builder) throws IOException {
-        final PeripheralManagerService pioService = new PeripheralManagerService();
-        final I2cDevice accelGyroDevice = pioService.openI2cDevice(builder.mI2cBus, builder.mI2cAddressAccelGyro);
-        final I2cDevice magDevice = pioService.openI2cDevice(builder.mI2cBus, builder.mI2cAddressMag);
-        try {
-            connect(builder, accelGyroDevice, magDevice);
-        } catch (IOException | RuntimeException e) {
-            try {
-                close();
-            } catch (IOException | RuntimeException ignored) {
-            }
-            throw e;
-        }
-    }
-
-    private void connect(Builder builder, I2cDevice accelGyroDevice, I2cDevice magDevice) throws IOException {
-        mAccelGyroDevice = accelGyroDevice;
-        mMagDevice = magDevice;
-
-        resetAndReboot(SENSOR_XG, false);
-        resetAndReboot(SENSOR_MAG, true);
-
-        byte idXg = readRegByte(SENSOR_XG, REGISTER_WHO_AM_I_XG);
-        byte idMag = readRegByte(SENSOR_MAG, REGISTER_WHO_AM_I_M);
-        if (idXg != XG_ID || idMag != MAG_ID) {
-            throw new IllegalStateException("Could not find LSM9DS1, check wiring!");
-        }
-
-        // FIFO configuration
-        setFifoModeAndTreshold(builder.mFifoMode, builder.mFifoThreshold);
-        setFifoMemoryEnabled(builder.mFifoMemoryEnabled);
-
-        // Accelerometer configuration
-        setAccelerometerOdr(builder.mAccelerometerOdr);
-        setAccelerometerEnabledAxes(builder.mAccelerometerEnabledAxes);
-        setAccelerometerDecimation(builder.mAccelerometerDecimation);
-        setAccelerometerHighResolution(builder.mAccelerometerHighResolution);
-        setAccelerometerRange(builder.mAccelerometerRange);
-
-        // Gyroscope configuration
-        setGyroscopeOdr(builder.mGyroscopeOdr);
-        setGyroscopeScale(builder.mGyroscopeScale);
-
-        // Magnetometer configuration
-        setMagnetometerTemperatureCompensation(builder.mMagnetometerTemperatureCompensation);
-        setMagnetometerXYOperatingMode(builder.mMagnetometerXYOperatingMode);
-        setMagnetometerZOperatingMode(builder.mMagnetometerZOperatingMode);
-        setMagnetometerSystemOperatingMode(builder.mMagnetometerSystemOperatingMode);
-        setMagnetometerGain(builder.mMagnetometerGain);
-    }
-
-    private void resetAndReboot(@SensorType int type, boolean waitForReboot) throws IOException {
-        switch (type) {
-            case SENSOR_XG:
-                writeRegByte(type, REGISTER_CTRL_REG8,
-                    (byte) (CTRL_REG8_BOOT | CTRL_REG8_IF_ADD_INC | CTRL_REG8_SW_RESET));
-                break;
-            case SENSOR_MAG:
-                writeRegByte(type, REGISTER_CTRL_REG2_M, (byte) (CTRL_REG2_M_REBOOT | CTRL_REG2_M_SOFT_RST));
-                break;
-        }
-        if (waitForReboot) {
-            SystemClock.sleep(10);
-        }
-    }
-
-    private byte getStatusRegister(@SensorType int type) throws IOException {
-        final int reg = type == SENSOR_XG ? REGISTER_STATUS_REG : REGISTER_STATUS_REG_M;
-        return readRegByte(type, reg);
-    }
-
-    /**
-     * Polls the temperature status register to check if new data is available.
-     *
-     * @return false if a new data is not yet available; true if a new data is available
-     * @throws IOException
-     */
-    public boolean isTemperatureNewDataAvailable() throws IOException {
-        return ((getStatusRegister(SENSOR_XG) & 0xFF) & STATUS_REG_TDA) == STATUS_REG_TDA;
-    }
-
-    /**
-     * Polls the accelerometer status register to check if new data is available.
-     *
-     * @return false if a new set of data is not yet available; true if a new set of data is available
-     * @throws IOException
-     */
-    public boolean isAccelerometerNewDataAvailable() throws IOException {
-        return ((getStatusRegister(SENSOR_XG) & 0xFF) & STATUS_REG_XLDA) == STATUS_REG_XLDA;
-    }
-
-    /**
-     * Polls the gyroscope status register to check if new data is available.
-     *
-     * @return false if a new set of data is not yet available; true if a new set of data is available
-     * @throws IOException
-     */
-    public boolean isGyroscopeNewDataAvailable() throws IOException {
-        return ((getStatusRegister(SENSOR_XG) & 0xFF) & STATUS_REG_GDA) == STATUS_REG_GDA;
-    }
-
-    /**
-     * Polls the accelerometer status register to check if new data is available for all axes.
-     *
-     * @return false if a new set of data is not yet available; true if a new set of data is available
-     * @throws IOException
-     */
-    public boolean isMagnetometerXYZAxesNewDataAvailable() throws IOException {
-        return ((getStatusRegister(SENSOR_MAG) & 0xFF) & STATUS_REG_M_ZYXDA) == STATUS_REG_M_ZYXDA;
-    }
-
-    /**
-     * Polls the accelerometer status register to check if new data is available for X-axis.
-     *
-     * @return false if a new data for the X-axis is not yet available; true if a new data for the X-axis is available
-     * @throws IOException
-     */
-    public boolean isMagnetometerXAxisNewDataAvailable() throws IOException {
-        return ((getStatusRegister(SENSOR_MAG) & 0xFF) & STATUS_REG_M_XDA) == STATUS_REG_M_XDA;
-    }
-
-    /**
-     * Polls the accelerometer status register to check if new data is available for Y-axis.
-     *
-     * @return false if a new data for the Y-axis is not yet available; true if a new data for the Y-axis is available
-     * @throws IOException
-     */
-    public boolean isMagnetometerYAxisNewDataAvailable() throws IOException {
-        return ((getStatusRegister(SENSOR_MAG) & 0xFF) & STATUS_REG_M_YDA) == STATUS_REG_M_YDA;
-    }
-
-    /**
-     * Polls the accelerometer status register to check if new data is available for Z-axis.
-     *
-     * @return false if a new data for the Z-axis is not yet available; true if a new data for the Z-axis is available
-     * @throws IOException
-     */
-    public boolean isMagnetometerZAxisNewDataAvailable() throws IOException {
-        return ((getStatusRegister(SENSOR_MAG) & 0xFF) & STATUS_REG_M_ZDA) == STATUS_REG_M_ZDA;
-    }
-
-    /**
-     * Get the accelerometer range.
-     *
-     * @throws IOException
-     */
-    public int getAccelerometerRange() throws IOException {
-        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
-        return (reg & 0b00011000) & 0xFF;
-    }
-
-    /**
-     * Set the accelerometer range.
-     * Must be one of the {@link AccelerometerRange} values.
-     *
-     * @throws IOException
-     */
-    public void setAccelerometerRange(@AccelerometerRange int range) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG6_XL. So, first read it:
-        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
-        // Then mask out the accel range bits:
-        reg &= ~(0b00011000);
-        // Then mask in our new range bits:
-        reg |= range;
-        // And write the new register value back into CTRL_REG6_XL:
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL, reg);
-
-        switch (range) {
-            case ACCEL_RANGE_2G:
-                mAccelMgLsb = ACCEL_MG_LSB_2G;
-                break;
-            case ACCEL_RANGE_4G:
-                mAccelMgLsb = ACCEL_MG_LSB_4G;
-                break;
-            case ACCEL_RANGE_8G:
-                mAccelMgLsb = ACCEL_MG_LSB_8G;
-                break;
-            case ACCEL_RANGE_16G:
-                mAccelMgLsb = ACCEL_MG_LSB_16G;
-                break;
-        }
-    }
-
-    /**
-     * Get the accelerometer decimation data on OUT REG and FIFO.
-     *
-     * @throws IOException
-     */
-    public int getAccelerometerDecimation() throws IOException {
-        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
-        return (reg & 0b11000000) & 0xFF;
-    }
-
-    /**
-     * Set the accelerometer decimation data on OUT REG and FIFO.
-     * Must be one of the {@link AccelerometerDecimation} values.
-     *
-     * @throws IOException
-     */
-    public void setAccelerometerDecimation(@AccelerometerDecimation int decimation) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG6_XL. So, first read it:
-        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
-        // Then mask out the accel decimation bits:
-        reg &= ~(0b11000000);
-        // Then mask in our new decimation bits:
-        reg |= decimation;
-        // And write the new register value back into CTRL_REG6_XL:
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL, reg);
-    }
-
-    /**
-     * Get the accelerometer output data rate.
-     * See {@link AccelGyroOutputDataRate}.
-     *
-     * @throws IOException
-     */
-    public int getAccelerometerOdr() throws IOException {
-        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
-        return (reg & 0b11100000) & 0xFF;
-    }
-
-    /**
-     * Set the accelerometer output data rate.
-     * Must be one of the {@link AccelGyroOutputDataRate} values.
-     *
-     * @throws IOException
-     */
-    public void setAccelerometerOdr(@AccelGyroOutputDataRate int odr) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG6_XL. So, first read it:
-        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
-        // Then mask out the accel scale bits:
-        reg &= ~(0b11100000);
-        // Then mask in our new scale bits:
-        reg |= odr;
-        // And write the new register value back into CTRL_REG6_XL:
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL, reg);
-    }
-
-    /**
-     * Get the accelerometer highResolution.
-     *
-     * @throws IOException
-     */
-    public boolean isAccelerometerHighResolution() throws IOException {
-        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
-        return (byte) ((reg & 0b10000000) & 0xFF) == CTRL_REG7_XL_HR;
-    }
-
-    /**
-     * Set the accelerometer highResolution.
-     *
-     * @throws IOException
-     */
-    public void setAccelerometerHighResolution(boolean enable) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG7_XL. So, first read it:
-        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG7_XL);
-        // Then mask out the accel high resolution bits:
-        reg &= ~(CTRL_REG7_XL_HR);
-        if (enable) {
-            // Then mask in our new high resolution bits:
-            reg |= CTRL_REG7_XL_HR;
-        }
-        // And write the new register value back into CTRL_REG7_XL:
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG7_XL, reg);
-    }
-
-    /**
-     * Get the accelerometer enabled axes.
-     *
-     * @return bit mask made with {@link #ACCEL_AXIS_Y},
-     * {@link #ACCEL_AXIS_Y} or {@link #ACCEL_AXIS_Z}.
-     * @throws IOException
-     */
-    public int getAccelerometerEnabledAxes() throws IOException {
-        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG5_XL);
-        return (reg & 0b00111000) & 0xFF;
-    }
-
-    /**
-     * Set the accelerometer enabled axes.
-     *
-     * @param axesFlag bit mask made with {@link #ACCEL_AXIS_Y},
-     *                 {@link #ACCEL_AXIS_Y} or {@link #ACCEL_AXIS_Z}.
-     * @throws IOException
-     */
-    public void setAccelerometerEnabledAxes(int axesFlag) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG5_XL. So, first read it:
-        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG5_XL);
-        // Then mask out the gyro axes bits:
-        reg &= ~(0b00111000);
-        // Then mask in our new axes bits:
-        reg |= axesFlag;
-        // And write the new register value back into CTRL_REG5_XL:
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG5_XL, reg);
-    }
-
-    /**
-     * Get the gyroscope scale.
-     * See {@link GyroscopeScale}.
-     *
-     * @throws IOException
-     */
-    public int getGyroscopeScale() throws IOException {
-        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G);
-        return (reg & 0b00011000) & 0xFF;
-    }
-
-    /**
-     * Set the gyroscope scale.
-     * Must be one of the {@link GyroscopeScale} values.
-     *
-     * @throws IOException
-     */
-    public void setGyroscopeScale(@GyroscopeScale int scale) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG1_G. So, first read it:
-        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G);
-        // Then mask out the gyro scale bits:
-        reg &= ~(0b00011000);
-        // Then mask in our new scale bits:
-        reg |= scale;
-        // And write the new register value back into CTRL_REG1_G:
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G, reg);
-
-        switch (scale) {
-            case GYRO_SCALE_245DPS:
-                mGyroDpsDigit = GYRO_DPS_DIGIT_245DPS;
-                break;
-            case GYRO_SCALE_500DPS:
-                mGyroDpsDigit = GYRO_DPS_DIGIT_500DPS;
-                break;
-            case GYRO_SCALE_2000DPS:
-                mGyroDpsDigit = GYRO_DPS_DIGIT_2000DPS;
-                break;
-        }
-    }
-
-    /**
-     * Get the gyroscope output data rate.
-     *
-     * @throws IOException
-     */
-    public int getGyroscopeOdr() throws IOException {
-        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G);
-        return (reg & 0b11100000) & 0xFF;
-    }
-
-    /**
-     * Set the gyroscope output data rate.
-     * Must be one of the {@link AccelGyroOutputDataRate} values.
-     *
-     * @throws IOException
-     */
-    public void setGyroscopeOdr(@AccelGyroOutputDataRate int odr) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG1_G. So, first read it:
-        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G);
-        // Then mask out the gyro odr bits:
-        reg &= ~(0b11100000);
-        // Then mask in our new odr bits:
-        reg |= odr;
-        // And write the new register value back into CTRL_REG1_G:
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G, reg);
-    }
-
-    /**
-     * Get the gyroscope angular rate negative sign axes.
-     *
-     * @return bit mask made with {@link #GYRO_INVERT_AXIS_X},
-     * {@link #GYRO_INVERT_AXIS_Y} or {@link #GYRO_INVERT_AXIS_Z}.
-     * @throws IOException
-     */
-    public int getGyroscopeAxesAngularRateNegativeSign() throws IOException {
-        final byte reg = readRegByte(SENSOR_XG, REGISTER_ORIENT_CFG_G);
-        return (reg & 0b00111000) & 0xFF;
-    }
-
-    /**
-     * Set the gyroscope angular rate negative sign axes.
-     *
-     * @param axesFlag bit mask made with {@link #GYRO_INVERT_AXIS_X},
-     *                 {@link #GYRO_INVERT_AXIS_Y} or {@link #GYRO_INVERT_AXIS_Z}.
-     * @throws IOException
-     */
-    public void setGyroscopeAxesAngularRateNegativeSign(int axesFlag) throws IOException {
-        // We need to preserve the other bytes in ORIENT_CFG_G. So, first read it:
-        byte reg = readRegByte(SENSOR_XG, REGISTER_ORIENT_CFG_G);
-        // Then mask out the gyro axes bits:
-        reg &= ~(0b00111000);
-        // Then mask in our new axes bits:
-        reg |= axesFlag;
-        // And write the new register value back into ORIENT_CFG_G:
-        writeRegByte(SENSOR_XG, REGISTER_ORIENT_CFG_G, reg);
-    }
-
-    /**
-     * Get the magnetometer gain.
-     *
-     * @throws IOException
-     */
-    public int getMagnetometerGain() throws IOException {
-        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG2_M);
-        return (reg & 0b01100000) & 0xFF;
-    }
-
-    /**
-     * Set the magnetometer gain.
-     * Must be one of the {@link MagnetometerGain} values.
-     *
-     * @throws IOException
-     */
-    public void setMagnetometerGain(@MagnetometerGain int gain) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG2_M. So, first read it:
-        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG2_M);
-        // Then mask out the mag gain bits:
-        reg &= ~(0b01100000);
-        // Then mask in our new gain bits:
-        reg |= gain;
-        // And write the new register value back into CTRL_REG2_M:
-        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG2_M, reg);
-
-        switch (gain) {
-            case MAG_GAIN_4GAUSS:
-                mMagMgaussLsb = MAG_MGAUSS_4GAUSS;
-                break;
-            case MAG_GAIN_8GAUSS:
-                mMagMgaussLsb = MAG_MGAUSS_8GAUSS;
-                break;
-            case MAG_GAIN_12GAUSS:
-                mMagMgaussLsb = MAG_MGAUSS_12GAUSS;
-                break;
-            case MAG_GAIN_16GAUSS:
-                mMagMgaussLsb = MAG_MGAUSS_16GAUSS;
-                break;
-        }
-    }
-
-    /**
-     * Get the magnetometer system operating mode.
-     *
-     * @throws IOException
-     */
-    public int getMagnetometerSystemOperatingMode() throws IOException {
-        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG3_M);
-        return (reg & 0b00000011) & 0xFF;
-    }
-
-    /**
-     * Set the magnetometer operating mode.
-     * Must be one of the {@link MagnetometerSystemOperatingMode} values.
-     *
-     * @throws IOException
-     */
-    public void setMagnetometerSystemOperatingMode(@MagnetometerSystemOperatingMode int mode) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG3_M. So, first read it:
-        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG3_M);
-        // Then mask out the mag operatingMode bits:
-        reg &= ~(0b00000011);
-        // Then mask in our new operatingMode bits:
-        reg |= mode;
-        // And write the new register value back into CTRL_REG3_M:
-        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG3_M, reg);
-    }
-
-    /**
-     * Get the magnetometer XY operating mode.
-     *
-     * @throws IOException
-     */
-    public int getMagnetometerXYOperatingMode() throws IOException {
-        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
-        return (reg & 0b01100000) & 0xFF;
-    }
-
-    /**
-     * Set the magnetometer operating mode.
-     * Must be one of the {@link MagnetometerXYOperatingMode} values.
-     *
-     * @throws IOException
-     */
-    public void setMagnetometerXYOperatingMode(@MagnetometerXYOperatingMode int mode) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG1_M. So, first read it:
-        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
-        // Then mask out the mag operatingMode bits:
-        reg &= ~(0b01100000);
-        // Then mask in our new operatingMode bits:
-        reg |= mode;
-        // And write the new register value back into CTRL_REG1_M:
-        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M, reg);
-    }
-
-    /**
-     * Get the magnetometer Z operating mode.
-     *
-     * @throws IOException
-     */
-    public int getMagnetometerZOperatingMode() throws IOException {
-        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG4_M);
-        return (reg & 0b00001100) & 0xFF;
-    }
-
-    /**
-     * Set the magnetometer operating mode.
-     * Must be one of the {@link MagnetometerZOperatingMode} values.
-     *
-     * @throws IOException
-     */
-    public void setMagnetometerZOperatingMode(@MagnetometerZOperatingMode int mode) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG4_M. So, first read it:
-        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG4_M);
-        // Then mask out the mag operatingMode bits:
-        reg &= ~(0b00001100);
-        // Then mask in our new operatingMode bits:
-        reg |= mode;
-        // And write the new register value back into CTRL_REG4_M:
-        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG4_M, reg);
-    }
-
-    /**
-     * Get the magnetometer temperatureCompensation.
-     *
-     * @throws IOException
-     */
-    public boolean isMagnetometerTemperatureCompensation() throws IOException {
-        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
-        return (byte) ((reg & CTRL_REG1_M_TEMP_COMP) & 0xFF) == CTRL_REG1_M_TEMP_COMP;
-    }
-
-    /**
-     * Set the magnetometer temperatureCompensation.
-     *
-     * @throws IOException
-     */
-    public void setMagnetometerTemperatureCompensation(boolean enable) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG1_M. So, first read it:
-        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
-        // Then mask out the mag temperature compensation bits:
-        reg &= ~(CTRL_REG1_M_TEMP_COMP);
-        if (enable) {
-            // Then mask in our new temperature compensation bits:
-            reg |= CTRL_REG1_M_TEMP_COMP;
-        }
-        // And write the new register value back into CTRL_REG1_M:
-        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M, reg);
-    }
-
-    /**
-     * Get the magnetometer output data rate.
-     * See {@link MagOutputDataRate}.
-     *
-     * @throws IOException
-     */
-    public int getMagnetometerOdr() throws IOException {
-        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
-        return (reg & 0b00011100) & 0xFF;
-    }
-
-    /**
-     * Set the magnetometer output data rate.
-     * Must be one of the {@link MagOutputDataRate} values.
-     *
-     * @throws IOException
-     */
-    public void setMagnetometerOdr(@MagOutputDataRate int odr) throws IOException {
-        // We need to preserve the other bytes in CTRL_REG1_M. So, first read it:
-        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
-        // Then mask out the accel scale bits:
-        reg &= ~(0b00011100);
-        // Then mask in our new scale bits:
-        reg |= odr;
-        // And write the new register value back into CTRL_REG1_M:
-        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M, reg);
-    }
-
-    /**
-     * Read the raw accelerometer sensor values.
-     * <p>
-     * If you want the acceleration in SI units (m/s^2) use the {@link #readAcceleration()}.
-     *
-     * @return an integer array containing X, Y, Z axis raw values.
-     * @throws IOException
-     */
-    public int[] readRawAccelerometerData() throws IOException {
-        final byte[] buffer = new byte[6];
-        final int[] result = new int[3];
-        readRegBuffer(SENSOR_XG, REGISTER_OUT_X_L_XL, buffer, buffer.length);
-        result[0] = (((int) buffer[1]) << 8) | (buffer[0] & 0xFF); // Store x-axis values
-        result[1] = (((int) buffer[3]) << 8) | (buffer[2] & 0xFF); // Store y-axis values
-        result[2] = (((int) buffer[5]) << 8) | (buffer[4] & 0xFF); // Store z-axis values
-        return result;
-    }
-
-    /**
-     * Get the acceleration on the X, Y, Z axis in SI units (m/s^2).
-     *
-     * @return a float array containing X, Y, Z axis values in SI units (m/s^2).
-     * @throws IOException
-     */
-    public float[] readAcceleration() throws IOException {
-        final int[] rawAccelerometerData = readRawAccelerometerData();
-        final float[] result = new float[3];
-        for (int i = 0; i < rawAccelerometerData.length; i++) {
-            result[i] = convertRawAccelerationToSi(rawAccelerometerData[i]);
-        }
-        return result;
-    }
-
-    private float convertRawAccelerationToSi(int rawAccelerometerData) {
-        return rawAccelerometerData * mAccelMgLsb / 1000f * mGravity;
-    }
-
-    public float getAccelerationSensitivity() {
-        return convertRawAccelerationToSi(1);
-    }
-
-    /**
-     * Read the raw magnetometer sensor values.
-     * <p>
-     * If you want the magnetic induction in SI units (Gs) use the {@link #readMagneticInduction()}.
-     *
-     * @return an integer array containing X, Y, Z axis raw values.
-     * @throws IOException
-     */
-    public int[] readRawMagnetometerData() throws IOException {
-        final byte[] buffer = new byte[6];
-        final int[] result = new int[3];
-        readRegBuffer(SENSOR_MAG, REGISTER_OUT_X_L_M, buffer, buffer.length);
-        result[0] = (((int) buffer[1]) << 8) | (buffer[0] & 0xFF); // Store x-axis values
-        result[1] = (((int) buffer[3]) << 8) | (buffer[2] & 0xFF); // Store y-axis values
-        result[2] = (((int) buffer[5]) << 8) | (buffer[4] & 0xFF); // Store z-axis values
-        return result;
-    }
-
-    /**
-     * Get the magnetic induction on the X, Y, Z axis in SI units (Gs).
-     *
-     * @return a float array containing X, Y, Z axis values in SI units (Gs).
-     * @throws IOException
-     */
-    public float[] readMagneticInduction() throws IOException {
-        final int[] rawMagnetometerData = readRawMagnetometerData();
-        final float[] result = new float[3];
-        for (int i = 0; i < rawMagnetometerData.length; i++) {
-            result[i] = convertRawMagneticInductionToSi(rawMagnetometerData[i]);
-        }
-        return result;
-    }
-
-    private float convertRawMagneticInductionToSi(int rawMagnetometerData) {
-        return rawMagnetometerData * mMagMgaussLsb / 1000f;
-    }
-
-    public float getMagneticInductionSensitivity() {
-        return convertRawMagneticInductionToSi(1);
-    }
-
-    /**
-     * Read the raw gyroscope sensor values.
-     * <p>
-     * If you want the angular velocity in SI units (deg/s) use the {@link #readAngularVelocity()}.
-     *
-     * @return an integer array containing X, Y, Z axis raw values.
-     * @throws IOException
-     */
-    public int[] getRawGyroscopeData() throws IOException {
-        final byte[] buffer = new byte[6];
-        final int[] result = new int[3];
-        readRegBuffer(SENSOR_XG, REGISTER_OUT_X_L_G, buffer, buffer.length);
-        result[0] = (((int) buffer[1]) << 8) | (buffer[0] & 0xFF); // Store x-axis values
-        result[1] = (((int) buffer[3]) << 8) | (buffer[2] & 0xFF); // Store y-axis values
-        result[2] = (((int) buffer[5]) << 8) | (buffer[4] & 0xFF); // Store z-axis values
-        return result;
-    }
-
-    /**
-     * Get the angular velocity on the X, Y, Z axis in SI units (deg/s).
-     *
-     * @return a float array containing X, Y, Z axis values in SI units (deg/s).
-     * @throws IOException
-     */
-    public float[] readAngularVelocity() throws IOException {
-        final int[] rawGyroscopeData = getRawGyroscopeData();
-        final float[] result = new float[3];
-        for (int i = 0; i < rawGyroscopeData.length; i++) {
-            result[i] = convertRawAngularVelocityToSi(rawGyroscopeData[i]);
-        }
-        return result;
-    }
-
-    private float convertRawAngularVelocityToSi(int rawGyroscopeData) {
-        return rawGyroscopeData * mGyroDpsDigit;
-    }
-
-    public float getAngularVelocitySensitivity() {
-        return convertRawAngularVelocityToSi(1);
-    }
-
-    /**
-     * Read the Temperature data output register.
-     * {@link #REGISTER_TEMP_OUT_L} and {@link #REGISTER_TEMP_OUT_H} registers together
-     * express a 16-bit word in two's complement right-justified quoted at 16 LSB/⁰C.
-     *
-     * @return raw data temperature.
-     * @throws IOException
-     */
-    public int readRawTemperature() throws IOException {
-        final byte[] buffer = new byte[2];
-        readRegBuffer(SENSOR_XG, REGISTER_TEMP_OUT_L, buffer, buffer.length);
-        return ((int) buffer[1] << 8) | (buffer[0] & 0xFF);
-    }
-
-    /**
-     * Get the temperature of the sensor in degrees Celsius.
-     * <p>
-     * The intent of the temperature sensor is to keep track of the (gyro) die
-     * temperature and compensate if necessary. It is not intended as an
-     * environmental sensor.
-     *
-     * @return the temperature in degrees Celsius.
-     * @throws IOException
-     */
-    public float readTemperature() throws IOException {
-        return readRawTemperature() / TEMP_LSB_DEGREE_CELSIUS + TEMP_BIAS;
-    }
-
-    public float getTemperatureSensitivity() {
-        return 1 / TEMP_LSB_DEGREE_CELSIUS;
-    }
-
-    /**
-     * Get the current value used for gravity in SI units (m/s^2).
-     */
-    public float getGravity() {
-        return mGravity;
-    }
-
-    /**
-     * Set the current value used for gravity in SI units (m/s^2).
-     */
-    public void setGravity(float gravity) {
-        mGravity = gravity;
-    }
-
-    /**
-     * Enable/disable Gyroscope sleep mode.
-     *
-     * @param enable True to enable Gyroscope sleep mode; false to Gyroscope sleep mode.
-     * @throws IOException
-     */
-    public void setSleepGyroscopeEnabled(boolean enable) throws IOException {
-        byte temp = readRegByte(SENSOR_XG, REGISTER_CTRL_REG9);
-        if (enable) {
-            temp |= CTRL_REG9_SLEEP_G;
-        } else {
-            temp &= ~CTRL_REG9_SLEEP_G;
-        }
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG9, temp);
-    }
-
-    /**
-     * Enable/disable FIFO memory.
-     *
-     * @param enable True to enable FIFO memory; false to disable FIFO memory.
-     * @throws IOException
-     */
-    public void setFifoMemoryEnabled(boolean enable) throws IOException {
-        byte temp = readRegByte(SENSOR_XG, REGISTER_CTRL_REG9);
-        if (enable) {
-            temp |= CTRL_REG9_FIFO_EN;
-        } else {
-            temp &= ~CTRL_REG9_FIFO_EN;
-        }
-        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG9, temp);
-    }
-
-    /**
-     * Configure FIFO mode and Threshold.
-     *
-     * @param mode      Set FIFO mode to off, FIFO (stop when full), continuous, bypass. See {@link FifoMode}.
-     * @param threshold FIFO threshold level setting (0-31).
-     * @throws IOException
-     */
-    public void setFifoModeAndTreshold(@FifoMode int mode, @FifoThreshold int threshold) throws IOException {
-        if (threshold > FIFO_MAX_THRESHOLD) {
-            threshold = FIFO_MAX_THRESHOLD;
-        }
-        writeRegByte(SENSOR_XG, REGISTER_FIFO_CTRL, (byte) (mode | (threshold & 0b0011111)));
-    }
-
-    /**
-     * Number of unread samples stored into FIFO (0-32).
-     *
-     * @return The number of unread samples.
-     * @throws IOException
-     */
-    public int getFifoSamplesCount() throws IOException {
-        return readRegByte(SENSOR_XG, REGISTER_FIFO_SRC) & 0b00111111;
-    }
-
-    /**
-     * Close the driver and the underlying device.
-     */
-    @Override
-    public void close() throws IOException {
-        if (mAccelGyroDevice != null) {
-            try {
-                mAccelGyroDevice.close();
-            } finally {
-                mAccelGyroDevice = null;
-            }
-        }
-        if (mMagDevice != null) {
-            try {
-                mMagDevice.close();
-            } finally {
-                mMagDevice = null;
-            }
-        }
-    }
-
-    /**
-     * Read a byte from a given register.
-     *
-     * @param sensorType The sensor to read from (see {@link SensorType}).
-     * @param reg        The register to read from (0x00-0xFF).
-     * @return The value read from the device.
-     * @throws IOException
-     */
-    private byte readRegByte(@SensorType int sensorType, int reg) throws IOException {
-        if (sensorType == SENSOR_MAG) {
-            if (mMagDevice == null) {
-                throw new IllegalStateException("I2C device not open");
-            }
-            return mMagDevice.readRegByte(reg);
-        } else {
-            if (mAccelGyroDevice == null) {
-                throw new IllegalStateException("I2C device not open");
-            }
-            return mAccelGyroDevice.readRegByte(reg);
-        }
-    }
-
-    /**
-     * Read multiple bytes from a given register.
-     *
-     * @param sensorType The sensor to read from (see {@link SensorType})
-     * @param buffer     Buffer to read data into.
-     * @param length     Number of bytes to read, may not be larger than the buffer size.
-     * @return The value read from the device.
-     * @throws IOException
-     */
-    private void readRegBuffer(@SensorType int sensorType, int reg, byte[] buffer, int length) throws IOException {
-        if (sensorType == SENSOR_MAG) {
-            if (mMagDevice == null) {
-                throw new IllegalStateException("I2C device not open");
-            }
-            mMagDevice.readRegBuffer(reg, buffer, length);
-        } else {
-            if (mAccelGyroDevice == null) {
-                throw new IllegalStateException("I2C device not open");
-            }
-            mAccelGyroDevice.readRegBuffer(reg, buffer, length);
-        }
-    }
-
-    /**
-     * Write a byte to a given register.
-     *
-     * @param sensorType The sensor to write to (see {@link SensorType})
-     * @param reg        The register to write to (0x00-0xFF).
-     * @throws IOException
-     */
-    private void writeRegByte(@SensorType int sensorType, int reg, byte data) throws IOException {
-        if (sensorType == SENSOR_MAG) {
-            if (mMagDevice == null) {
-                throw new IllegalStateException("I2C device not open");
-            }
-            mMagDevice.writeRegByte(reg, data);
-        } else {
-            if (mAccelGyroDevice == null) {
-                throw new IllegalStateException("I2C device not open");
-            }
-            mAccelGyroDevice.writeRegByte(reg, data);
-        }
-
-    }
 
     /**
      * Accelerometer range
@@ -1254,6 +368,918 @@ public class Lsm9ds1 implements Closeable {
     @interface SensorType {
         int SENSOR_MAG = 0;
         int SENSOR_XG = 1;
+    }
+
+    /**
+     * Use the {@link Builder} to create a new LSM9DS1 sensor driver instance.
+     *
+     * @throws IOException
+     */
+    private Lsm9ds1(@NonNull final Builder builder) throws IOException {
+        final PeripheralManagerService pioService = new PeripheralManagerService();
+        final I2cDevice accelGyroDevice = pioService.openI2cDevice(builder.mI2cBus, builder.mI2cAddressAccelGyro);
+        final I2cDevice magDevice = pioService.openI2cDevice(builder.mI2cBus, builder.mI2cAddressMag);
+        try {
+            connect(builder, accelGyroDevice, magDevice);
+        } catch (IOException | RuntimeException e) {
+            try {
+                close();
+            } catch (IOException | RuntimeException ignored) {
+            }
+            throw e;
+        }
+    }
+
+    private void connect(@NonNull final Builder builder, @NonNull final I2cDevice accelGyroDevice, @NonNull final I2cDevice magDevice) throws IOException {
+        mAccelGyroDevice = accelGyroDevice;
+        mMagDevice = magDevice;
+
+        resetAndReboot(SENSOR_XG, false);
+        resetAndReboot(SENSOR_MAG, true);
+
+        final byte idXg = readRegByte(SENSOR_XG, REGISTER_WHO_AM_I_XG);
+        final byte idMag = readRegByte(SENSOR_MAG, REGISTER_WHO_AM_I_M);
+        if (idXg != XG_ID || idMag != MAG_ID) {
+            throw new IllegalStateException("Could not find LSM9DS1, check wiring!");
+        }
+
+        // FIFO configuration
+        setFifoModeAndTreshold(builder.mFifoMode, builder.mFifoThreshold);
+        setFifoMemoryEnabled(builder.mFifoMemoryEnabled);
+
+        // Accelerometer configuration
+        setAccelerometerOdr(builder.mAccelerometerOdr);
+        setAccelerometerEnabledAxes(builder.mAccelerometerEnabledAxes);
+        setAccelerometerDecimation(builder.mAccelerometerDecimation);
+        setAccelerometerHighResolution(builder.mAccelerometerHighResolution);
+        setAccelerometerRange(builder.mAccelerometerRange);
+
+        // Gyroscope configuration
+        setGyroscopeOdr(builder.mGyroscopeOdr);
+        setGyroscopeScale(builder.mGyroscopeScale);
+
+        // Magnetometer configuration
+        setMagnetometerTemperatureCompensation(builder.mMagnetometerTemperatureCompensation);
+        setMagnetometerXYOperatingMode(builder.mMagnetometerXYOperatingMode);
+        setMagnetometerZOperatingMode(builder.mMagnetometerZOperatingMode);
+        setMagnetometerSystemOperatingMode(builder.mMagnetometerSystemOperatingMode);
+        setMagnetometerGain(builder.mMagnetometerGain);
+    }
+
+    private void resetAndReboot(@SensorType final int type, final boolean waitForReboot) throws IOException {
+        switch (type) {
+            case SENSOR_XG:
+                writeRegByte(type, REGISTER_CTRL_REG8, (byte) (CTRL_REG8_BOOT | CTRL_REG8_IF_ADD_INC | CTRL_REG8_SW_RESET));
+                break;
+            case SENSOR_MAG:
+                writeRegByte(type, REGISTER_CTRL_REG2_M, (byte) (CTRL_REG2_M_REBOOT | CTRL_REG2_M_SOFT_RST));
+                break;
+        }
+
+        if (waitForReboot) {
+            SystemClock.sleep(10);
+        }
+    }
+
+    private byte getStatusRegister(@SensorType final int type) throws IOException {
+        final int reg = type == SENSOR_XG ? REGISTER_STATUS_REG : REGISTER_STATUS_REG_M;
+        return readRegByte(type, reg);
+    }
+
+    /**
+     * Polls the temperature status register to check if new data is available.
+     *
+     * @return false if a new data is not yet available; true if a new data is available
+     * @throws IOException
+     */
+    public boolean isTemperatureNewDataAvailable() throws IOException {
+        return ((getStatusRegister(SENSOR_XG) & 0xFF) & STATUS_REG_TDA) == STATUS_REG_TDA;
+    }
+
+    /**
+     * Polls the accelerometer status register to check if new data is available.
+     *
+     * @return false if a new set of data is not yet available; true if a new set of data is available
+     * @throws IOException
+     */
+    public boolean isAccelerometerNewDataAvailable() throws IOException {
+        return ((getStatusRegister(SENSOR_XG) & 0xFF) & STATUS_REG_XLDA) == STATUS_REG_XLDA;
+    }
+
+    /**
+     * Polls the gyroscope status register to check if new data is available.
+     *
+     * @return false if a new set of data is not yet available; true if a new set of data is available
+     * @throws IOException
+     */
+    public boolean isGyroscopeNewDataAvailable() throws IOException {
+        return ((getStatusRegister(SENSOR_XG) & 0xFF) & STATUS_REG_GDA) == STATUS_REG_GDA;
+    }
+
+    /**
+     * Polls the accelerometer status register to check if new data is available for all axes.
+     *
+     * @return false if a new set of data is not yet available; true if a new set of data is available
+     * @throws IOException
+     */
+    public boolean isMagnetometerXYZAxesNewDataAvailable() throws IOException {
+        return ((getStatusRegister(SENSOR_MAG) & 0xFF) & STATUS_REG_M_ZYXDA) == STATUS_REG_M_ZYXDA;
+    }
+
+    /**
+     * Polls the accelerometer status register to check if new data is available for X-axis.
+     *
+     * @return false if a new data for the X-axis is not yet available; true if a new data for the X-axis is available
+     * @throws IOException
+     */
+    public boolean isMagnetometerXAxisNewDataAvailable() throws IOException {
+        return ((getStatusRegister(SENSOR_MAG) & 0xFF) & STATUS_REG_M_XDA) == STATUS_REG_M_XDA;
+    }
+
+    /**
+     * Polls the accelerometer status register to check if new data is available for Y-axis.
+     *
+     * @return false if a new data for the Y-axis is not yet available; true if a new data for the Y-axis is available
+     * @throws IOException
+     */
+    public boolean isMagnetometerYAxisNewDataAvailable() throws IOException {
+        return ((getStatusRegister(SENSOR_MAG) & 0xFF) & STATUS_REG_M_YDA) == STATUS_REG_M_YDA;
+    }
+
+    /**
+     * Polls the accelerometer status register to check if new data is available for Z-axis.
+     *
+     * @return false if a new data for the Z-axis is not yet available; true if a new data for the Z-axis is available
+     * @throws IOException
+     */
+    public boolean isMagnetometerZAxisNewDataAvailable() throws IOException {
+        return ((getStatusRegister(SENSOR_MAG) & 0xFF) & STATUS_REG_M_ZDA) == STATUS_REG_M_ZDA;
+    }
+
+    /**
+     * Get the accelerometer range.
+     *
+     * @throws IOException
+     */
+    public int getAccelerometerRange() throws IOException {
+        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
+        return (reg & 0b00011000) & 0xFF;
+    }
+
+    /**
+     * Set the accelerometer range.
+     * Must be one of the {@link AccelerometerRange} values.
+     *
+     * @throws IOException
+     */
+    public void setAccelerometerRange(@AccelerometerRange final int range) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG6_XL. So, first read it:
+        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
+        // Then mask out the accel range bits:
+        reg &= ~(0b00011000);
+        // Then mask in our new range bits:
+        reg |= range;
+        // And write the new register value back into CTRL_REG6_XL:
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL, reg);
+
+        switch (range) {
+            case ACCEL_RANGE_2G:
+                mAccelMgLsb = ACCEL_MG_LSB_2G;
+                break;
+            case ACCEL_RANGE_4G:
+                mAccelMgLsb = ACCEL_MG_LSB_4G;
+                break;
+            case ACCEL_RANGE_8G:
+                mAccelMgLsb = ACCEL_MG_LSB_8G;
+                break;
+            case ACCEL_RANGE_16G:
+                mAccelMgLsb = ACCEL_MG_LSB_16G;
+                break;
+        }
+    }
+
+    /**
+     * Get the accelerometer decimation data on OUT REG and FIFO.
+     *
+     * @throws IOException
+     */
+    public int getAccelerometerDecimation() throws IOException {
+        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
+        return (reg & 0b11000000) & 0xFF;
+    }
+
+    /**
+     * Set the accelerometer decimation data on OUT REG and FIFO.
+     * Must be one of the {@link AccelerometerDecimation} values.
+     *
+     * @throws IOException
+     */
+    public void setAccelerometerDecimation(@AccelerometerDecimation final int decimation) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG6_XL. So, first read it:
+        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
+        // Then mask out the accel decimation bits:
+        reg &= ~(0b11000000);
+        // Then mask in our new decimation bits:
+        reg |= decimation;
+        // And write the new register value back into CTRL_REG6_XL:
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL, reg);
+    }
+
+    /**
+     * Get the accelerometer output data rate.
+     * See {@link AccelGyroOutputDataRate}.
+     *
+     * @throws IOException
+     */
+    public int getAccelerometerOdr() throws IOException {
+        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
+        return (reg & 0b11100000) & 0xFF;
+    }
+
+    /**
+     * Set the accelerometer output data rate.
+     * Must be one of the {@link AccelGyroOutputDataRate} values.
+     *
+     * @throws IOException
+     */
+    public void setAccelerometerOdr(@AccelGyroOutputDataRate final int odr) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG6_XL. So, first read it:
+        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
+        // Then mask out the accel scale bits:
+        reg &= ~(0b11100000);
+        // Then mask in our new scale bits:
+        reg |= odr;
+        // And write the new register value back into CTRL_REG6_XL:
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL, reg);
+    }
+
+    /**
+     * Get the accelerometer highResolution.
+     *
+     * @throws IOException
+     */
+    public boolean isAccelerometerHighResolution() throws IOException {
+        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG6_XL);
+        return (byte) ((reg & 0b10000000) & 0xFF) == CTRL_REG7_XL_HR;
+    }
+
+    /**
+     * Set the accelerometer highResolution.
+     *
+     * @throws IOException
+     */
+    public void setAccelerometerHighResolution(final boolean enable) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG7_XL. So, first read it:
+        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG7_XL);
+        // Then mask out the accel high resolution bits:
+        reg &= ~(CTRL_REG7_XL_HR);
+        if (enable) {
+            // Then mask in our new high resolution bits:
+            reg |= CTRL_REG7_XL_HR;
+        }
+        // And write the new register value back into CTRL_REG7_XL:
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG7_XL, reg);
+    }
+
+    /**
+     * Get the accelerometer enabled axes.
+     *
+     * @return bit mask made with {@link #ACCEL_AXIS_Y},
+     * {@link #ACCEL_AXIS_Y} or {@link #ACCEL_AXIS_Z}.
+     * @throws IOException
+     */
+    public int getAccelerometerEnabledAxes() throws IOException {
+        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG5_XL);
+        return (reg & 0b00111000) & 0xFF;
+    }
+
+    /**
+     * Set the accelerometer enabled axes.
+     *
+     * @param axesFlag bit mask made with {@link #ACCEL_AXIS_Y},
+     *                 {@link #ACCEL_AXIS_Y} or {@link #ACCEL_AXIS_Z}.
+     * @throws IOException
+     */
+    public void setAccelerometerEnabledAxes(final int axesFlag) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG5_XL. So, first read it:
+        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG5_XL);
+        // Then mask out the gyro axes bits:
+        reg &= ~(0b00111000);
+        // Then mask in our new axes bits:
+        reg |= axesFlag;
+        // And write the new register value back into CTRL_REG5_XL:
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG5_XL, reg);
+    }
+
+    /**
+     * Get the gyroscope scale.
+     * See {@link GyroscopeScale}.
+     *
+     * @throws IOException
+     */
+    public int getGyroscopeScale() throws IOException {
+        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G);
+        return (reg & 0b00011000) & 0xFF;
+    }
+
+    /**
+     * Set the gyroscope scale.
+     * Must be one of the {@link GyroscopeScale} values.
+     *
+     * @throws IOException
+     */
+    public void setGyroscopeScale(@GyroscopeScale final int scale) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG1_G. So, first read it:
+        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G);
+        // Then mask out the gyro scale bits:
+        reg &= ~(0b00011000);
+        // Then mask in our new scale bits:
+        reg |= scale;
+        // And write the new register value back into CTRL_REG1_G:
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G, reg);
+
+        switch (scale) {
+            case GYRO_SCALE_245DPS:
+                mGyroDpsDigit = GYRO_DPS_DIGIT_245DPS;
+                break;
+            case GYRO_SCALE_500DPS:
+                mGyroDpsDigit = GYRO_DPS_DIGIT_500DPS;
+                break;
+            case GYRO_SCALE_2000DPS:
+                mGyroDpsDigit = GYRO_DPS_DIGIT_2000DPS;
+                break;
+        }
+    }
+
+    /**
+     * Get the gyroscope output data rate.
+     *
+     * @throws IOException
+     */
+    public int getGyroscopeOdr() throws IOException {
+        final byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G);
+        return (reg & 0b11100000) & 0xFF;
+    }
+
+    /**
+     * Set the gyroscope output data rate.
+     * Must be one of the {@link AccelGyroOutputDataRate} values.
+     *
+     * @throws IOException
+     */
+    public void setGyroscopeOdr(@AccelGyroOutputDataRate final int odr) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG1_G. So, first read it:
+        byte reg = readRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G);
+        // Then mask out the gyro odr bits:
+        reg &= ~(0b11100000);
+        // Then mask in our new odr bits:
+        reg |= odr;
+        // And write the new register value back into CTRL_REG1_G:
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG1_G, reg);
+    }
+
+    /**
+     * Get the gyroscope angular rate negative sign axes.
+     *
+     * @return bit mask made with {@link #GYRO_INVERT_AXIS_X},
+     * {@link #GYRO_INVERT_AXIS_Y} or {@link #GYRO_INVERT_AXIS_Z}.
+     * @throws IOException
+     */
+    public int getGyroscopeAxesAngularRateNegativeSign() throws IOException {
+        final byte reg = readRegByte(SENSOR_XG, REGISTER_ORIENT_CFG_G);
+        return (reg & 0b00111000) & 0xFF;
+    }
+
+    /**
+     * Set the gyroscope angular rate negative sign axes.
+     *
+     * @param axesFlag bit mask made with {@link #GYRO_INVERT_AXIS_X},
+     *                 {@link #GYRO_INVERT_AXIS_Y} or {@link #GYRO_INVERT_AXIS_Z}.
+     * @throws IOException
+     */
+    public void setGyroscopeAxesAngularRateNegativeSign(final int axesFlag) throws IOException {
+        // We need to preserve the other bytes in ORIENT_CFG_G. So, first read it:
+        byte reg = readRegByte(SENSOR_XG, REGISTER_ORIENT_CFG_G);
+        // Then mask out the gyro axes bits:
+        reg &= ~(0b00111000);
+        // Then mask in our new axes bits:
+        reg |= axesFlag;
+        // And write the new register value back into ORIENT_CFG_G:
+        writeRegByte(SENSOR_XG, REGISTER_ORIENT_CFG_G, reg);
+    }
+
+    /**
+     * Get the magnetometer gain.
+     *
+     * @throws IOException
+     */
+    public int getMagnetometerGain() throws IOException {
+        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG2_M);
+        return (reg & 0b01100000) & 0xFF;
+    }
+
+    /**
+     * Set the magnetometer gain.
+     * Must be one of the {@link MagnetometerGain} values.
+     *
+     * @throws IOException
+     */
+    public void setMagnetometerGain(@MagnetometerGain final int gain) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG2_M. So, first read it:
+        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG2_M);
+        // Then mask out the mag gain bits:
+        reg &= ~(0b01100000);
+        // Then mask in our new gain bits:
+        reg |= gain;
+        // And write the new register value back into CTRL_REG2_M:
+        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG2_M, reg);
+
+        switch (gain) {
+            case MAG_GAIN_4GAUSS:
+                mMagMgaussLsb = MAG_MGAUSS_4GAUSS;
+                break;
+            case MAG_GAIN_8GAUSS:
+                mMagMgaussLsb = MAG_MGAUSS_8GAUSS;
+                break;
+            case MAG_GAIN_12GAUSS:
+                mMagMgaussLsb = MAG_MGAUSS_12GAUSS;
+                break;
+            case MAG_GAIN_16GAUSS:
+                mMagMgaussLsb = MAG_MGAUSS_16GAUSS;
+                break;
+        }
+    }
+
+    /**
+     * Get the magnetometer system operating mode.
+     *
+     * @throws IOException
+     */
+    public int getMagnetometerSystemOperatingMode() throws IOException {
+        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG3_M);
+        return (reg & 0b00000011) & 0xFF;
+    }
+
+    /**
+     * Set the magnetometer operating mode.
+     * Must be one of the {@link MagnetometerSystemOperatingMode} values.
+     *
+     * @throws IOException
+     */
+    public void setMagnetometerSystemOperatingMode(@MagnetometerSystemOperatingMode final int mode) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG3_M. So, first read it:
+        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG3_M);
+        // Then mask out the mag operatingMode bits:
+        reg &= ~(0b00000011);
+        // Then mask in our new operatingMode bits:
+        reg |= mode;
+        // And write the new register value back into CTRL_REG3_M:
+        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG3_M, reg);
+    }
+
+    /**
+     * Get the magnetometer XY operating mode.
+     *
+     * @throws IOException
+     */
+    public int getMagnetometerXYOperatingMode() throws IOException {
+        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
+        return (reg & 0b01100000) & 0xFF;
+    }
+
+    /**
+     * Set the magnetometer operating mode.
+     * Must be one of the {@link MagnetometerXYOperatingMode} values.
+     *
+     * @throws IOException
+     */
+    public void setMagnetometerXYOperatingMode(@MagnetometerXYOperatingMode final int mode) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG1_M. So, first read it:
+        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
+        // Then mask out the mag operatingMode bits:
+        reg &= ~(0b01100000);
+        // Then mask in our new operatingMode bits:
+        reg |= mode;
+        // And write the new register value back into CTRL_REG1_M:
+        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M, reg);
+    }
+
+    /**
+     * Get the magnetometer Z operating mode.
+     *
+     * @throws IOException
+     */
+    public int getMagnetometerZOperatingMode() throws IOException {
+        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG4_M);
+        return (reg & 0b00001100) & 0xFF;
+    }
+
+    /**
+     * Set the magnetometer operating mode.
+     * Must be one of the {@link MagnetometerZOperatingMode} values.
+     *
+     * @throws IOException
+     */
+    public void setMagnetometerZOperatingMode(@MagnetometerZOperatingMode final int mode) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG4_M. So, first read it:
+        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG4_M);
+        // Then mask out the mag operatingMode bits:
+        reg &= ~(0b00001100);
+        // Then mask in our new operatingMode bits:
+        reg |= mode;
+        // And write the new register value back into CTRL_REG4_M:
+        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG4_M, reg);
+    }
+
+    /**
+     * Get the magnetometer temperatureCompensation.
+     *
+     * @throws IOException
+     */
+    public boolean isMagnetometerTemperatureCompensation() throws IOException {
+        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
+        return (byte) ((reg & CTRL_REG1_M_TEMP_COMP) & 0xFF) == CTRL_REG1_M_TEMP_COMP;
+    }
+
+    /**
+     * Set the magnetometer temperatureCompensation.
+     *
+     * @throws IOException
+     */
+    public void setMagnetometerTemperatureCompensation(final boolean enable) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG1_M. So, first read it:
+        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
+        // Then mask out the mag temperature compensation bits:
+        reg &= ~(CTRL_REG1_M_TEMP_COMP);
+        if (enable) {
+            // Then mask in our new temperature compensation bits:
+            reg |= CTRL_REG1_M_TEMP_COMP;
+        }
+        // And write the new register value back into CTRL_REG1_M:
+        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M, reg);
+    }
+
+    /**
+     * Get the magnetometer output data rate.
+     * See {@link MagOutputDataRate}.
+     *
+     * @throws IOException
+     */
+    public int getMagnetometerOdr() throws IOException {
+        final byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
+        return (reg & 0b00011100) & 0xFF;
+    }
+
+    /**
+     * Set the magnetometer output data rate.
+     * Must be one of the {@link MagOutputDataRate} values.
+     *
+     * @throws IOException
+     */
+    public void setMagnetometerOdr(@MagOutputDataRate final int odr) throws IOException {
+        // We need to preserve the other bytes in CTRL_REG1_M. So, first read it:
+        byte reg = readRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M);
+        // Then mask out the accel scale bits:
+        reg &= ~(0b00011100);
+        // Then mask in our new scale bits:
+        reg |= odr;
+        // And write the new register value back into CTRL_REG1_M:
+        writeRegByte(SENSOR_MAG, REGISTER_CTRL_REG1_M, reg);
+    }
+
+    /**
+     * Read the raw accelerometer sensor values.
+     * <p>
+     * If you want the acceleration in SI units (m/s^2) use the {@link #readAcceleration()}.
+     *
+     * @return an integer array containing X, Y, Z axis raw values.
+     * @throws IOException
+     */
+    public int[] readRawAccelerometerData() throws IOException {
+        final byte[] buffer = new byte[6];
+        final int[] result = new int[3];
+        readRegBuffer(SENSOR_XG, REGISTER_OUT_X_L_XL, buffer, buffer.length);
+        result[0] = (((int) buffer[1]) << 8) | (buffer[0] & 0xFF); // Store x-axis values
+        result[1] = (((int) buffer[3]) << 8) | (buffer[2] & 0xFF); // Store y-axis values
+        result[2] = (((int) buffer[5]) << 8) | (buffer[4] & 0xFF); // Store z-axis values
+        return result;
+    }
+
+    /**
+     * Get the acceleration on the X, Y, Z axis in SI units (m/s^2).
+     *
+     * @return a float array containing X, Y, Z axis values in SI units (m/s^2).
+     * @throws IOException
+     */
+    public float[] readAcceleration() throws IOException {
+        final int[] rawAccelerometerData = readRawAccelerometerData();
+        final float[] result = new float[3];
+        for (int i = 0; i < rawAccelerometerData.length; i++) {
+            result[i] = convertRawAccelerationToSi(rawAccelerometerData[i]);
+        }
+        return result;
+    }
+
+    private float convertRawAccelerationToSi(final int rawAccelerometerData) {
+        return rawAccelerometerData * mAccelMgLsb / 1000f * mGravity;
+    }
+
+    public float getAccelerationSensitivity() {
+        return convertRawAccelerationToSi(1);
+    }
+
+    /**
+     * Read the raw magnetometer sensor values.
+     * <p>
+     * If you want the magnetic induction in SI units (Gs) use the {@link #readMagneticInduction()}.
+     *
+     * @return an integer array containing X, Y, Z axis raw values.
+     * @throws IOException
+     */
+    public int[] readRawMagnetometerData() throws IOException {
+        final byte[] buffer = new byte[6];
+        final int[] result = new int[3];
+
+        readRegBuffer(SENSOR_MAG, REGISTER_OUT_X_L_M, buffer, buffer.length);
+
+        result[0] = (((int) buffer[1]) << 8) | (buffer[0] & 0xFF); // Store x-axis values
+        result[1] = (((int) buffer[3]) << 8) | (buffer[2] & 0xFF); // Store y-axis values
+        result[2] = (((int) buffer[5]) << 8) | (buffer[4] & 0xFF); // Store z-axis values
+
+        return result;
+    }
+
+    /**
+     * Get the magnetic induction on the X, Y, Z axis in SI units (Gs).
+     *
+     * @return a float array containing X, Y, Z axis values in SI units (Gs).
+     * @throws IOException
+     */
+    public float[] readMagneticInduction() throws IOException {
+        final int[] rawMagnetometerData = readRawMagnetometerData();
+        final float[] result = new float[3];
+
+        for (int i = 0; i < rawMagnetometerData.length; i++) {
+            result[i] = convertRawMagneticInductionToSi(rawMagnetometerData[i]);
+        }
+
+        return result;
+    }
+
+    private float convertRawMagneticInductionToSi(final int rawMagnetometerData) {
+        return rawMagnetometerData * mMagMgaussLsb / 1000f;
+    }
+
+    public float getMagneticInductionSensitivity() {
+        return convertRawMagneticInductionToSi(1);
+    }
+
+    /**
+     * Read the raw gyroscope sensor values.
+     * <p>
+     * If you want the angular velocity in SI units (deg/s) use the {@link #readAngularVelocity()}.
+     *
+     * @return an integer array containing X, Y, Z axis raw values.
+     * @throws IOException
+     */
+    public int[] getRawGyroscopeData() throws IOException {
+        final byte[] buffer = new byte[6];
+        final int[] result = new int[3];
+
+        readRegBuffer(SENSOR_XG, REGISTER_OUT_X_L_G, buffer, buffer.length);
+        result[0] = (((int) buffer[1]) << 8) | (buffer[0] & 0xFF); // Store x-axis values
+        result[1] = (((int) buffer[3]) << 8) | (buffer[2] & 0xFF); // Store y-axis values
+        result[2] = (((int) buffer[5]) << 8) | (buffer[4] & 0xFF); // Store z-axis values
+
+        return result;
+    }
+
+    /**
+     * Get the angular velocity on the X, Y, Z axis in SI units (deg/s).
+     *
+     * @return a float array containing X, Y, Z axis values in SI units (deg/s).
+     * @throws IOException
+     */
+    public float[] readAngularVelocity() throws IOException {
+        final int[] rawGyroscopeData = getRawGyroscopeData();
+        final float[] result = new float[3];
+
+        for (int i = 0; i < rawGyroscopeData.length; i++) {
+            result[i] = convertRawAngularVelocityToSi(rawGyroscopeData[i]);
+        }
+
+        return result;
+    }
+
+    private float convertRawAngularVelocityToSi(final int rawGyroscopeData) {
+        return rawGyroscopeData * mGyroDpsDigit;
+    }
+
+    public float getAngularVelocitySensitivity() {
+        return convertRawAngularVelocityToSi(1);
+    }
+
+    /**
+     * Read the Temperature data output register.
+     * {@link #REGISTER_TEMP_OUT_L} and {@link #REGISTER_TEMP_OUT_H} registers together
+     * express a 16-bit word in two's complement right-justified quoted at 16 LSB/⁰C.
+     *
+     * @return raw data temperature.
+     * @throws IOException
+     */
+    public int readRawTemperature() throws IOException {
+        final byte[] buffer = new byte[2];
+
+        readRegBuffer(SENSOR_XG, REGISTER_TEMP_OUT_L, buffer, buffer.length);
+
+        return ((int) buffer[1] << 8) | (buffer[0] & 0xFF);
+    }
+
+    /**
+     * Get the temperature of the sensor in degrees Celsius.
+     * <p>
+     * The intent of the temperature sensor is to keep track of the (gyro) die
+     * temperature and compensate if necessary. It is not intended as an
+     * environmental sensor.
+     *
+     * @return the temperature in degrees Celsius.
+     * @throws IOException
+     */
+    public float readTemperature() throws IOException {
+        return readRawTemperature() / TEMP_LSB_DEGREE_CELSIUS + TEMP_BIAS;
+    }
+
+    public float getTemperatureSensitivity() {
+        return 1 / TEMP_LSB_DEGREE_CELSIUS;
+    }
+
+    /**
+     * Get the current value used for gravity in SI units (m/s^2).
+     */
+    public float getGravity() {
+        return mGravity;
+    }
+
+    /**
+     * Set the current value used for gravity in SI units (m/s^2).
+     */
+    public void setGravity(final float gravity) {
+        mGravity = gravity;
+    }
+
+    /**
+     * Enable/disable Gyroscope sleep mode.
+     *
+     * @param enable True to enable Gyroscope sleep mode; false to Gyroscope sleep mode.
+     * @throws IOException
+     */
+    public void setSleepGyroscopeEnabled(final boolean enable) throws IOException {
+        byte temp = readRegByte(SENSOR_XG, REGISTER_CTRL_REG9);
+
+        if (enable) {
+            temp |= CTRL_REG9_SLEEP_G;
+        } else {
+            temp &= ~CTRL_REG9_SLEEP_G;
+        }
+
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG9, temp);
+    }
+
+    /**
+     * Enable/disable FIFO memory.
+     *
+     * @param enable True to enable FIFO memory; false to disable FIFO memory.
+     * @throws IOException
+     */
+    public void setFifoMemoryEnabled(final boolean enable) throws IOException {
+        byte temp = readRegByte(SENSOR_XG, REGISTER_CTRL_REG9);
+
+        if (enable) {
+            temp |= CTRL_REG9_FIFO_EN;
+        } else {
+            temp &= ~CTRL_REG9_FIFO_EN;
+        }
+
+        writeRegByte(SENSOR_XG, REGISTER_CTRL_REG9, temp);
+    }
+
+    /**
+     * Configure FIFO mode and Threshold.
+     *
+     * @param mode      Set FIFO mode to off, FIFO (stop when full), continuous, bypass. See {@link FifoMode}.
+     * @param threshold FIFO threshold level setting (0-31).
+     * @throws IOException
+     */
+    public void setFifoModeAndTreshold(@FifoMode final int mode, @FifoThreshold int threshold) throws IOException {
+        if (threshold > FIFO_MAX_THRESHOLD) {
+            threshold = FIFO_MAX_THRESHOLD;
+        }
+
+        writeRegByte(SENSOR_XG, REGISTER_FIFO_CTRL, (byte) (mode | (threshold & 0b0011111)));
+    }
+
+    /**
+     * Number of unread samples stored into FIFO (0-32).
+     *
+     * @return The number of unread samples.
+     * @throws IOException
+     */
+    public int getFifoSamplesCount() throws IOException {
+        return readRegByte(SENSOR_XG, REGISTER_FIFO_SRC) & 0b00111111;
+    }
+
+    /**
+     * Close the driver and the underlying device.
+     */
+    @Override
+    public void close() throws IOException {
+        if (mAccelGyroDevice != null) {
+            try {
+                mAccelGyroDevice.close();
+            } finally {
+                mAccelGyroDevice = null;
+            }
+        }
+        if (mMagDevice != null) {
+            try {
+                mMagDevice.close();
+            } finally {
+                mMagDevice = null;
+            }
+        }
+    }
+
+    /**
+     * Read a byte from a given register.
+     *
+     * @param sensorType The sensor to read from (see {@link SensorType}).
+     * @param reg        The register to read from (0x00-0xFF).
+     * @return The value read from the device.
+     * @throws IOException
+     */
+    private byte readRegByte(@SensorType final int sensorType, final int reg) throws IOException {
+        if (sensorType == SENSOR_MAG) {
+            if (mMagDevice == null) {
+                throw new IllegalStateException("Mag I2C device not open");
+            }
+
+            return mMagDevice.readRegByte(reg);
+        } else {
+            if (mAccelGyroDevice == null) {
+                throw new IllegalStateException("AccGyro I2C device not open");
+            }
+
+            return mAccelGyroDevice.readRegByte(reg);
+        }
+    }
+
+    /**
+     * Read multiple bytes from a given register.
+     *
+     * @param sensorType The sensor to read from (see {@link SensorType})
+     * @param buffer     Buffer to read data into.
+     * @param length     Number of bytes to read, may not be larger than the buffer size.
+     * @return The value read from the device.
+     * @throws IOException
+     */
+    private void readRegBuffer(@SensorType final int sensorType, final int reg, final byte[] buffer, final int length) throws IOException {
+        if (sensorType == SENSOR_MAG) {
+            if (mMagDevice == null) {
+                throw new IllegalStateException("Mag I2C device not open");
+            }
+
+            mMagDevice.readRegBuffer(reg, buffer, length);
+        } else {
+            if (mAccelGyroDevice == null) {
+                throw new IllegalStateException("AccGyro I2C device not open");
+            }
+
+            mAccelGyroDevice.readRegBuffer(reg, buffer, length);
+        }
+    }
+
+    /**
+     * Write a byte to a given register.
+     *
+     * @param sensorType The sensor to write to (see {@link SensorType})
+     * @param reg        The register to write to (0x00-0xFF).
+     * @throws IOException
+     */
+    private void writeRegByte(@SensorType final int sensorType, final int reg, final byte data) throws IOException {
+        if (sensorType == SENSOR_MAG) {
+            if (mMagDevice == null) {
+                throw new IllegalStateException("Mag I2C device not open");
+            }
+
+            mMagDevice.writeRegByte(reg, data);
+        } else {
+            if (mAccelGyroDevice == null) {
+                throw new IllegalStateException("AccGyro I2C device not open");
+            }
+
+            mAccelGyroDevice.writeRegByte(reg, data);
+        }
+
     }
 
     public static class Builder {

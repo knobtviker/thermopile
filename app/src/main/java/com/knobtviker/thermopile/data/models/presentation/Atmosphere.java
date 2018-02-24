@@ -17,6 +17,12 @@ public abstract class Atmosphere {
 
     public abstract float altitude();
 
+    public abstract float[] acceleration();
+
+    public abstract float[] angularVelocity();
+
+    public abstract float[] magneticField();
+
     @AutoValue.Builder
     public abstract static class Builder {
 
@@ -31,6 +37,12 @@ public abstract class Atmosphere {
         public abstract Builder airQuality(final float value);
 
         public abstract Builder altitude(final float value);
+
+        public abstract Builder acceleration(final float[] value);
+
+        public abstract Builder angularVelocity(final float[] value);
+
+        public abstract Builder magneticField(final float[] value);
 
         public abstract Atmosphere build();
     }
@@ -49,6 +61,9 @@ public abstract class Atmosphere {
             .humidity(0.0f)
             .airQuality(0.0f)
             .altitude(0.0f)
+            .acceleration(new float[3])
+            .angularVelocity(new float[3])
+            .magneticField(new float[3])
             .build();
     }
 
@@ -85,6 +100,24 @@ public abstract class Atmosphere {
     public Atmosphere withAltitude(final float value) {
         return toBuilder()
             .altitude(value)
+            .build();
+    }
+
+    public Atmosphere withAcceleration(final float[] values) {
+        return toBuilder()
+            .acceleration(values)
+            .build();
+    }
+
+    public Atmosphere withAngularVelocity(final float[] values) {
+        return toBuilder()
+            .angularVelocity(values)
+            .build();
+    }
+
+    public Atmosphere withMagneticField(final float[] values) {
+        return toBuilder()
+            .magneticField(values)
             .build();
     }
 }

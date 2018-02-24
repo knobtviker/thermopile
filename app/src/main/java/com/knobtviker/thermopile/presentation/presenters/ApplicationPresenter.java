@@ -5,9 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.Display;
 
 import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
+import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
+import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
@@ -147,5 +150,20 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveAirQuality(@NonNull List<AirQuality> items) {
         atmosphereRepository.saveAirQuality(items);
+    }
+
+    @Override
+    public void saveAccelerations(@NonNull List<Acceleration> items) {
+        atmosphereRepository.saveAccelerations(items);
+    }
+
+    @Override
+    public void saveAngularVelocities(@NonNull List<AngularVelocity> items) {
+        atmosphereRepository.saveAngularVelocities(items);
+    }
+
+    @Override
+    public void saveMagneticFields(@NonNull List<MagneticField> items) {
+        atmosphereRepository.saveMagneticFields(items);
     }
 }

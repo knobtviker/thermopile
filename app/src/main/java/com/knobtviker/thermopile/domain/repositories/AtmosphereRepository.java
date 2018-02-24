@@ -2,14 +2,20 @@ package com.knobtviker.thermopile.domain.repositories;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
+import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
+import com.knobtviker.thermopile.data.sources.local.AccelerationLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AirQualityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AltitudeLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.AngularVelocityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.HumidityLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
@@ -41,6 +47,15 @@ public class AtmosphereRepository extends AbstractRepository {
 
     @Inject
     AirQualityLocalDataSource airQualityLocalDataSource;
+
+    @Inject
+    AccelerationLocalDataSource accelerationLocalDataSource;
+
+    @Inject
+    AngularVelocityLocalDataSource angularVelocityLocalDataSource;
+
+    @Inject
+    MagneticFieldLocalDataSource magneticFieldLocalDataSource;
 
     @Inject
     AtmosphereRepository() {
@@ -84,5 +99,17 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public void saveAirQuality(@NonNull final List<AirQuality> items) {
         airQualityLocalDataSource.save(items);
+    }
+
+    public void saveAccelerations(@NonNull final List<Acceleration> items) {
+        accelerationLocalDataSource.save(items);
+    }
+
+    public void saveAngularVelocities(@NonNull final List<AngularVelocity> items) {
+        angularVelocityLocalDataSource.save(items);
+    }
+
+    public void saveMagneticFields(@NonNull final List<MagneticField> items) {
+        magneticFieldLocalDataSource.save(items);
     }
 }

@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
@@ -25,13 +26,17 @@ import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231Senso
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
+import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
+import com.knobtviker.thermopile.data.sources.raw.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.thermopile.presentation.activities.MainActivity;
 import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
@@ -73,10 +78,15 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     private ConcurrentLinkedQueue<Humidity> humidities = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<Altitude> altitudes = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<AirQuality> airQualities = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<Acceleration> accelerations = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<AngularVelocity> angularVelocities = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<MagneticField> magneticFields = new ConcurrentLinkedQueue<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         initApplicationState();
         initSensors();
@@ -167,7 +177,54 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                 //TODO: Fix this when Google fixes automatic brightness. This shows way bigger values than sensor maximum
 //                Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0])+ " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
                 break;
+            case Sensor.TYPE_ACCELEROMETER: //[m/s^2]
+                atmosphere = atmosphere.withAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
 
+                final Acceleration acceleration = new Acceleration();
+                acceleration.timestamp(DateTimeUtils.currentTimeMillis());
+                acceleration.valueX(sensorEvent.values[0]);
+                acceleration.valueY(sensorEvent.values[1]);
+                acceleration.valueZ(sensorEvent.values[2]);
+                acceleration.accuracy(sensorEvent.accuracy);
+                acceleration.vendor(sensorEvent.sensor.getVendor());
+                acceleration.name(sensorEvent.sensor.getName());
+
+//                Log.i(TAG, "Acceleration ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]+", "+sensorEvent.values[1]+", "+sensorEvent.values[2]);
+
+                accelerations.add(acceleration);
+                break;
+            case Sensor.TYPE_GYROSCOPE: //[°/s]
+                atmosphere = atmosphere.withAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+
+                final AngularVelocity angularVelocity = new AngularVelocity();
+                angularVelocity.timestamp(DateTimeUtils.currentTimeMillis());
+                angularVelocity.valueX(sensorEvent.values[0]);
+                angularVelocity.valueY(sensorEvent.values[1]);
+                angularVelocity.valueZ(sensorEvent.values[2]);
+                angularVelocity.accuracy(sensorEvent.accuracy);
+                angularVelocity.vendor(sensorEvent.sensor.getVendor());
+                angularVelocity.name(sensorEvent.sensor.getName());
+
+//                Log.i(TAG, "AngularVelocity ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]+", "+sensorEvent.values[1]+", "+sensorEvent.values[2]);
+
+                angularVelocities.add(angularVelocity);
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                atmosphere = atmosphere.withMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+
+                final MagneticField magneticField = new MagneticField();
+                magneticField.timestamp(DateTimeUtils.currentTimeMillis());
+                magneticField.valueX(sensorEvent.values[0]);
+                magneticField.valueY(sensorEvent.values[1]);
+                magneticField.valueZ(sensorEvent.values[2]);
+                magneticField.accuracy(sensorEvent.accuracy);
+                magneticField.vendor(sensorEvent.sensor.getVendor());
+                magneticField.name(sensorEvent.sensor.getName());
+
+//                Log.i(TAG, "MagneticField ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]+", "+sensorEvent.values[1]+", "+sensorEvent.values[2]);
+
+                magneticFields.add(magneticField);
+                break;
             //TODO: Add seismic accelearation approx. per:
             //https://en.wikipedia.org/wiki/Richter_magnitude_scale
             //https://en.wikipedia.org/wiki/Peak_ground_acceleration
@@ -185,6 +242,12 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             case Sensor.TYPE_PRESSURE:
                 break;
             case Sensor.TYPE_LIGHT:
+                break;
+            case Sensor.TYPE_ACCELEROMETER:
+                break;
+            case Sensor.TYPE_GYROSCOPE:
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
@@ -296,6 +359,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             initBME680();
             initDS3231();
             initTSL2561();
+            initLSM9DS1();
         } catch (IOException e) {
             showError(e);
         }
@@ -330,6 +394,9 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             case Sensor.TYPE_RELATIVE_HUMIDITY:
             case Sensor.TYPE_PRESSURE:
             case Sensor.TYPE_LIGHT:
+            case Sensor.TYPE_ACCELEROMETER:
+            case Sensor.TYPE_GYROSCOPE:
+            case Sensor.TYPE_MAGNETIC_FIELD:
                 sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
@@ -389,6 +456,14 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         tsl2561SensorDriver.registerLuminositySensor();
     }
 
+    private void initLSM9DS1() throws IOException {
+        final Lsm9ds1SensorDriver lsm9ds1SensorDriver = new Lsm9ds1SensorDriver(BoardDefaults.getI2CPort());
+        lsm9ds1SensorDriver.registerTemperatureSensor();
+        lsm9ds1SensorDriver.registerAccelerometerSensor();
+        lsm9ds1SensorDriver.registerGyroscopeSensor();
+        lsm9ds1SensorDriver.registerMagneticFieldSensor();
+    }
+
     private void brightness(final int value) {
         presenter.brightness(value);
     }
@@ -439,6 +514,18 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         if (!airQualities.isEmpty()) {
             presenter.saveAirQuality(new ArrayList<>(airQualities));
             airQualities.clear();
+        }
+        if (!accelerations.isEmpty()) {
+            presenter.saveAccelerations(new ArrayList<>(accelerations));
+            accelerations.clear();
+        }
+        if (!angularVelocities.isEmpty()) {
+            presenter.saveAngularVelocities(new ArrayList<>(angularVelocities));
+            angularVelocities.clear();
+        }
+        if (!magneticFields.isEmpty()) {
+            presenter.saveMagneticFields(new ArrayList<>(magneticFields));
+            magneticFields.clear();
         }
     }
 
