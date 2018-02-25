@@ -249,6 +249,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         onHumidityChanged(atmosphere.humidity());
         onPressureChanged(atmosphere.pressure());
         onAirQualityChanged(atmosphere.airQuality());
+        onMotionChanged(atmosphere.acceleration(), atmosphere.angularVelocity(), atmosphere.magneticField());
     }
 
     public void moveHourLine(@NonNull final DateTime dateTime) {
@@ -297,6 +298,55 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         textViewIAQ.setText(pair.first);
         arcViewIAQ.setProgressColor(pair.second);
         arcViewIAQ.setProgress((500.0f - value) / 500.0f);
+    }
+
+    // Calculate pitch, roll, and heading.
+    // Pitch/roll calculations take from this app note:
+    // http://cache.freescale.com/files/sensors/doc/app_note/AN3461.pdf?fpsp=1
+    // Heading calculations taken from this app note:
+    // http://www51.honeywell.com/aero/common/documents/myaerospacecatalog-documents/Defense_Brochures-documents/Magnetic__Literature_Application_notes-documents/AN203_Compass_Heading_Using_Magnetometers.pdf
+    // The LSM9DS1's mag x and y axes are opposite to the accelerometer,
+    // so my, mx are substituted for each other.
+    // Pay attention what the position of the sensor is ato its hardcoded axes, hence the index shuffle.
+    private void onMotionChanged(final float[] acceleration, final float[] angularVelocity, final float[] magneticField) {
+        final double ax = acceleration[0];
+        final double ay = acceleration[2];
+        final double az = acceleration[1];
+
+        final double mx = -magneticField[2];
+        final double my = -magneticField[0];
+        final double mz = magneticField[1];
+
+        double roll = Math.atan2(ay, az);
+
+        double pitch = Math.atan2(-ax, Math.sqrt(ay * ay + az * az));
+
+        double heading;
+        if (my == 0) {
+            heading = (mx < 0) ? Math.PI : 0;
+        } else {
+            heading = Math.atan2(mx, my);
+        }
+
+        heading -= Constants.DECLINATION * Math.PI / 180;
+
+        if (heading > Math.PI) {
+            heading -= (2 * Math.PI);
+        } else if (heading < -Math.PI) {
+            heading += (2 * Math.PI);
+        } else if (heading < 0) {
+            heading += 2 * Math.PI;
+        }
+
+        // Convert everything from radians to degrees:
+        heading *= 180.0 / Math.PI;
+        pitch *= 180.0 / Math.PI;
+        roll *= 180.0 / Math.PI;
+
+        final double accelerationTotal = Math.sqrt(ax * ax + ay * ay * az * az);
+
+        Log.i(TAG, "Acceleration: " + accelerationTotal + " --- Roll: " + roll + " --- Pitch: " + pitch + " --- Heading: " + heading);
+        //TODO: Now figure out how to draw roll, pitch and heading. Use aero gauges and compass UI.
     }
 
     private void setFormatClock() {
@@ -357,15 +407,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
     }
 
-    //IAQ classification and color-coding
-    /*
-        0 - 50 - good - #00e400
-        51 - 100 - average - #ffff00
-        101 - 200 - little bad - #ff7e00
-        201 - 300 - bad - #ff0000
-        301 - 400 - worse - #99004c
-        401 - 500 - very bad - #000000
-     */
     //TODO: Move this somewhere else and cleanup strings
     private Pair<String, Integer> convertIAQValueToLabelAndColor(final float value) {
         if (value >= 401 && value <= 500) {

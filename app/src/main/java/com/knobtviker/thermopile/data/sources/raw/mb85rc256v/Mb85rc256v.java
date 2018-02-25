@@ -17,12 +17,12 @@ public class Mb85rc256v implements Closeable {
     /**
      * Chip vendor for the MB85RC256V
      */
-    public static final String CHIP_VENDOR = "Maxim Integrated Products";
+    public static final String CHIP_VENDOR = "N/A";
 
     /**
      * Chip name for the MB85RC256V
      */
-    public static final String CHIP_NAME = "DS3231";
+    public static final String CHIP_NAME = "N/A";
 
     /**
      * I2C address for this peripheral

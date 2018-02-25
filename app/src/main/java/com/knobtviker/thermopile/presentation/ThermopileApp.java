@@ -360,6 +360,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             initDS3231();
             initTSL2561();
             initLSM9DS1();
+
+//            final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.getI2CPort());
+//            fram.dump();
+//            fram.close();
+
         } catch (IOException e) {
             showError(e);
         }

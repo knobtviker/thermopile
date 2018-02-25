@@ -37,5 +37,9 @@ public class Constants {
     public static final String DEFAULT_TIMEZONE = "Europe/Zagreb";
     public static final String DEFAULT_FORMAT_DATE = String.format("%s dd.MM.yyyy.", FORMAT_DAY_LONG);
 
-    public static final int BUFFER_SIZE = 25;
+    // Earth's magnetic field varies by location. Add or subtract
+    // a declination to get a more accurate heading. Calculate
+    // your's here:
+    // http://www.ngdc.noaa.gov/geomag-web/#declination
+    public static final float DECLINATION = -4.0f; // Declination (degrees) in Zagreb, Croatia.
 }
