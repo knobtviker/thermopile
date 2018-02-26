@@ -15,7 +15,6 @@ allprojects {
     repositories {
         google()
         maven { url 'https://github.com/WickeDev/stetho-realm/raw/master/maven-repo' }
-        maven { url  "https://dl.bintray.com/knobtviker/maven" }
         jcenter()
     }
 }

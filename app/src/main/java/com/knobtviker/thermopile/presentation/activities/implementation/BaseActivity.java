@@ -5,9 +5,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import com.knobtviker.thermopile.R;
 
@@ -17,7 +17,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by bojan on 10/06/2017.
  */
 
-public abstract class BaseActivity extends FragmentActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     private final FragmentManager fragmentManager;
 

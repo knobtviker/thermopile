@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
+import com.bugfender.sdk.Bugfender;
 import com.facebook.stetho.Stetho;
 import com.google.android.things.device.TimeManager;
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
@@ -26,6 +27,7 @@ import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231Senso
 import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
+import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
@@ -86,8 +88,10 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void onCreate() {
         super.onCreate();
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        //TODO: Only a memory flag live in live process, should be controlled via Settings from Realm and stored in FRAM.
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
+        initBugfender();
         initApplicationState();
         initSensors();
         initDatabase();
@@ -225,10 +229,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
                 magneticFields.add(magneticField);
                 break;
-            //TODO: Add seismic accelearation approx. per:
-            //https://en.wikipedia.org/wiki/Richter_magnitude_scale
-            //https://en.wikipedia.org/wiki/Peak_ground_acceleration
-            //https://en.wikipedia.org/wiki/Mercalli_intensity_scale#Modified_Mercalli_Intensity_scale
         }
     }
 
@@ -345,6 +345,13 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         presenter.initScreen(160, RxScreenManager.ROTATION_180, 3600000L);
         presenter.createScreensaver();
         presenter.brightness(255);
+    }
+
+    private void initBugfender() {
+        Bugfender.init(this, BuildConfig.KEY_BUGFENDER, BuildConfig.DEBUG);
+        Bugfender.enableLogcatLogging();
+        Bugfender.enableUIEventLogging(this);
+        Bugfender.enableCrashReporting();
     }
 
     private void initApplicationState() {
