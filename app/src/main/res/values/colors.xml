@@ -12,7 +12,7 @@
     <color name="arc_pressure">@color/amber_500</color>
     <color name="arc_humidity">@color/blue_500</color>
     <color name="arc_iaq">@color/light_green_500</color>
-    <color name="arc_seismic">@color/brown_500</color>
+    <color name="arc_motion">@color/brown_500</color>
 
     <color name="vanilla">#fff8e1</color>
     <color name="red">#d32f2f</color>
@@ -87,5 +87,6 @@
 
     <color name="background_arc_track">#E5E4E2</color>
     <color name="background_fab">#EEEEEE</color>
+    <color name="background_attitude_dot">#202020</color>
 
 </resources>

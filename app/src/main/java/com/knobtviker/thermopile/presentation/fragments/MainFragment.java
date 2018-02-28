@@ -5,9 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
@@ -93,6 +95,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @BindView(R.id.arc_pressure)
     public ArcView arcViewPressure;
+
+    @BindView(R.id.arc_motion)
+    public ArcView arcViewMotion;
+
+    @BindView(R.id.layout_attitude)
+    public ConstraintLayout layoutAttitude;
 
     @BindView(R.id.textview_temperature)
     public TextView textViewTemperature;
@@ -311,7 +319,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private void onMotionChanged(final float[] acceleration, final float[] angularVelocity, final float[] magneticField) {
         final double ax = acceleration[0];
         final double ay = acceleration[2];
-        final double az = acceleration[1];
+        final double az = acceleration[1]; //možda minus
 
         final double mx = -magneticField[2];
         final double my = -magneticField[0];
@@ -319,7 +327,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         double roll = Math.atan2(ay, az);
 
-        double pitch = Math.atan2(-ax, Math.sqrt(ay * ay + az * az));
+        double pitch = Math.atan2(-ax, Math.sqrt(Math.pow(ay, 2) + Math.pow(az, 2)));
 
         double heading;
         if (my == 0) {
@@ -343,10 +351,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         pitch *= 180.0 / Math.PI;
         roll *= 180.0 / Math.PI;
 
-        final double accelerationTotal = Math.sqrt(ax * ax + ay * ay * az * az);
+        final double peakGroundAcceleration = Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az + SensorManager.GRAVITY_EARTH, 2)) * 0.101971621, 2.0);
+        arcViewMotion.setProgress((float) (peakGroundAcceleration / 2.0f));
 
-        Log.i(TAG, "Acceleration: " + accelerationTotal + " --- Roll: " + roll + " --- Pitch: " + pitch + " --- Heading: " + heading);
+        Log.i(TAG, "Acceleration: " + peakGroundAcceleration + " --- Roll: " + roll + " --- Pitch: " + pitch + " --- Heading: " + heading);
         //TODO: Now figure out how to draw roll, pitch and heading. Use aero gauges and compass UI.
+
+        layoutAttitude.setRotation((float) (180.0f + roll));
     }
 
     private void setFormatClock() {
