@@ -33,28 +33,28 @@
         <TextView
             android:id="@+id/textview_date"
             style="@style/TextDate"
-            android:gravity="center"
+            android:gravity="center_vertical|left"
+            android:layout_marginRight="@dimen/margin_datetime"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textview_clock"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toTopOf="@id/textview_clock"
+            app:layout_constraintEnd_toStartOf="@id/textview_clock"
             android:paddingLeft="@dimen/margin_default"
             android:paddingRight="@dimen/margin_large"
             android:background="@drawable/left_slice"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/textview_clock"
             tools:text="TUESDAY 31.05.2016."/>
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/margin_datetime"
             android:background="@drawable/right_slice"
-            app:layout_constraintHorizontal_bias="1.0"
             android:paddingLeft="@dimen/margin_large"
             android:paddingRight="@dimen/margin_default"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/textview_clock"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textview_clock"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@id/textview_clock">
 
             <ImageButton
                 android:id="@+id/button_settings"
@@ -339,7 +339,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="0.01"/>
+                tools:text="0.9"/>
 
             <TextView
                 android:id="@+id/textview_motion_unit"
