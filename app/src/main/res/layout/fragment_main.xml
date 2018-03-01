@@ -276,82 +276,6 @@
             app:stroke_thickness="@dimen/thickness_8"
             app:trackColor="@color/background_arc_track"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_attitude"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="36dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintBottom_toBottomOf="@id/arc_motion"
-            app:layout_constraintEnd_toEndOf="@id/arc_motion"
-            app:layout_constraintStart_toStartOf="@id/arc_motion"
-            app:layout_constraintTop_toTopOf="@id/arc_motion">
-
-            <View
-                android:id="@+id/view_attitude_sky"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@drawable/shape_background_attitude_sky"
-                app:layout_constraintDimensionRatio="2:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <View
-                android:id="@+id/view_attitude_land"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="2:1"
-                android:background="@drawable/shape_background_attitude_land"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-        <View
-            android:id="@+id/view_center_dot"
-            app:layout_constraintBottom_toBottomOf="@id/layout_attitude"
-            app:layout_constraintEnd_toEndOf="@id/layout_attitude"
-            app:layout_constraintStart_toStartOf="@id/layout_attitude"
-            app:layout_constraintTop_toTopOf="@id/layout_attitude"
-            android:background="@drawable/shape_background_attitude_dot"
-            android:layout_width="4dp"
-            android:layout_height="4dp"/>
-
-        <View
-            android:id="@+id/view_center_wing_left"
-            app:layout_constraintBottom_toBottomOf="@id/layout_attitude"
-            app:layout_constraintEnd_toStartOf="@id/view_center_dot"
-            app:layout_constraintStart_toStartOf="@id/layout_attitude"
-            app:layout_constraintTop_toTopOf="@id/layout_attitude"
-            android:background="@drawable/shape_background_attitude_dot"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            android:layout_width="0dp"
-            android:layout_height="4dp"/>
-
-        <View
-            android:id="@+id/view_center_wing_right"
-            app:layout_constraintBottom_toBottomOf="@id/layout_attitude"
-            app:layout_constraintEnd_toEndOf="@id/layout_attitude"
-            app:layout_constraintStart_toEndOf="@id/view_center_dot"
-            app:layout_constraintTop_toTopOf="@id/layout_attitude"
-            android:background="@drawable/shape_background_attitude_dot"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            android:layout_width="0dp"
-            android:layout_height="4dp"/>
-
-        <View
-            android:id="@+id/view_heading_dot"
-            app:layout_constraintBottom_toBottomOf="@id/layout_attitude"
-            app:layout_constraintEnd_toEndOf="@id/layout_attitude"
-            app:layout_constraintTop_toTopOf="@id/layout_attitude"
-            android:background="@drawable/shape_background_attitude_dot"
-            android:layout_width="4dp"
-            android:layout_height="4dp"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -397,6 +321,34 @@
                 app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
                 app:layout_constraintStart_toEndOf="@id/textview_pressure"
                 app:layout_constraintTop_toTopOf="@id/textview_pressure"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/arc_motion"
+            app:layout_constraintEnd_toEndOf="@id/arc_motion"
+            app:layout_constraintStart_toStartOf="@id/arc_motion"
+            app:layout_constraintTop_toTopOf="@id/arc_motion">
+
+            <TextView
+                android:id="@+id/textview_motion"
+                style="@style/TextDataSecondary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="0.01"/>
+
+            <TextView
+                android:id="@+id/textview_motion_unit"
+                style="@style/TextDataUnitSecondary"
+                android:text="@string/unit_acceleration_ms2"
+                app:layout_constraintVertical_bias="0.75"
+                app:layout_constraintBottom_toBottomOf="@id/textview_motion"
+                app:layout_constraintStart_toEndOf="@id/textview_motion"
+                app:layout_constraintTop_toTopOf="@id/textview_motion"/>
 
         </android.support.constraint.ConstraintLayout>
 

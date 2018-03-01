@@ -87,6 +87,5 @@
 
     <color name="background_arc_track">#E5E4E2</color>
     <color name="background_fab">#EEEEEE</color>
-    <color name="background_attitude_dot">#202020</color>
 
 </resources>

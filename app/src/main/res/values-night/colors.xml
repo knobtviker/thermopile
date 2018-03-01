@@ -3,6 +3,5 @@
 
     <color name="background_arc_track">#424242</color>
     <color name="background_fab">#616161</color>
-    <color name="background_attitude_dot">#ffffff</color>
 
 </resources>

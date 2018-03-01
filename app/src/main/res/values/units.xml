@@ -10,4 +10,7 @@
     <string name="unit_pressure_bar" translatable="false">mbar</string>
     <string name="unit_pressure_psi" translatable="false">psi</string>
 
+    <string name="unit_acceleration_ms2" translatable="false">m/s²</string>
+    <string name="unit_acceleration_g" translatable="false">g</string>
+
 </resources>

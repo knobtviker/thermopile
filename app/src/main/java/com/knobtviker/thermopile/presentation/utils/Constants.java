@@ -27,6 +27,9 @@ public class Constants {
     public static final int UNIT_PRESSURE_BAR = 1;
     public static final int UNIT_PRESSURE_PSI = 2;
 
+    public static final int UNIT_ACCELERATION_METERS_PER_SECOND_2 = 0;
+    public static final int UNIT_ACCELERATION_G = 1;
+
     public static final String FORMAT_DAY_LONG = "EEEE";
     public static final String FORMAT_DAY_SHORT = "EE";
     public static final String FORMAT_TIME_LONG_24H = "HH:mm";
@@ -36,10 +39,4 @@ public class Constants {
 
     public static final String DEFAULT_TIMEZONE = "Europe/Zagreb";
     public static final String DEFAULT_FORMAT_DATE = String.format("%s dd.MM.yyyy.", FORMAT_DAY_LONG);
-
-    // Earth's magnetic field varies by location. Add or subtract
-    // a declination to get a more accurate heading. Calculate
-    // your's here:
-    // http://www.ngdc.noaa.gov/geomag-web/#declination
-    public static final float DECLINATION = -4.0f; // Declination (degrees) in Zagreb, Croatia.
 }

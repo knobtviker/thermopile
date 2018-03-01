@@ -79,6 +79,7 @@ public class Database {
         settings.formatClock(Constants.CLOCK_MODE_24H);
         settings.unitTemperature(Constants.UNIT_TEMPERATURE_CELSIUS);
         settings.unitPressure(Constants.UNIT_PRESSURE_PASCAL);
+        settings.unitMotion(Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2);
         settings.formatDate(Constants.DEFAULT_FORMAT_DATE);
         settings.formatTime(Constants.FORMAT_TIME_LONG_24H);
 

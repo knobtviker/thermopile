@@ -59,11 +59,19 @@ public class Settings extends RealmObject {
         this.unitPressure = unitPressure;
     }
 
-    public int getScreensaverDelay() {
+    public int unitMotion() {
+        return unitMotion;
+    }
+
+    public void unitMotion(final int unitMotion) {
+        this.unitMotion = unitMotion;
+    }
+
+    public int screensaverDelay() {
         return screensaverDelay;
     }
 
-    public void setScreensaverDelay(int screensaverDelay) {
+    public void screensaverDelay(int screensaverDelay) {
         this.screensaverDelay = screensaverDelay;
     }
 
@@ -89,6 +97,8 @@ public class Settings extends RealmObject {
     private int unitTemperature;
 
     private int unitPressure;
+
+    private int unitMotion;
 
     private int screensaverDelay;
 }

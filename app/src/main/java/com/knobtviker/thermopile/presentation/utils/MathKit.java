@@ -10,6 +10,10 @@ public class MathKit {
         return Math.round(decimal);
     }
 
+    public static float roundToOne(final float decimal) {
+        return (float) (Math.round(decimal * 10.0) / 10.0);
+    }
+
     public static float applyTemperatureUnit(final int unit, final float measuredTemperature) {
         switch (unit) {
             case Constants.UNIT_TEMPERATURE_CELSIUS:
@@ -33,6 +37,17 @@ public class MathKit {
                 return measuredPressure * 0.014503773773022f; //in psi
             default:
                 return measuredPressure * 1.0f;
+        }
+    }
+
+    public static float applyAccelerationUnit(final int unit, final float measuredAcceleration) {
+        switch (unit) {
+            case Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2:
+                return measuredAcceleration * 1.0f; //in m/s2
+            case Constants.UNIT_ACCELERATION_G:
+                return measuredAcceleration * 0.101971621f; //in g
+            default:
+                return measuredAcceleration * 1.0f;
         }
     }
 }
