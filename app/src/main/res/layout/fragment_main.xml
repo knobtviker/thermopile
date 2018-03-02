@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,400 +9,427 @@
     tools:context=".presentation.activities.MainActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/appbar_layout"
-        android:layout_width="0dp"
-        android:layout_height="32dp"
-        android:clipToPadding="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="spread">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="?attr/listPreferredItemHeightSmall">
 
-        <TextClock
-            android:id="@+id/textview_clock"
-            style="@style/TextTime"
-            android:gravity="center"
-            android:minWidth="100dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/appbar_layout"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/middle_slice"
-            tools:text="22:30"/>
+            app:layout_constraintWidth_default="spread">
+
+            <TextClock
+                android:id="@+id/textview_clock"
+                style="@style/TextTime"
+                android:layout_height="0dp"
+                android:background="@drawable/middle_slice"
+                android:gravity="center"
+                android:minWidth="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="22:30"/>
+
+            <TextView
+                android:id="@+id/textview_date"
+                style="@style/TextDate"
+                android:layout_marginRight="@dimen/margin_datetime"
+                android:background="@drawable/left_slice"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="@dimen/margin_default"
+                android:paddingRight="@dimen/margin_large"
+                app:layout_constraintBottom_toBottomOf="@id/textview_clock"
+                app:layout_constraintEnd_toStartOf="@id/textview_clock"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textview_clock"
+                tools:text="TUESDAY 31.05.2016."/>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/margin_datetime"
+                android:background="@drawable/right_slice"
+                android:paddingLeft="@dimen/margin_large"
+                android:paddingRight="@dimen/margin_default"
+                app:layout_constraintBottom_toBottomOf="@id/textview_clock"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/textview_clock"
+                app:layout_constraintTop_toTopOf="@id/textview_clock">
+
+                <ImageButton
+                    android:id="@+id/button_settings"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_settings"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageButton
+                    android:id="@+id/button_schedule"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="@dimen/margin_default"
+                    android:src="@drawable/ic_schedule"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@id/button_settings"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageButton
+                    android:id="@+id/button_charts"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="@dimen/margin_default"
+                    android:src="@drawable/ic_charts"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@+id/button_schedule"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <com.knobtviker.thermopile.presentation.views.ArcView
+            android:id="@+id/arc_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/floatingactionbutton_down"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout"
+            app:progressColor="@color/arc_temperature"
+            app:stroke_thickness="@dimen/thickness_16"
+            app:trackColor="@color/background_arc_track"/>
 
         <TextView
-            android:id="@+id/textview_date"
-            style="@style/TextDate"
-            android:gravity="center_vertical|left"
-            android:layout_marginRight="@dimen/margin_datetime"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textview_clock"
-            app:layout_constraintEnd_toStartOf="@id/textview_clock"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_large"
-            android:background="@drawable/left_slice"
-            app:layout_constraintBottom_toBottomOf="@id/textview_clock"
-            tools:text="TUESDAY 31.05.2016."/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:text="Temperature"
+            android:textAllCaps="true"
+            app:layout_constraintBottom_toBottomOf="@id/arc_temperature"
+            app:layout_constraintEnd_toEndOf="@id/arc_temperature"
+            app:layout_constraintStart_toStartOf="@id/arc_temperature"/>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/margin_datetime"
-            android:background="@drawable/right_slice"
-            android:paddingLeft="@dimen/margin_large"
-            android:paddingRight="@dimen/margin_default"
-            app:layout_constraintBottom_toBottomOf="@id/textview_clock"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textview_clock"
-            app:layout_constraintTop_toTopOf="@id/textview_clock">
+            android:layout_marginTop="@dimen/margin_medium"
+            app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
+            app:layout_constraintEnd_toStartOf="@id/arc_temperature"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
-            <ImageButton
-                android:id="@+id/button_settings"
-                android:src="@drawable/ic_settings"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+            <com.knobtviker.thermopile.presentation.views.ArcView
+                android:id="@+id/arc_humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constrainedHeight="true"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toTopOf="@+id/arc_iaq"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:progressColor="@color/arc_humidity"
+                app:stroke_thickness="@dimen/thickness_8"
+                app:trackColor="@color/background_arc_track"/>
 
-            <ImageButton
-                android:id="@+id/button_schedule"
-                android:src="@drawable/ic_schedule"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginRight="@dimen/margin_default"
-                app:layout_constraintDimensionRatio="1:1"
+            <com.knobtviker.thermopile.presentation.views.ArcView
+                android:id="@+id/arc_iaq"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constrainedHeight="true"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/button_settings"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/arc_humidity"
+                app:progressColor="@color/arc_iaq"
+                app:stroke_thickness="@dimen/thickness_8"
+                app:trackColor="@color/background_arc_track"/>
 
-            <ImageButton
-                android:id="@+id/button_charts"
-                android:src="@drawable/ic_charts"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginRight="@dimen/margin_default"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/button_schedule"
-                app:layout_constraintTop_toTopOf="parent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:text="Humidity"
+                android:textAllCaps="true"
+                app:layout_constraintBottom_toBottomOf="@id/arc_humidity"
+                app:layout_constraintEnd_toEndOf="@id/arc_humidity"
+                app:layout_constraintStart_toStartOf="@id/arc_humidity"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:text="Air quality"
+                android:textAllCaps="true"
+                app:layout_constraintBottom_toBottomOf="@id/arc_iaq"
+                app:layout_constraintEnd_toEndOf="@id/arc_iaq"
+                app:layout_constraintStart_toStartOf="@id/arc_iaq"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/arc_humidity"
+                app:layout_constraintEnd_toEndOf="@id/arc_humidity"
+                app:layout_constraintStart_toStartOf="@id/arc_humidity"
+                app:layout_constraintTop_toTopOf="@id/arc_humidity">
+
+                <TextView
+                    android:id="@+id/textview_humidity"
+                    style="@style/TextDataSecondary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="68"/>
+
+                <TextView
+                    android:id="@+id/textview_humidity_unit"
+                    style="@style/TextDataUnitSecondary"
+                    android:text="@string/unit_humidity_percent"
+                    app:layout_constraintBottom_toBottomOf="@id/textview_humidity"
+                    app:layout_constraintStart_toEndOf="@id/textview_humidity"
+                    app:layout_constraintTop_toTopOf="@id/textview_humidity"
+                    app:layout_constraintVertical_bias="0.75"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/textview_iaq"
+                style="@style/TextDataSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textSize="28sp"
+                app:layout_constraintBottom_toBottomOf="@id/arc_iaq"
+                app:layout_constraintEnd_toEndOf="@id/arc_iaq"
+                app:layout_constraintStart_toStartOf="@id/arc_iaq"
+                app:layout_constraintTop_toTopOf="@id/arc_iaq"
+                tools:text="very bad"/>
 
         </android.support.constraint.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_hours"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_default="spread"/>
-
-    <com.knobtviker.thermopile.presentation.views.ArcView
-        android:id="@+id/arc_temperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
-        app:layout_constrainedHeight="true"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@+id/floatingactionbutton_down"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout"
-        app:progressColor="@color/arc_temperature"
-        app:stroke_thickness="@dimen/thickness_16"
-        app:trackColor="@color/background_arc_track"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_large"
-        android:text="Temperature"
-        android:textAllCaps="true"
-        app:layout_constraintBottom_toBottomOf="@id/arc_temperature"
-        app:layout_constraintEnd_toEndOf="@id/arc_temperature"
-        app:layout_constraintStart_toStartOf="@id/arc_temperature"/>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_medium"
-        app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
-        app:layout_constraintEnd_toStartOf="@id/arc_temperature"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
-
-        <com.knobtviker.thermopile.presentation.views.ArcView
-            android:id="@+id/arc_humidity"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constrainedHeight="true"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@+id/arc_iaq"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:progressColor="@color/arc_humidity"
-            app:stroke_thickness="@dimen/thickness_8"
-            app:trackColor="@color/background_arc_track"/>
-
-        <com.knobtviker.thermopile.presentation.views.ArcView
-            android:id="@+id/arc_iaq"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constrainedHeight="true"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/arc_humidity"
-            app:progressColor="@color/arc_iaq"
-            app:stroke_thickness="@dimen/thickness_8"
-            app:trackColor="@color/background_arc_track"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_default"
-            android:text="Humidity"
-            android:textAllCaps="true"
-            app:layout_constraintBottom_toBottomOf="@id/arc_humidity"
-            app:layout_constraintEnd_toEndOf="@id/arc_humidity"
-            app:layout_constraintStart_toStartOf="@id/arc_humidity"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_default"
-            android:text="Air quality"
-            android:textAllCaps="true"
-            app:layout_constraintBottom_toBottomOf="@id/arc_iaq"
-            app:layout_constraintEnd_toEndOf="@id/arc_iaq"
-            app:layout_constraintStart_toStartOf="@id/arc_iaq"/>
-
         <android.support.constraint.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/arc_humidity"
-            app:layout_constraintEnd_toEndOf="@id/arc_humidity"
-            app:layout_constraintStart_toStartOf="@id/arc_humidity"
-            app:layout_constraintTop_toTopOf="@id/arc_humidity">
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_medium"
+            app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/arc_temperature"
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
-            <TextView
-                android:id="@+id/textview_humidity"
-                style="@style/TextDataSecondary"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <com.knobtviker.thermopile.presentation.views.ArcView
+                android:id="@+id/arc_pressure"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constrainedHeight="true"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toTopOf="@+id/arc_motion"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="68"/>
+                app:progressColor="@color/arc_pressure"
+                app:stroke_thickness="@dimen/thickness_8"
+                app:trackColor="@color/background_arc_track"/>
 
-            <TextView
-                android:id="@+id/textview_humidity_unit"
-                style="@style/TextDataUnitSecondary"
-                android:text="@string/unit_humidity_percent"
-                app:layout_constraintVertical_bias="0.75"
-                app:layout_constraintBottom_toBottomOf="@id/textview_humidity"
-                app:layout_constraintStart_toEndOf="@id/textview_humidity"
-                app:layout_constraintTop_toTopOf="@id/textview_humidity"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/textview_iaq"
-            style="@style/TextDataSecondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="true"
-            android:textSize="28sp"
-            app:layout_constraintBottom_toBottomOf="@id/arc_iaq"
-            app:layout_constraintEnd_toEndOf="@id/arc_iaq"
-            app:layout_constraintStart_toStartOf="@id/arc_iaq"
-            app:layout_constraintTop_toTopOf="@id/arc_iaq"
-            tools:text="very bad"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_medium"
-        app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/arc_temperature"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
-
-        <com.knobtviker.thermopile.presentation.views.ArcView
-            android:id="@+id/arc_pressure"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constrainedHeight="true"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@+id/arc_motion"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:progressColor="@color/arc_pressure"
-            app:stroke_thickness="@dimen/thickness_8"
-            app:trackColor="@color/background_arc_track"/>
-
-        <com.knobtviker.thermopile.presentation.views.ArcView
-            android:id="@+id/arc_motion"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constrainedHeight="true"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/arc_pressure"
-            app:progressColor="@color/arc_motion"
-            app:stroke_thickness="@dimen/thickness_8"
-            app:trackColor="@color/background_arc_track"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_default"
-            android:text="Pressure"
-            android:textAllCaps="true"
-            app:layout_constraintBottom_toBottomOf="@id/arc_pressure"
-            app:layout_constraintEnd_toEndOf="@id/arc_pressure"
-            app:layout_constraintStart_toStartOf="@id/arc_pressure"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_default"
-            android:text="Motion"
-            android:textAllCaps="true"
-            app:layout_constraintBottom_toBottomOf="@id/arc_motion"
-            app:layout_constraintEnd_toEndOf="@id/arc_motion"
-            app:layout_constraintStart_toStartOf="@id/arc_motion"/>
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/arc_pressure"
-            app:layout_constraintEnd_toEndOf="@id/arc_pressure"
-            app:layout_constraintStart_toStartOf="@id/arc_pressure"
-            app:layout_constraintTop_toTopOf="@id/arc_pressure">
-
-            <TextView
-                android:id="@+id/textview_pressure"
-                style="@style/TextDataSecondary"
+            <com.knobtviker.thermopile.presentation.views.ArcView
+                android:id="@+id/arc_motion"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constrainedHeight="true"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1003"/>
+                app:layout_constraintTop_toBottomOf="@id/arc_pressure"
+                app:progressColor="@color/arc_motion"
+                app:stroke_thickness="@dimen/thickness_8"
+                app:trackColor="@color/background_arc_track"/>
 
             <TextView
-                android:id="@+id/textview_pressure_unit"
-                style="@style/TextDataUnitSecondary"
-                android:text="@string/unit_pressure_pascal"
-                app:layout_constraintVertical_bias="0.75"
-                app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
-                app:layout_constraintStart_toEndOf="@id/textview_pressure"
-                app:layout_constraintTop_toTopOf="@id/textview_pressure"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:text="Pressure"
+                android:textAllCaps="true"
+                app:layout_constraintBottom_toBottomOf="@id/arc_pressure"
+                app:layout_constraintEnd_toEndOf="@id/arc_pressure"
+                app:layout_constraintStart_toStartOf="@id/arc_pressure"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:text="Motion"
+                android:textAllCaps="true"
+                app:layout_constraintBottom_toBottomOf="@id/arc_motion"
+                app:layout_constraintEnd_toEndOf="@id/arc_motion"
+                app:layout_constraintStart_toStartOf="@id/arc_motion"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/arc_pressure"
+                app:layout_constraintEnd_toEndOf="@id/arc_pressure"
+                app:layout_constraintStart_toStartOf="@id/arc_pressure"
+                app:layout_constraintTop_toTopOf="@id/arc_pressure">
+
+                <TextView
+                    android:id="@+id/textview_pressure"
+                    style="@style/TextDataSecondary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="1003"/>
+
+                <TextView
+                    android:id="@+id/textview_pressure_unit"
+                    style="@style/TextDataUnitSecondary"
+                    android:text="@string/unit_pressure_pascal"
+                    app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
+                    app:layout_constraintStart_toEndOf="@id/textview_pressure"
+                    app:layout_constraintTop_toTopOf="@id/textview_pressure"
+                    app:layout_constraintVertical_bias="0.75"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/arc_motion"
+                app:layout_constraintEnd_toEndOf="@id/arc_motion"
+                app:layout_constraintStart_toStartOf="@id/arc_motion"
+                app:layout_constraintTop_toTopOf="@id/arc_motion">
+
+                <TextView
+                    android:id="@+id/textview_motion"
+                    style="@style/TextDataSecondary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="0.9"/>
+
+                <TextView
+                    android:id="@+id/textview_motion_unit"
+                    style="@style/TextDataUnitSecondary"
+                    android:text="@string/unit_acceleration_ms2"
+                    app:layout_constraintBottom_toBottomOf="@id/textview_motion"
+                    app:layout_constraintStart_toEndOf="@id/textview_motion"
+                    app:layout_constraintTop_toTopOf="@id/textview_motion"
+                    app:layout_constraintVertical_bias="0.75"/>
+
+            </android.support.constraint.ConstraintLayout>
 
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/arc_motion"
-            app:layout_constraintEnd_toEndOf="@id/arc_motion"
-            app:layout_constraintStart_toStartOf="@id/arc_motion"
-            app:layout_constraintTop_toTopOf="@id/arc_motion">
+            app:layout_constraintBottom_toBottomOf="@id/arc_temperature"
+            app:layout_constraintEnd_toEndOf="@id/arc_temperature"
+            app:layout_constraintStart_toStartOf="@id/arc_temperature"
+            app:layout_constraintTop_toTopOf="@id/arc_temperature">
 
             <TextView
-                android:id="@+id/textview_motion"
-                style="@style/TextDataSecondary"
+                android:id="@+id/textview_temperature"
+                style="@style/TextDataPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="0.9"/>
+                tools:text="30"/>
 
             <TextView
-                android:id="@+id/textview_motion_unit"
-                style="@style/TextDataUnitSecondary"
-                android:text="@string/unit_acceleration_ms2"
-                app:layout_constraintVertical_bias="0.75"
-                app:layout_constraintBottom_toBottomOf="@id/textview_motion"
-                app:layout_constraintStart_toEndOf="@id/textview_motion"
-                app:layout_constraintTop_toTopOf="@id/textview_motion"/>
+                android:id="@+id/textview_temperature_unit"
+                style="@style/TextDataUnitPrimary"
+                android:text="@string/unit_temperature_celsius"
+                app:layout_constraintBottom_toBottomOf="@id/textview_temperature"
+                app:layout_constraintStart_toEndOf="@id/textview_temperature"
+                app:layout_constraintTop_toTopOf="@id/textview_temperature"
+                app:layout_constraintVertical_bias="0.75"/>
 
         </android.support.constraint.ConstraintLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingactionbutton_down"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            app:backgroundTint="@color/background_fab"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/floatingactionbutton_up"
+            app:layout_constraintStart_toStartOf="@id/arc_temperature"
+            app:srcCompat="@drawable/ic_arrow_down"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingactionbutton_up"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            app:backgroundTint="@color/background_fab"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/arc_temperature"
+            app:layout_constraintStart_toEndOf="@+id/floatingactionbutton_down"
+            app:srcCompat="@drawable/ic_arrow_up"/>
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/arc_temperature"
-        app:layout_constraintEnd_toEndOf="@id/arc_temperature"
-        app:layout_constraintStart_toStartOf="@id/arc_temperature"
-        app:layout_constraintTop_toTopOf="@id/arc_temperature">
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="32dp"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-        <TextView
-            android:id="@+id/textview_temperature"
-            style="@style/TextDataPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:src="@drawable/bottom_slice"
+            android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="30"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            android:id="@+id/textview_temperature_unit"
-            style="@style/TextDataUnitPrimary"
-            android:text="@string/unit_temperature_celsius"
-            app:layout_constraintVertical_bias="0.75"
-            app:layout_constraintBottom_toBottomOf="@id/textview_temperature"
-            app:layout_constraintStart_toEndOf="@id/textview_temperature"
-            app:layout_constraintTop_toTopOf="@id/textview_temperature"/>
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:gravity="center"
+            android:text="BOTTOM SHEET CONTENT"
+            android:textColor="@color/red"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingactionbutton_down"
-        android:layout_width="?attr/actionBarSize"
-        android:layout_height="?attr/actionBarSize"
-        app:backgroundTint="@color/background_fab"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
-        app:layout_constraintEnd_toStartOf="@+id/floatingactionbutton_up"
-        app:layout_constraintStart_toStartOf="@id/arc_temperature"
-        app:srcCompat="@drawable/ic_arrow_down"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingactionbutton_up"
-        android:layout_width="?attr/actionBarSize"
-        android:layout_height="?attr/actionBarSize"
-        app:backgroundTint="@color/background_fab"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@id/recyclerview_hours"
-        app:layout_constraintEnd_toEndOf="@id/arc_temperature"
-        app:layout_constraintStart_toEndOf="@+id/floatingactionbutton_down"
-        app:srcCompat="@drawable/ic_arrow_up"/>
-
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

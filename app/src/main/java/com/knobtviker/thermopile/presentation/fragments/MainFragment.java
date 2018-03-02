@@ -10,10 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -114,9 +110,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @BindView(R.id.textview_motion_unit)
     public TextView textViewMotionUnit;
 
-    @BindView(R.id.recyclerview_hours)
-    public RecyclerView recyclerView;
-
     public static Fragment newInstance() {
         return new MainFragment();
     }
@@ -170,8 +163,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         bind(this, view);
-
-        setupRecyclerView();
 
         return view;
     }
@@ -264,28 +255,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         onPressureChanged(atmosphere.pressure());
         onAirQualityChanged(atmosphere.airQuality());
         onMotionChanged(atmosphere.acceleration(), atmosphere.angularVelocity(), atmosphere.magneticField());
-    }
-
-    public void moveHourLine(@NonNull final DateTime dateTime) {
-        final int currentHour = dateTime.getHourOfDay();
-        if (currentHour > 6 && currentHour < 17) {
-            recyclerView.scrollToPosition(currentHour - 6);
-        } else if (currentHour <= 6) {
-            recyclerView.scrollToPosition(0);
-        } else if (currentHour >= 17) {
-            recyclerView.scrollToPosition(12);
-        }
-    }
-
-    private void setupRecyclerView() {
-        hoursAdapter = new HoursAdapter(this.getContext());
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(hoursAdapter);
-
-        final SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(recyclerView);
     }
 
     @SuppressLint("SetTextI18n")
