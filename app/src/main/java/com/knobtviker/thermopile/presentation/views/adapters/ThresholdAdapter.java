@@ -84,14 +84,12 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
 
         buildTime(holder.textViewTimeStart, interval.getStart().toString(timeFormat));
         buildTime(holder.textViewTimeEnd, interval.getEnd().toString(timeFormat));
-
-//        holder.textViewDay.setText(days.get(interval.getStart().getDayOfWeek()-1));
     }
 
     @Override
     public void onViewRecycled(@NonNull ThresholdLineViewHolder holder) {
 
-        holder.viewIndicator.setBackgroundColor(colorTransparent);
+        holder.viewIndicator.setBackgroundResource(R.drawable.empty_interval_line);
 
         super.onViewRecycled(holder);
     }

@@ -33,6 +33,7 @@ import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.ArcView;
 import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
+import com.knobtviker.thermopile.presentation.views.listeners.DayScrollListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -45,7 +46,7 @@ import io.realm.RealmResults;
  * Created by bojan on 09/06/2017.
  */
 
-public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View {
+public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View, DayScrollListener.Listener {
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private IntentFilter intentFilter;
@@ -55,6 +56,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private MainCommunicator mainCommunicator;
 
     private ThresholdAdapter thresholdAdapter;
+
+    private LinearLayoutManager linearLayoutManager;
 
     private DateTimeZone dateTimeZone;
     private int formatClock;
@@ -230,6 +233,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         thresholdAdapter.updateData(thresholds);
     }
 
+    @Override
+    public void onDayChanged() {
+        textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+    }
+
     @OnClick({R.id.floatingactionbutton_down, R.id.floatingactionbutton_up, R.id.button_charts, R.id.button_schedule, R.id.button_settings})
     public void onActionDownClicked(@NonNull final View view) {
         switch (view.getId()) {
@@ -266,25 +274,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private void setupRecyclerView() {
         thresholdAdapter = new ThresholdAdapter(getContext());
 
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
         recyclerViewThresholds.setLayoutManager(linearLayoutManager);
         recyclerViewThresholds.setAdapter(thresholdAdapter);
-        recyclerViewThresholds.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-//                if (dx != 0 && dy != 0) {
-                    textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
-//                }
-            }
-        });
+        recyclerViewThresholds.addOnScrollListener(DayScrollListener.create(this));
     }
 
     @SuppressLint("SetTextI18n")
