@@ -115,9 +115,8 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                     .withDayOfWeek(threshold.day() + 1)
                     .withHourOfDay(threshold.endHour())
                     .withMinuteOfHour(threshold.endMinute())
-                    .withSecondOfMinute(0)
-                    .withMillisOfSecond(0)
-                    .minusMillis(1);
+                    .withSecondOfMinute(59)
+                    .withMillisOfSecond(999);
 
                 intervals.add(Pair.create(threshold, new Interval(start, end)));
             });
