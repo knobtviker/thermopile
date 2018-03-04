@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/view_indicator"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        app:layout_constrainedHeight="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/textview_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        fontPath="fonts/WorkSans-SemiBold.ttf"
+        tools:ignore="MissingPrefix"
+        android:layout_marginLeft="@dimen/margin_default"
+        android:layout_marginRight="@dimen/margin_default"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="?android:textColorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/view_indicator"
+        app:layout_constraintEnd_toEndOf="@id/view_indicator"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/view_indicator"
+        app:layout_constraintTop_toTopOf="@id/view_indicator"
+        tools:text="30"/>
+
+    <TextView
+        android:id="@+id/textview_time_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        fontPath="fonts/WorkSans-Light.ttf"
+        tools:ignore="MissingPrefix"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="?android:textColorSecondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_indicator"
+        tools:text="12:00"/>
+
+    <TextView
+        android:id="@+id/textview_time_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        fontPath="fonts/WorkSans-Light.ttf"
+        tools:ignore="MissingPrefix"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="?android:textColorSecondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_indicator"
+        tools:text="21:00"/>
+
+</android.support.constraint.ConstraintLayout>

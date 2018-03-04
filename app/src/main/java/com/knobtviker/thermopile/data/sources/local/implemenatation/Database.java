@@ -91,120 +91,143 @@ public class Database {
         IntStream.range(0, 7)
             .forEach(
                 day -> {
-                    final Threshold mockThreshold = new Threshold();
-                    mockThreshold.day(day);
+                    Threshold mockThreshold;
                     if (day == 0) {
+                        mockThreshold = new Threshold();
                         mockThreshold.id(10L);
                         mockThreshold.color(R.color.blue_500);
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
-                        mockThreshold.endHour(17);
+                        mockThreshold.endHour(12);
                         mockThreshold.endMinute(0);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
 
+                        mockThreshold = new Threshold();
                         mockThreshold.id(11L);
                         mockThreshold.color(R.color.red_500);
                         mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
+                        mockThreshold.startMinute(0);
                         mockThreshold.endHour(23);
                         mockThreshold.endMinute(59);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
                     }
                     if (day == 1) {
+                        mockThreshold = new Threshold();
                         mockThreshold.id(20L);
                         mockThreshold.color(R.color.grey_500);
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
                         mockThreshold.endMinute(0);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
 
+                        mockThreshold = new Threshold();
                         mockThreshold.id(21L);
                         mockThreshold.color(R.color.purple_500);
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(1);
                         mockThreshold.endHour(23);
                         mockThreshold.endMinute(59);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
                     }
                     if (day == 2) {
+                        mockThreshold = new Threshold();
                         mockThreshold.id(30L);
                         mockThreshold.color(R.color.light_green_500);
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
                         mockThreshold.endMinute(0);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
 
+                        mockThreshold = new Threshold();
                         mockThreshold.id(31L);
                         mockThreshold.color(R.color.pink_500);
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(1);
                         mockThreshold.endHour(23);
                         mockThreshold.endMinute(59);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
                     }
                     if (day == 3) {
+                        mockThreshold = new Threshold();
                         mockThreshold.id(40L);
                         mockThreshold.color(R.color.light_blue_500);
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
                         mockThreshold.endMinute(0);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
 
+                        mockThreshold = new Threshold();
                         mockThreshold.id(41L);
                         mockThreshold.color(R.color.deep_orange_500);
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(1);
                         mockThreshold.endHour(23);
                         mockThreshold.endMinute(59);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
                     }
                     if (day == 4) {
+                        mockThreshold = new Threshold();
                         mockThreshold.id(50L);
                         mockThreshold.color(R.color.teal_500);
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
                         mockThreshold.endMinute(0);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
 
+                        mockThreshold = new Threshold();
                         mockThreshold.id(51L);
                         mockThreshold.color(R.color.amber_500);
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(1);
                         mockThreshold.endHour(23);
                         mockThreshold.endMinute(59);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
                     }
                     if (day == 5) {
+                        mockThreshold = new Threshold();
                         mockThreshold.id(60L);
                         mockThreshold.color(R.color.indigo_500);
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(20);
                         mockThreshold.endMinute(0);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
                     }
                     if (day == 6) {
+                        mockThreshold = new Threshold();
                         mockThreshold.id(70L);
                         mockThreshold.color(R.color.green_500);
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(19);
                         mockThreshold.endMinute(0);
+                        mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
                     }

@@ -228,7 +228,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
                 thresholdView.setId(View.generateViewId());
 
-                thresholdViewHolder.setBackground(threshold.color(), layout.getHeight());
+                thresholdViewHolder.setBackground(getContext().getColor(threshold.color()), layout.getHeight());
                 thresholdViewHolder.textViewTemperature.setText(String.format("%s °C", String.valueOf(threshold.temperature()))); //TODO: Obey Settings temperature unit
 
                 layout.addView(thresholdView);

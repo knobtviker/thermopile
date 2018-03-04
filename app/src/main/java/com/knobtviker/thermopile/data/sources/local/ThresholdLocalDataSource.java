@@ -23,8 +23,12 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
 
     @Override
     public RealmResults<Threshold> load(@NonNull final Realm realm) {
+        final String[] fieldNames = {"day", "startHour", "startMinute"};
+        final Sort[] directions = {Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING};
+
         return realm
             .where(Threshold.class)
+            .sort(fieldNames, directions)
             .findAll();
     }
 

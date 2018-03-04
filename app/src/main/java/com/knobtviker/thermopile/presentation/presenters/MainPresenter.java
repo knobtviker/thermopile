@@ -107,13 +107,13 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         //4 = 3
         //5 = 4
         //6 = 5
-        day = (day == 0 ? 6 : (day - 1));
+//        day = (day == 0 ? 6 : (day - 1));
 
-        resultsThresholds = thresholdRepository.loadByDay(realm, day);
+        resultsThresholds = thresholdRepository.load(realm);
 
-//        if (!resultsThresholds.isEmpty()) {
-        view.onThresholdsChanged(resultsThresholds);
-//        }
+        if (resultsThresholds != null && !resultsThresholds.isEmpty()) {
+            view.onThresholdsChanged(resultsThresholds);
+        }
 
         completed();
     }

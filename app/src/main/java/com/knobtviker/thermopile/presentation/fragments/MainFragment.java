@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -18,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
@@ -30,7 +31,7 @@ import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.ArcView;
-import com.knobtviker.thermopile.presentation.views.adapters.HoursAdapter;
+import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
 import org.joda.time.DateTime;
@@ -53,9 +54,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private MainCommunicator mainCommunicator;
 
-    private HoursAdapter hoursAdapter;
-
-    private ImmutableList<Threshold> thresholdsToday = ImmutableList.of();
+    private ThresholdAdapter thresholdAdapter;
 
     private DateTimeZone dateTimeZone;
     private int formatClock;
@@ -110,6 +109,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @BindView(R.id.textview_motion_unit)
     public TextView textViewMotionUnit;
 
+    @BindView(R.id.textview_day)
+    public TextView textViewDay;
+
+    @BindView(R.id.recyclerview_thresholds)
+    public RecyclerView recyclerViewThresholds;
+
     public static Fragment newInstance() {
         return new MainFragment();
     }
@@ -163,6 +168,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         bind(this, view);
+
+        setupRecyclerView();
 
         return view;
     }
@@ -220,8 +227,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onThresholdsChanged(@NonNull RealmResults<Threshold> thresholds) {
-        Log.i(TAG, thresholds.size() + "");
-//        hoursAdapter.applyThreasholds(thresholds); //TODO: Fix this bad logic
+        thresholdAdapter.updateData(thresholds);
     }
 
     @OnClick({R.id.floatingactionbutton_down, R.id.floatingactionbutton_up, R.id.button_charts, R.id.button_schedule, R.id.button_settings})
@@ -255,6 +261,30 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         onPressureChanged(atmosphere.pressure());
         onAirQualityChanged(atmosphere.airQuality());
         onMotionChanged(atmosphere.acceleration(), atmosphere.angularVelocity(), atmosphere.magneticField());
+    }
+
+    private void setupRecyclerView() {
+        thresholdAdapter = new ThresholdAdapter(getContext());
+
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        recyclerViewThresholds.setLayoutManager(linearLayoutManager);
+        recyclerViewThresholds.setAdapter(thresholdAdapter);
+        recyclerViewThresholds.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+//                if (dx != 0 && dy != 0) {
+                    textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+//                }
+            }
+        });
     }
 
     @SuppressLint("SetTextI18n")
@@ -327,7 +357,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //        roll *= 180.0 / Math.PI;
 
         //Peak ground acceleration calculation
-        final float value = (float)Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az + SensorManager.GRAVITY_EARTH, 2)), 19.61330000);
+        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az + SensorManager.GRAVITY_EARTH, 2)), 19.61330000);
         arcViewMotion.setProgress(value / 19.61330000f); //TODO: This hardcoded value must be set according to selected unit value for acceleration in Settings
         textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));
     }
