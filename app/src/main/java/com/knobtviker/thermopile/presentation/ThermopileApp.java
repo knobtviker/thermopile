@@ -342,7 +342,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         presenter = new ApplicationPresenter(this);
         presenter.subscribe();
         presenter.tick();
-        presenter.initScreen(160, RxScreenManager.ROTATION_180, 3600000L);
+        presenter.initScreen(160, RxScreenManager.ROTATION_180);
         presenter.createScreensaver();
         presenter.brightness(255);
     }
@@ -449,7 +449,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             // Otherwise, set the DS3231 using the system time if the system time appears sane
             if (ds3231Timestamp >= Environment.getRootDirectory().lastModified()) {
 //                Log.i(TAG, "Setting system clock using DS3231");
-                final TimeManager timeManager = new TimeManager();
+                final TimeManager timeManager = TimeManager.getInstance();
                 timeManager.setTime(ds3231Timestamp);
 
                 // Re-enable NTP updates.

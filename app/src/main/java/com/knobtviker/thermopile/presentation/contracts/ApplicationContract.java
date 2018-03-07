@@ -36,7 +36,7 @@ public interface ApplicationContract {
 
         void destroyScreensaver();
 
-        void initScreen(final int density, final int rotation, final long timeout);
+        void initScreen(final int density, final int rotation);
 
         void brightness(final int brightness);
 

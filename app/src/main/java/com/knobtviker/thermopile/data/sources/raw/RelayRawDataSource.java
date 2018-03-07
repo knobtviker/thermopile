@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 import com.knobtviker.thermopile.data.sources.RelayDataSource;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class RelayRawDataSource implements RelayDataSource.Raw {
 
     private static final String GPIO_PIN = "BCM23";
 
-    private final PeripheralManagerService peripheralManagerService;
+    private final PeripheralManager peripheralManager;
 
     private final Gpio gpio;
 
@@ -41,14 +41,14 @@ public class RelayRawDataSource implements RelayDataSource.Raw {
     }
 
     private RelayRawDataSource() {
-        peripheralManagerService = new PeripheralManagerService();
+        peripheralManager = PeripheralManager.getInstance();
 
         gpio = create(GPIO_PIN, Gpio.DIRECTION_OUT_INITIALLY_LOW, Gpio.ACTIVE_HIGH);
     }
 
     public Gpio create(@NonNull final String pin, final int direction, final int activeType) {
         try {
-            final Gpio gpio = peripheralManagerService.openGpio(pin);
+            final Gpio gpio = peripheralManager.openGpio(pin);
             gpio.setDirection(direction);
             gpio.setActiveType(activeType);
             return gpio;

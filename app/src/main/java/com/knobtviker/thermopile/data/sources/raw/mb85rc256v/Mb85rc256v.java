@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.google.android.things.pio.I2cDevice;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class Mb85rc256v implements Closeable {
      * @throws IOException
      */
     public Mb85rc256v(String bus, int address) throws IOException {
-        final PeripheralManagerService pioService = new PeripheralManagerService();
+        final PeripheralManager pioService = PeripheralManager.getInstance();
         final I2cDevice device = pioService.openI2cDevice(bus, address);
         try {
             connect(device);

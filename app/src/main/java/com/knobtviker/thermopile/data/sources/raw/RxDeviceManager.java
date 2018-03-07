@@ -3,11 +3,9 @@ package com.knobtviker.thermopile.data.sources.raw;
 import android.os.LocaleList;
 import android.support.annotation.NonNull;
 
-import com.google.android.things.AndroidThings;
 import com.google.android.things.device.DeviceManager;
 
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 
 /**
  * Created by bojan on 24/12/2017.
@@ -48,7 +46,7 @@ public class RxDeviceManager {
     }
 
     private RxDeviceManager() {
-        deviceManager = new DeviceManager();
+        deviceManager = DeviceManager.getInstance();
     }
 
     /**
@@ -98,86 +96,6 @@ public class RxDeviceManager {
                         deviceManager.setSystemLocales(localeList);
                         emitter.onComplete();
                     }
-                } catch (Exception e) {
-                    emitter.onError(e);
-                }
-            }
-        });
-    }
-
-    /**
-     * Gets the major version number of AndroidThings library linked at runtime to the app.
-     */
-    public Observable<Integer> versionMajor() {
-        return Observable.create(emitter -> {
-            if (!emitter.isDisposed()) {
-                try {
-                    emitter.onNext(AndroidThings.getVersionMajor());
-                    emitter.onComplete();
-                } catch (Exception e) {
-                    emitter.onError(e);
-                }
-            }
-        });
-    }
-
-    /**
-     * Gets the minor version number of AndroidThings library linked at runtime to the app.
-     */
-    public Observable<Integer> versionMinor() {
-        return Observable.create(emitter -> {
-            if (!emitter.isDisposed()) {
-                try {
-                    emitter.onNext(AndroidThings.getVersionMinor());
-                    emitter.onComplete();
-                } catch (Exception e) {
-                    emitter.onError(e);
-                }
-            }
-        });
-    }
-
-    /**
-     * Gets the revision version number of AndroidThings library linked at runtime to the app.
-     */
-    public Observable<Integer> versionRevision() {
-        return Observable.create(emitter -> {
-            if (!emitter.isDisposed()) {
-                try {
-                    emitter.onNext(AndroidThings.getVersionRevision());
-                    emitter.onComplete();
-                } catch (Exception e) {
-                    emitter.onError(e);
-                }
-            }
-        });
-    }
-
-    /**
-     * Gets the version tag of AndroidThings library linked at runtime to the app.
-     */
-    public Observable<String> versionTag() {
-        return Observable.create(emitter -> {
-            if (!emitter.isDisposed()) {
-                try {
-                    emitter.onNext(AndroidThings.getVersionTag());
-                    emitter.onComplete();
-                } catch (Exception e) {
-                    emitter.onError(e);
-                }
-            }
-        });
-    }
-
-    /**
-     * Gets the complete version of AndroidThings library linked at runtime to the app as string.
-     */
-    public Observable<String> version() {
-        return Observable.create(emitter -> {
-            if (!emitter.isDisposed()) {
-                try {
-                    emitter.onNext(AndroidThings.getVersionString());
-                    emitter.onComplete();
                 } catch (Exception e) {
                     emitter.onError(e);
                 }

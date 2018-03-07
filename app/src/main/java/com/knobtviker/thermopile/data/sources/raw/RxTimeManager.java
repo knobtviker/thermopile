@@ -49,7 +49,7 @@ public class RxTimeManager {
     }
 
     private RxTimeManager() {
-        timeManager = new TimeManager();
+        timeManager = TimeManager.getInstance();
     }
 
     /**

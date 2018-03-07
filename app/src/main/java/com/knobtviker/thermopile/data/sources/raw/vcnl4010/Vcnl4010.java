@@ -6,7 +6,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.google.android.things.pio.I2cDevice;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -249,7 +249,7 @@ public class Vcnl4010 implements Closeable {
      * @throws IOException
      */
     public Vcnl4010(@NonNull final String bus, final int address) throws IOException {
-        final PeripheralManagerService pioService = new PeripheralManagerService();
+        final PeripheralManager pioService = PeripheralManager.getInstance();
         final I2cDevice device = pioService.openI2cDevice(bus, address);
         try {
             connect(device);

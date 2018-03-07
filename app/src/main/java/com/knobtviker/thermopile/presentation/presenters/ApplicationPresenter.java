@@ -103,11 +103,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     }
 
     @Override
-    public void initScreen(int density, int rotation, long timeout) {
+    public void initScreen(int density, int rotation) {
         Completable.concatArray(
             rxScreenManager.lockRotation(rotation),
-            rxScreenManager.displayDensity(density),
-            rxScreenManager.screenOffTimeout(timeout, TimeUnit.MILLISECONDS)
+            rxScreenManager.displayDensity(density)
         )
             .subscribe(
                 this::completed,
@@ -117,10 +116,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     @Override
     public void brightness(int brightness) {
-        Completable.concatArray(
-            rxScreenManager.brightnessMode(RxScreenManager.MANUAL),
-            rxScreenManager.brightness(255)
-        )
+        rxScreenManager
+            .brightness(brightness)
             .subscribe(
                 this::completed,
                 this::error

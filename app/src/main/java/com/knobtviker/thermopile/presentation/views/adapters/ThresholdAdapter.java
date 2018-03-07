@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -22,8 +23,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.Minutes;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import io.realm.RealmResults;
@@ -46,6 +47,8 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     private final ImmutableList<String> days;
     private final CalligraphyTypefaceSpan typefaceSpanMedium;
 
+    private ImmutableList<Interval> emptyDays = ImmutableList.of();
+
     private ImmutableList<Pair<Threshold, Interval>> intervals = ImmutableList.of();
 
     public ThresholdAdapter(@NonNull final Context context) {
@@ -55,6 +58,8 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         this.colorTransparent = ContextCompat.getColor(context, android.R.color.transparent);
         this.days = ImmutableList.copyOf(context.getResources().getStringArray(R.array.weekdays));
         this.typefaceSpanMedium = new CalligraphyTypefaceSpan(TypefaceUtils.load(context.getAssets(), "fonts/WorkSans-Medium.ttf"));
+
+        setEmptyDays();
     }
 
     @Override
@@ -100,10 +105,9 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     }
 
     public void updateData(@NonNull final RealmResults<Threshold> thresholds) {
-        final List<Pair<Threshold, Interval>> intervals = new ArrayList<>();
-
-        thresholds
-            .forEach(threshold -> {
+        final List<Pair<Threshold, Interval>> intervals = thresholds
+            .stream()
+            .map(threshold -> {
                 final DateTime start = new DateTime()
                     .withDayOfWeek(threshold.day() + 1) //must be in range of 1 to 7
                     .withHourOfDay(threshold.startHour())
@@ -118,18 +122,23 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                     .withSecondOfMinute(59)
                     .withMillisOfSecond(999);
 
-                intervals.add(Pair.create(threshold, new Interval(start, end)));
-            });
+                return Pair.create(threshold, new Interval(start, end));
+            })
+            .collect(Collectors.toList());
 
-        IntStream.range(0, intervals.size() - 1)
-            .forEach(index -> {
-                final Interval current = intervals.get(index).second;
-                final Interval next = intervals.get(index + 1).second;
-                final Interval gap = current.gap(next);
-                if (gap != null) {
-                    intervals.add(Pair.create(null, gap));
-                }
-            });
+        IntStream.range(0, 7).forEach(day -> dayMargins(thresholds, intervals, day));
+
+//        IntStream.range(0, intervals.size() - 1)
+//            .forEach(index -> {
+//                final Interval current = intervals.get(index).second;
+//                final Interval next = intervals.get(index + 1).second;
+//                final Interval gap = current.gap(next);
+//                if (gap != null) { // && gap.toDuration().getMillis() > 1
+//                    intervals.add(Pair.create(null, gap));
+//                }
+//            });
+
+//        IntStream.range(0, 7).forEach(day -> dayMargins(thresholds, intervals, day));
 
         intervals.sort((interval, other) -> {
             if (interval.equals(other)) {
@@ -138,6 +147,11 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                 return interval.second.isBefore(other.second) ? -1 : 1;
             }
         });
+
+        intervals
+            .forEach(pair -> {
+                Log.i(TAG, pair.second.toString());
+            });
 
         this.intervals = ImmutableList.copyOf(intervals);
 
@@ -162,6 +176,124 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     }
 
     public String getItemDay(final int firstVisibleItemPosition) {
-        return days.get(intervals.get(firstVisibleItemPosition).second.getStart().getDayOfWeek()-1);
+        return days.get(intervals.get(firstVisibleItemPosition).second.getStart().getDayOfWeek() - 1);
+    }
+
+    private void setEmptyDays() {
+        this.emptyDays = emptyDays();
+
+        this.intervals = ImmutableList.copyOf(
+            emptyDays
+                .stream()
+                .map(interval -> {
+                    final Pair<Threshold, Interval> pair = Pair.create(null, interval);
+                    return pair;
+                })
+                .collect(Collectors.toList()));
+
+        notifyDataSetChanged();
+    }
+
+    private ImmutableList<Interval> emptyDays() {
+        return ImmutableList.copyOf(
+            IntStream.range(1, 8)
+                .mapToObj(day -> new Interval(
+                    new DateTime()
+                        .withDayOfWeek(day)
+                        .withHourOfDay(0)
+                        .withMinuteOfHour(0)
+                        .withSecondOfMinute(0)
+                        .withMillisOfSecond(0),
+                    new DateTime()
+                        .withDayOfWeek(day)
+                        .withHourOfDay(23)
+                        .withMinuteOfHour(59)
+                        .withSecondOfMinute(59)
+                        .withMillisOfSecond(999)
+                ))
+                .collect(Collectors.toList())
+        );
+    }
+
+    private void dayMargins(@NonNull final RealmResults<Threshold> thresholds, @NonNull final List<Pair<Threshold, Interval>> intervals, final int day) {
+        final List<Threshold> dayThresholds = thresholds.stream()
+            .filter(threshold -> threshold.day() == day)
+            .sorted((threshold1, threshold2) -> {
+                final DateTime dt1 = new DateTime()
+                    .withDayOfWeek(threshold1.day() + 1) //must be in range of 1 to 7
+                    .withHourOfDay(threshold1.startHour())
+                    .withMinuteOfHour(threshold1.startMinute())
+                    .withSecondOfMinute(0)
+                    .withMillisOfSecond(0);
+                final DateTime dt2 = new DateTime()
+                    .withDayOfWeek(threshold2.day() + 1) //must be in range of 1 to 7
+                    .withHourOfDay(threshold2.startHour())
+                    .withMinuteOfHour(threshold2.startMinute())
+                    .withSecondOfMinute(0)
+                    .withMillisOfSecond(0);
+                if (dt1.equals(dt2)) {
+                    return 0;
+                } else {
+                    return dt1.isBefore(dt2) ? -1 : 1;
+                }
+            })
+            .collect(Collectors.toList());
+
+        if (!dayThresholds.isEmpty()) {
+            final Threshold first = dayThresholds.get(0);
+            final Threshold last = dayThresholds.get(dayThresholds.size() - 1);
+
+            if (first.startHour() != 0 && first.startMinute() != 0) {
+                intervals.add(
+                    Pair.create(null, new Interval(
+                            new DateTime()
+                                .withDayOfWeek(first.day() + 1)
+                                .withHourOfDay(0)
+                                .withMinuteOfHour(0)
+                                .withSecondOfMinute(0)
+                                .withMillisOfSecond(0),
+                            new DateTime()
+                                .withDayOfWeek(first.day() + 1)
+                                .withHourOfDay(first.startHour())
+                                .withMinuteOfHour(first.startMinute())
+                                .withSecondOfMinute(0)
+                                .withMillisOfSecond(0)
+                        )
+                    )
+                );
+            }
+            if (last.endHour() != 23 && last.endMinute() != 59) {
+                intervals.add(
+                    Pair.create(null, new Interval(
+                            new DateTime()
+                                .withDayOfWeek(first.day() + 1)
+                                .withHourOfDay(last.endHour())
+                                .withMinuteOfHour(last.endMinute())
+                                .withSecondOfMinute(0)
+                                .withMillisOfSecond(0)
+                                .minusMillis(1),
+                            new DateTime()
+                                .withDayOfWeek(first.day() + 1)
+                                .withHourOfDay(23)
+                                .withMinuteOfHour(59)
+                                .withSecondOfMinute(59)
+                                .withMillisOfSecond(999)
+                        )
+                    )
+                );
+            }
+
+            if (dayThresholds.size() > 1) {
+                IntStream.range(0, dayThresholds.size() - 1)
+                    .forEach(index -> {
+                        final Interval current = intervals.get(index).second;
+                        final Interval next = intervals.get(index + 1).second;
+                        final Interval gap = current.gap(next);
+                        if (gap != null) { // && gap.toDuration().getMillis() > 1
+                            intervals.add(Pair.create(null, gap));
+                        }
+                    });
+            }
+        }
     }
 }

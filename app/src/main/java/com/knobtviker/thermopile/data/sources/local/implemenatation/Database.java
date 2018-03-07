@@ -96,7 +96,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(10L);
                         mockThreshold.color(R.color.blue_500);
-                        mockThreshold.startHour(0);
+                        mockThreshold.startHour(10);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(12);
                         mockThreshold.endMinute(0);
@@ -121,7 +121,7 @@ public class Database {
                         mockThreshold.color(R.color.grey_500);
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
-                        mockThreshold.endHour(17);
+                        mockThreshold.endHour(11);
                         mockThreshold.endMinute(0);
                         mockThreshold.day(day);
 
@@ -131,7 +131,7 @@ public class Database {
                         mockThreshold.id(21L);
                         mockThreshold.color(R.color.purple_500);
                         mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
+                        mockThreshold.startMinute(0);
                         mockThreshold.endHour(23);
                         mockThreshold.endMinute(59);
                         mockThreshold.day(day);
@@ -142,7 +142,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(30L);
                         mockThreshold.color(R.color.light_green_500);
-                        mockThreshold.startHour(0);
+                        mockThreshold.startHour(12);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
                         mockThreshold.endMinute(0);
@@ -153,10 +153,10 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(31L);
                         mockThreshold.color(R.color.pink_500);
-                        mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
+                        mockThreshold.startHour(18);
+                        mockThreshold.startMinute(0);
                         mockThreshold.endHour(23);
-                        mockThreshold.endMinute(59);
+                        mockThreshold.endMinute(0);
                         mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
@@ -165,7 +165,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(40L);
                         mockThreshold.color(R.color.light_blue_500);
-                        mockThreshold.startHour(0);
+                        mockThreshold.startHour(8);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
                         mockThreshold.endMinute(0);
@@ -177,9 +177,9 @@ public class Database {
                         mockThreshold.id(41L);
                         mockThreshold.color(R.color.deep_orange_500);
                         mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
-                        mockThreshold.endHour(23);
-                        mockThreshold.endMinute(59);
+                        mockThreshold.startMinute(0);
+                        mockThreshold.endHour(20);
+                        mockThreshold.endMinute(0);
                         mockThreshold.day(day);
 
                         mocks.add(mockThreshold);
@@ -200,7 +200,7 @@ public class Database {
                         mockThreshold.id(51L);
                         mockThreshold.color(R.color.amber_500);
                         mockThreshold.startHour(17);
-                        mockThreshold.startMinute(1);
+                        mockThreshold.startMinute(0);
                         mockThreshold.endHour(23);
                         mockThreshold.endMinute(59);
                         mockThreshold.day(day);
