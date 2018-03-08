@@ -84,7 +84,7 @@ public class Settings extends RealmObject {
     }
 
     @PrimaryKey
-    private long id; //TODO: Should be userId for multiuser support. Every user has it's owm settings record
+    private long id; //TODO: Should be userId for multiuser support. Every user has it's own settings record
 
     private String timezone;
 

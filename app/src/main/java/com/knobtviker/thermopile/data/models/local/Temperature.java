@@ -1,5 +1,8 @@
 package com.knobtviker.thermopile.data.models.local;
 
+import com.knobtviker.thermopile.data.models.local.implementation.SingleValue;
+
+import io.reactivex.annotations.NonNull;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 
@@ -7,47 +10,17 @@ import io.realm.annotations.Index;
  * Created by bojan on 27/12/2017.
  */
 
-public class Temperature extends RealmObject {
+public class Temperature extends RealmObject implements SingleValue {
 
-    public long timestamp() {
-        return timestamp;
+    public Temperature(final long timestamp, final float value, final int accuracy, @NonNull final String vendor, @NonNull final String name) {
+        timestamp(timestamp);
+        value(value);
+        accuracy(accuracy);
+        vendor(vendor);
+        name(name);
     }
 
-    public void timestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public float value() {
-        return value;
-    }
-
-    public void value(float value) {
-        this.value = value;
-    }
-
-    public int accuracy() {
-        return accuracy;
-    }
-
-    public void accuracy(int accuracy) {
-        this.accuracy = accuracy;
-    }
-
-    public String vendor() {
-        return vendor;
-    }
-
-    public void vendor(String vendor) {
-        this.vendor = vendor;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public void name(String name) {
-        this.name = name;
-    }
+    public Temperature(){}
 
     @Index
     private long timestamp;
@@ -59,4 +32,54 @@ public class Temperature extends RealmObject {
     private String vendor;
 
     private String name;
+
+    @Override
+    public long timestamp() {
+        return timestamp;
+    }
+
+    @Override
+    public void timestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public float value() {
+        return value;
+    }
+
+    @Override
+    public void value(float value) {
+        this.value = value;
+    }
+
+    @Override
+    public int accuracy() {
+        return accuracy;
+    }
+
+    @Override
+    public void accuracy(int accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    @Override
+    public String vendor() {
+        return vendor;
+    }
+
+    @Override
+    public void vendor(@NonNull String vendor) {
+        this.vendor = vendor;
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public void name(@NonNull String name) {
+        this.name = name;
+    }
 }

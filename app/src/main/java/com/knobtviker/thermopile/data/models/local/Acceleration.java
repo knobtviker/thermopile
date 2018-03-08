@@ -1,5 +1,8 @@
 package com.knobtviker.thermopile.data.models.local;
 
+import com.knobtviker.thermopile.data.models.local.implementation.CartesianValue;
+
+import io.reactivex.annotations.NonNull;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 
@@ -7,63 +10,19 @@ import io.realm.annotations.Index;
  * Created by bojan on 27/12/2017.
  */
 
-public class Acceleration extends RealmObject {
+public class Acceleration extends RealmObject implements CartesianValue {
 
-    public long timestamp() {
-        return timestamp;
+    public Acceleration(final long timestamp, final float valueX, final float valueY, final float valueZ, final int accuracy, @NonNull final String vendor, @NonNull final String name) {
+        timestamp(timestamp);
+        valueX(valueX);
+        valueY(valueY);
+        valueZ(valueZ);
+        accuracy(accuracy);
+        vendor(vendor);
+        name(name);
     }
 
-    public void timestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public float valueX() {
-        return valueX;
-    }
-
-    public void valueX(float valueX) {
-        this.valueX = valueX;
-    }
-
-    public float valueY() {
-        return valueY;
-    }
-
-    public void valueY(float valueY) {
-        this.valueY = valueY;
-    }
-
-    public float valueZ() {
-        return valueZ;
-    }
-
-    public void valueZ(float valueZ) {
-        this.valueZ = valueZ;
-    }
-
-    public int accuracy() {
-        return accuracy;
-    }
-
-    public void accuracy(int accuracy) {
-        this.accuracy = accuracy;
-    }
-
-    public String vendor() {
-        return vendor;
-    }
-
-    public void vendor(String vendor) {
-        this.vendor = vendor;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public void name(String name) {
-        this.name = name;
-    }
+    public Acceleration(){}
 
     @Index
     private long timestamp;
@@ -79,4 +38,74 @@ public class Acceleration extends RealmObject {
     private String vendor;
 
     private String name;
+
+    @Override
+    public long timestamp() {
+        return timestamp;
+    }
+
+    @Override
+    public void timestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public float valueX() {
+        return valueX;
+    }
+
+    @Override
+    public float valueY() {
+        return valueY;
+    }
+
+    @Override
+    public float valueZ() {
+        return valueZ;
+    }
+
+    @Override
+    public void valueX(float valueX) {
+        this.valueX = valueX;
+    }
+
+    @Override
+    public void valueY(float valueY) {
+        this.valueY = valueY;
+    }
+
+    @Override
+    public void valueZ(float valueZ) {
+        this.valueZ = valueZ;
+    }
+
+    @Override
+    public int accuracy() {
+        return accuracy;
+    }
+
+    @Override
+    public void accuracy(int accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    @Override
+    public String vendor() {
+        return vendor;
+    }
+
+    @Override
+    public void vendor(@NonNull String vendor) {
+        this.vendor = vendor;
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public void name(@NonNull String name) {
+        this.name = name;
+    }
 }

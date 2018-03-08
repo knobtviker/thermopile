@@ -88,7 +88,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void onCreate() {
         super.onCreate();
 
-        //TODO: Only a memory flag live in live process, should be controlled via Settings from Realm and stored in FRAM.
+        //TODO: Only a memory flag live in process, should be controlled via Settings from Realm and stored in FRAM.
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
         initBugfender();
@@ -107,127 +107,53 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
                 atmosphere = atmosphere.withTemperature(sensorEvent.values[0]);
 
-                final Temperature temperature = new Temperature();
-                temperature.timestamp(DateTimeUtils.currentTimeMillis());
-                temperature.value(sensorEvent.values[0]);
-                temperature.accuracy(sensorEvent.accuracy);
-                temperature.vendor(sensorEvent.sensor.getVendor());
-                temperature.name(sensorEvent.sensor.getName());
-
-//                Log.i(TAG, "Temperature ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
-
-                temperatures.add(temperature);
+                temperatures.add(new Temperature(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
                 atmosphere = atmosphere.withHumidity(sensorEvent.values[0]);
 
-                final Humidity humidity = new Humidity();
-                humidity.timestamp(DateTimeUtils.currentTimeMillis());
-                humidity.value(sensorEvent.values[0]);
-                humidity.accuracy(sensorEvent.accuracy);
-                humidity.vendor(sensorEvent.sensor.getVendor());
-                humidity.name(sensorEvent.sensor.getName());
-
-//                Log.i(TAG, "Humidity ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
-
-                humidities.add(humidity);
+                humidities.add(new Humidity(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_PRESSURE:
                 final long now = DateTimeUtils.currentTimeMillis();
 
                 atmosphere = atmosphere.withPressure(sensorEvent.values[0]);
 
-                final Pressure pressure = new Pressure();
-                pressure.timestamp(now);
-                pressure.value(sensorEvent.values[0]);
-                pressure.accuracy(sensorEvent.accuracy);
-                pressure.vendor(sensorEvent.sensor.getVendor());
-                pressure.name(sensorEvent.sensor.getName());
-
-//                Log.i(TAG, "Pressure ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]);
-                pressures.add(pressure);
+                pressures.add(new Pressure(now, sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
 
                 final float altitudeValue = SensorManager.getAltitude(sensorEvent.values[0], SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
+
                 atmosphere = atmosphere.withAltitude(altitudeValue);
 
-                final Altitude altitude = new Altitude();
-                altitude.timestamp(now);
-                altitude.value(altitudeValue);
-                altitude.accuracy(sensorEvent.accuracy);
-                altitude.vendor(sensorEvent.sensor.getVendor());
-                altitude.name(sensorEvent.sensor.getName());
-
-                altitudes.add(altitude);
+                altitudes.add(new Altitude(now, altitudeValue, sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
                     if (sensorEvent.sensor.getName().equals(Bme680.CHIP_NAME)) {
                         atmosphere = atmosphere.withAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
 
-                        final AirQuality airQuality = new AirQuality();
-                        airQuality.timestamp(DateTimeUtils.currentTimeMillis());
-                        airQuality.value(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
-                        airQuality.accuracy(sensorEvent.accuracy);
-                        airQuality.vendor(sensorEvent.sensor.getVendor());
-                        airQuality.name(sensorEvent.sensor.getName());
-
-//                        Log.i(TAG, "AirQuality ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
-
-                        airQualities.add(airQuality);
+                        airQualities.add(new AirQuality(DateTimeUtils.currentTimeMillis(), sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                     }
                 }
                 break;
             case Sensor.TYPE_LIGHT:
-                //TODO: Fix this when Google fixes automatic brightness. This shows way bigger values than sensor maximum
+                //TODO: Google dropped Automatic Brightness Mode in DP7. Do your own math with manual mode. Less light == lower screen brightness.
 //                Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0])+ " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
                 break;
             case Sensor.TYPE_ACCELEROMETER: //[m/s^2]
                 atmosphere = atmosphere.withAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
 
-                final Acceleration acceleration = new Acceleration();
-                acceleration.timestamp(DateTimeUtils.currentTimeMillis());
-                acceleration.valueX(sensorEvent.values[0]);
-                acceleration.valueY(sensorEvent.values[1]);
-                acceleration.valueZ(sensorEvent.values[2]);
-                acceleration.accuracy(sensorEvent.accuracy);
-                acceleration.vendor(sensorEvent.sensor.getVendor());
-                acceleration.name(sensorEvent.sensor.getName());
-
-//                Log.i(TAG, "Acceleration ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]+", "+sensorEvent.values[1]+", "+sensorEvent.values[2]);
-
-                accelerations.add(acceleration);
+                accelerations.add(new Acceleration(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_GYROSCOPE: //[°/s]
                 atmosphere = atmosphere.withAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
 
-                final AngularVelocity angularVelocity = new AngularVelocity();
-                angularVelocity.timestamp(DateTimeUtils.currentTimeMillis());
-                angularVelocity.valueX(sensorEvent.values[0]);
-                angularVelocity.valueY(sensorEvent.values[1]);
-                angularVelocity.valueZ(sensorEvent.values[2]);
-                angularVelocity.accuracy(sensorEvent.accuracy);
-                angularVelocity.vendor(sensorEvent.sensor.getVendor());
-                angularVelocity.name(sensorEvent.sensor.getName());
-
-//                Log.i(TAG, "AngularVelocity ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]+", "+sensorEvent.values[1]+", "+sensorEvent.values[2]);
-
-                angularVelocities.add(angularVelocity);
+                angularVelocities.add(new AngularVelocity(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
                 atmosphere = atmosphere.withMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
 
-                final MagneticField magneticField = new MagneticField();
-                magneticField.timestamp(DateTimeUtils.currentTimeMillis());
-                magneticField.valueX(sensorEvent.values[0]);
-                magneticField.valueY(sensorEvent.values[1]);
-                magneticField.valueZ(sensorEvent.values[2]);
-                magneticField.accuracy(sensorEvent.accuracy);
-                magneticField.vendor(sensorEvent.sensor.getVendor());
-                magneticField.name(sensorEvent.sensor.getName());
-
-//                Log.i(TAG, "MagneticField ---> " + sensorEvent.sensor.getVendor() + " --- " + sensorEvent.sensor.getName() + " --- " + sensorEvent.values[0]+", "+sensorEvent.values[1]+", "+sensorEvent.values[2]);
-
-                magneticFields.add(magneticField);
+                magneticFields.add(new MagneticField(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
         }
     }

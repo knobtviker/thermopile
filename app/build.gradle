@@ -77,8 +77,8 @@ dependencies {
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.uphyca:stetho_realm:2.2.2'
     implementation 'com.bugfender.sdk:android:1.0.2'
-    //    implementation 'com.google.firebase:firebase-core:11.6.0'
-    //    implementation 'com.google.firebase:firebase-crash:11.6.0'
+//    implementation 'com.google.firebase:firebase-core:11.8.0'
+//    implementation 'com.google.firebase:firebase-crash:11.8.0'
 }
 
 //apply plugin: 'com.google.gms.google-services'
