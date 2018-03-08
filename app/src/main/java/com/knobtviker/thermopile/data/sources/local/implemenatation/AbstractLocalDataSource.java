@@ -35,4 +35,11 @@ public abstract class AbstractLocalDataSource<T extends BaseModel> implements Ba
         realm.executeTransaction(realm1 -> realm1.insert(items));
         realm.close();
     }
+
+    @Override
+    public void save(@NonNull final T item) {
+        final Realm realm = Database.getDefaultInstance();
+        realm.executeTransaction(realm1 -> realm1.insert(item));
+        realm.close();
+    }
 }

@@ -13,4 +13,6 @@ public interface BaseLocalDataSource<T extends BaseModel> {
     RealmResults<T> load(@NonNull final Realm realm);
 
     void save(@NonNull final List<T> items);
+
+    void save(@NonNull final T item);
 }
