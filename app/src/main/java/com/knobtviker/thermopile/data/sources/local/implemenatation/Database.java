@@ -109,8 +109,8 @@ public class Database {
                         mockThreshold.color(R.color.red_500);
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(0);
-                        mockThreshold.endHour(23);
-                        mockThreshold.endMinute(59);
+                        mockThreshold.endHour(22);
+                        mockThreshold.endMinute(0);
                         mockThreshold.day(day);
 
                         mocks.add(mockThreshold);

@@ -115,30 +115,31 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
 
-                final DateTime end = new DateTime()
-                    .withDayOfWeek(threshold.day() + 1)
-                    .withHourOfDay(threshold.endHour())
-                    .withMinuteOfHour(threshold.endMinute())
-                    .withSecondOfMinute(59)
-                    .withMillisOfSecond(999);
 
-                return Pair.create(threshold, new Interval(start, end));
+                if (threshold.endHour() == 23 && threshold.endMinute() == 59) {
+                    final DateTime end = new DateTime()
+                        .withDayOfWeek(threshold.day() + 1)
+                        .withHourOfDay(threshold.endHour())
+                        .withMinuteOfHour(threshold.endMinute())
+                        .withSecondOfMinute(59)
+                        .withMillisOfSecond(999);
+
+                    return Pair.create(threshold, new Interval(start, end));
+                } else {
+                    final DateTime end = new DateTime()
+                        .withDayOfWeek(threshold.day() + 1)
+                        .withHourOfDay(threshold.endHour())
+                        .withMinuteOfHour(threshold.endMinute())
+                        .withSecondOfMinute(0)
+                        .withMillisOfSecond(0)
+                        .minusMillis(1);
+
+                    return Pair.create(threshold, new Interval(start, end));
+                }
             })
             .collect(Collectors.toList());
 
         IntStream.range(0, 7).forEach(day -> dayMargins(thresholds, intervals, day));
-
-//        IntStream.range(0, intervals.size() - 1)
-//            .forEach(index -> {
-//                final Interval current = intervals.get(index).second;
-//                final Interval next = intervals.get(index + 1).second;
-//                final Interval gap = current.gap(next);
-//                if (gap != null) { // && gap.toDuration().getMillis() > 1
-//                    intervals.add(Pair.create(null, gap));
-//                }
-//            });
-
-//        IntStream.range(0, 7).forEach(day -> dayMargins(thresholds, intervals, day));
 
         intervals.sort((interval, other) -> {
             if (interval.equals(other)) {
@@ -150,7 +151,7 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
 
         intervals
             .forEach(pair -> {
-                Log.i(TAG, pair.second.toString());
+                Log.i(TAG, pair.second.toString() + " --- " + (pair.first == null ? "GAP" : pair.first.toString()));
             });
 
         this.intervals = ImmutableList.copyOf(intervals);
@@ -219,23 +220,21 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         final List<Threshold> dayThresholds = thresholds.stream()
             .filter(threshold -> threshold.day() == day)
             .sorted((threshold1, threshold2) -> {
-                final DateTime dt1 = new DateTime()
+                final DateTime dateTime1 = new DateTime()
                     .withDayOfWeek(threshold1.day() + 1) //must be in range of 1 to 7
                     .withHourOfDay(threshold1.startHour())
                     .withMinuteOfHour(threshold1.startMinute())
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
-                final DateTime dt2 = new DateTime()
+
+                final DateTime dateTime2 = new DateTime()
                     .withDayOfWeek(threshold2.day() + 1) //must be in range of 1 to 7
                     .withHourOfDay(threshold2.startHour())
                     .withMinuteOfHour(threshold2.startMinute())
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
-                if (dt1.equals(dt2)) {
-                    return 0;
-                } else {
-                    return dt1.isBefore(dt2) ? -1 : 1;
-                }
+
+                return dateTime1.equals(dateTime2) ? 0 : dateTime1.isBefore(dateTime2) ? -1 : 1;
             })
             .collect(Collectors.toList());
 
@@ -245,7 +244,8 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
 
             if (first.startHour() != 0 && first.startMinute() != 0) {
                 intervals.add(
-                    Pair.create(null, new Interval(
+                    Pair.create(null,
+                        new Interval(
                             new DateTime()
                                 .withDayOfWeek(first.day() + 1)
                                 .withHourOfDay(0)
@@ -258,13 +258,15 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                                 .withMinuteOfHour(first.startMinute())
                                 .withSecondOfMinute(0)
                                 .withMillisOfSecond(0)
+                                .minusMillis(1)
                         )
                     )
                 );
             }
             if (last.endHour() != 23 && last.endMinute() != 59) {
                 intervals.add(
-                    Pair.create(null, new Interval(
+                    Pair.create(null,
+                        new Interval(
                             new DateTime()
                                 .withDayOfWeek(first.day() + 1)
                                 .withHourOfDay(last.endHour())
@@ -289,8 +291,16 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                         final Interval current = intervals.get(index).second;
                         final Interval next = intervals.get(index + 1).second;
                         final Interval gap = current.gap(next);
-                        if (gap != null) { // && gap.toDuration().getMillis() > 1
-                            intervals.add(Pair.create(null, gap));
+                        if (gap != null) {
+                            intervals.add(
+                                Pair.create(
+                                    null,
+                                    new Interval(
+                                        gap.getStart().plusMillis(1),
+                                        gap.getEnd().minusMillis(1)
+                                    )
+                                )
+                            );
                         }
                     });
             }
