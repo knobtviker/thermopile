@@ -105,7 +105,7 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     }
 
     public void updateData(@NonNull final RealmResults<Threshold> thresholds) {
-        final List<Pair<Threshold, Interval>> intervals = thresholds
+        final List<Pair<Threshold, Interval>> intervalsAll = thresholds
             .stream()
             .map(threshold -> {
                 final DateTime start = new DateTime()
@@ -114,7 +114,6 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                     .withMinuteOfHour(threshold.startMinute())
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
-
 
                 if (threshold.endHour() == 23 && threshold.endMinute() == 59) {
                     final DateTime end = new DateTime()
@@ -139,9 +138,9 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
             })
             .collect(Collectors.toList());
 
-        IntStream.range(0, 7).forEach(day -> dayMargins(thresholds, intervals, day));
+        IntStream.range(0, 7).forEach(day -> dayMargins(thresholds, intervalsAll, day));
 
-        intervals.sort((interval, other) -> {
+        intervalsAll.sort((interval, other) -> {
             if (interval.equals(other)) {
                 return 0;
             } else {
@@ -149,12 +148,12 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
             }
         });
 
-        intervals
+        intervalsAll
             .forEach(pair -> {
                 Log.i(TAG, pair.second.toString() + " --- " + (pair.first == null ? "GAP" : pair.first.toString()));
             });
 
-        this.intervals = ImmutableList.copyOf(intervals);
+        this.intervals = ImmutableList.copyOf(intervalsAll);
 
         notifyDataSetChanged();
     }
@@ -216,7 +215,7 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         );
     }
 
-    private void dayMargins(@NonNull final RealmResults<Threshold> thresholds, @NonNull final List<Pair<Threshold, Interval>> intervals, final int day) {
+    private void dayMargins(@NonNull final RealmResults<Threshold> thresholds, @NonNull final List<Pair<Threshold, Interval>> intervalsAll, final int day) {
         final List<Threshold> dayThresholds = thresholds.stream()
             .filter(threshold -> threshold.day() == day)
             .sorted((threshold1, threshold2) -> {
@@ -242,8 +241,8 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
             final Threshold first = dayThresholds.get(0);
             final Threshold last = dayThresholds.get(dayThresholds.size() - 1);
 
-            if (first.startHour() != 0 && first.startMinute() != 0) {
-                intervals.add(
+            if (first.startHour() != 0 || first.startMinute() != 0) {
+                intervalsAll.add(
                     Pair.create(null,
                         new Interval(
                             new DateTime()
@@ -263,8 +262,8 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                     )
                 );
             }
-            if (last.endHour() != 23 && last.endMinute() != 59) {
-                intervals.add(
+            if (last.endHour() != 23 || last.endMinute() != 59) {
+                intervalsAll.add(
                     Pair.create(null,
                         new Interval(
                             new DateTime()
@@ -288,11 +287,11 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
             if (dayThresholds.size() > 1) {
                 IntStream.range(0, dayThresholds.size() - 1)
                     .forEach(index -> {
-                        final Interval current = intervals.get(index).second;
-                        final Interval next = intervals.get(index + 1).second;
+                        final Interval current = intervalsAll.get(index).second;
+                        final Interval next = intervalsAll.get(index + 1).second;
                         final Interval gap = current.gap(next);
                         if (gap != null) {
-                            intervals.add(
+                            intervalsAll.add(
                                 Pair.create(
                                     null,
                                     new Interval(
