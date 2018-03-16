@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="background_appbar">#212121</color>
+    <color name="background">#303030</color>
 
     <color name="background_arc_track">#424242</color>
     <color name="background_fab">#616161</color>

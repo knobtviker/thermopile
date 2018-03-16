@@ -85,8 +85,11 @@
         <item>@color/black</item>
     </array>
 
+    <color name="background_appbar">#f5f5f5</color>
+    <color name="background">#fafafa</color>
+
     <color name="background_arc_track">#E5E4E2</color>
     <color name="background_fab">#EEEEEE</color>
-    <color name="background_bottom_sheet">#EEEEEE</color>
+    <color name="background_bottom_sheet">#f5f5f5</color>
 
 </resources>

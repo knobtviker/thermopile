@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
+    android:background="@color/background"
     android:layout_height="match_parent"
     tools:context=".presentation.activities.MainActivity">
 
@@ -16,8 +17,9 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/appbar_layout"
             android:layout_width="0dp"
-            android:layout_height="32dp"
+            android:layout_height="48dp"
             android:clipToPadding="false"
+            android:background="@color/background_appbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +29,6 @@
                 android:id="@+id/textview_clock"
                 style="@style/TextTime"
                 android:layout_height="0dp"
-                android:background="@drawable/middle_slice"
                 android:gravity="center"
                 android:minWidth="100dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +41,6 @@
                 android:id="@+id/textview_date"
                 style="@style/TextDate"
                 android:layout_marginRight="@dimen/margin_datetime"
-                android:background="@drawable/left_slice"
                 android:gravity="center_vertical|left"
                 android:paddingLeft="@dimen/margin_default"
                 android:paddingRight="@dimen/margin_large"
@@ -54,7 +54,6 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginLeft="@dimen/margin_datetime"
-                android:background="@drawable/right_slice"
                 android:paddingLeft="@dimen/margin_large"
                 android:paddingRight="@dimen/margin_default"
                 app:layout_constraintBottom_toBottomOf="@id/textview_clock"
@@ -101,6 +100,16 @@
 
         </android.support.constraint.ConstraintLayout>
 
+        <ImageView
+            android:src="@drawable/shadow_slice"
+            android:id="@+id/appbar_layout_shadow"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="8dp"/>
+
         <com.knobtviker.thermopile.presentation.views.ArcView
             android:id="@+id/arc_temperature"
             android:layout_width="wrap_content"
@@ -113,7 +122,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout"
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow"
             app:progressColor="@color/arc_temperature"
             app:stroke_thickness="@dimen/thickness_16"
             app:trackColor="@color/background_arc_track"/>
@@ -135,7 +144,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
             app:layout_constraintEnd_toStartOf="@id/arc_temperature"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout">
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow">
 
             <com.knobtviker.thermopile.presentation.views.ArcView
                 android:id="@+id/arc_humidity"
@@ -239,7 +248,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/arc_temperature"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout">
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow">
 
             <com.knobtviker.thermopile.presentation.views.ArcView
                 android:id="@+id/arc_pressure"
