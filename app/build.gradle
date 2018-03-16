@@ -50,11 +50,11 @@ dependencies {
     implementation 'com.knobtviker.android.things.contrib.community.driver:ds3231:1.0.3'
     implementation 'com.knobtviker.android.things.contrib.community.driver:lsm9ds1:1.0.2'
     implementation 'com.knobtviker.android.things.contrib.community.support:rxscreenmanager:1.0.3'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'net.danlew:android.joda:2.9.9'
-    compileOnly 'com.google.auto.value:auto-value:1.5.3'
-    annotationProcessor 'com.google.auto.value:auto-value:1.5.3'
+    compileOnly 'com.google.auto.value:auto-value:1.5.4'
+    annotationProcessor 'com.google.auto.value:auto-value:1.5.4'
     implementation 'com.google.guava:guava-base:r03'
     implementation 'com.google.guava:guava-primitives:r03'
     implementation 'com.google.guava:guava-annotations:r03'
@@ -78,7 +78,6 @@ dependencies {
     implementation 'com.uphyca:stetho_realm:2.2.2'
     implementation 'com.bugfender.sdk:android:1.0.2'
 //    implementation 'com.google.firebase:firebase-core:11.8.0'
-//    implementation 'com.google.firebase:firebase-crash:11.8.0'
 }
 
 //apply plugin: 'com.google.gms.google-services'

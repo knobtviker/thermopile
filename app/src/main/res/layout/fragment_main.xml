@@ -114,7 +114,7 @@
             android:id="@+id/arc_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_default"
             app:layout_constrainedHeight="true"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/floatingactionbutton_down"
@@ -140,7 +140,7 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_default"
             app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
             app:layout_constraintEnd_toStartOf="@id/arc_temperature"
             app:layout_constraintStart_toStartOf="parent"
@@ -244,7 +244,7 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_default"
             app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/arc_temperature"
