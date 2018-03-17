@@ -29,13 +29,13 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_height">0dp</item>
-        <item name="fontPath">fonts/WorkSans-Light.ttf</item>
+        <item name="fontPath">fonts/WorkSans-Medium.ttf</item>
     </style>
 
     <style name="TextTime" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">0dp</item>
-        <item name="fontPath">fonts/WorkSans-Light.ttf</item>
+        <item name="fontPath">fonts/WorkSans-Medium.ttf</item>
     </style>
 
     <style name="TextHour" parent="TextAppearance.AppCompat.Body1">

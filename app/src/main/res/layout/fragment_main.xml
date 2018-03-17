@@ -237,7 +237,7 @@
                 app:layout_constraintEnd_toEndOf="@id/arc_iaq"
                 app:layout_constraintStart_toStartOf="@id/arc_iaq"
                 app:layout_constraintTop_toTopOf="@id/arc_iaq"
-                tools:text="very bad"/>
+                tools:text="little bad"/>
 
         </android.support.constraint.ConstraintLayout>
 
