@@ -11,7 +11,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_marginBottom="56dp"
+        android:layout_marginBottom="?attr/actionBarSize"
         android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
@@ -394,6 +394,7 @@
             android:layout_height="?attr/actionBarSize"
             app:backgroundTint="@color/background_fab"
             app:fabSize="normal"
+            android:layout_marginBottom="@dimen/margin_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/floatingactionbutton_up"
             app:layout_constraintStart_toStartOf="@id/arc_temperature"
@@ -405,6 +406,7 @@
             android:layout_height="?attr/actionBarSize"
             app:backgroundTint="@color/background_fab"
             app:fabSize="normal"
+            android:layout_marginBottom="@dimen/margin_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/arc_temperature"
             app:layout_constraintStart_toEndOf="@+id/floatingactionbutton_down"
@@ -428,6 +430,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+            <View
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="#000000"
+                android:alpha="0.2"
+                android:layout_width="0dp"
+                android:layout_height="1dp" />
 
 
         </android.support.constraint.ConstraintLayout>
