@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:background="@color/background"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".presentation.activities.MainActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_height="match_parent">
+        android:id="@+id/top_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/appbar_layout"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:clipToPadding="false"
             android:background="@color/background_appbar"
+            android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -101,20 +104,80 @@
         </android.support.constraint.ConstraintLayout>
 
         <ImageView
-            android:src="@drawable/shadow_slice"
             android:id="@+id/appbar_layout_shadow"
-            android:scaleType="fitXY"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="0dp"
-            android:layout_height="8dp"/>
+            android:layout_height="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/shadow_slice"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/bottom_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/background_bottom_sheet"
+        android:minHeight="?attr/actionBarSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:id="@+id/bottom_toolbar_divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:alpha="0.2"
+            android:background="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/textview_day"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingTop="@dimen/margin_xxsmall"
+            android:singleLine="true"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="?android:textColorTertiary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bottom_toolbar_divider"
+            tools:text="Četvrtak"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_thresholds"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/margin_xxsmall"
+            android:scrollbars="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_day"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_toolbar">
 
         <com.knobtviker.thermopile.presentation.views.ArcView
             android:id="@+id/arc_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_small"
             app:layout_constrainedHeight="true"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/floatingactionbutton_down"
@@ -122,7 +185,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow"
+            app:layout_constraintTop_toTopOf="parent"
             app:progressColor="@color/arc_temperature"
             app:stroke_thickness="@dimen/thickness_16"
             app:trackColor="@color/background_arc_track"/>
@@ -140,11 +203,11 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
             app:layout_constraintEnd_toStartOf="@id/arc_temperature"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.knobtviker.thermopile.presentation.views.ArcView
                 android:id="@+id/arc_humidity"
@@ -244,11 +307,11 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintBottom_toBottomOf="@+id/floatingactionbutton_down"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/arc_temperature"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.knobtviker.thermopile.presentation.views.ArcView
                 android:id="@+id/arc_pressure"
@@ -392,9 +455,9 @@
             android:id="@+id/floatingactionbutton_down"
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
+            android:layout_marginBottom="@dimen/margin_default"
             app:backgroundTint="@color/background_fab"
             app:fabSize="normal"
-            android:layout_marginBottom="@dimen/margin_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/floatingactionbutton_up"
             app:layout_constraintStart_toStartOf="@id/arc_temperature"
@@ -404,9 +467,9 @@
             android:id="@+id/floatingactionbutton_up"
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
+            android:layout_marginBottom="@dimen/margin_default"
             app:backgroundTint="@color/background_fab"
             app:fabSize="normal"
-            android:layout_marginBottom="@dimen/margin_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/arc_temperature"
             app:layout_constraintStart_toEndOf="@+id/floatingactionbutton_down"
@@ -414,65 +477,4 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/bottom_sheet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background_appbar"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="48dp"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/imageview_peek"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <View
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:background="#000000"
-                android:alpha="0.2"
-                android:layout_width="0dp"
-                android:layout_height="1dp" />
-
-
-        </android.support.constraint.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/textview_day"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/margin_xsmall"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textAllCaps="true"
-            android:gravity="center"
-            android:background="@color/background_bottom_sheet"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="?android:textColorTertiary"
-            app:layout_constraintTop_toBottomOf="@id/imageview_peek"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="Četvrtak"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_thresholds"
-            android:layout_width="0dp"
-            android:scrollbars="horizontal"
-            android:paddingTop="@dimen/margin_xsmall"
-            android:layout_height="wrap_content"
-            android:background="@color/background_bottom_sheet"
-            app:layout_constraintTop_toBottomOf="@id/textview_day"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+</android.support.constraint.ConstraintLayout>
