@@ -295,7 +295,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
-                android:textSize="28sp"
+                android:textSize="26sp"
                 app:layout_constraintBottom_toBottomOf="@id/arc_iaq"
                 app:layout_constraintEnd_toEndOf="@id/arc_iaq"
                 app:layout_constraintStart_toStartOf="@id/arc_iaq"
