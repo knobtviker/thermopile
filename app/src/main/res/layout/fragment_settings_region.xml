@@ -1,130 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="true">
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textview_title_timezone"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/margin_default">
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_default"
+            android:text="Timezone"
+            android:textAllCaps="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/layout_timezone_title"
+        <Spinner
+            android:id="@+id/spinner_timezone"
+            android:layout_width="0dp"
+            android:layout_height="?attr/listPreferredItemHeight"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:spinnerMode="dialog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_timezone"/>
+
+        <View
+            android:id="@+id/divider_timezone"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/margin_default"
+            android:alpha="@dimen/alpha_divider"
+            android:background="@color/background_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_timezone"/>
+
+        <TextView
+            android:id="@+id/textview_title_clock_mode"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_default"
+            android:text="Clock mode"
+            android:textAllCaps="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_timezone"/>
+
+        <RadioGroup
+            android:id="@+id/radiogroup_clock_mode"
+            android:layout_width="0dp"
+            android:layout_height="?attr/listPreferredItemHeight"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_clock_mode">
+
+            <RadioButton
+                android:id="@+id/mode_12h"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_xsmall"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_weight="1"
+                android:text="12h"/>
 
-                <TextView
-                    android:id="@+id/textview_title_timezone"
-                    style="@style/TextAppearance.AppCompat.Caption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Timezone"
-                    android:textAllCaps="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:background="?android:textColorPrimary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_title_timezone"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <Spinner
-                android:id="@+id/spinner_timezone"
-                android:layout_width="0dp"
-                android:layout_height="?attr/listPreferredItemHeight"
-                android:spinnerMode="dialog"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_timezone_title"/>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/layout_clock_mode_title"
+            <RadioButton
+                android:id="@+id/mode_24h"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_xsmall"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spinner_timezone">
+                android:layout_weight="1"
+                android:text="24h"/>
 
-                <TextView
-                    android:id="@+id/textview_title_clock_mode"
-                    style="@style/TextAppearance.AppCompat.Caption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Clock mode"
-                    android:textAllCaps="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+        </RadioGroup>
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:background="?android:textColorPrimary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_title_clock_mode"
-                    app:layout_constraintTop_toTopOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
 
-            </android.support.constraint.ConstraintLayout>
-
-            <RadioGroup
-                android:id="@+id/radiogroup_clock_mode"
-                android:layout_width="0dp"
-                android:layout_height="?attr/listPreferredItemHeight"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_clock_mode_title">
-
-                <RadioButton
-                    android:id="@+id/mode_12h"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="12h"/>
-
-                <RadioButton
-                    android:id="@+id/mode_24h"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="24h"/>
-
-            </RadioGroup>
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.v4.widget.NestedScrollView>
-
-</android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>

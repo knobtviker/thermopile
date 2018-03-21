@@ -61,16 +61,24 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        final View view = inflater.inflate(R.layout.fragment_settings_format, container, false);
+        return inflater.inflate(R.layout.fragment_settings_format, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         bind(this, view);
 
         setupSpinnerDate();
         setupSpinnerTime();
 
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
         presenter.load(realm);
 
-        return view;
+        super.onResume();
     }
 
     @Override

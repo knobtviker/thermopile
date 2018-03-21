@@ -6,12 +6,15 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:clickable="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
+        android:background="@color/background_appbar"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,30 +22,40 @@
         <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="?attr/actionBarSize">
 
             <TextView
-                style="@style/TextDate"
+                style="@style/TextTitle"
                 android:layout_gravity="center"
                 android:text="Settings"
                 tools:text="Settings"/>
 
         </Toolbar>
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
+            android:layout_gravity="top"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appbar_layout"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/white"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed"/>
+
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_layout"
+    <ImageView
+        android:id="@+id/appbar_layout_shadow"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shadow_slice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
-        android:layout_gravity="top"
-        app:tabMaxWidth="0dp"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/white"
-        app:tabMode="fixed"/>
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
@@ -51,6 +64,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow"/>
 
 </android.support.constraint.ConstraintLayout>

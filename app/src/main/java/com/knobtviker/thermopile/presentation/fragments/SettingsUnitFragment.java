@@ -70,17 +70,25 @@ public class SettingsUnitFragment extends BaseFragment<SettingsContract.Presente
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        
-        final View view = inflater.inflate(R.layout.fragment_settings_unit, container, false);
 
+        return inflater.inflate(R.layout.fragment_settings_unit, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         bind(this, view);
 
         setupRadioGroupTemperatureUnit();
         setupRadioGroupPressureUnit();
 
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
         presenter.load(realm);
 
-        return view;
+        super.onResume();
     }
 
     @Override

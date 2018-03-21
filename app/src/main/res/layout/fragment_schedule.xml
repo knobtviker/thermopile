@@ -12,6 +12,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
         android:layout_width="0dp"
+        android:background="@color/background_appbar"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +24,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                style="@style/TextDate"
+                style="@style/TextTitle"
                 android:layout_gravity="center"
                 android:text="@string/label_schedule"
                 tools:text="Schedule"/>

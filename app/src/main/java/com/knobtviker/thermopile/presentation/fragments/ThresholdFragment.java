@@ -131,12 +131,16 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        final View view = inflater.inflate(R.layout.fragment_threshold, container, false);
+        return inflater.inflate(R.layout.fragment_threshold, container, false);
+    }
 
-        super.bind(this, view);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        bind(this, view);
 
         setupToolbar();
         setupPreview();
@@ -144,15 +148,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         setupRecyclerView();
         setupSeekBar();
 
-        if (thresholdId != -1L) {
-            presenter.loadById(realm, thresholdId);
-        } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
-            populate(startMinute, maxWidth);
-        } else {
-            //TODO: Show some impossible error
-        }
-
-        return view;
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -174,6 +170,18 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onResume() {
+        if (thresholdId != -1L) {
+            presenter.loadById(realm, thresholdId);
+        } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
+            populate(startMinute, maxWidth);
+        } else {
+            //TODO: Show some impossible error
+        }
+        super.onResume();
     }
 
     @Override

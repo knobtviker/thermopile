@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            style="@style/TextDate"
+            style="@style/TextTitle"
             android:layout_gravity="center"
             android:text="Threshold"
             tools:text="Threshold"/>

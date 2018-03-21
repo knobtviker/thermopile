@@ -92,17 +92,21 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        final View view = inflater.inflate(R.layout.fragment_schedule, container, false);
+        return inflater.inflate(R.layout.fragment_schedule, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         bind(this, view);
 
         setupToolbar();
         setupDayTouchListeners();
 
-        return view;
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

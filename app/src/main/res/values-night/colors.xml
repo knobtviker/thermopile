@@ -6,4 +6,5 @@
     <color name="background_arc_track">#424242</color>
     <color name="background_fab">#616161</color>
     <color name="background_bottom_sheet">#212121</color>
+    <color name="background_divider">#ffffff</color>
 </resources>

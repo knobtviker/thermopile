@@ -91,6 +91,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         //TODO: Only a memory flag live in process, should be controlled via Settings from Realm and stored in FRAM.
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
+        test();
+
         initBugfender();
         initApplicationState();
         initSensors();
@@ -347,7 +349,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     //CHIP_ID_BME280 = 0x60 | DEFAULT_I2C_ADDRESS = 0x77
     private void initBME280() throws IOException {
-        final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver(BoardDefaults.getI2CPort());
+        final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver(BoardDefaults.defaultI2CBus());
         bme280SensorDriver.registerTemperatureSensor();
         bme280SensorDriver.registerPressureSensor();
         bme280SensorDriver.registerHumiditySensor();
@@ -355,7 +357,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     //CHIP_ID_BME680 = 0x61 | DEFAULT_I2C_ADDRESS = 0x76 (or 0x77)
     private void initBME680() throws IOException {
-        final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.getI2CPort());
+        final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.defaultI2CBus());
         bme680SensorDriver.registerTemperatureSensor();
         bme680SensorDriver.registerPressureSensor();
         bme680SensorDriver.registerHumiditySensor();
@@ -364,7 +366,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     //CHIP_ID_DS3231 = 0x?? | DEFAULT_I2C_ADDRESS = 0x68
     private void initDS3231() throws IOException {
-        final Ds3231SensorDriver ds3231SensorDriver = new Ds3231SensorDriver(BoardDefaults.getI2CPort());
+        final Ds3231SensorDriver ds3231SensorDriver = new Ds3231SensorDriver(BoardDefaults.defaultI2CBus());
         ds3231SensorDriver.registerTemperatureSensor();
 
         final Ds3231 ds3231 = ds3231SensorDriver.device();
@@ -390,13 +392,13 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     //CHIP_ID_TSL2561 = 0x?? | DEFAULT_I2C_ADDRESS = 0x39 (or 0x29 or 0x49)
     private void initTSL2561() throws IOException {
-        final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(BoardDefaults.getI2CPort());
+        final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(BoardDefaults.defaultI2CBus());
         tsl2561SensorDriver.registerLuminositySensor();
     }
 
     //CHIP_ID_LSM9DS1 = 0x?? | DEFAULT_I2C_ADDRESS_ACCEL_GYRO = 0x6B | DEFAULT_I2C_ADDRESS_MAG = 0x1E
     private void initLSM9DS1() throws IOException {
-        final Lsm9ds1SensorDriver lsm9ds1SensorDriver = new Lsm9ds1SensorDriver(BoardDefaults.getI2CPort());
+        final Lsm9ds1SensorDriver lsm9ds1SensorDriver = new Lsm9ds1SensorDriver(BoardDefaults.defaultI2CBus());
         lsm9ds1SensorDriver.registerTemperatureSensor();
         lsm9ds1SensorDriver.registerAccelerometerSensor();
         lsm9ds1SensorDriver.registerGyroscopeSensor();
@@ -466,5 +468,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             presenter.saveMagneticFields(new ArrayList<>(magneticFields));
             magneticFields.clear();
         }
+    }
+
+    private void test() {
+        BoardDefaults
+            .i2CDevices()
+            .forEach(device -> Log.i(TAG, device.bus() + " --- " + device.address() + " --- " + device.addressHex()));
     }
 }
