@@ -7,7 +7,6 @@ import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -28,8 +27,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import io.realm.RealmResults;
-import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan;
-import uk.co.chrisjenx.calligraphy.TypefaceUtils;
 
 /**
  * Created by bojan on 13/06/2017.
@@ -45,7 +42,6 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     private final LayoutInflater layoutInflater;
     private final int colorTransparent;
     private final ImmutableList<String> days;
-    private final CalligraphyTypefaceSpan typefaceSpanMedium;
 
     private ImmutableList<Interval> emptyDays = ImmutableList.of();
 
@@ -57,7 +53,6 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         this.layoutInflater = LayoutInflater.from(context);
         this.colorTransparent = ContextCompat.getColor(context, android.R.color.transparent);
         this.days = ImmutableList.copyOf(context.getResources().getStringArray(R.array.weekdays));
-        this.typefaceSpanMedium = new CalligraphyTypefaceSpan(TypefaceUtils.load(context.getAssets(), "fonts/WorkSans-Medium.ttf"));
 
         setEmptyDays();
     }
@@ -170,7 +165,7 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     private void buildTime(@NonNull final TextView textView, @NonNull final String time) {
         final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
         spannableStringBuilder.append(time);
-        spannableStringBuilder.setSpan(typefaceSpanMedium, 0, time.indexOf(":"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        spannableStringBuilder.setSpan(typefaceSpanMedium, 0, time.indexOf(":"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         textView.setText(spannableStringBuilder, TextView.BufferType.SPANNABLE);
     }

@@ -28,7 +28,6 @@ import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1Sen
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
 import com.knobtviker.thermopile.BuildConfig;
-import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
@@ -56,8 +55,6 @@ import org.joda.time.DateTimeUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -98,7 +95,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         initSensors();
         initDatabase();
         initStetho();
-        initCalligraphy();
         initJodaTime();
         initPresenter();
     }
@@ -303,13 +299,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         } catch (IOException e) {
             showError(e);
         }
-    }
-
-    private void initCalligraphy() {
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-            .setDefaultFontPath("fonts/WorkSans-Regular.ttf")
-            .setFontAttrId(R.attr.fontPath)
-            .build());
     }
 
     private void initJodaTime() {
