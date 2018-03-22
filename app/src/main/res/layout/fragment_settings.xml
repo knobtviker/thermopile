@@ -13,24 +13,85 @@
         android:id="@+id/appbar_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/background_appbar"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Toolbar
-            android:id="@+id/toolbar"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
+
+            <ImageButton
+                android:id="@+id/button_back"
+                style="@style/Widget.AppCompat.Light.ActionButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/margin_default"
+                android:src="?attr/homeAsUpIndicator"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 style="@style/TextTitle"
                 android:layout_gravity="center"
                 android:text="Settings"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Settings"/>
 
-        </Toolbar>
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/margin_datetime"
+                android:paddingLeft="@dimen/margin_large"
+                android:paddingRight="@dimen/margin_default"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/button_about"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_about"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageButton
+                    android:id="@+id/button_feedback"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="@dimen/margin_default"
+                    android:src="@drawable/ic_feedback"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@id/button_about"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageButton
+                    android:id="@+id/button_help"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="@dimen/margin_default"
+                    android:src="@drawable/ic_help"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@id/button_feedback"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.constraint.ConstraintLayout>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"

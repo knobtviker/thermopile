@@ -96,7 +96,7 @@
                     android:src="@drawable/ic_charts"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toStartOf="@+id/button_schedule"
+                    app:layout_constraintEnd_toStartOf="@id/button_schedule"
                     app:layout_constraintTop_toTopOf="parent"/>
 
             </android.support.constraint.ConstraintLayout>

@@ -32,7 +32,7 @@
         <Spinner
             android:id="@+id/spinner_date_format"
             android:layout_width="0dp"
-            android:layout_height="?attr/listPreferredItemHeight"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
             android:layout_marginLeft="@dimen/margin_default"
             android:layout_marginRight="@dimen/margin_default"
             android:spinnerMode="dialog"
@@ -69,13 +69,22 @@
         <Spinner
             android:id="@+id/spinner_time_format"
             android:layout_width="0dp"
-            android:layout_height="?attr/listPreferredItemHeight"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
             android:layout_marginLeft="@dimen/margin_default"
             android:layout_marginRight="@dimen/margin_default"
             android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textview_title_time_format"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/margin_default"
+            android:background="@color/background_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_time_format"/>
 
     </android.support.constraint.ConstraintLayout>
 

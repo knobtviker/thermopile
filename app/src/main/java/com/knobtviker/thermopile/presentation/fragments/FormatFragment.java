@@ -60,7 +60,7 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_settings_format, container, false);
+        return inflater.inflate(R.layout.fragment_format, container, false);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
         spinnerFormatDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerAdapterDate != null && !TextUtils.isEmpty(spinnerAdapterDate.getItem(i))) {
+                if (spinnerFormatDate.isEnabled() && spinnerAdapterDate != null && !TextUtils.isEmpty(spinnerAdapterDate.getItem(i))) {
                     presenter.saveFormatDate(settingsId, spinnerAdapterDate.getItem(i));
                 }
             }
@@ -144,7 +144,7 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
         spinnerFormatTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerAdapterTime != null && !TextUtils.isEmpty(spinnerAdapterTime.getItem(i))) {
+                if (spinnerFormatTime.isEnabled() && spinnerAdapterTime != null && !TextUtils.isEmpty(spinnerAdapterTime.getItem(i))) {
                     presenter.saveFormatTime(settingsId, spinnerAdapterTime.getItem(i));
                 }
             }

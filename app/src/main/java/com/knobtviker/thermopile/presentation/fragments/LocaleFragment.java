@@ -68,7 +68,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_settings_region, container, false);
+        return inflater.inflate(R.layout.fragment_locale, container, false);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         spinnerTimezone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerAdapter != null && !TextUtils.isEmpty(spinnerAdapter.getItem(i))) {
+                if (spinnerTimezone.isEnabled() && spinnerAdapter != null && !TextUtils.isEmpty(spinnerAdapter.getItem(i))) {
                     presenter.saveTimezone(settingsId, spinnerAdapter.getItem(i));
                 }
             }
@@ -153,7 +153,9 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
                     value = Constants.CLOCK_MODE_24H;
                     break;
             }
-            presenter.saveClockMode(settingsId, value);
+            if (radioGroupClockMode.isEnabled()) {
+                presenter.saveClockMode(settingsId, value);
+            }
         });
     }
 }

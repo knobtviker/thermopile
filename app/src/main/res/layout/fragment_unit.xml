@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textview_title_unit_temperature"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_default"
+            android:text="Temperature unit"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <RadioGroup
+            android:id="@+id/radiogroup_temperature_unit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_unit_temperature">
+
+            <RadioButton
+                android:id="@+id/unit_celsius"
+                android:layout_width="0dp"
+                android:button="@null"
+                android:gravity="center"
+                android:background="@drawable/background_radiobutton_left"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="Celsius"/>
+
+            <RadioButton
+                android:id="@+id/unit_farenheit"
+                android:layout_width="0dp"
+                android:button="@null"
+                android:gravity="center"
+                android:background="@drawable/background_radiobutton_middle"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="Fahrenheit"/>
+
+            <RadioButton
+                android:id="@+id/unit_kelvin"
+                android:layout_width="0dp"
+                android:button="@null"
+                android:gravity="center"
+                android:background="@drawable/background_radiobutton_right"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="Kelvin"/>
+
+        </RadioGroup>
+
+        <View
+            android:id="@+id/divider_units"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/margin_default"
+            android:background="@color/background_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radiogroup_temperature_unit"/>
+
+        <TextView
+            android:id="@+id/textview_title_unit_pressure"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_default"
+            android:text="Pressure unit"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_units"/>
+
+        <RadioGroup
+            android:id="@+id/radiogroup_pressure_unit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_unit_pressure">
+
+            <RadioButton
+                android:id="@+id/unit_pascal"
+                android:layout_width="0dp"
+                android:button="@null"
+                android:gravity="center"
+                android:background="@drawable/background_radiobutton_left"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="hPa"/>
+
+            <RadioButton
+                android:id="@+id/unit_bar"
+                android:layout_width="0dp"
+                android:button="@null"
+                android:gravity="center"
+                android:background="@drawable/background_radiobutton_middle"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="mbar"/>
+
+            <RadioButton
+                android:id="@+id/unit_psi"
+                android:layout_width="0dp"
+                android:button="@null"
+                android:gravity="center"
+                android:background="@drawable/background_radiobutton_right"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="psi"/>
+
+        </RadioGroup>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/margin_default"
+            android:background="@color/background_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radiogroup_pressure_unit"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.NestedScrollView>

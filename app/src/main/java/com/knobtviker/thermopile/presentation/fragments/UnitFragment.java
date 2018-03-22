@@ -67,10 +67,10 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_settings_unit, container, false);
+        return inflater.inflate(R.layout.fragment_unit, container, false);
     }
 
     @Override
@@ -142,7 +142,9 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
                     value = Constants.UNIT_TEMPERATURE_CELSIUS;
                     break;
             }
-            presenter.saveTemperatureUnit(settingsId, value);
+            if (radioGroupTemperatureUnit.isEnabled()) {
+                presenter.saveTemperatureUnit(settingsId, value);
+            }
         });
     }
 
@@ -164,7 +166,9 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
                     value = Constants.UNIT_PRESSURE_PASCAL;
                     break;
             }
-            presenter.savePressureUnit(settingsId, value);
+            if (radioGroupPressureUnit.isEnabled()) {
+                presenter.savePressureUnit(settingsId, value);
+            }
         });
     }
 }
