@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.data.models.presentation;
 
 import com.google.auto.value.AutoValue;
 
+@SuppressWarnings("mutable")
 @AutoValue
 public abstract class Atmosphere {
 

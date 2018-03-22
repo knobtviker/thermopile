@@ -3,7 +3,6 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +12,9 @@ import android.widget.RadioGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
+import com.knobtviker.thermopile.presentation.contracts.UnitContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
-import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
+import com.knobtviker.thermopile.presentation.presenters.UnitPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import butterknife.BindView;
@@ -24,8 +23,8 @@ import butterknife.BindView;
  * Created by bojan on 15/06/2017.
  */
 
-public class SettingsUnitFragment extends BaseFragment<SettingsContract.Presenter> implements SettingsContract.View {
-    public static final String TAG = SettingsUnitFragment.class.getSimpleName();
+public class UnitFragment extends BaseFragment<UnitContract.Presenter> implements UnitContract.View {
+    public static final String TAG = UnitFragment.class.getSimpleName();
 
     private long settingsId = -1L;
 
@@ -53,8 +52,8 @@ public class SettingsUnitFragment extends BaseFragment<SettingsContract.Presente
     @BindView(R.id.unit_psi)
     public RadioButton radioButtonUnitPsi;
 
-    public static Fragment newInstance() {
-        return new SettingsUnitFragment();
+    public static UnitFragment newInstance() {
+        return new UnitFragment();
     }
 
     @Override
@@ -63,7 +62,7 @@ public class SettingsUnitFragment extends BaseFragment<SettingsContract.Presente
 
         setHasOptionsMenu(false);
 
-        presenter = new SettingsPresenter(this);
+        presenter = new UnitPresenter(this);
     }
 
     @Nullable
@@ -85,13 +84,6 @@ public class SettingsUnitFragment extends BaseFragment<SettingsContract.Presente
     }
 
     @Override
-    public void onResume() {
-        presenter.load(realm);
-
-        super.onResume();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -101,7 +93,6 @@ public class SettingsUnitFragment extends BaseFragment<SettingsContract.Presente
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-    @Override
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id();
 

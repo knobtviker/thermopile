@@ -3,7 +3,6 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,9 +16,9 @@ import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
+import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
-import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
+import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import org.joda.time.DateTimeZone;
@@ -32,8 +31,8 @@ import butterknife.BindView;
  * Created by bojan on 15/06/2017.
  */
 
-public class SettingsRegionFragment extends BaseFragment<SettingsContract.Presenter> implements SettingsContract.View {
-    public static final String TAG = SettingsRegionFragment.class.getSimpleName();
+public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> implements LocaleContract.View {
+    public static final String TAG = LocaleFragment.class.getSimpleName();
 
     private ArrayAdapter<String> spinnerAdapter;
 
@@ -51,8 +50,8 @@ public class SettingsRegionFragment extends BaseFragment<SettingsContract.Presen
     @BindView(R.id.mode_24h)
     public RadioButton radioButton24h;
 
-    public static Fragment newInstance() {
-        return new SettingsRegionFragment();
+    public static LocaleFragment newInstance() {
+        return new LocaleFragment();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class SettingsRegionFragment extends BaseFragment<SettingsContract.Presen
 
         setHasOptionsMenu(false);
 
-        presenter = new SettingsPresenter(this);
+        presenter = new LocalePresenter(this);
     }
 
     @Nullable
@@ -83,13 +82,6 @@ public class SettingsRegionFragment extends BaseFragment<SettingsContract.Presen
     }
 
     @Override
-    public void onResume() {
-        presenter.load(realm);
-
-        super.onResume();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -99,7 +91,6 @@ public class SettingsRegionFragment extends BaseFragment<SettingsContract.Presen
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-    @Override
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id();
 

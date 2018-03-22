@@ -7,9 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.google.common.collect.ImmutableList;
-import com.knobtviker.thermopile.presentation.fragments.SettingsFormatFragment;
-import com.knobtviker.thermopile.presentation.fragments.SettingsRegionFragment;
-import com.knobtviker.thermopile.presentation.fragments.SettingsUnitFragment;
 
 /**
  * Created by bojan on 01/11/2017.
@@ -17,20 +14,15 @@ import com.knobtviker.thermopile.presentation.fragments.SettingsUnitFragment;
 
 public class SettingsPagerAdapter extends FragmentPagerAdapter {
 
-    private ImmutableList<String> titles = ImmutableList.of();
+    private final ImmutableList<String> titles;
 
-    private ImmutableList<Fragment> fragments = ImmutableList.of();
+    private final ImmutableList<Fragment> fragments;
 
-    public SettingsPagerAdapter(@NonNull final FragmentManager fragmentManager, @NonNull final ImmutableList<String> titles) {
+    public SettingsPagerAdapter(@NonNull final FragmentManager fragmentManager, @NonNull final ImmutableList<String> titles, @NonNull final ImmutableList<Fragment> fragments) {
         super(fragmentManager);
 
         this.titles = titles;
-
-        fragments = ImmutableList.of(
-            SettingsRegionFragment.newInstance(),
-            SettingsFormatFragment.newInstance(),
-            SettingsUnitFragment.newInstance()
-        );
+        this.fragments = fragments;
     }
 
     @Override

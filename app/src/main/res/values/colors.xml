@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorAccent">#A4C439</color>
+    <color name="colorAccent">#A4C639</color>
 
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
@@ -93,6 +93,6 @@
     <color name="background_arc_track">#E5E4E2</color>
     <color name="background_fab">#EEEEEE</color>
     <color name="background_bottom_sheet">#f5f5f5</color>
-    <color name="background_divider">#000000</color>
+    <color name="background_divider">#E0E0E0</color>
 
 </resources>

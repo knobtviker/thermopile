@@ -79,34 +79,4 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
 
         completed();
     }
-
-    @Override
-    public void saveTimezone(long settingsId, @NonNull String timezone) {
-        settingsRepository.saveTimezone(settingsId, timezone);
-    }
-
-    @Override
-    public void saveClockMode(long settingsId, int clockMode) {
-        settingsRepository.saveClockMode(settingsId, clockMode);
-    }
-
-    @Override
-    public void saveFormatDate(long settingsId, @NonNull String item) {
-        settingsRepository.saveFormatDate(settingsId, item);
-    }
-
-    @Override
-    public void saveFormatTime(long settingsId, @NonNull String item) {
-        settingsRepository.saveFormatTime(settingsId, item);
-    }
-
-    @Override
-    public void saveTemperatureUnit(long settingsId, int unit) {
-        settingsRepository.saveTemperatureUnit(settingsId, unit);
-    }
-
-    @Override
-    public void savePressureUnit(long settingsId, int unit) {
-        settingsRepository.savePressureUnit(settingsId, unit);
-    }
 }

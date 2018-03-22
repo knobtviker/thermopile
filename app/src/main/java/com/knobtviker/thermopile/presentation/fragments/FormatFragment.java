@@ -3,7 +3,6 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +14,9 @@ import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
+import com.knobtviker.thermopile.presentation.contracts.FormatContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
-import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
+import com.knobtviker.thermopile.presentation.presenters.FormatPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.util.Arrays;
@@ -29,8 +28,8 @@ import butterknife.BindView;
  * Created by bojan on 15/06/2017.
  */
 
-public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presenter> implements SettingsContract.View {
-    public static final String TAG = SettingsFormatFragment.class.getSimpleName();
+public class FormatFragment extends BaseFragment<FormatContract.Presenter> implements FormatContract.View {
+    public static final String TAG = FormatFragment.class.getSimpleName();
 
     private ArrayAdapter<String> spinnerAdapterDate;
     private ArrayAdapter<String> spinnerAdapterTime;
@@ -43,8 +42,8 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
     @BindView(R.id.spinner_time_format)
     public Spinner spinnerFormatTime;
 
-    public static Fragment newInstance() {
-        return new SettingsFormatFragment();
+    public static FormatFragment newInstance() {
+        return new FormatFragment();
     }
 
     @Override
@@ -53,7 +52,7 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
 
         setHasOptionsMenu(false);
 
-        presenter = new SettingsPresenter(this);
+        presenter = new FormatPresenter(this);
     }
 
     @Nullable
@@ -75,13 +74,6 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
     }
 
     @Override
-    public void onResume() {
-        presenter.load(realm);
-
-        super.onResume();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -91,7 +83,6 @@ public class SettingsFormatFragment extends BaseFragment<SettingsContract.Presen
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
-    @Override
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id();
 
