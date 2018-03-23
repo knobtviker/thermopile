@@ -6,6 +6,7 @@
     <string name="label_locale">Locale</string>
     <string name="label_format">Format</string>
     <string name="label_unit">Unit</string>
+    <string name="label_style">Style</string>
 
     <string name="action_charts">Charts</string>
     <string name="action_schedule" translatable="false">@string/label_schedule</string>

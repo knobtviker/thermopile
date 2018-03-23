@@ -35,6 +35,7 @@ import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.Pressure;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
@@ -84,9 +85,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @Override
     public void onCreate() {
         super.onCreate();
-
-        //TODO: Only a memory flag live in process, should be controlled via Settings from Realm and stored in FRAM.
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
 
         test();
 
@@ -192,6 +190,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     }
 
     @Override
+    public void onSettings(@NonNull Settings settings) {
+        AppCompatDelegate.setDefaultNightMode(settings.theme());
+    }
+
+    @Override
     public void onTick() {
         save();
     }
@@ -269,6 +272,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         presenter.initScreen(160, RxScreenManager.ROTATION_180);
         presenter.createScreensaver();
         presenter.brightness(255);
+        presenter.settings(Database.getDefaultInstance());
     }
 
     private void initBugfender() {

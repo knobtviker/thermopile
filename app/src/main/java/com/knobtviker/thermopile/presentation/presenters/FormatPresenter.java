@@ -15,19 +15,13 @@ public class FormatPresenter extends AbstractPresenter implements FormatContract
 
     private final FormatContract.View view;
 
-    private SettingsRepository settingsRepository;
+    private final SettingsRepository settingsRepository;
 
     public FormatPresenter(@NonNull final FormatContract.View view) {
         super(view);
 
         this.view = view;
-    }
-
-    @Override
-    public void subscribe() {
-        super.subscribe();
-
-        settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
     }
 
     @Override

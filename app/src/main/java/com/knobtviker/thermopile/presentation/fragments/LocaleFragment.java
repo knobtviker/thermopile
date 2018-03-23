@@ -58,8 +58,6 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(false);
-
         presenter = new LocalePresenter(this);
     }
 

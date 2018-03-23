@@ -60,8 +60,6 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(false);
-
         presenter = new UnitPresenter(this);
     }
 

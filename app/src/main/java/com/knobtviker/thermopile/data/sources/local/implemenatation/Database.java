@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.data.sources.local.implemenatation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.BuildConfig;
@@ -72,18 +73,18 @@ public class Database {
     }
 
     private static Settings defaultSettings() {
-        final Settings settings = new Settings();
-
-        settings.id(0L);
-        settings.timezone(Constants.DEFAULT_TIMEZONE);
-        settings.formatClock(Constants.CLOCK_MODE_24H);
-        settings.unitTemperature(Constants.UNIT_TEMPERATURE_CELSIUS);
-        settings.unitPressure(Constants.UNIT_PRESSURE_PASCAL);
-        settings.unitMotion(Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2);
-        settings.formatDate(Constants.DEFAULT_FORMAT_DATE);
-        settings.formatTime(Constants.FORMAT_TIME_LONG_24H);
-
-        return settings;
+        return new Settings(
+            0L,
+            Constants.DEFAULT_TIMEZONE,
+            Constants.CLOCK_MODE_24H,
+            Constants.DEFAULT_FORMAT_DATE,
+            Constants.FORMAT_TIME_LONG_24H,
+            Constants.UNIT_TEMPERATURE_CELSIUS,
+            Constants.UNIT_PRESSURE_PASCAL,
+            Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2,
+            Constants.DEFAULT_SCREENSAVER_DELAY,
+            AppCompatDelegate.MODE_NIGHT_AUTO
+        );
     }
 
     private static ImmutableList<Threshold> mockThresholds() {

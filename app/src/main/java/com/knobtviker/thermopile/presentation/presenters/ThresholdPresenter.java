@@ -19,7 +19,7 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
 
     private final ThresholdContract.View view;
 
-    private ThresholdRepository thresholdRepository;
+    private final ThresholdRepository thresholdRepository;
 
     private RealmResults<Threshold> resultsThresholds;
 
@@ -27,13 +27,7 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
         super(view);
 
         this.view = view;
-    }
-
-    @Override
-    public void subscribe() {
-        super.subscribe();
-
-        thresholdRepository = DaggerThresholdDataComponent.create().repository();
+        this.thresholdRepository = DaggerThresholdDataComponent.create().repository();
     }
 
     @Override

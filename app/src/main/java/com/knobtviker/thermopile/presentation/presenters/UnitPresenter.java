@@ -15,19 +15,13 @@ public class UnitPresenter extends AbstractPresenter implements UnitContract.Pre
 
     private final UnitContract.View view;
 
-    private SettingsRepository settingsRepository;
+    private final SettingsRepository settingsRepository;
 
     public UnitPresenter(@NonNull final UnitContract.View view) {
         super(view);
 
         this.view = view;
-    }
-
-    @Override
-    public void subscribe() {
-        super.subscribe();
-
-        settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
     }
 
     @Override

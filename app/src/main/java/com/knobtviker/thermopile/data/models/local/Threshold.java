@@ -1,5 +1,7 @@
 package com.knobtviker.thermopile.data.models.local;
 
+import com.knobtviker.thermopile.data.models.local.implementation.BaseModel;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
@@ -8,12 +10,34 @@ import io.realm.annotations.PrimaryKey;
  * Created by bojan on 15/06/2017.
  */
 
-public class Threshold extends RealmObject {
+public class Threshold extends RealmObject implements BaseModel {
 
+    @PrimaryKey
+    private long id;
+
+    @Index
+    private int day;
+
+    @Index
+    private int startHour;
+
+    @Index
+    private int startMinute;
+
+    private int endHour;
+
+    private int endMinute;
+
+    private int temperature;
+
+    private int color;
+
+    @Override
     public long id() {
         return id;
     }
 
+    @Override
     public void id(final long id) {
         this.id = id;
     }
@@ -73,24 +97,4 @@ public class Threshold extends RealmObject {
     public void color(final int color) {
         this.color = color;
     }
-
-    @PrimaryKey
-    private long id;
-
-    @Index
-    private int day;
-
-    @Index
-    private int startHour;
-
-    @Index
-    private int startMinute;
-
-    private int endHour;
-
-    private int endMinute;
-
-    private int temperature;
-
-    private int color;
 }

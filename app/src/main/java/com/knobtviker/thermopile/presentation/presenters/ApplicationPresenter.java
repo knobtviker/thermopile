@@ -12,10 +12,13 @@ import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.Pressure;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
+import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.di.components.domain.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
+import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
@@ -26,6 +29,8 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 08/08/2017.
@@ -35,39 +40,48 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     private final ApplicationContract.View view;
 
-    private AtmosphereRepository atmosphereRepository;
+    private final AtmosphereRepository atmosphereRepository;
 
-    private RxScreenManager rxScreenManager;
+    private final SettingsRepository settingsRepository;
+
+    private final RxScreenManager rxScreenManager;
+
+    private final Scheduler scheduler;
+
+    private RealmResults<Settings> resultsSettings;
 
     @Nullable
     private Disposable screensaverDisposable;
-
-    private Scheduler scheduler;
 
     public ApplicationPresenter(@NonNull final ApplicationContract.View view) {
         super(view);
 
         this.view = view;
-    }
-
-    @Override
-    public void subscribe() {
-        super.subscribe();
-
-        atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
-        scheduler = DaggerSchedulerProviderComponent.create().scheduler().screensaver;
-
-        rxScreenManager = RxScreenManager.create(Display.DEFAULT_DISPLAY);
+        this.atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
+        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.scheduler = DaggerSchedulerProviderComponent.create().scheduler().screensaver;
+        this.rxScreenManager = RxScreenManager.create(Display.DEFAULT_DISPLAY);
     }
 
     @Override
     public void addListeners() {
-        //DO NOTHING
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.addChangeListener(settings -> {
+                if (!settings.isEmpty()) {
+                    final Settings result = settings.first();
+                    if (result != null) {
+                        view.onSettings(result);
+                    }
+                }
+            });
+        }
     }
 
     @Override
     public void removeListeners() {
-        //DO NOTHING
+        if (resultsSettings != null && resultsSettings.isValid()) {
+            resultsSettings.removeAllChangeListeners();
+        }
     }
 
     @Override
@@ -122,6 +136,18 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                 this::completed,
                 this::error
             );
+    }
+
+    @Override
+    public void settings(@NonNull final Realm realm) {
+        resultsSettings = settingsRepository.load(realm);
+
+        if (!resultsSettings.isEmpty()) {
+            final Settings result = resultsSettings.first();
+            if (result != null) {
+                view.onSettings(result);
+            }
+        }
     }
 
     @Override

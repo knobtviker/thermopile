@@ -152,4 +152,25 @@ public class SettingsLocalDataSource implements SettingsDataSource.Local {
 
         realm.close();
     }
+
+    @Override
+    public void saveTheme(long settingsId, int value) {
+        final Realm realm = Realm.getDefaultInstance();
+
+        final Settings settings = realm
+            .where(Settings.class)
+            .equalTo("id", settingsId)
+            .findFirst();
+
+        if (settings != null) {
+            realm.beginTransaction();
+
+            settings.theme(value);
+
+            realm.insertOrUpdate(settings);
+            realm.commitTransaction();
+        }
+
+        realm.close();
+    }
 }

@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.data.sources.local.implemenatation;
 
 import android.util.Log;
 
-import com.knobtviker.thermopile.data.models.local.implementation.BaseModel;
+import com.knobtviker.thermopile.data.models.local.implementation.SensorModel;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public abstract class AbstractLocalDataSource<T extends BaseModel> implements BaseLocalDataSource<T> {
+public abstract class AbstractLocalDataSource<T extends SensorModel> implements BaseLocalDataSource<T> {
     private final String TAG = AbstractLocalDataSource.class.getSimpleName();
 
     private final Class<T> clazz;

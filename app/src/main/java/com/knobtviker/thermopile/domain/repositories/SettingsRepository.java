@@ -51,4 +51,8 @@ public class SettingsRepository extends AbstractRepository {
     public void savePressureUnit(final long settingsId, final int unit) {
         settingsLocalDataSource.savePressureUnit(settingsId, unit);
     }
+
+    public void saveTheme(final long settingsId, final int value) {
+        settingsLocalDataSource.saveTheme(settingsId, value);
+    }
 }

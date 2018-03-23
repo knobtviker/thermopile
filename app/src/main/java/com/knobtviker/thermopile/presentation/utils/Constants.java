@@ -39,4 +39,6 @@ public class Constants {
 
     public static final String DEFAULT_TIMEZONE = "Europe/Zagreb";
     public static final String DEFAULT_FORMAT_DATE = String.format("%s dd.MM.yyyy.", FORMAT_DAY_LONG);
+
+    public static final int DEFAULT_SCREENSAVER_DELAY = 60;
 }

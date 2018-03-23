@@ -28,5 +28,7 @@ public interface SettingsDataSource {
         void saveTemperatureUnit(final long settingsId, final int unit);
 
         void savePressureUnit(final long settingsId, final int unit);
+
+        void saveTheme(final long settingsId, final int value);
     }
 }

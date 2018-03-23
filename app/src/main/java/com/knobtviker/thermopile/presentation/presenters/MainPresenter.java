@@ -22,8 +22,8 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
     private final MainContract.View view;
 
-    private SettingsRepository settingsRepository;
-    private ThresholdRepository thresholdRepository;
+    private final SettingsRepository settingsRepository;
+    private final ThresholdRepository thresholdRepository;
 
     private RealmResults<Settings> resultsSettings;
     private RealmResults<Threshold> resultsThresholds;
@@ -32,14 +32,8 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         super(view);
 
         this.view = view;
-    }
-
-    @Override
-    public void subscribe() {
-        super.subscribe();
-
-        settingsRepository = DaggerSettingsDataComponent.create().repository();
-        thresholdRepository = DaggerThresholdDataComponent.create().repository();
+        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.thresholdRepository = DaggerThresholdDataComponent.create().repository();
     }
 
     @Override

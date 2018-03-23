@@ -19,7 +19,7 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
 
     private final SettingsContract.View view;
 
-    private SettingsRepository settingsRepository;
+    private final SettingsRepository settingsRepository;
 
     private RealmResults<Settings> resultsSettings;
 
@@ -27,13 +27,7 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
         super(view);
 
         this.view = view;
-    }
-
-    @Override
-    public void subscribe() {
-        super.subscribe();
-
-        settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
     }
 
     @Override

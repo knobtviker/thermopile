@@ -34,6 +34,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     private final LocaleFragment regionFragment;
     private final FormatFragment formatFragment;
     private final UnitFragment unitFragment;
+    private final StyleFragment styleFragment;
 
     @BindView(R.id.tab_layout)
     public TabLayout tabLayout;
@@ -52,6 +53,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         this.regionFragment = LocaleFragment.newInstance();
         this.formatFragment = FormatFragment.newInstance();
         this.unitFragment = UnitFragment.newInstance();
+        this.styleFragment = StyleFragment.newInstance();
     }
 
     @Override
@@ -106,6 +108,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         regionFragment.onLoad(settings);
         formatFragment.onLoad(settings);
         unitFragment.onLoad(settings);
+        styleFragment.onLoad(settings);
     }
 
     @Override
@@ -141,8 +144,8 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     private void setupViewPager() {
         viewPager.setAdapter(new SettingsPagerAdapter(
                 getChildFragmentManager(),
-                ImmutableList.of(getString(R.string.label_locale), getString(R.string.label_format), getString(R.string.label_unit)),
-                ImmutableList.of(regionFragment, formatFragment, unitFragment)
+                ImmutableList.of(getString(R.string.label_locale), getString(R.string.label_format), getString(R.string.label_unit), getString(R.string.label_style)),
+                ImmutableList.of(regionFragment, formatFragment, unitFragment, styleFragment)
             )
         );
         if (viewPager.getAdapter() != null) {

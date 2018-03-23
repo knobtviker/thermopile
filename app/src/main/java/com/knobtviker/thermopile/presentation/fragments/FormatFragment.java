@@ -50,8 +50,6 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(false);
-
         presenter = new FormatPresenter(this);
     }
 

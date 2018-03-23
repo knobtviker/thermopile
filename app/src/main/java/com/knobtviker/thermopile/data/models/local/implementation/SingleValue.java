@@ -1,6 +1,6 @@
 package com.knobtviker.thermopile.data.models.local.implementation;
 
-public interface SingleValue extends BaseModel {
+public interface SingleValue extends SensorModel {
 
     float value();
 

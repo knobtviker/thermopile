@@ -9,11 +9,14 @@ import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.Pressure;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -22,6 +25,8 @@ import java.util.List;
 public interface ApplicationContract {
 
     interface View extends BaseView {
+
+        void onSettings(@NonNull final Settings settings);
 
         void onTick();
 
@@ -39,6 +44,8 @@ public interface ApplicationContract {
         void initScreen(final int density, final int rotation);
 
         void brightness(final int brightness);
+
+        void settings(@NonNull final Realm realm);
 
         void saveTemperature(@NonNull final List<Temperature> items);
 
