@@ -6,14 +6,14 @@
     <solid android:color="@color/transparent"/>
 
     <stroke
-        android:width="1dp"
-        android:color="#767676"/>
+        android:width="@dimen/thickness_2"
+        android:color="@color/background_radiobutton_stroke"/>
 
     <padding
-        android:bottom="4dp"
-        android:left="4dp"
-        android:right="4dp"
-        android:top="4dp"/>
+        android:bottom="@dimen/margin_xsmall"
+        android:left="@dimen/margin_xsmall"
+        android:right="@dimen/margin_xsmall"
+        android:top="@dimen/margin_xsmall"/>
 
     <corners
         android:bottomLeftRadius="0dp"

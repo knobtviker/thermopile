@@ -12,8 +12,12 @@
 
     <dimen name="corner_24dp">24dp</dimen>
     <dimen name="corner_16dp">16dp</dimen>
+    <dimen name="corner_12dp">12dp</dimen>
 
     <dimen name="thickness_16">16dp</dimen>
     <dimen name="thickness_8">8dp</dimen>
+    <dimen name="thickness_2">2dp</dimen>
+
+    <dimen name="height_radiobutton">32dp</dimen>
     
 </resources>

@@ -127,4 +127,43 @@
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>
 
+    <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@drawable/textcolor_radiobutton</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:layout_height">@dimen/height_radiobutton</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="RadioButtonLeft" parent="RadioButton">
+        <item name="android:background">@drawable/background_radiobutton_left</item>
+    </style>
+
+    <style name="RadioButtonMiddle" parent="RadioButton">
+        <item name="android:background">@drawable/background_radiobutton_middle</item>
+    </style>
+
+    <style name="RadioButtonRight" parent="RadioButton">
+        <item name="android:background">@drawable/background_radiobutton_right</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">@dimen/margin_default</item>
+        <item name="android:background">@color/background_divider</item>
+    </style>
+
+    <style name="Section" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/margin_default</item>
+        <item name="android:layout_marginRight">@dimen/margin_default</item>
+        <item name="android:layout_marginTop">@dimen/margin_default</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
 </resources>

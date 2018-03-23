@@ -12,15 +12,8 @@
 
         <TextView
             android:id="@+id/textview_title_unit_temperature"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
-            android:text="Temperature unit"
-            android:textAllCaps="true"
-            android:textColor="@color/colorAccent"
+            style="@style/Section"
+            android:text="Temperature"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,60 +35,32 @@
 
             <RadioButton
                 android:id="@+id/unit_celsius"
-                android:layout_width="0dp"
-                android:button="@null"
-                android:gravity="center"
-                android:background="@drawable/background_radiobutton_left"
-                android:foreground="?attr/selectableItemBackground"
-                android:layout_height="32dp"
-                android:layout_weight="1"
+                style="@style/RadioButtonLeft"
                 android:text="Celsius"/>
 
             <RadioButton
                 android:id="@+id/unit_farenheit"
-                android:layout_width="0dp"
-                android:button="@null"
-                android:gravity="center"
-                android:background="@drawable/background_radiobutton_middle"
-                android:foreground="?attr/selectableItemBackground"
-                android:layout_height="32dp"
-                android:layout_weight="1"
+                style="@style/RadioButtonMiddle"
                 android:text="Fahrenheit"/>
 
             <RadioButton
                 android:id="@+id/unit_kelvin"
-                android:layout_width="0dp"
-                android:button="@null"
-                android:gravity="center"
-                android:background="@drawable/background_radiobutton_right"
-                android:foreground="?attr/selectableItemBackground"
-                android:layout_height="32dp"
-                android:layout_weight="1"
+                style="@style/RadioButtonRight"
                 android:text="Kelvin"/>
 
         </RadioGroup>
 
         <View
             android:id="@+id/divider_units"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_default"
-            android:background="@color/background_divider"
+            style="@style/Divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radiogroup_temperature_unit"/>
 
         <TextView
             android:id="@+id/textview_title_unit_pressure"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
-            android:text="Pressure unit"
-            android:textAllCaps="true"
-            android:textColor="@color/colorAccent"
+            style="@style/Section"
+            android:text="Pressure"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -117,47 +82,26 @@
 
             <RadioButton
                 android:id="@+id/unit_pascal"
-                android:layout_width="0dp"
-                android:button="@null"
-                android:gravity="center"
-                android:background="@drawable/background_radiobutton_left"
-                android:foreground="?attr/selectableItemBackground"
-                android:layout_height="32dp"
-                android:layout_weight="1"
+                style="@style/RadioButtonLeft"
                 android:text="hPa"/>
 
             <RadioButton
                 android:id="@+id/unit_bar"
-                android:layout_width="0dp"
-                android:button="@null"
-                android:gravity="center"
-                android:background="@drawable/background_radiobutton_middle"
-                android:foreground="?attr/selectableItemBackground"
-                android:layout_height="32dp"
-                android:layout_weight="1"
-                android:text="mbar"/>
+                android:text="mbar"
+                style="@style/RadioButtonMiddle"/>
 
             <RadioButton
                 android:id="@+id/unit_psi"
-                android:layout_width="0dp"
-                android:button="@null"
-                android:gravity="center"
-                android:background="@drawable/background_radiobutton_right"
-                android:foreground="?attr/selectableItemBackground"
-                android:layout_height="32dp"
-                android:layout_weight="1"
+                style="@style/RadioButtonRight"
                 android:text="psi"/>
 
         </RadioGroup>
 
         <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_default"
-            android:background="@color/background_divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radiogroup_pressure_unit"/>
+            app:layout_constraintTop_toBottomOf="@id/radiogroup_pressure_unit"
+            style="@style/Divider"/>
 
     </android.support.constraint.ConstraintLayout>
 

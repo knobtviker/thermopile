@@ -15,15 +15,8 @@
 
         <TextView
             android:id="@+id/textview_title_date_format"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
+            style="@style/Section"
             android:text="Date format"
-            android:textColor="@color/colorAccent"
-            android:textAllCaps="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,25 +35,15 @@
 
         <View
             android:id="@+id/divider_date_format"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_default"
-            android:background="@color/background_divider"
+            style="@style/Divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spinner_date_format"/>
 
         <TextView
             android:id="@+id/textview_title_time_format"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
-            android:textColor="@color/colorAccent"
+            style="@style/Section"
             android:text="Time format"
-            android:textAllCaps="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,10 +61,7 @@
             app:layout_constraintTop_toBottomOf="@id/textview_title_time_format"/>
 
         <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_default"
-            android:background="@color/background_divider"
+            style="@style/Divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spinner_time_format"/>

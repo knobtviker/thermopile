@@ -95,4 +95,9 @@
     <color name="background_bottom_sheet">#f5f5f5</color>
     <color name="background_divider">#E0E0E0</color>
 
+    <color name="background_radiobutton_stroke">#B5B5B5</color>
+
+    <color name="textcolor_radiobutton_default">#1D1D1D</color>
+    <color name="textcolor_radiobutton_checked">#ffffff</color>
+
 </resources>
