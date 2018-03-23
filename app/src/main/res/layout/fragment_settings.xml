@@ -46,9 +46,6 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginLeft="@dimen/margin_datetime"
-                android:paddingLeft="@dimen/margin_large"
-                android:paddingRight="@dimen/margin_default"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -56,8 +53,8 @@
                 <ImageButton
                     android:id="@+id/button_about"
                     style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:src="@drawable/ic_about"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
@@ -67,9 +64,8 @@
                 <ImageButton
                     android:id="@+id/button_feedback"
                     style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginRight="@dimen/margin_default"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:src="@drawable/ic_feedback"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
@@ -79,9 +75,8 @@
                 <ImageButton
                     android:id="@+id/button_help"
                     style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginRight="@dimen/margin_default"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:src="@drawable/ic_help"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"

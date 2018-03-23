@@ -43,7 +43,6 @@
             <TextView
                 android:id="@+id/textview_date"
                 style="@style/TextDate"
-                android:layout_marginRight="@dimen/margin_datetime"
                 android:gravity="center_vertical|left"
                 android:paddingLeft="@dimen/margin_default"
                 android:paddingRight="@dimen/margin_large"
@@ -56,9 +55,6 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginLeft="@dimen/margin_datetime"
-                android:paddingLeft="@dimen/margin_large"
-                android:paddingRight="@dimen/margin_default"
                 app:layout_constraintBottom_toBottomOf="@id/textview_clock"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/textview_clock"
@@ -67,8 +63,8 @@
                 <ImageButton
                     android:id="@+id/button_settings"
                     style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:src="@drawable/ic_settings"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
@@ -78,9 +74,8 @@
                 <ImageButton
                     android:id="@+id/button_schedule"
                     style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginRight="@dimen/margin_default"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:src="@drawable/ic_schedule"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
@@ -90,9 +85,8 @@
                 <ImageButton
                     android:id="@+id/button_charts"
                     style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginRight="@dimen/margin_default"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:src="@drawable/ic_charts"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"

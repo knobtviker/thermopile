@@ -16,7 +16,7 @@
         <TextView
             android:id="@+id/textview_title_date_format"
             style="@style/Section"
-            android:text="Date format"
+            android:text="Date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,7 @@
         <TextView
             android:id="@+id/textview_title_time_format"
             style="@style/Section"
-            android:text="Time format"
+            android:text="Time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
