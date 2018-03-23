@@ -35,7 +35,6 @@
 
             <TextView
                 style="@style/TextTitle"
-                android:layout_gravity="center"
                 android:text="Settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

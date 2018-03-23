@@ -11,15 +11,11 @@ import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -39,8 +35,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
-import butterknife.BindView;
 import butterknife.BindViews;
+import butterknife.OnClick;
 import io.realm.RealmResults;
 
 import static android.support.constraint.ConstraintSet.BOTTOM;
@@ -53,9 +49,6 @@ import static android.support.constraint.ConstraintSet.TOP;
 
 public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
     public static final String TAG = ScheduleFragment.class.getSimpleName();
-
-    @BindView(R.id.toolbar)
-    public Toolbar toolbar;
 
     @BindViews({R.id.textview_hour_00, R.id.textview_hour_01, R.id.textview_hour_02, R.id.textview_hour_03, R.id.textview_hour_04, R.id.textview_hour_05, R.id.textview_hour_06, R.id.textview_hour_07, R.id.textview_hour_08, R.id.textview_hour_09, R.id.textview_hour_10, R.id.textview_hour_11, R.id.textview_hour_12, R.id.textview_hour_13, R.id.textview_hour_14, R.id.textview_hour_15, R.id.textview_hour_16, R.id.textview_hour_17, R.id.textview_hour_18, R.id.textview_hour_19, R.id.textview_hour_20, R.id.textview_hour_21, R.id.textview_hour_22, R.id.textview_hour_23})
     public List<TextView> textViewHours;
@@ -85,8 +78,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(true);
-
         presenter = new SchedulePresenter(this);
     }
 
@@ -103,31 +94,9 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
         bind(this, view);
 
-        setupToolbar();
         setupDayTouchListeners();
 
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.schedule, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mainCommunicator.back();
-                return true;
-            case R.id.action_add:
-                add();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
@@ -178,6 +147,20 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         populate(thresholds);
     }
 
+    @OnClick({R.id.button_back, R.id.button_add})
+    public void onClicked(@NonNull final View view) {
+        switch (view.getId()) {
+            case R.id.button_back:
+                if (mainCommunicator != null) {
+                    mainCommunicator.back();
+                }
+                break;
+            case R.id.button_add:
+                add();
+                break;
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private void setupDayTouchListeners() {
         final int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
@@ -212,10 +195,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                             return true;
                         }
                     }));
-    }
-
-    private void setupToolbar() {
-        setupCustomActionBarWithHomeAsUp(toolbar);
     }
 
     private void populate(@NonNull final RealmResults<Threshold> thresholds) {
