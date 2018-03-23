@@ -65,6 +65,10 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         return new ScheduleFragment();
     }
 
+    public ScheduleFragment() {
+        presenter = new SchedulePresenter(this);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -72,13 +76,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         if (context instanceof MainCommunicator) {
             mainCommunicator = (MainCommunicator) context;
         }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        presenter = new SchedulePresenter(this);
     }
 
     @Nullable

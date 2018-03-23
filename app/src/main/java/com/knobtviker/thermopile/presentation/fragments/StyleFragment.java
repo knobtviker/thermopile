@@ -28,6 +28,8 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
     private long settingsId = -1L;
 
+    private int currentNightMode;
+
     @BindView(R.id.radiogroup_theme)
     public RadioGroup radioGroupTheme;
 
@@ -44,10 +46,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         return new StyleFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public StyleFragment() {
         presenter = new StylePresenter(this);
     }
 
@@ -63,7 +62,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         bind(this, view);
 
-        setupRadioGroupTemperatureUnit();
+        setupRadioGroupTheme();
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -81,8 +80,6 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id();
 
-        Log.i(TAG, ""+AppCompatDelegate.getDefaultNightMode());
-
         switch (settings.theme()) {
             case AppCompatDelegate.MODE_NIGHT_NO:
                 radioButtonLight.setChecked(true);
@@ -98,7 +95,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         radioGroupTheme.setEnabled(true);
     }
 
-    private void setupRadioGroupTemperatureUnit() {
+    private void setupRadioGroupTheme() {
         radioGroupTheme.setEnabled(false);
         radioGroupTheme.setOnCheckedChangeListener((radioGroup, checkedId) -> {
             int value;
@@ -118,7 +115,6 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
             }
             if (radioGroupTheme.isEnabled()) {
                 presenter.saveTheme(settingsId, value);
-                AppCompatDelegate.setDefaultNightMode(value);
                 getActivity().recreate();
             }
         });

@@ -56,10 +56,7 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
         return new UnitFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public UnitFragment() {
         presenter = new UnitPresenter(this);
     }
 

@@ -54,6 +54,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         this.formatFragment = FormatFragment.newInstance();
         this.unitFragment = UnitFragment.newInstance();
         this.styleFragment = StyleFragment.newInstance();
+        presenter = new SettingsPresenter(this);
     }
 
     @Override
@@ -63,13 +64,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         if (context instanceof MainCommunicator) {
             mainCommunicator = (MainCommunicator) context;
         }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        presenter = new SettingsPresenter(this);
     }
 
     @Nullable

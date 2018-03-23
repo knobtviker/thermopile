@@ -46,10 +46,7 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
         return new FormatFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public FormatFragment() {
         presenter = new FormatPresenter(this);
     }
 

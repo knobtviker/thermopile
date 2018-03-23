@@ -76,12 +76,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         return new ScreensaverFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setHasOptionsMenu(false);
-
+    public ScreensaverFragment() {
         dateTimeZone = DateTimeZone.forID(Constants.DEFAULT_TIMEZONE);
         formatClock = Constants.CLOCK_MODE_24H;
         formatDate = Constants.DEFAULT_FORMAT_DATE;

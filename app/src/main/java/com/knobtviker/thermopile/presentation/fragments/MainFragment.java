@@ -122,21 +122,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         return new MainFragment();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof MainCommunicator) {
-            mainCommunicator = (MainCommunicator) context;
-        }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setHasOptionsMenu(false);
-
+    public MainFragment() {
         dateTimeZone = DateTimeZone.forID(Constants.DEFAULT_TIMEZONE);
         formatClock = Constants.CLOCK_MODE_24H;
         formatDate = Constants.DEFAULT_FORMAT_DATE;
@@ -161,6 +147,14 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
                 }
             }
         };
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof MainCommunicator) {
+            mainCommunicator = (MainCommunicator) context;
+        }
     }
 
     @Nullable

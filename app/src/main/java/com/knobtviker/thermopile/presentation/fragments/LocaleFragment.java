@@ -54,10 +54,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         return new LocaleFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public LocaleFragment() {
         presenter = new LocalePresenter(this);
     }
 

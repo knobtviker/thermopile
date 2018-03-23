@@ -104,6 +104,10 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         return fragment;
     }
 
+    public ThresholdFragment() {
+        presenter = new ThresholdPresenter(this);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,8 +130,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                 thresholdId = arguments.getLong(Constants.KEY_THRESHOLD_ID, -1L);
             }
         }
-
-        presenter = new ThresholdPresenter(this);
     }
 
     @Override
