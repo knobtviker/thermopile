@@ -23,9 +23,9 @@ public class MainActivity extends BaseActivity implements MainCommunicator {
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            ((ThermopileApp)getApplication()).destroyScreensaver();
+            ((ThermopileApp) getApplication()).destroyScreensaver();
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            ((ThermopileApp)getApplication()).createScreensaver();
+            ((ThermopileApp) getApplication()).createScreensaver();
         }
         return super.dispatchTouchEvent(event);
     }
@@ -56,11 +56,11 @@ public class MainActivity extends BaseActivity implements MainCommunicator {
     }
 
     private void showMainFragment() {
-        Fragment fragment = findFragment(MainFragment.TAG);
-        if (fragment == null) {
-            fragment = MainFragment.newInstance();
-        }
+       Fragment fragment = findFragment(MainFragment.TAG);
+       if (fragment == null) {
+           fragment = MainFragment.newInstance();
+       }
 
-        replaceFragment(fragment, MainFragment.TAG, false);
+       replaceFragment(fragment, MainFragment.TAG, false);
     }
 }

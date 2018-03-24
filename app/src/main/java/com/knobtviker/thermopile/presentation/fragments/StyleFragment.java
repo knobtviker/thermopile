@@ -16,6 +16,7 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
+import com.knobtviker.thermopile.presentation.utils.Router;
 
 import butterknife.BindView;
 
@@ -115,7 +116,9 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
             }
             if (radioGroupTheme.isEnabled()) {
                 presenter.saveTheme(settingsId, value);
-                getActivity().recreate();
+
+                //TODO: This is highly aggessive. Find a better way of switching themes.
+                Router.restart(getContext());
             }
         });
     }

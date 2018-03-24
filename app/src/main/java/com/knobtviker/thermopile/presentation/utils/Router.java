@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 
 import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
 import com.knobtviker.thermopile.presentation.activities.ThresholdActivity;
@@ -21,7 +22,7 @@ public class Router {
         context.startActivity(intent);
     }
 
-    public static  void showThreshold(@NonNull final Context context, final int day, final int startMinute, final int maxWidth) {
+    public static void showThreshold(@NonNull final Context context, final int day, final int startMinute, final int maxWidth) {
         final Intent intent = new Intent(context, ThresholdActivity.class);
 
         intent.putExtra(Constants.KEY_DAY, day);
@@ -37,5 +38,15 @@ public class Router {
         intent.putExtra(Constants.KEY_THRESHOLD_ID, thresholdId);
 
         context.startActivity(intent);
+    }
+
+    public static void restart(@NonNull final Context context) {
+        final Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        ((AppCompatActivity) (context)).finish();
+        context.startActivity(intent);
+        System.exit(0);
     }
 }
