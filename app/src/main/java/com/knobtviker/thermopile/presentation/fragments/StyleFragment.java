@@ -28,8 +28,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     public static final String TAG = StyleFragment.class.getSimpleName();
 
     private long settingsId = -1L;
-
-    private int currentNightMode;
+    private int theme = AppCompatDelegate.MODE_NIGHT_AUTO;
 
     @BindView(R.id.radiogroup_theme)
     public RadioGroup radioGroupTheme;
@@ -69,6 +68,13 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     }
 
     @Override
+    public void onResume() {
+        setTheme();
+
+        super.onResume();
+    }
+
+    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -80,20 +86,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id();
-
-        switch (settings.theme()) {
-            case AppCompatDelegate.MODE_NIGHT_NO:
-                radioButtonLight.setChecked(true);
-                break;
-            case AppCompatDelegate.MODE_NIGHT_YES:
-                radioButtonDark.setChecked(true);
-                break;
-            case AppCompatDelegate.MODE_NIGHT_AUTO:
-                radioButtonAutomatic.setChecked(true);
-                break;
-        }
-
-        radioGroupTheme.setEnabled(true);
+        this.theme = settings.theme();
     }
 
     private void setupRadioGroupTheme() {
@@ -115,11 +108,28 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
                     break;
             }
             if (radioGroupTheme.isEnabled()) {
+                this.theme = value;
                 presenter.saveTheme(settingsId, value);
 
                 //TODO: This is highly aggessive. Find a better way of switching themes.
                 Router.restart(getContext());
             }
         });
+    }
+
+    private void setTheme() {
+        switch (theme) {
+            case AppCompatDelegate.MODE_NIGHT_NO:
+                radioButtonLight.setChecked(true);
+                break;
+            case AppCompatDelegate.MODE_NIGHT_YES:
+                radioButtonDark.setChecked(true);
+                break;
+            case AppCompatDelegate.MODE_NIGHT_AUTO:
+                radioButtonAutomatic.setChecked(true);
+                break;
+        }
+
+        radioGroupTheme.setEnabled(true);
     }
 }

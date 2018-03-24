@@ -34,9 +34,11 @@ import butterknife.BindView;
 public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> implements LocaleContract.View {
     public static final String TAG = LocaleFragment.class.getSimpleName();
 
-    private ArrayAdapter<String> spinnerAdapter;
-
     private long settingsId = -1L;
+    private String timezone = Constants.DEFAULT_TIMEZONE;
+    private int clockMode  = Constants.CLOCK_MODE_24H;
+
+    private ArrayAdapter<String> spinnerAdapter;
 
     @BindView(R.id.spinner_timezone)
     public Spinner spinnerTimezone;
@@ -77,6 +79,14 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     }
 
     @Override
+    public void onResume() {
+        setTimezone();
+        setClockMode();
+
+        super.onResume();
+    }
+
+    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -88,26 +98,8 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id();
-
-        final String timezone = settings.timezone();
-        for (int i = 0; i<spinnerAdapter.getCount(); i++) {
-            if (spinnerAdapter.getItem(i).equalsIgnoreCase(timezone)) {
-                spinnerTimezone.setSelection(i);
-                break;
-            }
-        }
-
-        switch (settings.formatClock()) {
-            case Constants.CLOCK_MODE_12H:
-                radioButton12h.setChecked(true);
-                break;
-            case Constants.CLOCK_MODE_24H:
-                radioButton24h.setChecked(true);
-                break;
-        }
-
-        spinnerTimezone.setEnabled(true);
-        radioGroupClockMode.setEnabled(true);
+        this.timezone = settings.timezone();
+        this.clockMode = settings.formatClock();
     }
 
     private void setupSpinnerTimezone() {
@@ -117,6 +109,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (spinnerTimezone.isEnabled() && spinnerAdapter != null && !TextUtils.isEmpty(spinnerAdapter.getItem(i))) {
+                    timezone = spinnerAdapter.getItem(i);
                     presenter.saveTimezone(settingsId, spinnerAdapter.getItem(i));
                 }
             }
@@ -149,8 +142,33 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
                     break;
             }
             if (radioGroupClockMode.isEnabled()) {
+                this.clockMode = value;
                 presenter.saveClockMode(settingsId, value);
             }
         });
+    }
+
+    private void setTimezone() {
+        for (int i = 0; i<spinnerAdapter.getCount(); i++) {
+            if (spinnerAdapter.getItem(i).equalsIgnoreCase(timezone)) {
+                spinnerTimezone.setSelection(i);
+                break;
+            }
+        }
+
+        spinnerTimezone.setEnabled(true);
+    }
+
+    private void setClockMode() {
+        switch (clockMode) {
+            case Constants.CLOCK_MODE_12H:
+                radioButton12h.setChecked(true);
+                break;
+            case Constants.CLOCK_MODE_24H:
+                radioButton24h.setChecked(true);
+                break;
+        }
+
+        radioGroupClockMode.setEnabled(true);
     }
 }

@@ -12,9 +12,9 @@ import android.widget.RadioGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.presentation.contracts.UnitContract;
+import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
-import com.knobtviker.thermopile.presentation.presenters.UnitPresenter;
+import com.knobtviker.thermopile.presentation.presenters.UnitsPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import butterknife.BindView;
@@ -23,10 +23,12 @@ import butterknife.BindView;
  * Created by bojan on 15/06/2017.
  */
 
-public class UnitFragment extends BaseFragment<UnitContract.Presenter> implements UnitContract.View {
-    public static final String TAG = UnitFragment.class.getSimpleName();
+public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> implements UnitsContract.View {
+    public static final String TAG = UnitsFragment.class.getSimpleName();
 
     private long settingsId = -1L;
+    private int unitTemperature = Constants.UNIT_TEMPERATURE_CELSIUS;
+    private int unitPressure = Constants.UNIT_PRESSURE_PASCAL;
 
     @BindView(R.id.radiogroup_temperature_unit)
     public RadioGroup radioGroupTemperatureUnit;
@@ -52,12 +54,12 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
     @BindView(R.id.unit_psi)
     public RadioButton radioButtonUnitPsi;
 
-    public static UnitFragment newInstance() {
-        return new UnitFragment();
+    public static UnitsFragment newInstance() {
+        return new UnitsFragment();
     }
 
-    public UnitFragment() {
-        presenter = new UnitPresenter(this);
+    public UnitsFragment() {
+        presenter = new UnitsPresenter(this);
     }
 
     @Nullable
@@ -65,7 +67,7 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_unit, container, false);
+        return inflater.inflate(R.layout.fragment_units, container, false);
     }
 
     @Override
@@ -76,6 +78,14 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
         setupRadioGroupPressureUnit();
 
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        setUnitTemperature();
+        setUnitPressure();
+
+        super.onResume();
     }
 
     @Override
@@ -90,33 +100,8 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
 
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id();
-
-        switch (settings.unitTemperature()) {
-            case Constants.UNIT_TEMPERATURE_CELSIUS:
-                radioButtonUnitCelsius.setChecked(true);
-                break;
-            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
-                radioButtonUnitFarenheit.setChecked(true);
-                break;
-            case Constants.UNIT_TEMPERATURE_KELVIN:
-                radioButtonUnitKelvin.setChecked(true);
-                break;
-        }
-
-        switch (settings.unitPressure()) {
-            case Constants.UNIT_PRESSURE_PASCAL:
-                radioButtonUnitPascal.setChecked(true);
-                break;
-            case Constants.UNIT_PRESSURE_BAR:
-                radioButtonUnitBar.setChecked(true);
-                break;
-            case Constants.UNIT_PRESSURE_PSI:
-                radioButtonUnitPsi.setChecked(true);
-                break;
-        }
-
-        radioGroupTemperatureUnit.setEnabled(true);
-        radioGroupPressureUnit.setEnabled(true);
+        this.unitTemperature = settings.unitTemperature();
+        this.unitPressure = settings.unitPressure();
     }
 
     private void setupRadioGroupTemperatureUnit() {
@@ -138,6 +123,7 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
                     break;
             }
             if (radioGroupTemperatureUnit.isEnabled()) {
+                this.unitTemperature = value;
                 presenter.saveTemperatureUnit(settingsId, value);
             }
         });
@@ -162,8 +148,41 @@ public class UnitFragment extends BaseFragment<UnitContract.Presenter> implement
                     break;
             }
             if (radioGroupPressureUnit.isEnabled()) {
+                this.unitPressure = value;
                 presenter.savePressureUnit(settingsId, value);
             }
         });
+    }
+
+    private void setUnitTemperature() {
+        switch (unitTemperature) {
+            case Constants.UNIT_TEMPERATURE_CELSIUS:
+                radioButtonUnitCelsius.setChecked(true);
+                break;
+            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
+                radioButtonUnitFarenheit.setChecked(true);
+                break;
+            case Constants.UNIT_TEMPERATURE_KELVIN:
+                radioButtonUnitKelvin.setChecked(true);
+                break;
+        }
+
+        radioGroupTemperatureUnit.setEnabled(true);
+    }
+
+    private void setUnitPressure() {
+        switch (unitPressure) {
+            case Constants.UNIT_PRESSURE_PASCAL:
+                radioButtonUnitPascal.setChecked(true);
+                break;
+            case Constants.UNIT_PRESSURE_BAR:
+                radioButtonUnitBar.setChecked(true);
+                break;
+            case Constants.UNIT_PRESSURE_PSI:
+                radioButtonUnitPsi.setChecked(true);
+                break;
+        }
+
+        radioGroupPressureUnit.setEnabled(true);
     }
 }

@@ -4,20 +4,20 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
-import com.knobtviker.thermopile.presentation.contracts.UnitContract;
+import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
 /**
  * Created by bojan on 15/07/2017.
  */
 
-public class UnitPresenter extends AbstractPresenter implements UnitContract.Presenter {
+public class NetworkPresenter extends AbstractPresenter implements NetworkContract.Presenter {
 
-    private final UnitContract.View view;
+    private final NetworkContract.View view;
 
     private final SettingsRepository settingsRepository;
 
-    public UnitPresenter(@NonNull final UnitContract.View view) {
+    public NetworkPresenter(@NonNull final NetworkContract.View view) {
         super(view);
 
         this.view = view;
@@ -39,15 +39,5 @@ public class UnitPresenter extends AbstractPresenter implements UnitContract.Pre
     @Override
     public void removeListeners() {
 
-    }
-
-    @Override
-    public void saveTemperatureUnit(long settingsId, int unit) {
-        settingsRepository.saveTemperatureUnit(settingsId, unit);
-    }
-
-    @Override
-    public void savePressureUnit(long settingsId, int unit) {
-        settingsRepository.savePressureUnit(settingsId, unit);
     }
 }

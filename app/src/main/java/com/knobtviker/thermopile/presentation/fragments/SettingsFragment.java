@@ -31,10 +31,12 @@ import butterknife.OnClick;
 public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> implements SettingsContract.View {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
-    private final LocaleFragment regionFragment;
-    private final FormatFragment formatFragment;
-    private final UnitFragment unitFragment;
+    private final FormatsFragment formatsFragment;
+    private final UnitsFragment unitsFragment;
+    private final LocaleFragment localeFragment;
     private final StyleFragment styleFragment;
+    private final NetworkFragment networkFragment;
+    private final SensorsFragment sensorsFragment;
 
     @BindView(R.id.tab_layout)
     public TabLayout tabLayout;
@@ -50,11 +52,14 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     }
 
     public SettingsFragment() {
-        this.regionFragment = LocaleFragment.newInstance();
-        this.formatFragment = FormatFragment.newInstance();
-        this.unitFragment = UnitFragment.newInstance();
+        this.localeFragment = LocaleFragment.newInstance();
+        this.formatsFragment = FormatsFragment.newInstance();
+        this.unitsFragment = UnitsFragment.newInstance();
         this.styleFragment = StyleFragment.newInstance();
-        presenter = new SettingsPresenter(this);
+        this.networkFragment = NetworkFragment.newInstance();
+        this.sensorsFragment = SensorsFragment.newInstance();
+
+        this.presenter = new SettingsPresenter(this);
     }
 
     @Override
@@ -99,9 +104,9 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
 
     @Override
     public void onLoad(@NonNull Settings settings) {
-        regionFragment.onLoad(settings);
-        formatFragment.onLoad(settings);
-        unitFragment.onLoad(settings);
+        localeFragment.onLoad(settings);
+        formatsFragment.onLoad(settings);
+        unitsFragment.onLoad(settings);
         styleFragment.onLoad(settings);
     }
 
@@ -138,8 +143,8 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     private void setupViewPager() {
         viewPager.setAdapter(new SettingsPagerAdapter(
                 getChildFragmentManager(),
-                ImmutableList.of(getString(R.string.label_locale), getString(R.string.label_format), getString(R.string.label_unit), getString(R.string.label_style)),
-                ImmutableList.of(regionFragment, formatFragment, unitFragment, styleFragment)
+                ImmutableList.of(getString(R.string.label_formats), getString(R.string.label_units), getString(R.string.label_locale), getString(R.string.label_style), getString(R.string.label_network), getString(R.string.label_sensors)),
+                ImmutableList.of(formatsFragment, unitsFragment, localeFragment, styleFragment, networkFragment, sensorsFragment)
             )
         );
         if (viewPager.getAdapter() != null) {

@@ -1,7 +1,5 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
-import android.support.annotation.NonNull;
-
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
@@ -9,7 +7,7 @@ import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
  * Created by bojan on 15/07/2017.
  */
 
-public interface FormatContract {
+public interface UnitsContract {
 
     interface View extends BaseView {
 
@@ -17,9 +15,8 @@ public interface FormatContract {
 
     interface Presenter extends BasePresenter {
 
-        void saveFormatDate(final long settingsId, @NonNull final String item);
+        void saveTemperatureUnit(final long settingsId, final int unit);
 
-        void saveFormatTime(final long settingsId, @NonNull final String item);
-
+        void savePressureUnit(final long settingsId, final int unit);
     }
 }

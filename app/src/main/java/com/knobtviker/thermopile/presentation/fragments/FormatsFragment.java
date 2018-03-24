@@ -14,9 +14,9 @@ import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.presentation.contracts.FormatContract;
+import com.knobtviker.thermopile.presentation.contracts.FormatsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
-import com.knobtviker.thermopile.presentation.presenters.FormatPresenter;
+import com.knobtviker.thermopile.presentation.presenters.FormatsPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.util.Arrays;
@@ -28,13 +28,15 @@ import butterknife.BindView;
  * Created by bojan on 15/06/2017.
  */
 
-public class FormatFragment extends BaseFragment<FormatContract.Presenter> implements FormatContract.View {
-    public static final String TAG = FormatFragment.class.getSimpleName();
+public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> implements FormatsContract.View {
+    public static final String TAG = FormatsFragment.class.getSimpleName();
 
     private ArrayAdapter<String> spinnerAdapterDate;
     private ArrayAdapter<String> spinnerAdapterTime;
 
     private long settingsId = -1L;
+    private String formatDate = Constants.DEFAULT_FORMAT_DATE;
+    private String formatTime = Constants.FORMAT_TIME_LONG_24H;
 
     @BindView(R.id.spinner_date_format)
     public Spinner spinnerFormatDate;
@@ -42,12 +44,12 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
     @BindView(R.id.spinner_time_format)
     public Spinner spinnerFormatTime;
 
-    public static FormatFragment newInstance() {
-        return new FormatFragment();
+    public static FormatsFragment newInstance() {
+        return new FormatsFragment();
     }
 
-    public FormatFragment() {
-        presenter = new FormatPresenter(this);
+    public FormatsFragment() {
+        presenter = new FormatsPresenter(this);
     }
 
     @Nullable
@@ -55,7 +57,7 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_format, container, false);
+        return inflater.inflate(R.layout.fragment_formats, container, false);
     }
 
     @Override
@@ -66,6 +68,14 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
         setupSpinnerTime();
 
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        setFormatDate();
+        setFormatTime();
+
+        super.onResume();
     }
 
     @Override
@@ -80,25 +90,8 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
 
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id();
-
-        final String formatDate = settings.formatDate();
-        for (int i = 0; i < spinnerAdapterDate.getCount(); i++) {
-            if (spinnerAdapterDate.getItem(i).equalsIgnoreCase(formatDate)) {
-                spinnerFormatDate.setSelection(i);
-                break;
-            }
-        }
-
-        final String formatTime = settings.formatTime();
-        for (int i = 0; i < spinnerAdapterTime.getCount(); i++) {
-            if (spinnerAdapterTime.getItem(i).equalsIgnoreCase(formatTime)) {
-                spinnerFormatTime.setSelection(i);
-                break;
-            }
-        }
-
-        spinnerFormatDate.setEnabled(true);
-        spinnerFormatTime.setEnabled(true);
+        this.formatDate = settings.formatDate();
+        this.formatTime = settings.formatTime();
     }
 
     private void setupSpinnerDate() {
@@ -108,6 +101,7 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (spinnerFormatDate.isEnabled() && spinnerAdapterDate != null && !TextUtils.isEmpty(spinnerAdapterDate.getItem(i))) {
+                    formatDate = spinnerAdapterDate.getItem(i);
                     presenter.saveFormatDate(settingsId, spinnerAdapterDate.getItem(i));
                 }
             }
@@ -140,6 +134,7 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (spinnerFormatTime.isEnabled() && spinnerAdapterTime != null && !TextUtils.isEmpty(spinnerAdapterTime.getItem(i))) {
+                    formatTime = spinnerAdapterTime.getItem(i);
                     presenter.saveFormatTime(settingsId, spinnerAdapterTime.getItem(i));
                 }
             }
@@ -155,5 +150,27 @@ public class FormatFragment extends BaseFragment<FormatContract.Presenter> imple
         spinnerAdapterTime.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerFormatTime.setAdapter(spinnerAdapterTime);
+    }
+
+    private void setFormatDate() {
+        for (int i = 0; i < spinnerAdapterDate.getCount(); i++) {
+            if (spinnerAdapterDate.getItem(i).equalsIgnoreCase(formatDate)) {
+                spinnerFormatDate.setSelection(i);
+                break;
+            }
+        }
+
+        spinnerFormatDate.setEnabled(true);
+    }
+
+    private void setFormatTime() {
+        for (int i = 0; i < spinnerAdapterTime.getCount(); i++) {
+            if (spinnerAdapterTime.getItem(i).equalsIgnoreCase(formatTime)) {
+                spinnerFormatTime.setSelection(i);
+                break;
+            }
+        }
+
+        spinnerFormatTime.setEnabled(true);
     }
 }
