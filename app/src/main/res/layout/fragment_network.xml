@@ -23,8 +23,11 @@
             android:id="@+id/switch_bluetooth_on_off"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:gravity="center_vertical"
+            android:paddingRight="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_small"
             android:enabled="false"
             android:text="Off"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,8 +39,6 @@
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
             android:indeterminate="true"
             android:indeterminateOnly="true"
             android:visibility="gone"
@@ -45,18 +46,54 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_on_off"/>
 
+        <Switch
+            android:id="@+id/switch_bluetooth_gatt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:gravity="center_vertical"
+            android:paddingRight="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_small"
+            android:enabled="false"
+            android:text="GATT server"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progressbar_bluetooth"/>
+
+        <Switch
+            android:id="@+id/switch_bluetooth_advertising"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:gravity="center_vertical"
+            android:paddingRight="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_small"
+            android:enabled="false"
+            android:text="Advertising"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_gatt"/>
+
         <View
             android:id="@+id/divider_bluetooth"
             style="@style/Divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressbar_bluetooth"/>
+            app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_advertising"/>
 
         <android.support.constraint.Group
             android:id="@+id/group_bluetooth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="textview_title_bluetooth, switch_bluetooth_on_off, divider_bluetooth"/>
+
+        <android.support.constraint.Group
+            android:id="@+id/group_gatt_advertising"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="switch_bluetooth_gatt, switch_bluetooth_advertising"/>
 
     </android.support.constraint.ConstraintLayout>
 

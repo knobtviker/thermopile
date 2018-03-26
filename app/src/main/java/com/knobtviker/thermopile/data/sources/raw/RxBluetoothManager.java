@@ -46,6 +46,9 @@ public class RxBluetoothManager {
     @Nullable
     private AdvertiseCallback advertiseCallback;
 
+    private boolean isGattServerRunning = false;
+    private boolean isAdvertising = false;
+
     public static RxBluetoothManager with(@NonNull final Context context) {
         return new RxBluetoothManager(context);
     }
@@ -105,6 +108,12 @@ public class RxBluetoothManager {
         return bluetoothAdapter.disable();
     }
 
+    public void name(@NonNull final String name) {
+        if (bluetoothAdapter != null && isEnabled()) {
+            bluetoothAdapter.setName(name);
+        }
+    }
+
     /**
      * Observes BluetoothState. Possible values are:
      * {@link BluetoothAdapter#STATE_OFF},
@@ -162,7 +171,8 @@ public class RxBluetoothManager {
      */
     @Nullable
     public BluetoothGattServer startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
-        gattServer = bluetoothManager.openGattServer(context, bluetoothGattServerCallback);
+        this.gattServer = bluetoothManager.openGattServer(context, bluetoothGattServerCallback);
+        this.isGattServerRunning = gattServer != null;
         return gattServer;
     }
 
@@ -170,10 +180,15 @@ public class RxBluetoothManager {
      * Shut down the GATT server.
      */
     public void stopGattServer() {
-        if (gattServer != null) {
+        if (gattServer != null && isGattServerRunning) {
             gattServer.close();
             gattServer = null;
+            isGattServerRunning = false;
         }
+    }
+
+    public boolean isGattServerRunning() {
+        return isGattServerRunning;
     }
 
     /**
@@ -184,6 +199,7 @@ public class RxBluetoothManager {
         if (bluetoothLeAdvertiser != null) {
             bluetoothLeAdvertiser.startAdvertising(settings, data, callback);
             this.advertiseCallback = callback;
+            isAdvertising = true;
         }
     }
 
@@ -194,7 +210,11 @@ public class RxBluetoothManager {
         if (bluetoothLeAdvertiser != null) {
             bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
             advertiseCallback = null;
+            isAdvertising = false;
         }
     }
 
+    public boolean isAdvertising() {
+        return isAdvertising;
+    }
 }

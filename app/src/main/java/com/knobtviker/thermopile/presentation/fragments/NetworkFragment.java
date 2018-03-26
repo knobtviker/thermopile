@@ -23,9 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.sources.raw.EnvironmentProfile;
 import com.knobtviker.thermopile.data.sources.raw.GattServerCallback;
 import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
-import com.knobtviker.thermopile.data.sources.raw.TimeProfile;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
@@ -48,8 +48,17 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     @BindView(R.id.group_bluetooth)
     public Group groupBluetooth;
 
+    @BindView(R.id.group_gatt_advertising)
+    public Group groupGattAdvertising;
+
     @BindView(R.id.switch_bluetooth_on_off)
     public Switch switchBluetoothOnOff;
+
+    @BindView(R.id.switch_bluetooth_gatt)
+    public Switch switchBluetoothGatt;
+
+    @BindView(R.id.switch_bluetooth_advertising)
+    public Switch switchBluetoothAdvertising;
 
     @BindView(R.id.progressbar_bluetooth)
     public ProgressBar progressBarBluetooth;
@@ -110,7 +119,35 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
                 if (isChecked) {
                     rxBluetoothManager.enable();
                 } else {
+                    if (rxBluetoothManager.isGattServerRunning()) {
+                        switchBluetoothGatt.setChecked(false);
+                    }
+                    if (rxBluetoothManager.isAdvertising()) {
+                        switchBluetoothAdvertising.setChecked(false);
+                    }
                     rxBluetoothManager.disable();
+                }
+                break;
+            case R.id.switch_bluetooth_gatt:
+                if (isChecked) {
+                    if (!rxBluetoothManager.isGattServerRunning()) {
+                        startGattServer();
+                    }
+                } else {
+                    if (rxBluetoothManager.isGattServerRunning()) {
+                        stopGattServer();
+                    }
+                }
+                break;
+            case R.id.switch_bluetooth_advertising:
+                if (isChecked) {
+                    if (!rxBluetoothManager.isAdvertising()) {
+                        startAdvertising();
+                    }
+                } else {
+                    if (rxBluetoothManager.isAdvertising()) {
+                        stopAdvertising();
+                    }
                 }
                 break;
         }
@@ -126,6 +163,8 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
         if (hasBluetooth) {
             final boolean isEnabled = rxBluetoothManager.isEnabled();
+//            rxBluetoothManager.name(getString(R.string.app_name));
+
             switchBluetoothOnOff.setChecked(isEnabled);
             switchBluetoothOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
             switchBluetoothOnOff.setOnCheckedChangeListener(this);
@@ -150,22 +189,45 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
                     }
                 );
             switchBluetoothOnOff.setEnabled(true);
+            groupGattAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
 
-            setupGattServer();
+            setupGattServer(isEnabled);
+            setupAdvertising(isEnabled);
         }
     }
 
-    private void setupGattServer() {
+    private void setupGattServer(final boolean isEnabled) {
         rxBluetoothManager.setDeviceClass(BluetoothClass.Service.INFORMATION, BluetoothClass.Device.COMPUTER_SERVER);
         rxBluetoothManager.setProfile(BluetoothProfile.GATT_SERVER);
 
-        final GattServerCallback callback = new GattServerCallback();
+        switchBluetoothGatt.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
+        switchBluetoothGatt.setChecked(rxBluetoothManager.isGattServerRunning());
+        switchBluetoothGatt.setOnCheckedChangeListener(this);
+        switchBluetoothGatt.setEnabled(true);
+    }
+
+    private void setupAdvertising(final boolean isEnabled) {
+        switchBluetoothAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
+        switchBluetoothAdvertising.setChecked(rxBluetoothManager.isAdvertising());
+        switchBluetoothAdvertising.setOnCheckedChangeListener(this);
+        switchBluetoothAdvertising.setEnabled(true);
+    }
+
+    private void startGattServer() {
+        final GattServerCallback callback = new GattServerCallback(getActivity());
         final BluetoothGattServer gattServer = rxBluetoothManager.startGattServer(callback);
         callback.setGattServer(gattServer);
         if (gattServer != null) {
-            gattServer.addService(TimeProfile.createTimeService());
+            //TODO Change and use already adopted convention for ESS and ESP
+            gattServer.addService(EnvironmentProfile.createService());
         }
+    }
 
+    private void stopGattServer() {
+        rxBluetoothManager.stopGattServer();
+    }
+
+    private void startAdvertising() {
         rxBluetoothManager.startAdvertising(
             new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
@@ -176,7 +238,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
             new AdvertiseData.Builder()
                 .setIncludeDeviceName(true)
                 .setIncludeTxPowerLevel(false)
-                .addServiceUuid(new ParcelUuid(TimeProfile.TIME_SERVICE))
+                .addServiceUuid(new ParcelUuid(EnvironmentProfile.UUID_ENVIRONMENT_SERVICE))
                 .build(),
             new AdvertiseCallback() {
                 @Override
@@ -192,17 +254,24 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         );
     }
 
+    private void stopAdvertising() {
+        rxBluetoothManager.stopAdvertising();
+    }
+
     private void setStateOff() {
         setStateSwitchText(getString(R.string.state_off));
+        groupGattAdvertising.setVisibility(View.GONE);
     }
 
     private void setStateOn() {
         setStateSwitchText(getString(R.string.state_on));
+        groupGattAdvertising.setVisibility(View.VISIBLE);
     }
 
     private void setStateIndeterminate() {
         progressBarBluetooth.setVisibility(View.VISIBLE);
         switchBluetoothOnOff.setEnabled(true);
+        groupGattAdvertising.setVisibility(View.GONE);
     }
 
     private void setStateSwitchText(@NonNull final String text) {

@@ -239,6 +239,10 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         this.currentActivity = null;
     }
 
+    public Atmosphere atmosphere() {
+        return atmosphere;
+    }
+
     public void createScreensaver() {
         brightness(255);
         presenter.createScreensaver();
