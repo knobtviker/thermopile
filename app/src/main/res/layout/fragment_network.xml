@@ -157,6 +157,7 @@
             <TextView
                 android:id="@+id/textview_ip"
                 android:layout_width="0dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:textColor="?android:textColorSecondary"
                 app:layout_constraintTop_toBottomOf="@id/textview_wifi_ssid"
                 app:layout_constraintEnd_toStartOf="@id/imageview_arrow_next"
