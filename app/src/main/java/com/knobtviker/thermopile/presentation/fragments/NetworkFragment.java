@@ -9,6 +9,9 @@ import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
@@ -21,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.sources.raw.EnvironmentProfile;
@@ -30,7 +34,13 @@ import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
 
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteOrder;
+
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -43,7 +53,13 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
     private long settingsId = -1L;
 
+    //TODO: Move RxBluetoothManager to presenter and make it a singleton
     private RxBluetoothManager rxBluetoothManager;
+
+    @Nullable
+    private WifiManager wifiManager;
+
+    private boolean hasWiFi = false;
 
     @BindView(R.id.group_bluetooth)
     public Group groupBluetooth;
@@ -63,6 +79,18 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     @BindView(R.id.progressbar_bluetooth)
     public ProgressBar progressBarBluetooth;
 
+    @BindView(R.id.group_wifi)
+    public Group groupWiFi;
+
+    @BindView(R.id.switch_wifi_on_off)
+    public Switch switchWifiOnOff;
+
+    @BindView(R.id.textview_wifi_ssid)
+    public TextView textViewWiFiSSID;
+
+    @BindView(R.id.textview_ip)
+    public TextView textViewIP;
+
     public static NetworkFragment newInstance() {
         return new NetworkFragment();
     }
@@ -76,6 +104,10 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         super.onAttach(context);
 
         rxBluetoothManager = RxBluetoothManager.with(context);
+        hasWiFi = checkWiFiSupport(context);
+        if (hasWiFi) {
+            wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        }
     }
 
     @Nullable
@@ -98,7 +130,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         final boolean hasBluetooth = checkBluetoothSupport();
 
         setupBluetooth(hasBluetooth);
-
+        setupWifi(hasWiFi);
         super.onResume();
     }
 
@@ -149,6 +181,20 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
                         stopAdvertising();
                     }
                 }
+                break;
+            case R.id.switch_wifi_on_off:
+                if (wifiManager != null) {
+                    wifiManager.setWifiEnabled(isChecked);
+                }
+                break;
+        }
+    }
+
+    @OnClick({R.id.layout_wifi_connected})
+    public void onClicked(@NonNull final View view) {
+        switch(view.getId()) {
+            case R.id.layout_wifi_connected:
+                Log.i(TAG, "Open WiFiActivity");
                 break;
         }
     }
@@ -278,5 +324,68 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         progressBarBluetooth.setVisibility(View.GONE);
         switchBluetoothOnOff.setEnabled(true);
         switchBluetoothOnOff.setText(text);
+    }
+
+    private boolean checkWiFiSupport(@NonNull final Context context) {
+        return context
+            .getPackageManager()
+            .hasSystemFeature(PackageManager.FEATURE_WIFI);
+    }
+
+    private void setupWifi(final boolean hasWiFi) {
+        groupWiFi.setVisibility(hasWiFi ? View.VISIBLE : View.GONE);
+
+        if (hasWiFi) {
+            if (wifiManager != null) {
+                final boolean isEnabled = wifiManager.isWifiEnabled();
+
+                switchWifiOnOff.setChecked(isEnabled);
+                switchWifiOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
+                switchWifiOnOff.setOnCheckedChangeListener(this);
+
+                switchWifiOnOff.setEnabled(true);
+
+                final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+
+                textViewWiFiSSID.setText(wifiInfo.getSSID().replace("\"", ""));
+                textViewIP.setText(extractIP(wifiInfo));
+
+                //192.168.1.244 ---
+                // SSID: Knobtviker,
+                // BSSID: 78:8c:54:33:55:cc,
+                // MAC: 02:00:00:00:00:00,
+                // Supplicant state: COMPLETED,
+                // RSSI: -71,
+                // Link speed: 43Mbps,
+                // Frequency: 2462MHz,
+                // Net ID: 0,
+                // Metered hint: false,
+                // score: 60
+
+                //Knobtviker       2.4GHz
+                //WPA2             43Mbps
+                //192.168.1.244    -71
+            } else {
+                groupWiFi.setVisibility(View.GONE);
+            }
+        } else {
+            groupWiFi.setVisibility(View.GONE);
+        }
+    }
+
+    private String extractIP(@NonNull final WifiInfo wifiInfo) {
+        int ipAddress = wifiInfo.getIpAddress();
+        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
+            ipAddress = Integer.reverseBytes(ipAddress);
+        }
+
+        final byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
+
+        try {
+            return InetAddress.getByAddress(ipByteArray).getHostAddress();
+        } catch (UnknownHostException ex) {
+            Log.e(TAG, ex.getMessage(), ex);
+            return null;
+        }
     }
 }
