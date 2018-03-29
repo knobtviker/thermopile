@@ -168,12 +168,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        bind(this, view);
+        super.onViewCreated(view, savedInstanceState);
 
         setupRecyclerView();
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

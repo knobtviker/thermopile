@@ -135,15 +135,12 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        bind(this, view);
+        super.onViewCreated(view, savedInstanceState);
 
         setupPreview();
         setupTimePickers();
         setupRecyclerView();
         setupSeekBar();
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

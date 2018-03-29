@@ -60,11 +60,9 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        bind(this, view);
+        super.onViewCreated(view, savedInstanceState);
 
         setupRadioGroupTheme();
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

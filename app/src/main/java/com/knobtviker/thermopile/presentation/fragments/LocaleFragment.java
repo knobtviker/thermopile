@@ -70,12 +70,10 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        bind(this, view);
+        super.onViewCreated(view, savedInstanceState);
 
         setupSpinnerTimezone();
         setupRadioGroupClockMode();
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

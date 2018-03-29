@@ -39,14 +39,6 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        bind(this, view);
-
-
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }

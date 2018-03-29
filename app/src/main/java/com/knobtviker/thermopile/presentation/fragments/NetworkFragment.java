@@ -109,13 +109,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        bind(this, view);
-
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
     public void onResume() {
         presenter.hasBluetooth();
 

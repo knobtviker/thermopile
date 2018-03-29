@@ -110,14 +110,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        bind(this, view);
-
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
     public void onResume() {
         getActivity().registerReceiver(dateChangedReceiver, intentFilter);
 

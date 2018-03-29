@@ -72,12 +72,10 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        bind(this, view);
+        super.onViewCreated(view, savedInstanceState);
 
         setupRadioGroupTemperatureUnit();
         setupRadioGroupPressureUnit();
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

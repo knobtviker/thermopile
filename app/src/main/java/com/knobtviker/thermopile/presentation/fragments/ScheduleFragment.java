@@ -88,12 +88,9 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        bind(this, view);
+        super.onViewCreated(view, savedInstanceState);
 
         setupDayTouchListeners();
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
