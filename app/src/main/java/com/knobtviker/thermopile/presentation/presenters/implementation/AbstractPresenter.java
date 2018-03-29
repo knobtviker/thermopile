@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.presentation.presenters.implementation;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
@@ -16,23 +15,22 @@ public abstract class AbstractPresenter implements BasePresenter {
     @NonNull
     protected final BaseView view;
 
-    @Nullable
     protected CompositeDisposable compositeDisposable;
 
     public AbstractPresenter(@NonNull final BaseView view) {
         this.view = view;
-    }
-
-    @Override
-    public void subscribe() {
         compositeDisposable = new CompositeDisposable();
     }
 
     @Override
+    public void subscribe() {
+
+    }
+
+    @Override
     public void unsubscribe() {
-        if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
+        if (!compositeDisposable.isDisposed()) {
             compositeDisposable.dispose();
-            compositeDisposable = null;
         }
     }
 

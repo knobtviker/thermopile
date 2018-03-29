@@ -26,13 +26,16 @@ import com.google.android.things.bluetooth.BluetoothProfileManager;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.MainThreadDisposable;
 
 import static android.content.Context.BLUETOOTH_SERVICE;
 
 public class RxBluetoothManager {
+
+    @SuppressLint("StaticFieldLeak")
+    private static RxBluetoothManager INSTANCE = null;
 
     private final BluetoothAdapter bluetoothAdapter;
     private final Context context;
@@ -49,11 +52,14 @@ public class RxBluetoothManager {
     private boolean isGattServerRunning = false;
     private boolean isAdvertising = false;
 
-    public static RxBluetoothManager with(@NonNull final Context context) {
-        return new RxBluetoothManager(context);
+    public static synchronized RxBluetoothManager getInstance(@NonNull final Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new RxBluetoothManager(context.getApplicationContext());
+        }
+        return INSTANCE;
     }
 
-    public RxBluetoothManager(@NonNull final Context context) {
+    private RxBluetoothManager(@NonNull final Context context) {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.context = context;
         this.bluetoothManager = (BluetoothManager) context.getSystemService(BLUETOOTH_SERVICE);
@@ -66,8 +72,8 @@ public class RxBluetoothManager {
      * otherwise Bluetooth is not supported on this hardware
      */
     @SuppressLint("HardwareIds")
-    public boolean hasBluetooth() {
-        return !(bluetoothAdapter == null || TextUtils.isEmpty(bluetoothAdapter.getAddress()));
+    public Observable<Boolean> hasBluetooth() {
+        return Observable.defer(() -> Observable.just(!(bluetoothAdapter == null || TextUtils.isEmpty(bluetoothAdapter.getAddress()))));
     }
 
     /**
@@ -76,9 +82,8 @@ public class RxBluetoothManager {
      * @return true if bluetoothAdapter is not null or it's address is empty and system has feature,
      * otherwise Bluetooth LE is not supported on this hardware
      */
-    public boolean hasBluetoothLowEnergy() {
-        return hasBluetooth() && context.getPackageManager()
-            .hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+    public Observable<Boolean> hasBluetoothLowEnergy() {
+        return Observable.defer(() -> Observable.just(context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)));
     }
 
     /**
@@ -86,8 +91,8 @@ public class RxBluetoothManager {
      *
      * @return true if the local adapter is turned on
      */
-    public boolean isEnabled() {
-        return bluetoothAdapter.isEnabled();
+    public Observable<Boolean> isEnabled() {
+        return Observable.defer(() -> Observable.just(bluetoothAdapter.isEnabled()));
     }
 
     /**
@@ -95,8 +100,20 @@ public class RxBluetoothManager {
      *
      * @return true to indicate adapter startup has begun, or false immediate error
      */
-    public boolean enable() {
-        return bluetoothAdapter.enable();
+    public Completable enable() {
+        return Completable.defer(() ->
+            Completable.create(
+                emitter -> {
+                    if (!emitter.isDisposed()) {
+                        if (bluetoothAdapter.enable()) {
+                            emitter.onComplete();
+                        } else {
+                            emitter.onError(new Throwable("Cannot turn on local Bluetooth adapter"));
+                        }
+                    }
+                }
+            )
+        );
     }
 
     /**
@@ -104,14 +121,26 @@ public class RxBluetoothManager {
      *
      * @return true to indicate adapter shutdown has begun, or false on immediate error
      */
-    public boolean disable() {
-        return bluetoothAdapter.disable();
+    public Completable disable() {
+        return Completable.defer(() ->
+            Completable.create(
+                emitter -> {
+                    if (!emitter.isDisposed()) {
+                        if (bluetoothAdapter.disable()) {
+                            emitter.onComplete();
+                        } else {
+                            emitter.onError(new Throwable("Cannot turn off local Bluetooth adapter"));
+                        }
+                    }
+                }
+            )
+        );
     }
 
     public void name(@NonNull final String name) {
-        if (bluetoothAdapter != null && isEnabled()) {
-            bluetoothAdapter.setName(name);
-        }
+//        if (bluetoothAdapter != null && isEnabled()) {
+        bluetoothAdapter.setName(name);
+//        }
     }
 
     /**
@@ -121,14 +150,14 @@ public class RxBluetoothManager {
      * {@link BluetoothAdapter#STATE_ON},
      * {@link BluetoothAdapter#STATE_TURNING_OFF},
      *
-     * @return RxJava2 Observable with BluetoothState
+     * @return RxJava2 Observable getInstance BluetoothState
      */
     public Observable<Integer> state() {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 
         return Observable.defer(() ->
-            Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
+            Observable.create(emitter -> {
                 final BroadcastReceiver receiver = new BroadcastReceiver() {
 
                     @Override
@@ -150,23 +179,44 @@ public class RxBluetoothManager {
             }));
     }
 
-    public void setDeviceClass(final int service, final int device) {
-        final BluetoothConfigManager configManager = BluetoothConfigManager.getInstance();
-        final BluetoothClass deviceClass = BluetoothClassFactory.build(service, device);
+    public Completable setDeviceClass(final int service, final int device) {
+        return Completable.defer(() ->
+            Completable.create(
+                emitter -> {
+                    if (!emitter.isDisposed()) {
+                        final BluetoothConfigManager configManager = BluetoothConfigManager.getInstance();
+                        final BluetoothClass deviceClass = BluetoothClassFactory.build(service, device);
 
-        configManager.setBluetoothClass(deviceClass);
+                        if (configManager.setBluetoothClass(deviceClass)) {
+                            emitter.onComplete();
+                        } else {
+                            emitter.onError(new Throwable("Cannot set Bluetooth class service and device"));
+                        }
+                    }
+                }
+            )
+        );
     }
 
-    public void setProfile(final int profile) {
-        final BluetoothProfileManager profileManager = BluetoothProfileManager.getInstance();
-        final List<Integer> enabledProfiles = profileManager.getEnabledProfiles();
-        if (!enabledProfiles.contains(profile)) {
-            profileManager.enableProfiles(Collections.singletonList(profile));
-        }
+    public Completable setProfile(final int profile) {
+        return Completable.defer(() ->
+            Completable.create(
+                emitter -> {
+                    if (!emitter.isDisposed()) {
+                        final BluetoothProfileManager profileManager = BluetoothProfileManager.getInstance();
+                        final List<Integer> enabledProfiles = profileManager.getEnabledProfiles();
+                        if (!enabledProfiles.contains(profile)) {
+                            profileManager.enableProfiles(Collections.singletonList(profile));
+                        }
+                        emitter.onComplete();
+                    }
+                }
+            )
+        );
     }
 
     /**
-     * Initialize the GATT server instance with callback.
+     * Initialize the GATT server instance getInstance callback.
      * May return null if failed.
      */
     @Nullable

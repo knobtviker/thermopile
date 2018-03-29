@@ -62,12 +62,10 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        bind(this, view);
+        super.onViewCreated(view, savedInstanceState);
 
         setupSpinnerDate();
         setupSpinnerTime();
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

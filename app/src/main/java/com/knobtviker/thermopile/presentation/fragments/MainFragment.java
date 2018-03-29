@@ -148,6 +148,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
             }
         };
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -186,11 +187,22 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
 
-        getActivity().unregisterReceiver(dateChangedReceiver);
+        if (hidden) {
+            getActivity().unregisterReceiver(dateChangedReceiver);
+        } else {
+            getActivity().registerReceiver(dateChangedReceiver, intentFilter);
+        }
     }
+
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//
+//        getActivity().unregisterReceiver(dateChangedReceiver);
+//    }
 
     @Override
     public void onDetach() {

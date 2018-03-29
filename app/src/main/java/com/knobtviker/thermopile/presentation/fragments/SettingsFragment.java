@@ -125,7 +125,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         switch (view.getId()) {
             case R.id.button_back:
                 if (mainCommunicator != null) {
-                    mainCommunicator.back();
+                    mainCommunicator.showMain();
                 }
                 break;
             case R.id.button_help:
@@ -144,7 +144,8 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         viewPager.setAdapter(new SettingsPagerAdapter(
                 getChildFragmentManager(),
                 ImmutableList.of(getString(R.string.label_formats), getString(R.string.label_units), getString(R.string.label_locale), getString(R.string.label_style), getString(R.string.label_network), getString(R.string.label_sensors)),
-                ImmutableList.of(formatsFragment, unitsFragment, localeFragment, styleFragment, networkFragment, sensorsFragment)
+                ImmutableList.of(formatsFragment, unitsFragment, localeFragment, styleFragment, networkFragment, sensorsFragment),
+                viewPager.getId()
             )
         );
         if (viewPager.getAdapter() != null) {

@@ -11,7 +11,6 @@ import android.hardware.SensorManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
@@ -415,15 +414,13 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     private void populateFragment() {
         if (currentActivity != null) {
             if (currentActivity instanceof MainActivity) {
-                final Fragment fragment = ((MainActivity) currentActivity).findFragment(MainFragment.TAG);
-                if (fragment != null) {
-                    currentActivity.runOnUiThread(() -> ((MainFragment) fragment).setAtmosphere(atmosphere));
-                }
+                currentActivity.runOnUiThread(() ->
+                    ((MainFragment) ((MainActivity) currentActivity).mainFragment()).setAtmosphere(atmosphere)
+                );
             } else if (currentActivity instanceof ScreenSaverActivity) {
-                final Fragment fragment = ((ScreenSaverActivity) currentActivity).findFragment(ScreensaverFragment.TAG);
-                if (fragment != null) {
-                    currentActivity.runOnUiThread(() -> ((ScreensaverFragment) fragment).setAtmosphere(atmosphere));
-                }
+                currentActivity.runOnUiThread(() ->
+                    ((ScreensaverFragment) ((ScreenSaverActivity) currentActivity).screensaverFragment()).setAtmosphere(atmosphere)
+                );
             }
         }
     }

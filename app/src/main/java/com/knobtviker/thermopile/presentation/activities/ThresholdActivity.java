@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 
+import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.ThermopileApp;
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.ThresholdFragment;
@@ -39,40 +40,30 @@ public class ThresholdActivity extends BaseActivity {
             thresholdId = intent.getLongExtra(Constants.KEY_THRESHOLD_ID, -1L);
         }
 
+        Fragment thresholdFragment = null;
         if (day != -1 && startMinute != -1 && maxWidth != -1) {
-            showThresholdFragment(day, startMinute, maxWidth);
+            thresholdFragment = ThresholdFragment.newInstance(day, startMinute, maxWidth);
         } else if (thresholdId != -1L) {
-            showThresholdFragment(thresholdId);
+            thresholdFragment = ThresholdFragment.newInstance(thresholdId);
         } else {
             finish();
+        }
+
+        if (thresholdFragment != null) {
+            getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, thresholdFragment)
+                .commitNowAllowingStateLoss();
         }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            ((ThermopileApp)getApplication()).destroyScreensaver();
+            ((ThermopileApp) getApplication()).destroyScreensaver();
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            ((ThermopileApp)getApplication()).createScreensaver();
+            ((ThermopileApp) getApplication()).createScreensaver();
         }
         return super.dispatchTouchEvent(event);
-    }
-
-    private void showThresholdFragment(final int day, final int startMinute, final int maxWidth) {
-        Fragment fragment = findFragment(ThresholdFragment.TAG);
-        if (fragment == null) {
-            fragment = ThresholdFragment.newInstance(day, startMinute, maxWidth);
-        }
-
-        replaceFragment(fragment, ThresholdFragment.TAG, false);
-    }
-
-    private void showThresholdFragment(final long thresholdId) {
-        Fragment fragment = findFragment(ThresholdFragment.TAG);
-        if (fragment == null) {
-            fragment = ThresholdFragment.newInstance(thresholdId);
-        }
-
-        replaceFragment(fragment, ThresholdFragment.TAG, false);
     }
 }

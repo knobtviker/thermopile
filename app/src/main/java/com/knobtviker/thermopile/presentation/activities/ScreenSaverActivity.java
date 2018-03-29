@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 
+import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.ThermopileApp;
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.ScreensaverFragment;
@@ -15,11 +16,18 @@ import com.knobtviker.thermopile.presentation.fragments.ScreensaverFragment;
 
 public class ScreenSaverActivity extends BaseActivity {
 
+    private Fragment screensaverFragment;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        showScreensaver();
+        screensaverFragment = ScreensaverFragment.newInstance();
+
+        getSupportFragmentManager()
+            .beginTransaction()
+            .add(R.id.fragment_container, screensaverFragment)
+            .commitNowAllowingStateLoss();
     }
 
     @Override
@@ -31,12 +39,7 @@ public class ScreenSaverActivity extends BaseActivity {
         return super.dispatchTouchEvent(event);
     }
 
-    private void showScreensaver() {
-        Fragment fragment = findFragment(ScreensaverFragment.TAG);
-        if (fragment == null) {
-            fragment = ScreensaverFragment.newInstance();
-        }
-
-        replaceFragment(fragment, ScreensaverFragment.TAG, false);
+    public Fragment screensaverFragment() {
+        return screensaverFragment;
     }
 }

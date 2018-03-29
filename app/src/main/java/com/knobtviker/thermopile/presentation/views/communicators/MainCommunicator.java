@@ -6,7 +6,7 @@ package com.knobtviker.thermopile.presentation.views.communicators;
 
 public interface MainCommunicator {
 
-    void back();
+    void showMain();
 
     void showSchedule();
 

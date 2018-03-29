@@ -13,15 +13,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toolbar;
 
 import com.dgreenhalgh.android.simpleitemdecoration.linear.DividerItemDecoration;
 import com.knobtviker.thermopile.R;
@@ -36,6 +32,7 @@ import com.knobtviker.thermopile.presentation.views.communicators.ColorCommunica
 import java.util.Optional;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.realm.Realm;
 
 /**
@@ -54,9 +51,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     private long thresholdId = -1L;
 
     private ColorAdapter colorAdapter;
-
-    @BindView(R.id.toolbar)
-    public Toolbar toolbar;
 
     @BindView(R.id.layout_temperature)
     public ConstraintLayout layoutTemperature;
@@ -144,34 +138,12 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
         bind(this, view);
 
-        setupToolbar();
         setupPreview();
         setupTimePickers();
         setupRecyclerView();
         setupSeekBar();
 
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.threshold, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().finish();
-                return true;
-            case R.id.action_save:
-                save();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
@@ -211,8 +183,16 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         applyColor(color);
     }
 
-    private void setupToolbar() {
-        setupCustomActionBarWithHomeAsUp(toolbar);
+    @OnClick({R.id.button_back, R.id.button_save})
+    public void onClicked(@NonNull final View view) {
+        switch (view.getId()) {
+            case R.id.button_back:
+                getActivity().finish();
+                break;
+            case R.id.button_save:
+                save();
+                break;
+        }
     }
 
     private void setupPreview() {

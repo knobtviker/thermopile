@@ -149,7 +149,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         switch (view.getId()) {
             case R.id.button_back:
                 if (mainCommunicator != null) {
-                    mainCommunicator.back();
+                    mainCommunicator.showMain();
                 }
                 break;
             case R.id.button_add:
