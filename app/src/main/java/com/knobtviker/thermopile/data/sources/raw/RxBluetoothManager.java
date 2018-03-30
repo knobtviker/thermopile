@@ -220,51 +220,102 @@ public class RxBluetoothManager {
      * May return null if failed.
      */
     @Nullable
-    public BluetoothGattServer startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
-        this.gattServer = bluetoothManager.openGattServer(context, bluetoothGattServerCallback);
-        this.isGattServerRunning = gattServer != null;
-        return gattServer;
+    public Observable<BluetoothGattServer> startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
+        return Observable.defer(() ->
+            Observable.create(emitter -> {
+                if(!emitter.isDisposed()) {
+                    this.gattServer = bluetoothManager.openGattServer(context, bluetoothGattServerCallback);
+                    this.isGattServerRunning = gattServer != null;
+
+                    if (gattServer == null) {
+                        emitter.onError(new Throwable("Gatt server cannot sstart."));
+                    } else {
+                        emitter.onNext(gattServer);
+                    }
+
+                    emitter.onComplete();
+                }
+            })
+        );
     }
 
     /**
      * Shut down the GATT server.
      */
-    public void stopGattServer() {
-        if (gattServer != null && isGattServerRunning) {
-            gattServer.close();
-            gattServer = null;
-            isGattServerRunning = false;
-        }
+    public Completable stopGattServer() {
+        return Completable.defer(() ->
+            Completable.create(emitter -> {
+                if (!emitter.isDisposed()) {
+                    if (gattServer != null && isGattServerRunning) {
+                        gattServer.close();
+                        gattServer = null;
+                        isGattServerRunning = false;
+
+//                        emitter.onComplete();
+//                    } else {
+//                        emitter.onError(new Throwable("BluetoothGattServer is not running so it cannot shutdown."));
+                    }
+                    emitter.onComplete();
+                }
+            })
+        );
     }
 
-    public boolean isGattServerRunning() {
-        return isGattServerRunning;
+    public Observable<Boolean> isGattServerRunning() {
+        return Observable.defer(() -> Observable.just(isGattServerRunning));
     }
 
     /**
      * Begin advertising over Bluetooth that this device is connectable and supports the selected service.
      */
-    public void startAdvertising(@NonNull final AdvertiseSettings settings, @NonNull final AdvertiseData data, @NonNull final AdvertiseCallback callback) {
-        bluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
-        if (bluetoothLeAdvertiser != null) {
-            bluetoothLeAdvertiser.startAdvertising(settings, data, callback);
-            this.advertiseCallback = callback;
-            isAdvertising = true;
-        }
+    public Completable startAdvertising(@NonNull final AdvertiseSettings settings, @NonNull final AdvertiseData data, @NonNull final AdvertiseCallback callback) {
+        return Completable.defer(() ->
+            Completable.create(emitter -> {
+                    if (!emitter.isDisposed()) {
+                        bluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
+                        if (bluetoothLeAdvertiser != null) {
+                            bluetoothLeAdvertiser.startAdvertising(settings, data, callback);
+                            this.advertiseCallback = callback;
+                            isAdvertising = true;
+
+                            emitter.onComplete();
+                        } else {
+                            emitter.onError(new Throwable("Bluetooth is turned off or Bluetooth LE Advertising is not supported on this device."));
+                        }
+                    }
+                }
+            )
+        );
+
     }
 
     /**
      * Stop Bluetooth advertisements.
      */
-    public void stopAdvertising() {
-        if (bluetoothLeAdvertiser != null) {
-            bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
-            advertiseCallback = null;
-            isAdvertising = false;
-        }
+    public Completable stopAdvertising() {
+        return Completable.defer(() ->
+            Completable.create(emitter -> {
+                if (!emitter.isDisposed()) {
+//                    if (advertiseCallback == null) {
+//                        emitter.onError(new Throwable("Advertising callback cannot be null."));
+//                    } else {
+                        if (bluetoothLeAdvertiser != null) {
+                            bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
+                            advertiseCallback = null;
+                            isAdvertising = false;
+
+//                            emitter.onComplete();
+//                        } else {
+//                            emitter.onError(new Throwable("BluetoothLeAdvertiser cannot be null."));
+                        }
+                        emitter.onComplete();
+//                    }
+                }
+            })
+        );
     }
 
-    public boolean isAdvertising() {
-        return isAdvertising;
+    public Observable<Boolean> isAdvertising() {
+        return Observable.defer(() -> Observable.just(isAdvertising));
     }
 }

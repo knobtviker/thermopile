@@ -1,17 +1,14 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
-import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.sources.raw.EnvironmentProfile;
 import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
@@ -149,67 +146,101 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     @Override
     public void setBluetoothProfile(final int profile) {
         compositeDisposable.add(
-        rxBluetoothManager
-            .setProfile(BluetoothProfile.GATT_SERVER)
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                this::completed,
-                this::error
-            )
+            rxBluetoothManager
+                .setProfile(BluetoothProfile.GATT_SERVER)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
         );
     }
 
     @Override
-    public BluetoothGattServer startGattServer(@NonNull final BluetoothGattServerCallback callback) {
-        return rxBluetoothManager.startGattServer(callback);
+    public void startGattServer(@NonNull final BluetoothGattServerCallback callback) {
+        compositeDisposable.add(
+            rxBluetoothManager
+                .startGattServer(callback)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    view::onGattServerStarted,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override
     public void stopGattServer() {
-        rxBluetoothManager.stopGattServer();
+        compositeDisposable.add(
+            rxBluetoothManager
+                .stopGattServer()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 
     @Override
-    public boolean isGattServerRunning() {
-        return rxBluetoothManager.isGattServerRunning();
+    public void isGattServerRunning() {
+        compositeDisposable.add(
+            rxBluetoothManager
+                .isGattServerRunning()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    view::onCheckGattServer,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override
-    public void startBluetoothAdvertising() {
-        rxBluetoothManager.startAdvertising(
-            new AdvertiseSettings.Builder()
-                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
-                .setConnectable(true)
-                .setTimeout(0)
-                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
-                .build(),
-            new AdvertiseData.Builder()
-                .setIncludeDeviceName(true)
-                .setIncludeTxPowerLevel(false)
-                .addServiceUuid(new ParcelUuid(EnvironmentProfile.UUID_ENVIRONMENT_SERVICE))
-                .build(),
-            new AdvertiseCallback() {
-                @Override
-                public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-//                        Log.i(TAG, "LE Advertise Started.");
-                }
-
-                @Override
-                public void onStartFailure(int errorCode) {
-//                        Log.w(TAG, "LE Advertise Failed: " + errorCode);
-                }
-            }
+    public void startBluetoothAdvertising(@NonNull AdvertiseSettings settings, @NonNull AdvertiseData data, @NonNull AdvertiseCallback callback) {
+        compositeDisposable.add(
+            rxBluetoothManager
+                .startAdvertising(settings, data, callback)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
         );
     }
 
     @Override
     public void stopBluetoothAdvertising() {
-        rxBluetoothManager.stopAdvertising();
+        compositeDisposable.add(
+            rxBluetoothManager
+                .stopAdvertising()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 
     @Override
-    public boolean isBluetoothAdvertising() {
-        return rxBluetoothManager.isAdvertising();
+    public void isBluetoothAdvertising() {
+        compositeDisposable.add(
+            rxBluetoothManager
+                .isAdvertising()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    view::onCheckBluetoothAdvertising,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 }

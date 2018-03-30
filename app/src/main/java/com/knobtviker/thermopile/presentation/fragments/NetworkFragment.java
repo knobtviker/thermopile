@@ -4,11 +4,15 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
@@ -132,38 +136,24 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         switch (compoundButton.getId()) {
             case R.id.switch_bluetooth_on_off:
-                if (isChecked) {
-                    presenter.bluetooth(isChecked);
-                } else {
-                    if (presenter.isGattServerRunning()) {
-                        switchBluetoothGatt.setChecked(false);
-                    }
-                    if (presenter.isBluetoothAdvertising()) {
-                        switchBluetoothAdvertising.setChecked(false);
-                    }
-                    presenter.bluetooth(isChecked);
-                }
+//                if (!isChecked) {
+//                    stopGattServer();
+//                    stopAdvertising();
+//                }
+                presenter.bluetooth(isChecked);
                 break;
             case R.id.switch_bluetooth_gatt:
                 if (isChecked) {
-                    if (!presenter.isGattServerRunning()) {
-                        startGattServer();
-                    }
+                    startGattServer();
                 } else {
-                    if (presenter.isGattServerRunning()) {
-                        stopGattServer();
-                    }
+                    stopGattServer();
                 }
                 break;
             case R.id.switch_bluetooth_advertising:
                 if (isChecked) {
-                    if (!presenter.isBluetoothAdvertising()) {
-                        startAdvertising();
-                    }
+                    startAdvertising();
                 } else {
-                    if (presenter.isBluetoothAdvertising()) {
-                        stopAdvertising();
-                    }
+                    stopAdvertising();
                 }
                 break;
             case R.id.switch_wifi_on_off:
@@ -218,6 +208,25 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         groupGattAdvertising.setVisibility(isOn ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void onCheckGattServer(boolean isGattServerRunning) {
+        switchBluetoothGatt.setChecked(isGattServerRunning);
+        switchBluetoothGatt.setOnCheckedChangeListener(this);
+        switchBluetoothGatt.setEnabled(true);
+    }
+
+    @Override
+    public void onGattServerStarted(@NonNull BluetoothGattServer gattServer) {
+        gattServer.addService(EnvironmentProfile.createService());
+    }
+
+    @Override
+    public void onCheckBluetoothAdvertising(boolean isAdvertising) {
+        switchBluetoothAdvertising.setChecked(isAdvertising);
+        switchBluetoothAdvertising.setOnCheckedChangeListener(this);
+        switchBluetoothAdvertising.setEnabled(true);
+    }
+
     @SuppressLint("CheckResult")
     private void setupBluetooth(final boolean hasBluetooth) {
         groupBluetooth.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
@@ -232,26 +241,20 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         presenter.setBluetoothProfile(BluetoothProfile.GATT_SERVER);
 
         switchBluetoothGatt.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
-        switchBluetoothGatt.setChecked(presenter.isGattServerRunning());
-        switchBluetoothGatt.setOnCheckedChangeListener(this);
-        switchBluetoothGatt.setEnabled(true);
+
+        presenter.isGattServerRunning();
     }
 
     private void setupAdvertising(final boolean isEnabled) {
         switchBluetoothAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
-        switchBluetoothAdvertising.setChecked(presenter.isBluetoothAdvertising());
-        switchBluetoothAdvertising.setOnCheckedChangeListener(this);
-        switchBluetoothAdvertising.setEnabled(true);
+
+        presenter.isBluetoothAdvertising();
     }
 
     private void startGattServer() {
         final GattServerCallback callback = new GattServerCallback(getActivity());
-        final BluetoothGattServer gattServer = presenter.startGattServer(callback);
-        callback.setGattServer(gattServer);
-        if (gattServer != null) {
-            //TODO Change and use already adopted convention for ESS and ESP
-            gattServer.addService(EnvironmentProfile.createService());
-        }
+
+        presenter.startGattServer(callback);
     }
 
     private void stopGattServer() {
@@ -259,7 +262,30 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     }
 
     private void startAdvertising() {
-        presenter.startBluetoothAdvertising();
+        presenter.startBluetoothAdvertising(
+            new AdvertiseSettings.Builder()
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+                .setConnectable(true)
+                .setTimeout(0)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+                .build(),
+            new AdvertiseData.Builder()
+                .setIncludeDeviceName(true)
+                .setIncludeTxPowerLevel(false)
+                .addServiceUuid(new ParcelUuid(EnvironmentProfile.UUID_ENVIRONMENT_SERVICE))
+                .build(),
+            new AdvertiseCallback() {
+                @Override
+                public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+//                        Log.i(TAG, "LE Advertise Started.");
+                }
+
+                @Override
+                public void onStartFailure(int errorCode) {
+//                        Log.w(TAG, "LE Advertise Failed: " + errorCode);
+                }
+            }
+        );
     }
 
     private void stopAdvertising() {

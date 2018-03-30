@@ -2,6 +2,9 @@ package com.knobtviker.thermopile.presentation.contracts;
 
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
@@ -22,6 +25,12 @@ public interface NetworkContract {
         void onBluetoothStateIndeterminate();
 
         void onBluetoothState(final boolean isOn);
+
+        void onCheckBluetoothAdvertising(final boolean isAdvertising);
+
+        void onCheckGattServer(final boolean isGattServerRunning);
+
+        void onGattServerStarted(@NonNull final BluetoothGattServer gattServer);
     }
 
     interface Presenter extends BasePresenter {
@@ -38,16 +47,16 @@ public interface NetworkContract {
 
         void setBluetoothProfile(final int profile);
 
-        BluetoothGattServer startGattServer(@NonNull final BluetoothGattServerCallback callback);
+        void startGattServer(@NonNull final BluetoothGattServerCallback callback);
 
         void stopGattServer();
 
-        boolean isGattServerRunning();
+        void isGattServerRunning();
 
-        void startBluetoothAdvertising();
+        void startBluetoothAdvertising(@NonNull final AdvertiseSettings settings, @NonNull final AdvertiseData data, @NonNull final AdvertiseCallback callback);
 
         void stopBluetoothAdvertising();
 
-        boolean isBluetoothAdvertising();
+        void isBluetoothAdvertising();
     }
 }
