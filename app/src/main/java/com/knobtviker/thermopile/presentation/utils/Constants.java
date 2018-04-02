@@ -5,6 +5,7 @@ package com.knobtviker.thermopile.presentation.utils;
  */
 
 public class Constants {
+    public static final int REQUEST_CODE_BLUETOOTH_DISCOVERABILITY = 8008;
 
     public static final String KEY_DAY = "key_day";
     public static final String KEY_START_MINUTE = "key_start_minute";

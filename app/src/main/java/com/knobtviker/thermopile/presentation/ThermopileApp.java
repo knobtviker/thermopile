@@ -97,6 +97,13 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     }
 
     @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        Database.getDefaultInstance().deleteAll();
+    }
+
+    @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         switch (sensorEvent.sensor.getType()) {
             case Sensor.TYPE_AMBIENT_TEMPERATURE:

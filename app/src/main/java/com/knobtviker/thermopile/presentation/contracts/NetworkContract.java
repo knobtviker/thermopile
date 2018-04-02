@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.le.AdvertiseCallback;
@@ -40,6 +41,10 @@ public interface NetworkContract {
         void bluetooth(final boolean enable);
 
         void isBluetoothEnabled();
+
+        void name(@NonNull final String name);
+
+        void discoverable(@NonNull final Activity activity, final int requestCode, final int duration);
 
         void observeBluetoothState();
 

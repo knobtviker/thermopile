@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothProfile;
@@ -101,6 +102,25 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                     this::completed
                 )
         );
+    }
+
+    @Override
+    public void name(@NonNull String name) {
+        compositeDisposable.add(
+            rxBluetoothManager
+                .name(name)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void discoverable(@NonNull Activity activity, int requestCode, int duration) {
+        rxBluetoothManager.enableDiscoverability(activity, 8008, 300);
     }
 
     @Override

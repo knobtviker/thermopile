@@ -1,10 +1,6 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,10 +32,6 @@ import butterknife.BindView;
 
 public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presenter> implements ScreenSaverContract.View {
     public static final String TAG = ScreensaverFragment.class.getSimpleName();
-
-    private IntentFilter intentFilter;
-
-    private BroadcastReceiver dateChangedReceiver;
 
     private DateTimeZone dateTimeZone;
     private int formatClock;
@@ -85,20 +77,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         unitPressure = Constants.UNIT_PRESSURE_PASCAL;
 
         presenter = new ScreenSaverPresenter(this);
-
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_DATE_CHANGED);
-
-        dateChangedReceiver = new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
-
-                    setDate();
-                }
-            }
-        };
     }
 
     @Nullable
@@ -110,9 +88,14 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     @Override
-    public void onResume() {
-        getActivity().registerReceiver(dateChangedReceiver, intentFilter);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        presenter.observeDateChanged(view.getContext());
+    }
+
+    @Override
+    public void onResume() {
         data();
 
         getView().setKeepScreenOn(true);
@@ -125,8 +108,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         super.onPause();
 
         getView().setKeepScreenOn(false);
-
-        getActivity().unregisterReceiver(dateChangedReceiver);
     }
 
     @Override
@@ -137,6 +118,11 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     @Override
     public void showError(@NonNull Throwable throwable) {
         Log.e(TAG, throwable.getMessage(), throwable);
+    }
+
+    @Override
+    public void onDateChanged() {
+        setDate();
     }
 
     @Override

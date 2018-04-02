@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.data.sources.raw;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothGattServer;
@@ -37,8 +38,10 @@ public class RxBluetoothManager {
     @SuppressLint("StaticFieldLeak")
     private static RxBluetoothManager INSTANCE = null;
 
-    private final BluetoothAdapter bluetoothAdapter;
+    public final static int MAX_DISCOVERABILITY_PERIOD_SECONDS = 300;
+
     private final Context context;
+    private final BluetoothAdapter bluetoothAdapter;
     private final BluetoothManager bluetoothManager;
 
     @Nullable
@@ -49,6 +52,7 @@ public class RxBluetoothManager {
     @Nullable
     private AdvertiseCallback advertiseCallback;
 
+    private boolean isBluetoothRunning = false;
     private boolean isGattServerRunning = false;
     private boolean isAdvertising = false;
 
@@ -106,6 +110,7 @@ public class RxBluetoothManager {
                 emitter -> {
                     if (!emitter.isDisposed()) {
                         if (bluetoothAdapter.enable()) {
+                            isBluetoothRunning = true;
                             emitter.onComplete();
                         } else {
                             emitter.onError(new Throwable("Cannot turn on local Bluetooth adapter"));
@@ -127,6 +132,7 @@ public class RxBluetoothManager {
                 emitter -> {
                     if (!emitter.isDisposed()) {
                         if (bluetoothAdapter.disable()) {
+                            isBluetoothRunning = false;
                             emitter.onComplete();
                         } else {
                             emitter.onError(new Throwable("Cannot turn off local Bluetooth adapter"));
@@ -135,12 +141,6 @@ public class RxBluetoothManager {
                 }
             )
         );
-    }
-
-    public void name(@NonNull final String name) {
-//        if (bluetoothAdapter != null && isEnabled()) {
-        bluetoothAdapter.setName(name);
-//        }
     }
 
     /**
@@ -219,16 +219,15 @@ public class RxBluetoothManager {
      * Initialize the GATT server instance getInstance callback.
      * May return null if failed.
      */
-    @Nullable
     public Observable<BluetoothGattServer> startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
         return Observable.defer(() ->
             Observable.create(emitter -> {
-                if(!emitter.isDisposed()) {
+                if (!emitter.isDisposed()) {
                     this.gattServer = bluetoothManager.openGattServer(context, bluetoothGattServerCallback);
                     this.isGattServerRunning = gattServer != null;
 
                     if (gattServer == null) {
-                        emitter.onError(new Throwable("Gatt server cannot sstart."));
+                        emitter.onError(new Throwable("Gatt server cannot start."));
                     } else {
                         emitter.onNext(gattServer);
                     }
@@ -244,20 +243,20 @@ public class RxBluetoothManager {
      */
     public Completable stopGattServer() {
         return Completable.defer(() ->
-            Completable.create(emitter -> {
-                if (!emitter.isDisposed()) {
-                    if (gattServer != null && isGattServerRunning) {
-                        gattServer.close();
-                        gattServer = null;
-                        isGattServerRunning = false;
+                Completable.create(emitter -> {
+                    if (!emitter.isDisposed()) {
+                        if (gattServer != null && isGattServerRunning) {
+                            gattServer.close();
+                            gattServer = null;
+                            isGattServerRunning = false;
 
 //                        emitter.onComplete();
 //                    } else {
 //                        emitter.onError(new Throwable("BluetoothGattServer is not running so it cannot shutdown."));
+                        }
+                        emitter.onComplete();
                     }
-                    emitter.onComplete();
-                }
-            })
+                })
         );
     }
 
@@ -294,8 +293,8 @@ public class RxBluetoothManager {
      */
     public Completable stopAdvertising() {
         return Completable.defer(() ->
-            Completable.create(emitter -> {
-                if (!emitter.isDisposed()) {
+                Completable.create(emitter -> {
+                    if (!emitter.isDisposed()) {
 //                    if (advertiseCallback == null) {
 //                        emitter.onError(new Throwable("Advertising callback cannot be null."));
 //                    } else {
@@ -310,12 +309,55 @@ public class RxBluetoothManager {
                         }
                         emitter.onComplete();
 //                    }
-                }
-            })
+                    }
+                })
         );
     }
 
     public Observable<Boolean> isAdvertising() {
         return Observable.defer(() -> Observable.just(isAdvertising));
+    }
+
+    public Completable name(@NonNull final String name) {
+        return Completable.defer(() ->
+            Completable.create(emitter -> {
+                if (!emitter.isDisposed()) {
+                    if (bluetoothAdapter != null && isBluetoothRunning) {
+                        bluetoothAdapter.setName(name);
+                        emitter.onComplete();
+                    } else {
+                        emitter.onError(new Throwable("BluetoothAdapter cannot be null or not running."));
+                    }
+                }
+            })
+        );
+    }
+
+    /**
+     * This will issue a request to make the local device discoverable to other devices. By default,
+     * the device will become discoverable for 120 seconds.
+     *
+     * @param activity Activity
+     * @param requestCode request code
+     */
+    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode) {
+        enableDiscoverability(activity, requestCode, -1);
+    }
+
+    /**
+     * This will issue a request to make the local device discoverable to other devices. By default,
+     * the device will become discoverable for 120 seconds.  Maximum duration is capped at 300
+     * seconds.
+     *
+     * @param activity Activity
+     * @param requestCode request code
+     * @param duration discoverability duration in seconds
+     */
+    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode, final int duration) {
+        final Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        if (duration >= 0) {
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration > MAX_DISCOVERABILITY_PERIOD_SECONDS ? MAX_DISCOVERABILITY_PERIOD_SECONDS : duration);
+        }
+        activity.startActivityForResult(discoverableIntent, requestCode);
     }
 }

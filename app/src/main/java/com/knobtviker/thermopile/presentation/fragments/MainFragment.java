@@ -3,8 +3,6 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -48,8 +46,6 @@ import io.realm.RealmResults;
 
 public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View, DayScrollListener.Listener {
     public static final String TAG = MainFragment.class.getSimpleName();
-
-    private IntentFilter intentFilter;
 
     private BroadcastReceiver dateChangedReceiver;
 
@@ -132,21 +128,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         unitMotion = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
 
         presenter = new MainPresenter(this);
-
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_DATE_CHANGED);
-
-        dateChangedReceiver = new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
-
-                    setDate();
-                    thresholds();
-                }
-            }
-        };
     }
 
     @Override
@@ -171,35 +152,17 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         super.onViewCreated(view, savedInstanceState);
 
         setupRecyclerView();
+
+        presenter.observeDateChanged(view.getContext());
     }
 
     @Override
     public void onResume() {
-        getActivity().registerReceiver(dateChangedReceiver, intentFilter);
-
         data();
         thresholds();
 
         super.onResume();
     }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-
-        if (hidden) {
-            getActivity().unregisterReceiver(dateChangedReceiver);
-        } else {
-            getActivity().registerReceiver(dateChangedReceiver, intentFilter);
-        }
-    }
-
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//
-//        getActivity().unregisterReceiver(dateChangedReceiver);
-//    }
 
     @Override
     public void onDetach() {
@@ -216,6 +179,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @Override
     public void showError(@NonNull Throwable throwable) {
         Log.e(TAG, throwable.getMessage(), throwable);
+    }
+
+    @Override
+    public void onDateChanged() {
+        setDate();
+        thresholds();
     }
 
     @Override

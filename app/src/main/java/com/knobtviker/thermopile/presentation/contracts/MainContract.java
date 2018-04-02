@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -18,12 +19,16 @@ public interface MainContract {
 
     interface View extends BaseView {
 
+        void onDateChanged();
+
         void onSettingsChanged(@NonNull final Settings settings);
 
         void onThresholdsChanged(@NonNull final RealmResults<Threshold> thresholds);
     }
 
     interface Presenter extends BasePresenter {
+
+        void observeDateChanged(@NonNull final Context context);
 
         void settings(@NonNull final Realm realm);
 

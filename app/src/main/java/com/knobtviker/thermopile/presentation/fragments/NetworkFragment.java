@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothClass;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.AdvertiseCallback;
@@ -26,16 +27,22 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.raw.EnvironmentProfile;
 import com.knobtviker.thermopile.data.sources.raw.GattServerCallback;
+import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
+import com.knobtviker.thermopile.presentation.ThermopileApp;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
+import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.views.listeners.GattServerListener;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -44,10 +51,13 @@ import butterknife.OnClick;
  * Created by bojan on 15/06/2017.
  */
 
-public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> implements NetworkContract.View, CompoundButton.OnCheckedChangeListener {
+public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> implements NetworkContract.View, CompoundButton.OnCheckedChangeListener, GattServerListener {
     public static final String TAG = NetworkFragment.class.getSimpleName();
 
     private long settingsId = -1L;
+
+    @Nullable
+    private BluetoothGattServer gattServer;
 
     @Nullable
     private WifiManager wifiManager;
@@ -136,10 +146,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         switch (compoundButton.getId()) {
             case R.id.switch_bluetooth_on_off:
-//                if (!isChecked) {
-//                    stopGattServer();
-//                    stopAdvertising();
-//                }
                 presenter.bluetooth(isChecked);
                 break;
             case R.id.switch_bluetooth_gatt:
@@ -182,15 +188,10 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     public void onBluetoothEnabled(boolean isEnabled) {
         switchBluetoothOnOff.setChecked(isEnabled);
         switchBluetoothOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
-        switchBluetoothOnOff.setOnCheckedChangeListener(this);
-
-        presenter.observeBluetoothState();
 
         switchBluetoothOnOff.setEnabled(true);
-        groupGattAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
 
-        setupGattServer(isEnabled);
-        setupAdvertising(isEnabled);
+        groupGattAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -206,6 +207,14 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         switchBluetoothOnOff.setEnabled(true);
         switchBluetoothOnOff.setText(getString(isOn ? R.string.state_on : R.string.state_off));
         groupGattAdvertising.setVisibility(isOn ? View.VISIBLE : View.GONE);
+
+        setupGattServer(isOn);
+        setupAdvertising(isOn);
+
+        if (isOn) {
+            presenter.name(getString(R.string.app_name));
+            presenter.discoverable(getActivity(), Constants.REQUEST_CODE_BLUETOOTH_DISCOVERABILITY, RxBluetoothManager.MAX_DISCOVERABILITY_PERIOD_SECONDS);
+        }
     }
 
     @Override
@@ -217,7 +226,10 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
     @Override
     public void onGattServerStarted(@NonNull BluetoothGattServer gattServer) {
-        gattServer.addService(EnvironmentProfile.createService());
+        this.gattServer = gattServer;
+
+        //TODO: Finish ESS and ESP BLE profile and service
+        this.gattServer.addService(EnvironmentProfile.createService());
     }
 
     @Override
@@ -227,34 +239,81 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         switchBluetoothAdvertising.setEnabled(true);
     }
 
+    @Override
+    public void onGattConnectionStateChange(@NonNull BluetoothDevice device, int status, int newState) {
+        Log.i(TAG, "onGattConnectionStateChange: " + device.toString() + " status: " + status + " newState: " + newState);
+    }
+
+    @Override
+    public void onGattSendResponse(@NonNull BluetoothDevice device, int requestId, int status, @NonNull UUID uuid) {
+        if (gattServer != null) {
+            final Atmosphere atmosphere = ((ThermopileApp) getActivity().getApplication()).atmosphere();
+
+            byte[] response = new byte[0];
+            if (uuid.equals(EnvironmentProfile.UUID_TEMPERATURE)) {
+                response = EnvironmentProfile.toByteArray(Math.round(atmosphere.temperature()));
+                Log.i(TAG, atmosphere.temperature() + "");
+            } else if (uuid.equals(EnvironmentProfile.UUID_PRESSURE)) {
+//                response = EnvironmentProfile.toByteArray(atmosphere.pressure());
+                Log.i(TAG, atmosphere.pressure() + "");
+            } else if (uuid.equals(EnvironmentProfile.UUID_HUMIDITY)) {
+//                response = EnvironmentProfile.toByteArray(atmosphere.humidity());
+                Log.i(TAG, atmosphere.humidity() + "");
+            } else {
+                Log.e(TAG, "Invalid Characteristic Read: " + uuid);
+                gattServer.sendResponse(device, requestId, status, 0, null);
+            }
+
+            gattServer.sendResponse(device, requestId, status, 0, response);
+        }
+    }
+
+    @Override
+    public void onGattDescriptorResponse(@NonNull BluetoothDevice device, int requestId, int status, int offset, byte[] value) {
+        if (gattServer != null) {
+            gattServer.sendResponse(device, requestId, status, offset, value);
+        }
+    }
+
     @SuppressLint("CheckResult")
     private void setupBluetooth(final boolean hasBluetooth) {
         groupBluetooth.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
 
         if (hasBluetooth) {
+            switchBluetoothOnOff.setOnCheckedChangeListener(this);
             presenter.isBluetoothEnabled();
+            presenter.observeBluetoothState();
         }
     }
 
-    private void setupGattServer(final boolean isEnabled) {
-        presenter.setBluetoothDeviceClass(BluetoothClass.Service.INFORMATION, BluetoothClass.Device.COMPUTER_SERVER);
-        presenter.setBluetoothProfile(BluetoothProfile.GATT_SERVER);
+    private void setupGattServer(final boolean isOn) {
+        switchBluetoothGatt.setVisibility(isOn ? View.VISIBLE : View.GONE);
 
-        switchBluetoothGatt.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
+        if (isOn) {
+            presenter.setBluetoothDeviceClass(BluetoothClass.Service.INFORMATION, BluetoothClass.Device.COMPUTER_SERVER);
+            presenter.setBluetoothProfile(BluetoothProfile.GATT_SERVER);
 
-        presenter.isGattServerRunning();
+            switchBluetoothGatt.setEnabled(false);
+            presenter.isGattServerRunning();
+        } else {
+            gattServer = null;
+            onCheckGattServer(false);
+        }
     }
 
-    private void setupAdvertising(final boolean isEnabled) {
-        switchBluetoothAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
+    private void setupAdvertising(final boolean isOn) {
+        switchBluetoothAdvertising.setVisibility(isOn ? View.VISIBLE : View.GONE);
+        switchBluetoothAdvertising.setEnabled(false);
 
-        presenter.isBluetoothAdvertising();
+        if (isOn) {
+            presenter.isBluetoothAdvertising();
+        } else {
+            onCheckBluetoothAdvertising(false);
+        }
     }
 
     private void startGattServer() {
-        final GattServerCallback callback = new GattServerCallback(getActivity());
-
-        presenter.startGattServer(callback);
+        presenter.startGattServer(GattServerCallback.create(this));
     }
 
     private void stopGattServer() {
