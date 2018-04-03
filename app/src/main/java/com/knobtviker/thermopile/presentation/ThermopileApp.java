@@ -17,7 +17,9 @@ import android.util.Log;
 import com.bugfender.sdk.Bugfender;
 import com.facebook.stetho.Stetho;
 import com.google.android.things.device.TimeManager;
+import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
+import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
 import com.knobtviker.android.things.contrib.community.driver.bme280.BME280SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680;
 import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680SensorDriver;
@@ -33,6 +35,7 @@ import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.MagneticField;
+import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
@@ -54,6 +57,7 @@ import org.joda.time.DateTimeUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -85,14 +89,10 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void onCreate() {
         super.onCreate();
 
-        test();
-
         initBugfender();
         initApplicationState();
-        initSensors();
-        initDatabase();
-        initStetho();
         initJodaTime();
+        initDatabase();
         initPresenter();
     }
 
@@ -206,6 +206,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     }
 
     @Override
+    public void onMinuteTick() {
+        Log.d(TAG, "INTERPOLATION IN REALM HERE IF FULL HOUR");
+    }
+
+    @Override
     public void showScreensaver() {
         Router.showScreensaver(this);
         brightness(24);
@@ -225,12 +230,16 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void onMainActivityShown(@NonNull MainActivity activity) {
         this.currentActivity = activity;
 
+        atmosphere = atmosphere.withTimestamp(DateTimeUtils.currentTimeMillis());
+
         populateFragment();
     }
 
     @Override
     public void onScreensaverActivityShown(@NonNull ScreenSaverActivity activity) {
         this.currentActivity = activity;
+
+        atmosphere = atmosphere.withTimestamp(DateTimeUtils.currentTimeMillis());
 
         populateFragment();
     }
@@ -260,6 +269,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 
     private void initDatabase() {
         Database.init(this);
+
+        initStetho();
     }
 
     private void initStetho() {
@@ -278,11 +289,14 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     private void initPresenter() {
         presenter = new ApplicationPresenter(this);
         presenter.subscribe();
+        presenter.observeMinuteTick(this);
         presenter.tick();
         presenter.initScreen(160, RxScreenManager.ROTATION_180);
         presenter.createScreensaver();
         presenter.brightness(255);
         presenter.settings(Database.getDefaultInstance());
+
+        initSensors();
     }
 
     private void initBugfender() {
@@ -297,22 +311,61 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     }
 
     private void initSensors() {
+        final ImmutableList<I2CDevice> i2CDevices = presenter.i2cDevices();
+
+        if (i2CDevices.isEmpty()) {
+            return;
+        }
+
         registerSensorCallback();
 
-        try {
-            initBME280();
-            initBME680();
-            initDS3231();
-            initTSL2561();
-            initLSM9DS1();
+        final List<PeripheralDevice> defaultSensors = presenter.defaultSensors(Database.getDefaultInstance());
+
+        final List<Integer> foundSensors = new ArrayList<>(0);
+
+        defaultSensors
+            .forEach(
+                defaultSensor -> {
+                    boolean found = i2CDevices
+                        .stream()
+                        .map(I2CDevice::address)
+                        .anyMatch(integer -> integer == defaultSensor.address());
+
+                    if (found) {
+                        foundSensors.add(defaultSensor.address());
+
+                        try {
+                            switch (defaultSensor.address()) {
+                                case 0x77:
+                                    initBME280();
+                                    break;
+                                case 0x76:
+                                    initBME680();
+                                    break;
+                                case 0x68:
+                                    initDS3231();
+                                    break;
+                                case 0x39:
+                                    initTSL2561();
+                                    break;
+                                case 0x6B:
+                                    initLSM9DS1();
+                                    break;
+                            }
+                        } catch (IOException e) {
+                            showError(e);
+                        }
+                    }
+                }
+            );
+            if (!foundSensors.isEmpty()) {
+                presenter.saveDefaultSensors(foundSensors);
+            }
 
 //            final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.getI2CPort());
 //            fram.dump();
 //            fram.close();
 
-        } catch (IOException e) {
-            showError(e);
-        }
     }
 
     private void initJodaTime() {
@@ -469,11 +522,5 @@ public class ThermopileApp extends Application implements SensorEventListener, A
             presenter.saveMagneticFields(new ArrayList<>(magneticFields));
             magneticFields.clear();
         }
-    }
-
-    private void test() {
-        BoardDefaults
-            .i2CDevices()
-            .forEach(device -> Log.i(TAG, device.bus() + " --- " + device.address() + " --- " + device.addressHex()));
     }
 }

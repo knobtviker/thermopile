@@ -9,9 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.presentation.contracts.SensorsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SensorsPresenter;
+
+import io.realm.RealmResults;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -39,6 +42,11 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -46,5 +54,10 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
     @Override
     public void showError(@NonNull Throwable throwable) {
         Log.e(TAG, throwable.getMessage(), throwable);
+    }
+
+    @Override
+    public void onSensors(@NonNull RealmResults<PeripheralDevice> sensors) {
+
     }
 }

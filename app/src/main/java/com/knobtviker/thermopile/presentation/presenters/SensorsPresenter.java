@@ -2,7 +2,9 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
+import com.knobtviker.thermopile.domain.repositories.PeripheralsRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.SensorsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
@@ -17,11 +19,14 @@ public class SensorsPresenter extends AbstractPresenter implements SensorsContra
 
     private final SettingsRepository settingsRepository;
 
+    private final PeripheralsRepository peripheralsRepository;
+
     public SensorsPresenter(@NonNull final SensorsContract.View view) {
         super(view);
 
         this.view = view;
         this.settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.peripheralsRepository = DaggerPeripheralsDataComponent.create().repository();
     }
 
     @Override
@@ -39,5 +44,10 @@ public class SensorsPresenter extends AbstractPresenter implements SensorsContra
     @Override
     public void removeListeners() {
 
+    }
+
+    @Override
+    public void sensors() {
+//        peripheralsRepository.load(realm);
     }
 }

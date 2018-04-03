@@ -3,7 +3,7 @@ package com.knobtviker.thermopile.data.models.local.implementation;
 import io.reactivex.annotations.NonNull;
 import io.realm.RealmModel;
 
-public interface SensorModel extends RealmModel {
+public interface SensorValue extends RealmModel {
 
     long timestamp();
 

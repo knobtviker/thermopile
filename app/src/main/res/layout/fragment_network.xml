@@ -151,11 +151,11 @@
                 android:gravity="center_vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/imageview_arrow_next"
-                app:layout_constraintBottom_toTopOf="@+id/textview_ip"
+                app:layout_constraintBottom_toTopOf="@+id/textview_ip_wifi"
                 android:layout_height="0dp"/>
 
             <TextView
-                android:id="@+id/textview_ip"
+                android:id="@+id/textview_ip_wifi"
                 android:layout_width="0dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:textColor="?android:textColorSecondary"
@@ -181,6 +181,97 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="textview_title_wifi, switch_wifi_on_off, layout_wifi_connected, divider_wifi"/>
+
+        <TextView
+            android:id="@+id/textview_title_ethernet"
+            style="@style/Section"
+            android:text="Ethernet"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_wifi"/>
+
+        <TextView
+            android:id="@+id/textview_ip_ethernet"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="?android:textColorSecondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="?attr/listPreferredItemHeightSmall"
+            android:paddingLeft="@dimen/margin_default"
+            android:paddingRight="@dimen/margin_default"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_ethernet"
+            tools:text="192.168.1.248"/>
+
+        <View
+            android:id="@+id/divider_ethernet"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_ip_ethernet"/>
+
+        <android.support.constraint.Group
+            android:id="@+id/group_ethernet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="textview_title_ethernet, textview_ip_ethernet, divider_ethernet"/>
+
+        <TextView
+            android:id="@+id/textview_title_servers"
+            style="@style/Section"
+            android:text="Servers"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_ethernet"/>
+
+        <Switch
+            android:id="@+id/switch_server_http"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingLeft="@dimen/margin_default"
+            android:paddingRight="@dimen/margin_default"
+            android:enabled="false"
+            android:gravity="center_vertical"
+            android:minHeight="40dp"
+            android:text="HTTP"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_servers"/>
+
+        <Switch
+            android:id="@+id/switch_server_websocket"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingLeft="@dimen/margin_default"
+            android:paddingRight="@dimen/margin_default"
+            android:enabled="false"
+            android:gravity="center_vertical"
+            android:minHeight="40dp"
+            android:text="Websocket"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/switch_server_http"/>
+
+        <View
+            android:id="@+id/divider_servers"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/switch_server_websocket"/>
+
+        <android.support.constraint.Group
+            android:id="@+id/group_servers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="textview_title_servers, switch_server_http, switch_server_websocket, divider_servers"/>
 
     </android.support.constraint.ConstraintLayout>
 

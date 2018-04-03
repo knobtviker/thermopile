@@ -1,6 +1,6 @@
 package com.knobtviker.thermopile.data.models.local.implementation;
 
-public interface CartesianValue extends SensorModel {
+public interface CartesianValue extends SensorValue {
 
     float valueX();
 

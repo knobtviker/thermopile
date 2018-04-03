@@ -91,8 +91,8 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     @BindView(R.id.textview_wifi_ssid)
     public TextView textViewWiFiSSID;
 
-    @BindView(R.id.textview_ip)
-    public TextView textViewIP;
+    @BindView(R.id.textview_ip_wifi)
+    public TextView textViewIpWifi;
 
     public static NetworkFragment newInstance() {
         return new NetworkFragment();
@@ -125,7 +125,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     @Override
     public void onResume() {
         presenter.hasBluetooth();
-
 
         setupWifi(hasWiFi);
 
@@ -373,7 +372,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
                 final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 
                 textViewWiFiSSID.setText(wifiInfo.getSSID().replace("\"", ""));
-                textViewIP.setText(extractIP(wifiInfo));
+                textViewIpWifi.setText(extractIP(wifiInfo));
 
                 //192.168.1.244 ---
                 // SSID: Knobtviker,
