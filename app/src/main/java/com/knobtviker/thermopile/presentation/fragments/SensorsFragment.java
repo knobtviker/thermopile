@@ -142,7 +142,6 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
                 recyclerView.setNestedScrollingEnabled(false);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                 recyclerView.setHasFixedSize(true);
-                recyclerView.setItemAnimator(null);
                 switch (recyclerView.getId()) {
                     case R.id.recyclerview_temperature:
                         temperatureAdapter = new SensorAdapter(getContext(), Constants.TYPE_TEMPERATURE, this);

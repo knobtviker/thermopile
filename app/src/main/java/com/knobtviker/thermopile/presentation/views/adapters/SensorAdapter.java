@@ -41,7 +41,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorViewHolder> {
     @NonNull
     @Override
     public SensorViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
-        return new SensorViewHolder(layoutInflater.inflate(R.layout.item_sensor, null));
+        return new SensorViewHolder(layoutInflater.inflate(R.layout.item_sensor, viewGroup, false));
     }
 
     @Override
