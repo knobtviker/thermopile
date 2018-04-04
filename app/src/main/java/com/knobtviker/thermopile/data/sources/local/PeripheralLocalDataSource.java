@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.DeviceLocalDataSource;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.util.List;
 
@@ -24,6 +25,11 @@ public class PeripheralLocalDataSource extends DeviceLocalDataSource<PeripheralD
     }
 
     @Override
+    public PeripheralDevice loadById(@NonNull Realm realm, String id) {
+        return super.loadById(realm, id);
+    }
+
+    @Override
     public void save(@NonNull final List<PeripheralDevice> items) {
         final Realm realm = Database.getDefaultInstance();
         realm.executeTransaction(realm1 -> realm1.insertOrUpdate(items));
@@ -37,19 +43,6 @@ public class PeripheralLocalDataSource extends DeviceLocalDataSource<PeripheralD
         realm.close();
     }
 
-    public void saveConnectedAndEnabled(@NonNull final List<PeripheralDevice> items, final boolean isConnected, final boolean isEnabled) {
-        final Realm realm = Database.getDefaultInstance();
-        realm.executeTransaction(realm1 -> {
-            items.forEach(peripheralDevice -> {
-                peripheralDevice.connected(isConnected);
-                peripheralDevice.enabled(isEnabled);
-            });
-
-            realm1.insertOrUpdate(items);
-        });
-        realm.close();
-    }
-
     public void saveConnected(@NonNull final List<PeripheralDevice> items, final boolean isConnected) {
         final Realm realm = Database.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
@@ -60,41 +53,35 @@ public class PeripheralLocalDataSource extends DeviceLocalDataSource<PeripheralD
         realm.close();
     }
 
-    public void saveEnabled(@NonNull final List<PeripheralDevice> items, final boolean isEnabled) {
+    public void saveEnabled(@NonNull final PeripheralDevice item, final int type, final boolean isEnabled) {
         final Realm realm = Database.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
-            items.forEach(peripheralDevice -> peripheralDevice.enabled(isEnabled));
-
-            realm1.insertOrUpdate(items);
-        });
-        realm.close();
-    }
-
-    public void saveConnectedAndEnabled(@NonNull final PeripheralDevice item, final boolean isConnected, final boolean isEnabled) {
-        final Realm realm = Database.getDefaultInstance();
-        realm.executeTransaction(realm1 -> {
-            item.connected(isConnected);
-            item.enabled(isEnabled);
-
-            realm1.insertOrUpdate(item);
-        });
-        realm.close();
-    }
-
-    public void saveConnected(@NonNull final PeripheralDevice item, final boolean isConnected) {
-        final Realm realm = Database.getDefaultInstance();
-        realm.executeTransaction(realm1 -> {
-            item.connected(isConnected);
-
-            realm1.insertOrUpdate(item);
-        });
-        realm.close();
-    }
-
-    public void saveEnabled(@NonNull final PeripheralDevice item, final boolean isEnabled) {
-        final Realm realm = Database.getDefaultInstance();
-        realm.executeTransaction(realm1 -> {
-            item.enabled(isEnabled);
+            switch (type) {
+                case Constants.TYPE_TEMPERATURE:
+                    item.enabledTemperature(isEnabled);
+                    break;
+                case Constants.TYPE_PRESSURE:
+                    item.enabledPressure(isEnabled);
+                    break;
+                case Constants.TYPE_HUMIDITY:
+                    item.enabledHumidity(isEnabled);
+                    break;
+                case Constants.TYPE_AIR_QUALITY:
+                    item.enabledAirQuality(isEnabled);
+                    break;
+                case Constants.TYPE_LUMINOSITY:
+                    item.enabledLuminosity(isEnabled);
+                    break;
+                case Constants.TYPE_ACCELERATION:
+                    item.enabledAcceleration(isEnabled);
+                    break;
+                case Constants.TYPE_ANGULAR_VELOCITY:
+                    item.enabledAngularVelocity(isEnabled);
+                    break;
+                case Constants.TYPE_MAGNETIC_FIELD:
+                    item.enabledMagneticField(isEnabled);
+                    break;
+            }
 
             realm1.insertOrUpdate(item);
         });

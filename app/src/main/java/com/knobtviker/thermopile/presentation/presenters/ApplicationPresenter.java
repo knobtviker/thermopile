@@ -228,7 +228,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     @Override
     public void saveDefaultSensors(@NonNull List<PeripheralDevice> foundSensors) {
-        peripheralsRepository.saveConnectedAndEnabled(foundSensors, true, true);
+        peripheralsRepository.saveConnected(foundSensors, true);
     }
 
     @Override

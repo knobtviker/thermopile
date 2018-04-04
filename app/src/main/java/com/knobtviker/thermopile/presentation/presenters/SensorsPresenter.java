@@ -59,4 +59,12 @@ public class SensorsPresenter extends AbstractPresenter implements SensorsContra
             view.onSensors(resultsPeripherals);
         }
     }
+
+    @Override
+    public void sensorEnabled(@NonNull Realm realm, @NonNull String primaryKey, final int type, boolean isEnabled) {
+        final PeripheralDevice peripheralDevice = peripheralsRepository.loadById(realm, primaryKey);
+        if (peripheralDevice != null) {
+            peripheralsRepository.saveEnabled(peripheralDevice, type, isEnabled);
+        }
+    }
 }

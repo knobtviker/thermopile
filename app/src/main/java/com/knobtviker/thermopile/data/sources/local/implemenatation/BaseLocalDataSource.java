@@ -12,6 +12,8 @@ public interface BaseLocalDataSource<T extends RealmModel> {
 
     RealmResults<T> load(@NonNull final Realm realm);
 
+    T loadById(@NonNull Realm realm, @NonNull final String fieldName, @NonNull final String id);
+
     RealmResults<T> loadSorted(@NonNull final Realm realm, @NonNull final String fieldName, @NonNull final Sort sortOrder);
 
     void save(@NonNull final List<T> items);

@@ -94,12 +94,12 @@ public class Database {
     private static ImmutableList<PeripheralDevice> defaultPeripherals() {
         final String bus = TextUtils.isEmpty(BoardDefaults.defaultI2CBus()) ? "" : BoardDefaults.defaultI2CBus();
         return ImmutableList.of(
-            new PeripheralDevice(0x77, bus, "Bosch", "BME280"),
-            new PeripheralDevice(0x76, bus, "Bosch", "BME680"),
-            new PeripheralDevice(0x68, bus, "Maxim Integrated Products", "DS3231"),
-            new PeripheralDevice(0x39, bus, "TAOS", "TSL2561"),
-            new PeripheralDevice(0x6B, bus, "STMicroelectronics", "LSM9DS1"),
-            new PeripheralDevice(0x1E, bus, "STMicroelectronics", "LSM9DS1")
+            new PeripheralDevice(0x77, bus, "Bosch", "BME280", true, true, true, false, false, false, false, false),
+            new PeripheralDevice(0x76, bus, "Bosch", "BME680", true, true, true, true, false, false, false, false),
+            new PeripheralDevice(0x68, bus, "Maxim Integrated Products", "DS3231", true, false, false, false, false, false, false, false),
+            new PeripheralDevice(0x39, bus, "TAOS", "TSL2561", false, false, false, false, true, false, false, false),
+            new PeripheralDevice(0x6B, bus, "STMicroelectronics", "LSM9DS1", true, false, false, false, false, true, true, false),
+            new PeripheralDevice(0x1E, bus, "STMicroelectronics", "LSM9DS1", false, false, false, false, false, false, false, true)
         );
     }
 

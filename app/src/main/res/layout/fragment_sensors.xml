@@ -11,21 +11,76 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/textview_title_theme"
+            android:id="@+id/textview_title_temperature"
             style="@style/Section"
-            android:text="Sensors"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Temperature"
             app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-       <!---->
-        <!--<View-->
-            <!--android:id="@+id/divider_theme"-->
-            <!--style="@style/Divider"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@id/radiogroup_theme"/>-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_temperature"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_temperature"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_temperature"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_temperature"/>
+
+        <TextView
+            android:id="@+id/textview_title_pressure"
+            style="@style/Section"
+            android:text="Pressure"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_temperature"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_pressure"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_pressure"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_pressure"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_pressure"/>
+
+        <TextView
+            android:id="@+id/textview_title_humidity"
+            style="@style/Section"
+            android:text="Humidity"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_pressure"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_humidity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_humidity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_humidity"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_humidity"/>
 
     </android.support.constraint.ConstraintLayout>
 

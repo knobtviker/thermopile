@@ -116,9 +116,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
                             && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
                             && peripheralDevice.connected()
-                            && peripheralDevice.enabled()
+                            && peripheralDevice.hasTemperature()
+                            && peripheralDevice.enabledTemperature()
                     )
                     ) {
+                    Log.i(TAG, sensorEvent.sensor.getName()+" "+sensorEvent.values[0]);
                     atmosphere = atmosphere.withTemperature(sensorEvent.values[0]);
                 }
 
@@ -131,7 +133,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
                             && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
                             && peripheralDevice.connected()
-                            && peripheralDevice.enabled()
+                            && peripheralDevice.hasHumidity()
+                            && peripheralDevice.enabledHumidity()
                     )
                     ) {
                     atmosphere = atmosphere.withHumidity(sensorEvent.values[0]);
@@ -148,7 +151,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
                             && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
                             && peripheralDevice.connected()
-                            && peripheralDevice.enabled()
+                            && peripheralDevice.hasPressure()
+                            && peripheralDevice.enabledPressure()
                     )
                     ) {
                     atmosphere = atmosphere.withPressure(sensorEvent.values[0]);
@@ -164,7 +168,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
                             && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
                             && peripheralDevice.connected()
-                            && peripheralDevice.enabled()
+                            && peripheralDevice.hasPressure()
+                            && peripheralDevice.enabledPressure()
                     )
                     ) {
                     atmosphere = atmosphere.withAltitude(altitudeValue);
@@ -181,7 +186,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                                 sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
                                     && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
                                     && peripheralDevice.connected()
-                                    && peripheralDevice.enabled()
+                                    && peripheralDevice.hasAirQuality()
+                                    && peripheralDevice.enabledAirQuality()
                             )
                             ) {
                             atmosphere = atmosphere.withAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
@@ -202,7 +208,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
                             && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
                             && peripheralDevice.connected()
-                            && peripheralDevice.enabled()
+                            && peripheralDevice.hasAcceleration()
+                            && peripheralDevice.enabledAcceleration()
                     )
                     ) {
                     atmosphere = atmosphere.withAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
@@ -217,7 +224,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
                             && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
                             && peripheralDevice.connected()
-                            && peripheralDevice.enabled()
+                            && peripheralDevice.hasAngularVelocity()
+                            && peripheralDevice.enabledAngularVelocity()
                     )
                     ) {
                     atmosphere = atmosphere.withAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
@@ -232,7 +240,8 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
                             && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
                             && peripheralDevice.connected()
-                            && peripheralDevice.enabled()
+                            && peripheralDevice.hasMagneticField()
+                            && peripheralDevice.enabledMagneticField()
                     )
                     ) {
                     atmosphere = atmosphere.withMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
@@ -423,7 +432,7 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         foundSensors.add(defaultSensor);
 
                         try {
-                            //TODO: Move these harcoded addresses to some Integrity with default constants class
+                            //TODO: Move these hardcoded addresses to some Integrity with default constants class
                             switch (defaultSensor.address()) {
                                 case 0x77:
                                     initBME280();

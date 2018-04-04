@@ -24,6 +24,14 @@ public abstract class AbstractLocalDataSource<T extends RealmModel> implements B
     }
 
     @Override
+    public T loadById(@NonNull final Realm realm, String fieldName, String id) {
+        return realm
+            .where(clazz)
+            .equalTo(fieldName, id)
+            .findFirst();
+    }
+
+    @Override
     public RealmResults<T> loadSorted(Realm realm, String fieldName, Sort sortOrder) {
         return realm
             .where(clazz)

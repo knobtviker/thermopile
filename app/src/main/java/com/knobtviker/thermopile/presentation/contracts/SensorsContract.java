@@ -23,5 +23,7 @@ public interface SensorsContract {
     interface Presenter extends BasePresenter {
 
         void sensors(@NonNull final Realm realm);
+
+        void sensorEnabled(@NonNull final Realm realm, @NonNull final String primaryKey, final int type, final boolean isChecked);
     }
 }

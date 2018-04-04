@@ -42,4 +42,13 @@ public class Constants {
     public static final String DEFAULT_FORMAT_DATE = String.format("%s dd.MM.yyyy.", FORMAT_DAY_LONG);
 
     public static final int DEFAULT_SCREENSAVER_DELAY = 60;
+
+    public static final int TYPE_TEMPERATURE = 0;
+    public static final int TYPE_PRESSURE = 1;
+    public static final int TYPE_HUMIDITY = 2;
+    public static final int TYPE_AIR_QUALITY = 3;
+    public static final int TYPE_LUMINOSITY = 4;
+    public static final int TYPE_ACCELERATION = 5;
+    public static final int TYPE_ANGULAR_VELOCITY = 6;
+    public static final int TYPE_MAGNETIC_FIELD = 7;
 }
