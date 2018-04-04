@@ -82,6 +82,126 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_humidity"/>
 
+        <TextView
+            android:id="@+id/textview_title_iaq"
+            style="@style/Section"
+            android:text="Air quality"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_humidity"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_iaq"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_iaq"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_iaq"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_iaq"/>
+
+        <TextView
+            android:id="@+id/textview_title_luminosity"
+            style="@style/Section"
+            android:text="Luminosity"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_iaq"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_luminosity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_luminosity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_luminosity"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_luminosity"/>
+
+        <TextView
+            android:id="@+id/textview_title_acceleration"
+            style="@style/Section"
+            android:text="Acceleration"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_luminosity"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_acceleration"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_acceleration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_acceleration"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_acceleration"/>
+
+        <TextView
+            android:id="@+id/textview_title_angular_velocity"
+            style="@style/Section"
+            android:text="Angular velocity"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_acceleration"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_angular_velocity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_angular_velocity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_angular_velocity"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_angular_velocity"/>
+
+        <TextView
+            android:id="@+id/textview_title_magnetic_field"
+            style="@style/Section"
+            android:text="Magnetic field"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_angular_velocity"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_magnetic_field"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_magnetic_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_magnetic_field"
+            style="@style/Divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_magnetic_field"/>
+
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v4.widget.NestedScrollView>

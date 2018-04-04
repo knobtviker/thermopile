@@ -120,7 +120,6 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                             && peripheralDevice.enabledTemperature()
                     )
                     ) {
-                    Log.i(TAG, sensorEvent.sensor.getName()+" "+sensorEvent.values[0]);
                     atmosphere = atmosphere.withTemperature(sensorEvent.values[0]);
                 }
 

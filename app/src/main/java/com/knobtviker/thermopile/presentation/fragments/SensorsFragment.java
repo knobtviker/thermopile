@@ -22,7 +22,7 @@ import com.knobtviker.thermopile.presentation.views.communicators.SensorCommunic
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
+import butterknife.BindViews;
 import io.realm.RealmResults;
 
 /**
@@ -34,14 +34,17 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
 
     private long settingsId = -1L;
 
-    @BindView(R.id.recyclerview_temperature)
-    public RecyclerView recyclerViewTemperature;
+    @BindViews({R.id.recyclerview_temperature, R.id.recyclerview_pressure, R.id.recyclerview_humidity, R.id.recyclerview_iaq, R.id.recyclerview_luminosity, R.id.recyclerview_acceleration, R.id.recyclerview_angular_velocity, R.id.recyclerview_magnetic_field})
+    public List<RecyclerView> recyclerViews;
 
-    @BindView(R.id.recyclerview_pressure)
-    public RecyclerView recyclerViewPressure;
-
-    @BindView(R.id.recyclerview_humidity)
-    public RecyclerView recyclerViewHumidity;
+    private SensorAdapter temperatureAdapter;
+    private SensorAdapter pressureAdapter;
+    private SensorAdapter humidityAdapter;
+    private SensorAdapter airqualityAdapter;
+    private SensorAdapter luminosityAdapter;
+    private SensorAdapter accelerationAdapter;
+    private SensorAdapter angularVelocityAdapter;
+    private SensorAdapter magneticFieldAdapter;
 
     public static SensorsFragment newInstance() {
         return new SensorsFragment();
@@ -88,6 +91,7 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
         final List<PeripheralDevice> accelerationDevice = new ArrayList<>(0);
         final List<PeripheralDevice> angularVelocityDevice = new ArrayList<>(0);
         final List<PeripheralDevice> magneticFieldDevice = new ArrayList<>(0);
+
         sensors
             .forEach(peripheralDevice -> {
                 if (peripheralDevice.hasTemperature()) {
@@ -116,22 +120,14 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
                 }
             });
 
-        //TODO: Extract adapters and notify for changes only if needed.
-        if (!temperatureDevice.isEmpty()) {
-            recyclerViewTemperature.setAdapter(new SensorAdapter(getContext(), Constants.TYPE_TEMPERATURE, temperatureDevice, this));
-        } else {
-            //TODO: Empty view showing "No sensors"
-        }
-        if (!pressureDevice.isEmpty()) {
-            recyclerViewPressure.setAdapter(new SensorAdapter(getContext(), Constants.TYPE_PRESSURE, pressureDevice, this));
-        } else {
-            //TODO: Empty view showing "No sensors"
-        }
-        if (!humidityDevice.isEmpty()) {
-            recyclerViewHumidity.setAdapter(new SensorAdapter(getContext(), Constants.TYPE_HUMIDITY, humidityDevice, this));
-        } else {
-            //TODO: Empty view showing "No sensors"
-        }
+        temperatureAdapter.updateData(temperatureDevice);
+        pressureAdapter.updateData(pressureDevice);
+        humidityAdapter.updateData(humidityDevice);
+        airqualityAdapter.updateData(airQualityDevice);
+        luminosityAdapter.updateData(luminosityDevice);
+        accelerationAdapter.updateData(accelerationDevice);
+        angularVelocityAdapter.updateData(angularVelocityDevice);
+        magneticFieldAdapter.updateData(magneticFieldDevice);
     }
 
     @Override
@@ -140,22 +136,48 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
     }
 
     private void setupRecyclerViews() {
-        recyclerViewTemperature.setFocusable(false);
-        recyclerViewTemperature.setNestedScrollingEnabled(false);
-        recyclerViewTemperature.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerViewTemperature.setHasFixedSize(true);
-        recyclerViewTemperature.setItemAnimator(null);
-
-        recyclerViewPressure.setFocusable(false);
-        recyclerViewPressure.setNestedScrollingEnabled(false);
-        recyclerViewPressure.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerViewPressure.setHasFixedSize(true);
-        recyclerViewPressure.setItemAnimator(null);
-
-        recyclerViewHumidity.setFocusable(false);
-        recyclerViewHumidity.setNestedScrollingEnabled(false);
-        recyclerViewHumidity.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerViewHumidity.setHasFixedSize(true);
-        recyclerViewHumidity.setItemAnimator(null);
+        recyclerViews.forEach(
+            recyclerView -> {
+                recyclerView.setFocusable(false);
+                recyclerView.setNestedScrollingEnabled(false);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setItemAnimator(null);
+                switch (recyclerView.getId()) {
+                    case R.id.recyclerview_temperature:
+                        temperatureAdapter = new SensorAdapter(getContext(), Constants.TYPE_TEMPERATURE, this);
+                        recyclerView.setAdapter(temperatureAdapter);
+                        break;
+                    case R.id.recyclerview_pressure:
+                        pressureAdapter = new SensorAdapter(getContext(), Constants.TYPE_PRESSURE, this);
+                        recyclerView.setAdapter(pressureAdapter);
+                        break;
+                    case R.id.recyclerview_humidity:
+                        humidityAdapter = new SensorAdapter(getContext(), Constants.TYPE_HUMIDITY, this);
+                        recyclerView.setAdapter(humidityAdapter);
+                        break;
+                    case R.id.recyclerview_iaq:
+                        airqualityAdapter = new SensorAdapter(getContext(), Constants.TYPE_AIR_QUALITY, this);
+                        recyclerView.setAdapter(airqualityAdapter);
+                        break;
+                    case R.id.recyclerview_luminosity:
+                        luminosityAdapter = new SensorAdapter(getContext(), Constants.TYPE_LUMINOSITY, this);
+                        recyclerView.setAdapter(luminosityAdapter);
+                        break;
+                    case R.id.recyclerview_acceleration:
+                        accelerationAdapter = new SensorAdapter(getContext(), Constants.TYPE_ACCELERATION, this);
+                        recyclerView.setAdapter(accelerationAdapter);
+                        break;
+                    case R.id.recyclerview_angular_velocity:
+                        angularVelocityAdapter = new SensorAdapter(getContext(), Constants.TYPE_ANGULAR_VELOCITY, this);
+                        recyclerView.setAdapter(angularVelocityAdapter);
+                        break;
+                    case R.id.recyclerview_magnetic_field:
+                        magneticFieldAdapter = new SensorAdapter(getContext(), Constants.TYPE_MAGNETIC_FIELD, this);
+                        recyclerView.setAdapter(magneticFieldAdapter);
+                        break;
+                }
+            }
+        );
     }
 }

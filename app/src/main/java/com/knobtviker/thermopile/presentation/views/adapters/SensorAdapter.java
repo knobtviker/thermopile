@@ -12,6 +12,7 @@ import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.views.communicators.SensorCommunicator;
 import com.knobtviker.thermopile.presentation.views.viewholders.SensorViewHolder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,14 +26,13 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorViewHolder> {
 
     private final LayoutInflater layoutInflater;
 
-    private final List<PeripheralDevice> items;
-
     private final SensorCommunicator sensorCommunicator;
 
-    public SensorAdapter(@NonNull final Context context, final int type, @NonNull final List<PeripheralDevice> items, @NonNull SensorCommunicator sensorCommunicator) {
+    private List<PeripheralDevice> items = Collections.emptyList();
+
+    public SensorAdapter(@NonNull final Context context, final int type, @NonNull SensorCommunicator sensorCommunicator) {
         this.type = type;
         this.layoutInflater = LayoutInflater.from(context);
-        this.items = items;
         this.sensorCommunicator = sensorCommunicator;
 
         setHasStableIds(true);
@@ -59,6 +59,21 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorViewHolder> {
             case Constants.TYPE_HUMIDITY:
                 holder.switchSensorOnOff.setChecked(peripheralDevice.enabledHumidity());
                 break;
+            case Constants.TYPE_AIR_QUALITY:
+                holder.switchSensorOnOff.setChecked(peripheralDevice.enabledAirQuality());
+                break;
+            case Constants.TYPE_LUMINOSITY:
+                holder.switchSensorOnOff.setChecked(peripheralDevice.enabledLuminosity());
+                break;
+            case Constants.TYPE_ACCELERATION:
+                holder.switchSensorOnOff.setChecked(peripheralDevice.enabledAcceleration());
+                break;
+            case Constants.TYPE_ANGULAR_VELOCITY:
+                holder.switchSensorOnOff.setChecked(peripheralDevice.enabledAngularVelocity());
+                break;
+            case Constants.TYPE_MAGNETIC_FIELD:
+                holder.switchSensorOnOff.setChecked(peripheralDevice.enabledMagneticField());
+                break;
         }
         holder.switchSensorOnOff.setOnCheckedChangeListener((buttonView, isChecked) -> sensorCommunicator.onSensorChecked(peripheralDevice.primaryKey(), type, isChecked));
         holder.switchSensorOnOff.setEnabled(peripheralDevice.connected());
@@ -78,5 +93,10 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorViewHolder> {
     @Override
     public long getItemId(int position) {
         return Objects.hash(items.get(position).primaryKey());
+    }
+
+    public void updateData(List<PeripheralDevice> peripheralDevices) {
+        this.items = peripheralDevices;
+        notifyDataSetChanged();
     }
 }
