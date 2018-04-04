@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.data.models.local;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.implementation.DeviceModel;
@@ -15,11 +16,16 @@ public class PeripheralDevice extends RealmObject implements DeviceModel {
         vendor(vendor);
         name(name);
         enabled(false);
+        connected(false);
+        setPrimaryKey();
     }
 
     public PeripheralDevice() {}
 
+    @SuppressWarnings("FieldCanBeLocal")
     @PrimaryKey
+    private String primaryKey;
+
     private int address;
 
     private String vendor;
@@ -29,6 +35,8 @@ public class PeripheralDevice extends RealmObject implements DeviceModel {
     private String bus;
 
     private boolean enabled;
+
+    private boolean connected;
 
     @Override
     public String vendor() {
@@ -78,5 +86,20 @@ public class PeripheralDevice extends RealmObject implements DeviceModel {
     @Override
     public void enabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public boolean connected() {
+        return connected;
+    }
+
+    @Override
+    public void connected(boolean connected) {
+        this.connected = connected;
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void setPrimaryKey() {
+        this.primaryKey = String.format("%s_%d", this.bus, this.address);
     }
 }

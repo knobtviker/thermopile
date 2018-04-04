@@ -33,6 +33,8 @@ public interface ApplicationContract {
 
         void onSettings(@NonNull final Settings settings);
 
+        void onPeripherals(@NonNull final RealmResults<PeripheralDevice> peripheralDevices);
+
         void onTick();
 
         void onMinuteTick();
@@ -56,9 +58,13 @@ public interface ApplicationContract {
 
         void settings(@NonNull final Realm realm);
 
+        void peripherals(@NonNull final Realm realm);
+
         ImmutableList<I2CDevice> i2cDevices();
 
         RealmResults<PeripheralDevice> defaultSensors(@NonNull final Realm realm);
+
+        void saveDefaultSensors(@NonNull final List<PeripheralDevice> foundSensors);
 
         void saveTemperature(@NonNull final List<Temperature> items);
 
@@ -75,7 +81,5 @@ public interface ApplicationContract {
         void saveAngularVelocities(@NonNull final List<AngularVelocity> items);
 
         void saveMagneticFields(@NonNull final List<MagneticField> items);
-
-        void saveDefaultSensors(@NonNull final List<Integer> foundSensors);
     }
 }

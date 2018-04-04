@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import io.realm.RealmResults;
+
 /**
  * Created by bojan on 15/07/2017.
  */
@@ -71,8 +73,9 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @Nullable
     private Activity currentActivity;
 
-    @NonNull
     private ApplicationContract.Presenter presenter;
+
+    private List<PeripheralDevice> peripherals = new ArrayList<>(0);
 
     private Atmosphere atmosphere = Atmosphere.EMPTY();
 
@@ -107,32 +110,82 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     public void onSensorChanged(SensorEvent sensorEvent) {
         switch (sensorEvent.sensor.getType()) {
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                atmosphere = atmosphere.withTemperature(sensorEvent.values[0]);
+                if (peripherals
+                    .stream()
+                    .anyMatch(peripheralDevice ->
+                        sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
+                            && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
+                            && peripheralDevice.connected()
+                            && peripheralDevice.enabled()
+                    )
+                    ) {
+                    atmosphere = atmosphere.withTemperature(sensorEvent.values[0]);
+                }
 
                 temperatures.add(new Temperature(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
-                atmosphere = atmosphere.withHumidity(sensorEvent.values[0]);
+                if (peripherals
+                    .stream()
+                    .anyMatch(peripheralDevice ->
+                        sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
+                            && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
+                            && peripheralDevice.connected()
+                            && peripheralDevice.enabled()
+                    )
+                    ) {
+                    atmosphere = atmosphere.withHumidity(sensorEvent.values[0]);
+                }
 
                 humidities.add(new Humidity(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_PRESSURE:
                 final long now = DateTimeUtils.currentTimeMillis();
 
-                atmosphere = atmosphere.withPressure(sensorEvent.values[0]);
+                if (peripherals
+                    .stream()
+                    .anyMatch(peripheralDevice ->
+                        sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
+                            && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
+                            && peripheralDevice.connected()
+                            && peripheralDevice.enabled()
+                    )
+                    ) {
+                    atmosphere = atmosphere.withPressure(sensorEvent.values[0]);
+                }
 
                 pressures.add(new Pressure(now, sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
 
                 final float altitudeValue = SensorManager.getAltitude(sensorEvent.values[0], SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
 
-                atmosphere = atmosphere.withAltitude(altitudeValue);
+                if (peripherals
+                    .stream()
+                    .anyMatch(peripheralDevice ->
+                        sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
+                            && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
+                            && peripheralDevice.connected()
+                            && peripheralDevice.enabled()
+                    )
+                    ) {
+                    atmosphere = atmosphere.withAltitude(altitudeValue);
+                }
 
                 altitudes.add(new Altitude(now, altitudeValue, sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
                     if (sensorEvent.sensor.getName().equals(Bme680.CHIP_NAME)) {
-                        atmosphere = atmosphere.withAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
+                        if (peripherals
+                            .stream()
+                            .anyMatch(peripheralDevice ->
+                                sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
+                                    && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
+                                    && peripheralDevice.connected()
+                                    && peripheralDevice.enabled()
+                            )
+                            ) {
+                            atmosphere = atmosphere.withAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
+                        }
 
                         airQualities.add(new AirQuality(DateTimeUtils.currentTimeMillis(), sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                     }
@@ -143,17 +196,47 @@ public class ThermopileApp extends Application implements SensorEventListener, A
 //                Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0])+ " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
                 break;
             case Sensor.TYPE_ACCELEROMETER: //[m/s^2]
-                atmosphere = atmosphere.withAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+                if (peripherals
+                    .stream()
+                    .anyMatch(peripheralDevice ->
+                        sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
+                            && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
+                            && peripheralDevice.connected()
+                            && peripheralDevice.enabled()
+                    )
+                    ) {
+                    atmosphere = atmosphere.withAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+                }
 
                 accelerations.add(new Acceleration(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_GYROSCOPE: //[°/s]
-                atmosphere = atmosphere.withAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+                if (peripherals
+                    .stream()
+                    .anyMatch(peripheralDevice ->
+                        sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
+                            && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
+                            && peripheralDevice.connected()
+                            && peripheralDevice.enabled()
+                    )
+                    ) {
+                    atmosphere = atmosphere.withAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+                }
 
                 angularVelocities.add(new AngularVelocity(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
-                atmosphere = atmosphere.withMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+                if (peripherals
+                    .stream()
+                    .anyMatch(peripheralDevice ->
+                        sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
+                            && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
+                            && peripheralDevice.connected()
+                            && peripheralDevice.enabled()
+                    )
+                    ) {
+                    atmosphere = atmosphere.withMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+                }
 
                 magneticFields.add(new MagneticField(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
                 break;
@@ -198,6 +281,11 @@ public class ThermopileApp extends Application implements SensorEventListener, A
     @Override
     public void onSettings(@NonNull Settings settings) {
         AppCompatDelegate.setDefaultNightMode(settings.theme());
+    }
+
+    @Override
+    public void onPeripherals(@NonNull RealmResults<PeripheralDevice> peripheralDevices) {
+        this.peripherals = peripheralDevices.subList(0, peripheralDevices.size());
     }
 
     @Override
@@ -314,16 +402,16 @@ public class ThermopileApp extends Application implements SensorEventListener, A
         final ImmutableList<I2CDevice> i2CDevices = presenter.i2cDevices();
 
         if (i2CDevices.isEmpty()) {
+            //TODO: Show in Main that there are no sensors connected
             return;
         }
 
         registerSensorCallback();
 
-        final List<PeripheralDevice> defaultSensors = presenter.defaultSensors(Database.getDefaultInstance());
+        final List<PeripheralDevice> foundSensors = new ArrayList<>(0);
 
-        final List<Integer> foundSensors = new ArrayList<>(0);
-
-        defaultSensors
+        presenter
+            .defaultSensors(Database.getDefaultInstance())
             .forEach(
                 defaultSensor -> {
                     boolean found = i2CDevices
@@ -332,9 +420,10 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                         .anyMatch(integer -> integer == defaultSensor.address());
 
                     if (found) {
-                        foundSensors.add(defaultSensor.address());
+                        foundSensors.add(defaultSensor);
 
                         try {
+                            //TODO: Move these harcoded addresses to some Integrity with default constants class
                             switch (defaultSensor.address()) {
                                 case 0x77:
                                     initBME280();
@@ -358,14 +447,12 @@ public class ThermopileApp extends Application implements SensorEventListener, A
                     }
                 }
             );
-            if (!foundSensors.isEmpty()) {
-                presenter.saveDefaultSensors(foundSensors);
-            }
 
-//            final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.getI2CPort());
-//            fram.dump();
-//            fram.close();
+        if (!foundSensors.isEmpty()) {
+            presenter.saveDefaultSensors(foundSensors);
+        }
 
+        presenter.peripherals(Database.getDefaultInstance());
     }
 
     private void initJodaTime() {

@@ -62,6 +62,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     private RealmResults<Settings> resultsSettings;
 
+    private RealmResults<PeripheralDevice> resultsPeripherals;
+
     @Nullable
     private Disposable screensaverDisposable;
 
@@ -88,12 +90,18 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                 }
             });
         }
+        if (resultsPeripherals != null && resultsPeripherals.isValid()) {
+            resultsPeripherals.addChangeListener(view::onPeripherals);
+        }
     }
 
     @Override
     public void removeListeners() {
         if (resultsSettings != null && resultsSettings.isValid()) {
             resultsSettings.removeAllChangeListeners();
+        }
+        if (resultsPeripherals != null && resultsPeripherals.isValid()) {
+            resultsPeripherals.removeAllChangeListeners();
         }
     }
 
@@ -205,13 +213,22 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     }
 
     @Override
-    public RealmResults<PeripheralDevice> defaultSensors(@NonNull final Realm realm) {
+    public void peripherals(@NonNull final Realm realm) {
+        resultsPeripherals = peripheralsRepository.load(realm);
+
+        if (resultsPeripherals != null && !resultsPeripherals.isEmpty()) {
+            view.onPeripherals(resultsPeripherals);
+        }
+    }
+
+    @Override
+    public RealmResults<PeripheralDevice> defaultSensors(@NonNull Realm realm) {
         return peripheralsRepository.load(realm);
     }
 
     @Override
-    public void saveDefaultSensors(@NonNull List<Integer> foundSensors) {
-        peripheralsRepository.save(foundSensors);
+    public void saveDefaultSensors(@NonNull List<PeripheralDevice> foundSensors) {
+        peripheralsRepository.saveConnectedAndEnabled(foundSensors, true, true);
     }
 
     @Override

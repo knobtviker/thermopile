@@ -31,15 +31,39 @@ public class PeripheralsRepository extends AbstractRepository {
     PeripheralsRepository() {
     }
 
-    public RealmResults<PeripheralDevice> load(@NonNull final Realm realm) {
-        return peripheralLocalDataSource.load(realm);
-    }
-
     public List<I2CDevice> probe() {
         return peripheralRawDataSource.load();
     }
 
-    public void save(@NonNull final List<Integer> foundSensors) {
+    public RealmResults<PeripheralDevice> load(@NonNull final Realm realm) {
+        return peripheralLocalDataSource.load(realm);
+    }
+
+    public void save(@NonNull final List<PeripheralDevice> foundSensors) {
         peripheralLocalDataSource.save(foundSensors);
+    }
+
+    public void saveConnectedAndEnabled(@NonNull final List<PeripheralDevice> items, final boolean isConnected, final boolean isEnabled) {
+        peripheralLocalDataSource.saveConnectedAndEnabled(items, isConnected, isEnabled);
+    }
+
+    public void saveConnected(@NonNull final List<PeripheralDevice> items, final boolean isConnected) {
+        peripheralLocalDataSource.saveConnected(items, isConnected);
+    }
+
+    public void saveEnabled(@NonNull final List<PeripheralDevice> items, final boolean isEnabled) {
+        peripheralLocalDataSource.saveEnabled(items, isEnabled);
+    }
+
+    public void saveConnectedAndEnabled(@NonNull final PeripheralDevice item, final boolean isConnected, final boolean isEnabled) {
+        peripheralLocalDataSource.saveConnectedAndEnabled(item, isConnected, isEnabled);
+    }
+
+    public void saveConnected(@NonNull final PeripheralDevice item, final boolean isConnected) {
+        peripheralLocalDataSource.saveConnected(item, isConnected);
+    }
+
+    public void saveEnabled(@NonNull final PeripheralDevice item, final boolean isEnabled) {
+        peripheralLocalDataSource.saveEnabled(item, isEnabled);
     }
 }

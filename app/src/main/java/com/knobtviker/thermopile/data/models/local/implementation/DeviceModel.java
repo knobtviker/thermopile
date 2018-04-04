@@ -24,4 +24,8 @@ public interface DeviceModel extends RealmModel {
     boolean enabled();
 
     void enabled(final boolean enabled);
+
+    boolean connected();
+
+    void connected(final boolean connected);
 }

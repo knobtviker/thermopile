@@ -98,8 +98,8 @@ public class Database {
             new PeripheralDevice(0x76, bus, "Bosch", "BME680"),
             new PeripheralDevice(0x68, bus, "Maxim Integrated Products", "DS3231"),
             new PeripheralDevice(0x39, bus, "TAOS", "TSL2561"),
-            new PeripheralDevice(0x6B, bus, "STMicroelectronics", "LSM9DS1")
-//            new PeripheralDevice(0x1E, bus, "STMicroelectronics", "LSM9DS1")
+            new PeripheralDevice(0x6B, bus, "STMicroelectronics", "LSM9DS1"),
+            new PeripheralDevice(0x1E, bus, "STMicroelectronics", "LSM9DS1")
         );
     }
 
