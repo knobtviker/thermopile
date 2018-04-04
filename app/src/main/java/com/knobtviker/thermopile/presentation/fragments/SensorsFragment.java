@@ -44,6 +44,8 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        presenter.sensors(realm);
     }
 
     @Override
@@ -58,6 +60,9 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
 
     @Override
     public void onSensors(@NonNull RealmResults<PeripheralDevice> sensors) {
-
+        sensors
+            .forEach(peripheralDevice -> {
+                Log.i(TAG, peripheralDevice.vendor()+" "+peripheralDevice.name()+" connected: "+peripheralDevice.connected()+" enabled: "+peripheralDevice.enabled());
+            });
     }
 }

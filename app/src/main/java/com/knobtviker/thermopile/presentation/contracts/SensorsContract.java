@@ -6,6 +6,7 @@ import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -21,6 +22,6 @@ public interface SensorsContract {
 
     interface Presenter extends BasePresenter {
 
-        void sensors();
+        void sensors(@NonNull final Realm realm);
     }
 }
