@@ -35,6 +35,7 @@ import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
 
 import org.joda.time.DateTimeUtils;
@@ -159,7 +160,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     @Override
     protected void onLuminosityChanged(@NonNull SensorEvent sensorEvent) {
         //TODO: Google dropped Automatic Brightness Mode in DP7. Do your own math with manual mode. Less light == lower screen brightness.
-        //Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0])+ " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
+        Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0])+ " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
     }
 
     @Override
@@ -250,10 +251,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     public void showScreensaver() {
         Router.showScreensaver(this);
         brightness(24);
-    }
-
-    public Atmosphere atmosphere() {
-        return atmosphere;
     }
 
     public void createScreensaver() {
@@ -407,9 +404,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     private void save() {
         atmosphere = atmosphere.withTimestamp(DateTimeUtils.currentTimeMillis());
 
-        final Intent intent = new Intent(String.format("%s.ACTION_NEW_DATA", getPackageName()));
-        intent.putExtra("atmosphere", atmosphere);
-        sendBroadcast(intent);
+        broadcast();
 
         if (!temperatures.isEmpty()) {
             presenter.saveTemperature(new ArrayList<>(temperatures));
@@ -443,5 +438,11 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             presenter.saveMagneticFields(new ArrayList<>(magneticFields));
             magneticFields.clear();
         }
+    }
+
+    private void broadcast() {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_DATA));
+        intent.putExtra(Constants.KEY_ATMOSPHERE, atmosphere);
+        sendBroadcast(intent);
     }
 }

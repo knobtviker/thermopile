@@ -7,16 +7,23 @@ import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.android.MainThreadDisposable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -55,6 +62,46 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     @Override
     public void removeListeners() {
 
+    }
+
+    @Override
+    public void observeDataChanged(@NonNull Context context) {
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(String.format("%s.%s", context.getPackageName(), Constants.ACTION_NEW_DATA));
+
+        compositeDisposable.add(
+            Observable.defer(() ->
+                Observable.create((ObservableEmitter<Atmosphere> emitter) -> {
+                    final BroadcastReceiver receiver = new BroadcastReceiver() {
+
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            if (intent.hasExtra(Constants.KEY_ATMOSPHERE)) {
+                                emitter.onNext(intent.getParcelableExtra(Constants.KEY_ATMOSPHERE));
+                            } else {
+                                emitter.onError(new NoSuchFieldException());
+                            }
+                        }
+                    };
+
+                    context.registerReceiver(receiver, filter);
+
+                    emitter.setDisposable(new MainThreadDisposable() {
+                        @Override
+                        protected void onDispose() {
+                            context.unregisterReceiver(receiver);
+
+                            dispose();
+                        }
+                    });
+                })
+            )
+                .subscribe(
+                    view::onDataChanged,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -85,7 +86,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeDataChanged(@NonNull Context context) {
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(String.format("%s.ACTION_NEW_DATA", context.getPackageName()));
+        filter.addAction(String.format("%s.%s", context.getPackageName(), Constants.ACTION_NEW_DATA));
 
         compositeDisposable.add(
             Observable.defer(() ->
@@ -94,7 +95,11 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
                         @Override
                         public void onReceive(Context context, Intent intent) {
-                            emitter.onNext(intent.getParcelableExtra("atmosphere"));
+                            if (intent.hasExtra(Constants.KEY_ATMOSPHERE)) {
+                                emitter.onNext(intent.getParcelableExtra(Constants.KEY_ATMOSPHERE));
+                            } else {
+                                emitter.onError(new NoSuchFieldException());
+                            }
                         }
                     };
 

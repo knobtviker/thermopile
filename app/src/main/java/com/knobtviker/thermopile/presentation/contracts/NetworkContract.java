@@ -6,8 +6,10 @@ import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
@@ -18,6 +20,8 @@ import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 public interface NetworkContract {
 
     interface View extends BaseView {
+
+        void onDataChanged(@NonNull final Atmosphere atmosphere);
 
         void onHasBluetooth(final boolean hasBluetooth);
 
@@ -35,6 +39,8 @@ public interface NetworkContract {
     }
 
     interface Presenter extends BasePresenter {
+
+        void observeDataChanged(@NonNull final Context context);
 
         void hasBluetooth();
 
