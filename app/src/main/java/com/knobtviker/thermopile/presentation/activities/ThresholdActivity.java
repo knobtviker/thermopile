@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.presentation.ThermopileApp;
+import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.ThresholdFragment;
 import com.knobtviker.thermopile.presentation.utils.Constants;
@@ -60,9 +60,9 @@ public class ThresholdActivity extends BaseActivity {
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            ((ThermopileApp) getApplication()).destroyScreensaver();
+            ((ThermopileApplication) getApplication()).destroyScreensaver();
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            ((ThermopileApp) getApplication()).createScreensaver();
+            ((ThermopileApplication) getApplication()).createScreensaver();
         }
         return super.dispatchTouchEvent(event);
     }

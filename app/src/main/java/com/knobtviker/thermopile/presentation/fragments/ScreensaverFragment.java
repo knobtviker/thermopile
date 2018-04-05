@@ -121,6 +121,14 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     @Override
+    public void onDataChanged(@NonNull final Atmosphere atmosphere) {
+        onTemperatureChanged(atmosphere.temperature());
+        onHumidityChanged(atmosphere.humidity());
+        onPressureChanged(atmosphere.pressure());
+//        onAirQualityChanged(atmosphere.airQuality());
+    }
+
+    @Override
     public void onDateChanged() {
         setDate();
     }
@@ -138,13 +146,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         setTemperatureUnit();
         setPressureUnit();
         setDate();
-    }
-
-    public void setAtmosphere(@NonNull final Atmosphere atmosphere) {
-        onTemperatureChanged(atmosphere.temperature());
-        onHumidityChanged(atmosphere.humidity());
-        onPressureChanged(atmosphere.pressure());
-//        onAirQualityChanged(atmosphere.airQuality());
     }
 
     @SuppressLint("SetTextI18n")
@@ -178,6 +179,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     private void data() {
+        presenter.observeDataChanged(getContext());
         presenter.settings(realm);
     }
 

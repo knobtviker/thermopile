@@ -1,9 +1,11 @@
 package com.knobtviker.thermopile.data.models.presentation;
 
+import android.os.Parcelable;
+
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Atmosphere {
+public abstract class Atmosphere implements Parcelable {
 
     public abstract long timestamp();
 

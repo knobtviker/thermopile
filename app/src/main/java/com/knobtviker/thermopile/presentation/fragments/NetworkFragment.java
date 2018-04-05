@@ -31,7 +31,7 @@ import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.raw.EnvironmentProfile;
 import com.knobtviker.thermopile.data.sources.raw.GattServerCallback;
 import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
-import com.knobtviker.thermopile.presentation.ThermopileApp;
+import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
@@ -246,7 +246,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     @Override
     public void onGattSendResponse(@NonNull BluetoothDevice device, int requestId, int status, @NonNull UUID uuid) {
         if (gattServer != null) {
-            final Atmosphere atmosphere = ((ThermopileApp) getActivity().getApplication()).atmosphere();
+            final Atmosphere atmosphere = ((ThermopileApplication) getActivity().getApplication()).atmosphere();
 
             byte[] response = new byte[0];
             if (uuid.equals(EnvironmentProfile.UUID_TEMPERATURE)) {

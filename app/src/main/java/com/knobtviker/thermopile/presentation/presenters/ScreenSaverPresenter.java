@@ -7,12 +7,14 @@ import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.android.MainThreadDisposable;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -62,6 +64,42 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
         if (resultsSettings != null && resultsSettings.isValid()) {
             resultsSettings.removeAllChangeListeners();
         }
+    }
+
+    @Override
+    public void observeDataChanged(@NonNull Context context) {
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(String.format("%s.ACTION_NEW_DATA", context.getPackageName()));
+
+        compositeDisposable.add(
+            Observable.defer(() ->
+                Observable.create((ObservableEmitter<Atmosphere> emitter) -> {
+                    final BroadcastReceiver receiver = new BroadcastReceiver() {
+
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            emitter.onNext(intent.getParcelableExtra("atmosphere"));
+                        }
+                    };
+
+                    context.registerReceiver(receiver, filter);
+
+                    emitter.setDisposable(new MainThreadDisposable() {
+                        @Override
+                        protected void onDispose() {
+                            context.unregisterReceiver(receiver);
+
+                            dispose();
+                        }
+                    });
+                })
+            )
+                .subscribe(
+                    view::onDataChanged,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override

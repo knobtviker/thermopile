@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
     <application
-        android:name=".presentation.ThermopileApp"
+        android:name=".presentation.ThermopileApplication"
         android:theme="@style/AppTheme">
 
         <uses-library android:name="com.google.android.things"/>

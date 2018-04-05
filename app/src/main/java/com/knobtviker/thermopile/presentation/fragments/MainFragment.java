@@ -182,6 +182,15 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
+    public void onDataChanged(@NonNull final Atmosphere atmosphere) {
+        onTemperatureChanged(atmosphere.temperature());
+        onHumidityChanged(atmosphere.humidity());
+        onPressureChanged(atmosphere.pressure());
+        onAirQualityChanged(atmosphere.airQuality());
+        onMotionChanged(atmosphere.acceleration(), atmosphere.angularVelocity(), atmosphere.magneticField());
+    }
+
+    @Override
     public void onDateChanged() {
         setDate();
         thresholds();
@@ -237,14 +246,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
                 mainCommunicator.showSettings();
                 break;
         }
-    }
-
-    public void setAtmosphere(@NonNull final Atmosphere atmosphere) {
-        onTemperatureChanged(atmosphere.temperature());
-        onHumidityChanged(atmosphere.humidity());
-        onPressureChanged(atmosphere.pressure());
-        onAirQualityChanged(atmosphere.airQuality());
-        onMotionChanged(atmosphere.acceleration(), atmosphere.angularVelocity(), atmosphere.magneticField());
     }
 
     private void setupRecyclerView() {
@@ -397,6 +398,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void data() {
+        presenter.observeDataChanged(getContext());
         presenter.settings(realm);
     }
 
