@@ -395,12 +395,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         presenter.brightness(value);
     }
 
-    private boolean isThingsDevice(@NonNull final Context context) {
-        return context
-            .getPackageManager()
-            .hasSystemFeature(PackageManager.FEATURE_EMBEDDED);
-    }
-
     private void save() {
         atmosphere = atmosphere.withTimestamp(DateTimeUtils.currentTimeMillis());
 
@@ -444,5 +438,11 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_DATA));
         intent.putExtra(Constants.KEY_ATMOSPHERE, atmosphere);
         sendBroadcast(intent);
+    }
+
+    private boolean isThingsDevice(@NonNull final Context context) {
+        return context
+            .getPackageManager()
+            .hasSystemFeature(PackageManager.FEATURE_EMBEDDED);
     }
 }

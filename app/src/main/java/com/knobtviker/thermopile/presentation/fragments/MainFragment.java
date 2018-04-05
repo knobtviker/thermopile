@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
@@ -238,6 +239,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
                 break;
             case R.id.button_charts:
                 //TBD...
+                Crashlytics.getInstance().crash();
                 break;
             case R.id.button_schedule:
                 mainCommunicator.showSchedule();
