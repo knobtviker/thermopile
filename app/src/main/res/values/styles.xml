@@ -8,9 +8,9 @@
     </style>
 
     <style name="ScheduleDay" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:background">@drawable/layerlist_background_schedule_day</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:layout_gravity">center_vertical|left</item>
         <item name="android:gravity">center_vertical|left</item>
         <item name="android:maxLines">1</item>
@@ -18,10 +18,9 @@
         <item name="android:fontFamily">@font/worksans_light</item>
     </style>
 
-    <style name="ScheduleDayHours" parent="TextAppearance.AppCompat.Body1">
+    <style name="ScheduleDayHours">
         <item name="android:clickable">true</item>
         <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
-        <item name="android:background">@drawable/layerlist_background_schedule</item>
         <item name="android:paddingTop">1dp</item>
         <item name="android:paddingBottom">1dp</item>
     </style>
@@ -99,8 +98,7 @@
         <item name="android:textSize">10sp</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>
 
@@ -108,7 +106,7 @@
         <item name="android:textSize">8sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:gravity">bottom</item>
-        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textColor">?android:textColorTertiary</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:fontFamily">@font/worksans_extralight</item>
     </style>
@@ -154,6 +152,12 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_marginTop">@dimen/margin_default</item>
+        <item name="android:background">@color/background_divider</item>
+    </style>
+
+    <style name="DividerSchedule">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">1dp</item>
         <item name="android:background">@color/background_divider</item>
     </style>
 

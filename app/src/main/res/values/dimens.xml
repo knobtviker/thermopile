@@ -19,5 +19,7 @@
     <dimen name="thickness_2">2dp</dimen>
 
     <dimen name="height_radiobutton">32dp</dimen>
+
+    <dimen name="guideline_schedule">80dp</dimen>
     
 </resources>

@@ -57,13 +57,23 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <ImageView
+        android:id="@+id/appbar_layout_shadow"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shadow_slice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow">
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline_days"
@@ -71,671 +81,8 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintGuide_begin="80dp"
+            app:layout_constraintGuide_begin="@dimen/guideline_schedule"
             app:layout_constraintTop_toTopOf="parent"/>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_hours"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="bottom"
-            android:orientation="horizontal"
-            android:paddingBottom="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout00"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout01"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_00"
-                    style="@style/ItemTextHour"
-                    android:text="00"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_00"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_00"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout01"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout02"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout00"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_01"
-                    style="@style/ItemTextHour"
-                    android:text="01"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_01"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_01"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout02"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout03"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout01"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_02"
-                    style="@style/ItemTextHour"
-                    android:text="02"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_02"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_02"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout03"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout04"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout02"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_03"
-                    style="@style/ItemTextHour"
-                    android:text="03"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_03"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_03"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout04"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout05"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout03"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_04"
-                    style="@style/ItemTextHour"
-                    android:text="04"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_04"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_04"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout05"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout06"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout04"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_05"
-                    style="@style/ItemTextHour"
-                    android:text="05"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_05"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_05"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout06"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout07"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout05"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_06"
-                    style="@style/ItemTextHour"
-                    android:text="06"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_06"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_06"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout07"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout08"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout06"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_07"
-                    style="@style/ItemTextHour"
-                    android:text="07"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_07"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_07"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout08"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout09"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout07"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_08"
-                    style="@style/ItemTextHour"
-                    android:text="08"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_08"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_08"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout09"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout10"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout08"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_09"
-                    style="@style/ItemTextHour"
-                    android:text="09"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_09"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_09"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout10"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout11"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout09"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_10"
-                    style="@style/ItemTextHour"
-                    android:text="10"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_10"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_10"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout11"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout12"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout10"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_11"
-                    style="@style/ItemTextHour"
-                    android:text="11"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_11"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_11"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout12"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout13"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout11"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_12"
-                    style="@style/ItemTextHour"
-                    android:text="12"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_12"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_12"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout13"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout14"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout12"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_13"
-                    style="@style/ItemTextHour"
-                    android:text="13"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_13"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_13"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout14"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout15"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout13"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_14"
-                    style="@style/ItemTextHour"
-                    android:text="14"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_14"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_14"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout15"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout16"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout14"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_15"
-                    style="@style/ItemTextHour"
-                    android:text="15"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_15"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_15"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout16"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout17"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout15"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_16"
-                    style="@style/ItemTextHour"
-                    android:text="16"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_16"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_16"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout17"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout18"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout16"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_17"
-                    style="@style/ItemTextHour"
-                    android:text="17"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_17"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_17"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout18"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout19"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout17"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_18"
-                    style="@style/ItemTextHour"
-                    android:text="18"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_18"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_18"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout19"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout20"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout18"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_19"
-                    style="@style/ItemTextHour"
-                    android:text="19"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_19"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_19"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout20"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout21"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout19"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_20"
-                    style="@style/ItemTextHour"
-                    android:text="20"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_20"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_20"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout21"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout22"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout20"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_21"
-                    style="@style/ItemTextHour"
-                    android:text="21"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_21"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_21"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout22"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/constraintLayout23"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout21"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_22"
-                    style="@style/ItemTextHour"
-                    android:text="22"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_22"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_22"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout23"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/constraintLayout22"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textview_hour_23"
-                    style="@style/ItemTextHour"
-                    android:text="23"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/textview_minute_23"
-                    style="@style/ItemTextMinute"
-                    android:text="@string/_00"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/textview_hour_23"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
-
-        </android.support.constraint.ConstraintLayout>
 
         <TextView
             android:id="@+id/textview_day_monday"
@@ -743,13 +90,21 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Monday"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_tuesday"
+            app:layout_constraintBottom_toTopOf="@+id/divider_monday"
             app:layout_constraintEnd_toStartOf="@id/guideline_days"
             app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_hours"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_default="spread"/>
+
+        <View
+            android:id="@+id/divider_monday"
+            style="@style/DividerSchedule"
+            app:layout_constraintBottom_toTopOf="@+id/textview_day_tuesday"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_monday"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/textview_day_tuesday"
@@ -757,13 +112,21 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Tuesday"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_wednesday"
+            app:layout_constraintBottom_toTopOf="@+id/divider_tuesday"
             app:layout_constraintEnd_toStartOf="@id/guideline_days"
             app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_monday"
+            app:layout_constraintTop_toBottomOf="@+id/divider_monday"
             app:layout_constraintWidth_default="spread"/>
+
+        <View
+            android:id="@+id/divider_tuesday"
+            style="@style/DividerSchedule"
+            app:layout_constraintBottom_toTopOf="@+id/textview_day_wednesday"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_tuesday"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/textview_day_wednesday"
@@ -771,13 +134,21 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Wednesday"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_thursday"
+            app:layout_constraintBottom_toTopOf="@+id/divider_wednesday"
             app:layout_constraintEnd_toStartOf="@id/guideline_days"
             app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_tuesday"
+            app:layout_constraintTop_toBottomOf="@+id/divider_tuesday"
             app:layout_constraintWidth_default="spread"/>
+
+        <View
+            android:id="@+id/divider_wednesday"
+            style="@style/DividerSchedule"
+            app:layout_constraintBottom_toTopOf="@+id/textview_day_thursday"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_wednesday"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/textview_day_thursday"
@@ -785,13 +156,21 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Thursday"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_friday"
+            app:layout_constraintBottom_toTopOf="@+id/divider_thursday"
             app:layout_constraintEnd_toStartOf="@id/guideline_days"
             app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_wednesday"
+            app:layout_constraintTop_toBottomOf="@+id/divider_wednesday"
             app:layout_constraintWidth_default="spread"/>
+
+        <View
+            android:id="@+id/divider_thursday"
+            style="@style/DividerSchedule"
+            app:layout_constraintBottom_toTopOf="@+id/textview_day_friday"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_thursday"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/textview_day_friday"
@@ -799,13 +178,21 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Friday"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_saturday"
+            app:layout_constraintBottom_toTopOf="@+id/divider_friday"
             app:layout_constraintEnd_toStartOf="@id/guideline_days"
             app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_thursday"
+            app:layout_constraintTop_toBottomOf="@+id/divider_thursday"
             app:layout_constraintWidth_default="spread"/>
+
+        <View
+            android:id="@+id/divider_friday"
+            style="@style/DividerSchedule"
+            app:layout_constraintBottom_toTopOf="@+id/textview_day_saturday"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_friday"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/textview_day_saturday"
@@ -813,13 +200,21 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Saturday"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_sunday"
+            app:layout_constraintBottom_toTopOf="@+id/divider_saturday"
             app:layout_constraintEnd_toStartOf="@id/guideline_days"
             app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_friday"
+            app:layout_constraintTop_toBottomOf="@+id/divider_friday"
             app:layout_constraintWidth_default="spread"/>
+
+        <View
+            android:id="@+id/divider_saturday"
+            style="@style/DividerSchedule"
+            app:layout_constraintBottom_toTopOf="@+id/textview_day_sunday"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_saturday"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/textview_day_sunday"
@@ -832,7 +227,7 @@
             app:layout_constraintHeight_default="spread"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_saturday"
+            app:layout_constraintTop_toBottomOf="@+id/divider_saturday"
             app:layout_constraintWidth_default="spread"/>
 
         <android.support.constraint.ConstraintLayout
