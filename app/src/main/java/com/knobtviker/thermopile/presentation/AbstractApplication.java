@@ -9,7 +9,6 @@ import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 
 import com.bugfender.sdk.Bugfender;
-import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680;
 import com.knobtviker.thermopile.BuildConfig;
@@ -19,7 +18,6 @@ import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import io.fabric.sdk.android.Fabric;
 
 public abstract class AbstractApplication<P extends BasePresenter> extends Application implements SensorEventListener {
 
@@ -29,7 +27,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public void onCreate() {
         super.onCreate();
 
-        initCrashlytics();
+//        initCrashlytics();
         initBugfender();
         initJodaTime();
         initDatabase();
@@ -150,9 +148,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         JodaTimeAndroid.init(this);
     }
 
-    private void initCrashlytics() {
-        Fabric.with(this, new Crashlytics());
-    }
+//    private void initCrashlytics() {
+//        Fabric.with(this, new Crashlytics());
+//    }
 
     private void initBugfender() {
         Bugfender.init(this, BuildConfig.KEY_BUGFENDER, BuildConfig.DEBUG);

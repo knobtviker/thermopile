@@ -37,6 +37,7 @@ import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
+import com.knobtviker.thermopile.presentation.utils.predicates.PeripheralDevicePredicate;
 
 import org.joda.time.DateTimeUtils;
 
@@ -79,13 +80,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     protected void onTemperatureChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
-            .anyMatch(peripheralDevice ->
-                sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
-                    && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
-                    && peripheralDevice.connected()
-                    && peripheralDevice.hasTemperature()
-                    && peripheralDevice.enabledTemperature()
-            )
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
             atmosphere = atmosphere.withTemperature(sensorEvent.values[0]);
         }
@@ -98,13 +93,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         final long now = DateTimeUtils.currentTimeMillis();
         final boolean isSensorAllowed = peripherals
             .stream()
-            .anyMatch(peripheralDevice ->
-                sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
-                    && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
-                    && peripheralDevice.connected()
-                    && peripheralDevice.hasPressure()
-                    && peripheralDevice.enabledPressure()
-            );
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor));
 
         if (isSensorAllowed) {
             atmosphere = atmosphere.withPressure(sensorEvent.values[0]);
@@ -125,13 +114,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     protected void onHumidityChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
-            .anyMatch(peripheralDevice ->
-                sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
-                    && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
-                    && peripheralDevice.connected()
-                    && peripheralDevice.hasHumidity()
-                    && peripheralDevice.enabledHumidity()
-            )
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
             atmosphere = atmosphere.withHumidity(sensorEvent.values[0]);
         }
@@ -143,13 +126,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     protected void onAirQualityChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
-            .anyMatch(peripheralDevice ->
-                sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
-                    && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
-                    && peripheralDevice.connected()
-                    && peripheralDevice.hasAirQuality()
-                    && peripheralDevice.enabledAirQuality()
-            )
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
             atmosphere = atmosphere.withAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
         }
@@ -159,21 +136,20 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
     @Override
     protected void onLuminosityChanged(@NonNull SensorEvent sensorEvent) {
-        //TODO: Google dropped Automatic Brightness Mode in DP7. Do your own math with manual mode. Less light == lower screen brightness.
-        Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0])+ " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
+        if (peripherals
+            .stream()
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
+            ) {
+            //TODO: Google dropped Automatic Brightness Mode in DP7. Do your own math with manual mode. Less light == lower screen brightness.
+            Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0]) + " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
+        }
     }
 
     @Override
     protected void onAccelerationChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
-            .anyMatch(peripheralDevice ->
-                sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
-                    && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
-                    && peripheralDevice.connected()
-                    && peripheralDevice.hasAcceleration()
-                    && peripheralDevice.enabledAcceleration()
-            )
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
             atmosphere = atmosphere.withAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
         }
@@ -185,13 +161,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     protected void onAngularVelocityChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
-            .anyMatch(peripheralDevice ->
-                sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
-                    && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
-                    && peripheralDevice.connected()
-                    && peripheralDevice.hasAngularVelocity()
-                    && peripheralDevice.enabledAngularVelocity()
-            )
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
             atmosphere = atmosphere.withAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
         }
@@ -203,13 +173,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     protected void onMagneticFieldChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
-            .anyMatch(peripheralDevice ->
-                sensorEvent.sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor())
-                    && sensorEvent.sensor.getName().equalsIgnoreCase(peripheralDevice.name())
-                    && peripheralDevice.connected()
-                    && peripheralDevice.hasMagneticField()
-                    && peripheralDevice.enabledMagneticField()
-            )
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
             atmosphere = atmosphere.withMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
         }

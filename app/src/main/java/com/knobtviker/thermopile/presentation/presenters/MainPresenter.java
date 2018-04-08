@@ -87,7 +87,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     public void observeDataChanged(@NonNull Context context) {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(String.format("%s.%s", context.getPackageName(), Constants.ACTION_NEW_DATA));
-
+        
         compositeDisposable.add(
             Observable.defer(() ->
                 Observable.create((ObservableEmitter<Atmosphere> emitter) -> {

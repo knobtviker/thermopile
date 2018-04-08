@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
@@ -47,8 +45,6 @@ import io.realm.RealmResults;
 
 public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View, DayScrollListener.Listener {
     public static final String TAG = MainFragment.class.getSimpleName();
-
-    private BroadcastReceiver dateChangedReceiver;
 
     private MainCommunicator mainCommunicator;
 
@@ -239,7 +235,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
                 break;
             case R.id.button_charts:
                 //TBD...
-                Crashlytics.getInstance().crash();
                 break;
             case R.id.button_schedule:
                 mainCommunicator.showSchedule();

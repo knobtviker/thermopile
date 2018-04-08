@@ -15,11 +15,11 @@ public abstract class AbstractPresenter implements BasePresenter {
     @NonNull
     protected final BaseView view;
 
-    protected CompositeDisposable compositeDisposable;
+    protected final CompositeDisposable compositeDisposable;
 
     public AbstractPresenter(@NonNull final BaseView view) {
         this.view = view;
-        compositeDisposable = new CompositeDisposable();
+        this.compositeDisposable = new CompositeDisposable();
     }
 
     @Override
