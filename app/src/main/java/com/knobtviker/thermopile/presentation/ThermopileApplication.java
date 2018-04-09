@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
@@ -56,6 +57,8 @@ import io.realm.RealmResults;
 public class ThermopileApplication extends AbstractApplication<ApplicationContract.Presenter> implements ApplicationContract.View {
     private static final String TAG = ThermopileApplication.class.getSimpleName();
 
+    private LocalBroadcastManager localBroadcastManager;
+
     private List<PeripheralDevice> peripherals = new ArrayList<>(0);
 
     private Atmosphere atmosphere = Atmosphere.EMPTY();
@@ -72,6 +75,8 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     @Override
     public void onCreate() {
         super.onCreate();
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
 
         initPresenter();
     }
@@ -401,7 +406,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     private void broadcast() {
         final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_DATA));
         intent.putExtra(Constants.KEY_ATMOSPHERE, atmosphere);
-        sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(intent);
     }
 
     private boolean isThingsDevice(@NonNull final Context context) {

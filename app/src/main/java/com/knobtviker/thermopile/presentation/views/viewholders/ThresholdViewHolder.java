@@ -1,8 +1,8 @@
 package com.knobtviker.thermopile.presentation.views.viewholders;
 
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
@@ -30,18 +30,21 @@ public class ThresholdViewHolder {
         ButterKnife.bind(this, view);
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     public void setBackground(final int color, final int height) {
         final ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
         shapeDrawable.setIntrinsicHeight(height);
         shapeDrawable.setIntrinsicWidth(height);
         shapeDrawable.getPaint().setColor(color);
 
-        final GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[] {color, 0x00000000});
-        gradientDrawable.setAlpha(211);
-        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-        gradientDrawable.setCornerRadius(height/2.0f);
+        final float[] radii = {height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f};
+
+        final ShapeDrawable backgroundDrawable = new ShapeDrawable(new RoundRectShape(radii, null, radii));
+        backgroundDrawable.setIntrinsicHeight(height);
+        backgroundDrawable.getPaint().setColor(rootLayout.getContext().getColor(R.color.background_divider));
+        backgroundDrawable.setDither(true);
 
         textViewTemperature.setBackground(shapeDrawable);
-        rootLayout.setBackground(gradientDrawable);
+        rootLayout.setBackground(backgroundDrawable);
     }
 }

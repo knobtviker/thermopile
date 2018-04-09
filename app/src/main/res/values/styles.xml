@@ -118,10 +118,10 @@
     </style>
 
     <style name="ItemThresholdTemperature" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_width">@dimen/height_threshold</item>
+        <item name="android:layout_height">@dimen/height_threshold</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textAlignment">center</item>
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>

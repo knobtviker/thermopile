@@ -110,21 +110,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
-//        IntStream
-//            .range(0, textViewMinutes.size())
-//            .forEach(i -> {
-//                if (settings.formatClock() == Constants.CLOCK_MODE_12H) {
-//                    if (i == 0) {
-//                        textViewHours.get(i).setText(String.valueOf(i + 12));
-//                    } else {
-//                        textViewHours.get(i).setText(i < 13 ? (i < 10 ? String.format(Locale.getDefault(), "0%d", i) : String.valueOf(i)) : (i - 12 < 10 ? String.format(Locale.getDefault(), "0%d", i - 12) : String.valueOf(i - 12)));
-//                    }
-//                    textViewMinutes.get(i).setText(getString(i < 12 ? R.string.am : R.string.pm));
-//                } else {
-//                    textViewHours.get(i).setText(i < 10 ? String.format(Locale.getDefault(), "0%d", i) : String.valueOf(i));
-//                    textViewMinutes.get(i).setText(getString(R.string._00));
-//                }
-//            });
     }
 
     @Override
@@ -196,8 +181,9 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
                 thresholdView.setId(View.generateViewId());
 
-                thresholdViewHolder.setBackground(getContext().getColor(threshold.color()), layout.getHeight());
-                thresholdViewHolder.textViewTemperature.setText(String.format("%s °C", String.valueOf(threshold.temperature()))); //TODO: Obey Settings temperature unit
+                thresholdViewHolder.setBackground(getContext().getColor(threshold.color()), getResources().getDimensionPixelSize(R.dimen.height_threshold));
+                //TODO: Fix this hardcoded temperature unit. Use Settings.
+                thresholdViewHolder.textViewTemperature.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
 
                 layout.addView(thresholdView);
 

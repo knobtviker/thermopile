@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="0dp"
-    android:layout_height="0dp"
+    android:layout_height="@dimen/height_threshold"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackgroundBorderless"
     app:layout_constrainedHeight="true"

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
@@ -75,6 +76,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
         compositeDisposable.add(
             Observable.defer(() ->
                 Observable.create((ObservableEmitter<Atmosphere> emitter) -> {
+                    final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
                     final BroadcastReceiver receiver = new BroadcastReceiver() {
 
                         @Override
@@ -87,12 +89,12 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
                         }
                     };
 
-                    context.registerReceiver(receiver, filter);
+                    localBroadcastManager.registerReceiver(receiver, filter);
 
                     emitter.setDisposable(new MainThreadDisposable() {
                         @Override
                         protected void onDispose() {
-                            context.unregisterReceiver(receiver);
+                            localBroadcastManager.unregisterReceiver(receiver);
 
                             dispose();
                         }
