@@ -30,7 +30,7 @@
 
             <TextClock
                 android:id="@+id/textview_clock"
-                style="@style/TextTime"
+                style="@style/TextAppearance.Time"
                 android:layout_height="0dp"
                 android:gravity="center"
                 android:minWidth="100dp"
@@ -42,7 +42,7 @@
 
             <TextView
                 android:id="@+id/textview_date"
-                style="@style/TextDate"
+                style="@style/TextAppearance.Date"
                 android:gravity="center_vertical|left"
                 android:paddingLeft="@dimen/margin_default"
                 android:paddingRight="@dimen/margin_large"
@@ -265,7 +265,7 @@
 
                 <TextView
                     android:id="@+id/textview_humidity"
-                    style="@style/TextDataSecondary"
+                    style="@style/TextAppearance.Data.Secondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -274,7 +274,7 @@
 
                 <TextView
                     android:id="@+id/textview_humidity_unit"
-                    style="@style/TextDataUnitSecondary"
+                    style="@style/TextAppearance.Data.Secondary.Unit"
                     android:text="@string/unit_humidity_percent"
                     app:layout_constraintBottom_toBottomOf="@id/textview_humidity"
                     app:layout_constraintStart_toEndOf="@id/textview_humidity"
@@ -285,7 +285,7 @@
 
             <TextView
                 android:id="@+id/textview_iaq"
-                style="@style/TextDataSecondary"
+                style="@style/TextAppearance.Data.Secondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
@@ -369,7 +369,7 @@
 
                 <TextView
                     android:id="@+id/textview_pressure"
-                    style="@style/TextDataSecondary"
+                    style="@style/TextAppearance.Data.Secondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -378,7 +378,7 @@
 
                 <TextView
                     android:id="@+id/textview_pressure_unit"
-                    style="@style/TextDataUnitSecondary"
+                    style="@style/TextAppearance.Data.Secondary.Unit"
                     android:text="@string/unit_pressure_pascal"
                     app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
                     app:layout_constraintStart_toEndOf="@id/textview_pressure"
@@ -397,7 +397,7 @@
 
                 <TextView
                     android:id="@+id/textview_motion"
-                    style="@style/TextDataSecondary"
+                    style="@style/TextAppearance.Data.Secondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -406,7 +406,7 @@
 
                 <TextView
                     android:id="@+id/textview_motion_unit"
-                    style="@style/TextDataUnitSecondary"
+                    style="@style/TextAppearance.Data.Secondary.Unit"
                     android:text="@string/unit_acceleration_ms2"
                     app:layout_constraintBottom_toBottomOf="@id/textview_motion"
                     app:layout_constraintStart_toEndOf="@id/textview_motion"
@@ -427,7 +427,7 @@
 
             <TextView
                 android:id="@+id/textview_temperature"
-                style="@style/TextDataPrimary"
+                style="@style/TextAppearance.Data.Primary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -436,7 +436,7 @@
 
             <TextView
                 android:id="@+id/textview_temperature_unit"
-                style="@style/TextDataUnitPrimary"
+                style="@style/TextAppearance.Data.Primary.Unit"
                 android:text="@string/unit_temperature_celsius"
                 app:layout_constraintBottom_toBottomOf="@id/textview_temperature"
                 app:layout_constraintStart_toEndOf="@id/textview_temperature"

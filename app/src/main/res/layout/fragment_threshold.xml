@@ -31,7 +31,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            style="@style/TextTitle"
+            style="@style/TextAppearance.Title"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +86,7 @@
 
             <TextView
                 android:id="@+id/textview_temperature"
-                style="@style/ItemThresholdTemperature"
+                style="@style/TextAppearance.Item.ThresholdTemperature"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"

@@ -12,7 +12,7 @@
 
         <TextView
             android:id="@+id/textview_title_unit_temperature"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Temperature"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -35,31 +35,31 @@
 
             <RadioButton
                 android:id="@+id/unit_celsius"
-                style="@style/RadioButtonLeft"
+                style="@style/Widget.RadioButton.Left"
                 android:text="Celsius"/>
 
             <RadioButton
                 android:id="@+id/unit_farenheit"
-                style="@style/RadioButtonMiddle"
+                style="@style/Widget.RadioButton.Middle"
                 android:text="Fahrenheit"/>
 
             <RadioButton
                 android:id="@+id/unit_kelvin"
-                style="@style/RadioButtonRight"
+                style="@style/Widget.RadioButton.Right"
                 android:text="Kelvin"/>
 
         </RadioGroup>
 
         <View
             android:id="@+id/divider_units"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radiogroup_temperature_unit"/>
 
         <TextView
             android:id="@+id/textview_title_unit_pressure"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Pressure"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -82,17 +82,17 @@
 
             <RadioButton
                 android:id="@+id/unit_pascal"
-                style="@style/RadioButtonLeft"
+                style="@style/Widget.RadioButton.Left"
                 android:text="hPa"/>
 
             <RadioButton
                 android:id="@+id/unit_bar"
                 android:text="mbar"
-                style="@style/RadioButtonMiddle"/>
+                style="@style/Widget.RadioButton.Middle"/>
 
             <RadioButton
                 android:id="@+id/unit_psi"
-                style="@style/RadioButtonRight"
+                style="@style/Widget.RadioButton.Right"
                 android:text="psi"/>
 
         </RadioGroup>
@@ -101,7 +101,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radiogroup_pressure_unit"
-            style="@style/Divider"/>
+            style="@style/Widget.Divider.Settings"/>
 
     </android.support.constraint.ConstraintLayout>
 

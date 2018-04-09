@@ -43,6 +43,7 @@
 
         <activity android:name=".presentation.activities.ScreenSaverActivity" />
         <activity android:name=".presentation.activities.ThresholdActivity"/>
+        <activity android:name=".presentation.activities.BootAnimationActivity"/>
 
     </application>
 

@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/textview_title_date_format"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -35,14 +35,14 @@
 
         <View
             android:id="@+id/divider_date_format"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spinner_date_format"/>
 
         <TextView
             android:id="@+id/textview_title_time_format"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -61,7 +61,7 @@
             app:layout_constraintTop_toBottomOf="@id/textview_title_time_format"/>
 
         <View
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spinner_time_format"/>

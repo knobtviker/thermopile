@@ -12,7 +12,7 @@
 
         <TextView
             android:id="@+id/textview_title_theme"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Theme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -35,24 +35,24 @@
 
             <RadioButton
                 android:id="@+id/light"
-                style="@style/RadioButtonLeft"
+                style="@style/Widget.RadioButton.Left"
                 android:text="Light"/>
 
             <RadioButton
                 android:id="@+id/dark"
-                style="@style/RadioButtonMiddle"
+                style="@style/Widget.RadioButton.Middle"
                 android:text="Dark"/>
 
             <RadioButton
                 android:id="@+id/automatic"
-                style="@style/RadioButtonRight"
+                style="@style/Widget.RadioButton.Right"
                 android:text="Automatic"/>
 
         </RadioGroup>
 
         <View
             android:id="@+id/divider_theme"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radiogroup_theme"/>

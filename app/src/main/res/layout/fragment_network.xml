@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/textview_title_bluetooth"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Bluetooth"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -79,7 +79,7 @@
 
         <View
             android:id="@+id/divider_bluetooth"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_advertising"/>
@@ -98,7 +98,7 @@
 
         <TextView
             android:id="@+id/textview_title_wifi"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="WiFi"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -171,7 +171,7 @@
 
         <View
             android:id="@+id/divider_wifi"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_wifi_connected"/>
@@ -184,7 +184,7 @@
 
         <TextView
             android:id="@+id/textview_title_ethernet"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Ethernet"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -210,7 +210,7 @@
 
         <View
             android:id="@+id/divider_ethernet"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textview_ip_ethernet"/>
@@ -223,7 +223,7 @@
 
         <TextView
             android:id="@+id/textview_title_servers"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Servers"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -262,7 +262,7 @@
 
         <View
             android:id="@+id/divider_servers"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/switch_server_websocket"/>

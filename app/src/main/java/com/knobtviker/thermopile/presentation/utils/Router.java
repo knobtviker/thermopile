@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
+import com.knobtviker.thermopile.presentation.activities.BootAnimationActivity;
 import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
 import com.knobtviker.thermopile.presentation.activities.ThresholdActivity;
 
@@ -48,5 +49,9 @@ public class Router {
         ((AppCompatActivity) (context)).finish();
         context.startActivity(intent);
         System.exit(0);
+    }
+
+    public static void bootAnimation(@NonNull final Context context) {
+        context.startActivity(new Intent(context, BootAnimationActivity.class));
     }
 }

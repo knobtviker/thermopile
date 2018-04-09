@@ -34,7 +34,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                style="@style/TextTitle"
+                style="@style/TextAppearance.Title"
                 android:text="Settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -12,7 +12,7 @@
 
         <TextView
             android:id="@+id/textview_title_temperature"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Temperature"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,14 +29,14 @@
 
         <View
             android:id="@+id/divider_temperature"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_temperature"/>
 
         <TextView
             android:id="@+id/textview_title_pressure"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Pressure"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,14 +53,14 @@
 
         <View
             android:id="@+id/divider_pressure"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_pressure"/>
 
         <TextView
             android:id="@+id/textview_title_humidity"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Humidity"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
@@ -77,14 +77,14 @@
 
         <View
             android:id="@+id/divider_humidity"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_humidity"/>
 
         <TextView
             android:id="@+id/textview_title_iaq"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Air quality"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,14 +101,14 @@
 
         <View
             android:id="@+id/divider_iaq"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_iaq"/>
 
         <TextView
             android:id="@+id/textview_title_luminosity"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Luminosity"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
@@ -125,14 +125,14 @@
 
         <View
             android:id="@+id/divider_luminosity"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_luminosity"/>
 
         <TextView
             android:id="@+id/textview_title_acceleration"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Acceleration"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
@@ -149,14 +149,14 @@
 
         <View
             android:id="@+id/divider_acceleration"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_acceleration"/>
 
         <TextView
             android:id="@+id/textview_title_angular_velocity"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Angular velocity"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
@@ -173,14 +173,14 @@
 
         <View
             android:id="@+id/divider_angular_velocity"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_angular_velocity"/>
 
         <TextView
             android:id="@+id/textview_title_magnetic_field"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Magnetic field"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
@@ -197,7 +197,7 @@
 
         <View
             android:id="@+id/divider_magnetic_field"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_magnetic_field"/>

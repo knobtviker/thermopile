@@ -5,9 +5,11 @@
         <item name="android:colorPrimaryDark">@color/black</item>
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:soundEffectsEnabled">false</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
     </style>
 
-    <style name="ScheduleDay" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Schedule.Day" parent="TextAppearance.AppCompat.Caption">
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
         <item name="android:textColor">?android:textColorPrimary</item>
@@ -18,48 +20,34 @@
         <item name="android:fontFamily">@font/worksans_light</item>
     </style>
 
-    <style name="ScheduleDayHours">
+    <style name="Widget.Schedule.DayHours" parent="android:Widget">
         <item name="android:clickable">true</item>
         <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:paddingTop">1dp</item>
         <item name="android:paddingBottom">1dp</item>
     </style>
 
-    <style name="TextDate" parent="TextAppearance.AppCompat.Title">
+    <style name="TextAppearance.Date" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">0dp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>
 
-    <style name="TextTime" parent="TextAppearance.AppCompat.Title">
+    <style name="TextAppearance.Time" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>
 
-    <style name="TextTitle" parent="TextAppearance.AppCompat.Title">
+    <style name="TextAppearance.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>
 
-    <style name="TextHour" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFamily">@font/worksans_medium</item>
-    </style>
-
-    <style name="TextMinute" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:textColor">?android:textColorSecondary</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/worksans_extralight</item>
-    </style>
-
-    <style name="TextDataUnitPrimary" parent="TextAppearance.AppCompat.Display2">
+    <style name="TextAppearance.Data.Primary.Unit" parent="TextAppearance.AppCompat.Display2">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">?android:textColorPrimary</item>
@@ -67,7 +55,7 @@
         <item name="android:fontFamily">@font/worksans_light</item>
     </style>
 
-    <style name="TextDataUnitSecondary" parent="TextAppearance.AppCompat.Large">
+    <style name="TextAppearance.Data.Secondary.Unit" parent="TextAppearance.AppCompat.Large">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">4dp</item>
@@ -76,7 +64,7 @@
         <item name="android:fontFamily">@font/worksans_light</item>
     </style>
 
-    <style name="TextDataSecondary" parent="TextAppearance.AppCompat.Display1">
+    <style name="TextAppearance.Data.Secondary" parent="TextAppearance.AppCompat.Display1">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">bottom</item>
@@ -85,7 +73,7 @@
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>
 
-    <style name="TextDataPrimary" parent="TextAppearance.AppCompat.Display2">
+    <style name="TextAppearance.Data.Primary" parent="TextAppearance.AppCompat.Display2">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">bottom</item>
@@ -94,30 +82,13 @@
         <item name="android:fontFamily">@font/worksans_regular</item>
     </style>
 
-    <style name="ItemTextHour" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">10sp</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">?android:textColorSecondary</item>
-        <item name="android:fontFamily">@font/worksans_medium</item>
-    </style>
-
-    <style name="ItemTextMinute" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">8sp</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:gravity">bottom</item>
-        <item name="android:textColor">?android:textColorTertiary</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:fontFamily">@font/worksans_extralight</item>
-    </style>
-
-    <style name="ItemDay" parent="TextAppearance.AppCompat.Body1">
+    <style name="TextAppearance.Item.Day" parent="TextAppearance.AppCompat.Body1">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>
 
-    <style name="ItemThresholdTemperature" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Item.ThresholdTemperature" parent="TextAppearance.AppCompat.Caption">
         <item name="android:layout_width">@dimen/height_threshold</item>
         <item name="android:layout_height">@dimen/height_threshold</item>
         <item name="android:gravity">center</item>
@@ -126,7 +97,7 @@
         <item name="android:fontFamily">@font/worksans_medium</item>
     </style>
 
-    <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+    <style name="Widget.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>
@@ -136,32 +107,32 @@
         <item name="android:layout_weight">1</item>
     </style>
 
-    <style name="RadioButtonLeft" parent="RadioButton">
+    <style name="Widget.RadioButton.Left" parent="Widget.RadioButton">
         <item name="android:background">@drawable/background_radiobutton_left</item>
     </style>
 
-    <style name="RadioButtonMiddle" parent="RadioButton">
+    <style name="Widget.RadioButton.Middle" parent="Widget.RadioButton">
         <item name="android:background">@drawable/background_radiobutton_middle</item>
     </style>
 
-    <style name="RadioButtonRight" parent="RadioButton">
+    <style name="Widget.RadioButton.Right" parent="Widget.RadioButton">
         <item name="android:background">@drawable/background_radiobutton_right</item>
     </style>
 
-    <style name="Divider">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">1dp</item>
+    <style name="Widget.Divider.Settings" parent="Widget.Divider">
         <item name="android:layout_marginTop">@dimen/margin_default</item>
-        <item name="android:background">@color/background_divider</item>
     </style>
 
-    <style name="DividerSchedule">
+    <style name="Widget.Divider.Schedule" parent="Widget.Divider">
+    </style>
+
+    <style name="Widget.Divider" parent="android:Widget">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">@color/background_divider</item>
     </style>
 
-    <style name="Section" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Section" parent="TextAppearance.AppCompat.Caption">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">@dimen/margin_default</item>

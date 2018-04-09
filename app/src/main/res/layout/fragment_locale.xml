@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/textview_title_timezone"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Timezone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -35,14 +35,14 @@
 
         <View
             android:id="@+id/divider_timezone"
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spinner_timezone"/>
 
         <TextView
             android:id="@+id/textview_title_clock_mode"
-            style="@style/Section"
+            style="@style/TextAppearance.Section"
             android:text="Clock mode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -66,17 +66,17 @@
             <RadioButton
                 android:id="@+id/mode_12h"
                 android:text="12h"
-                style="@style/RadioButtonLeft"/>
+                style="@style/Widget.RadioButton.Left"/>
 
             <RadioButton
                 android:id="@+id/mode_24h"
                 android:text="24h"
-                style="@style/RadioButtonRight"/>
+                style="@style/Widget.RadioButton.Right"/>
 
         </RadioGroup>
 
         <View
-            style="@style/Divider"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radiogroup_clock_mode"/>

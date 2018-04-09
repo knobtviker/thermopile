@@ -34,7 +34,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                style="@style/TextTitle"
+                style="@style/TextAppearance.Title"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +86,7 @@
 
         <TextView
             android:id="@+id/textview_day_monday"
-            style="@style/ScheduleDay"
+            style="@style/TextAppearance.Schedule.Day"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Monday"
@@ -100,7 +100,7 @@
 
         <View
             android:id="@+id/divider_monday"
-            style="@style/DividerSchedule"
+            style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_tuesday"
             app:layout_constraintTop_toBottomOf="@+id/textview_day_monday"
             app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +108,7 @@
 
         <TextView
             android:id="@+id/textview_day_tuesday"
-            style="@style/ScheduleDay"
+            style="@style/TextAppearance.Schedule.Day"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Tuesday"
@@ -122,7 +122,7 @@
 
         <View
             android:id="@+id/divider_tuesday"
-            style="@style/DividerSchedule"
+            style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_wednesday"
             app:layout_constraintTop_toBottomOf="@+id/textview_day_tuesday"
             app:layout_constraintEnd_toEndOf="parent"
@@ -130,7 +130,7 @@
 
         <TextView
             android:id="@+id/textview_day_wednesday"
-            style="@style/ScheduleDay"
+            style="@style/TextAppearance.Schedule.Day"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Wednesday"
@@ -144,7 +144,7 @@
 
         <View
             android:id="@+id/divider_wednesday"
-            style="@style/DividerSchedule"
+            style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_thursday"
             app:layout_constraintTop_toBottomOf="@+id/textview_day_wednesday"
             app:layout_constraintEnd_toEndOf="parent"
@@ -152,7 +152,7 @@
 
         <TextView
             android:id="@+id/textview_day_thursday"
-            style="@style/ScheduleDay"
+            style="@style/TextAppearance.Schedule.Day"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Thursday"
@@ -166,7 +166,7 @@
 
         <View
             android:id="@+id/divider_thursday"
-            style="@style/DividerSchedule"
+            style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_friday"
             app:layout_constraintTop_toBottomOf="@+id/textview_day_thursday"
             app:layout_constraintEnd_toEndOf="parent"
@@ -174,7 +174,7 @@
 
         <TextView
             android:id="@+id/textview_day_friday"
-            style="@style/ScheduleDay"
+            style="@style/TextAppearance.Schedule.Day"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Friday"
@@ -188,7 +188,7 @@
 
         <View
             android:id="@+id/divider_friday"
-            style="@style/DividerSchedule"
+            style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_saturday"
             app:layout_constraintTop_toBottomOf="@+id/textview_day_friday"
             app:layout_constraintEnd_toEndOf="parent"
@@ -196,7 +196,7 @@
 
         <TextView
             android:id="@+id/textview_day_saturday"
-            style="@style/ScheduleDay"
+            style="@style/TextAppearance.Schedule.Day"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Saturday"
@@ -210,7 +210,7 @@
 
         <View
             android:id="@+id/divider_saturday"
-            style="@style/DividerSchedule"
+            style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_sunday"
             app:layout_constraintTop_toBottomOf="@+id/textview_day_saturday"
             app:layout_constraintEnd_toEndOf="parent"
@@ -218,7 +218,7 @@
 
         <TextView
             android:id="@+id/textview_day_sunday"
-            style="@style/ScheduleDay"
+            style="@style/TextAppearance.Schedule.Day"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="Sunday"
@@ -232,7 +232,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_monday"
-            style="@style/ScheduleDayHours"
+            style="@style/Widget.Schedule.DayHours"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/textview_day_monday"
@@ -245,7 +245,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_tuesday"
-            style="@style/ScheduleDayHours"
+            style="@style/Widget.Schedule.DayHours"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/textview_day_tuesday"
@@ -258,7 +258,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_wednesday"
-            style="@style/ScheduleDayHours"
+            style="@style/Widget.Schedule.DayHours"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/textview_day_wednesday"
@@ -271,7 +271,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_thursday"
-            style="@style/ScheduleDayHours"
+            style="@style/Widget.Schedule.DayHours"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/textview_day_thursday"
@@ -284,7 +284,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_friday"
-            style="@style/ScheduleDayHours"
+            style="@style/Widget.Schedule.DayHours"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/textview_day_friday"
@@ -297,7 +297,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_saturday"
-            style="@style/ScheduleDayHours"
+            style="@style/Widget.Schedule.DayHours"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/textview_day_saturday"
@@ -310,7 +310,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_hours_sunday"
-            style="@style/ScheduleDayHours"
+            style="@style/Widget.Schedule.DayHours"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/textview_day_sunday"
