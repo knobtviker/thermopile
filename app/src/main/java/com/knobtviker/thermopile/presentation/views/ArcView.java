@@ -135,6 +135,8 @@ public class ArcView extends View {
         paint.setStrokeWidth(thickness);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setAntiAlias(true);
+        paint.setDither(true);
 
         arc = new RectF();
     }
