@@ -60,4 +60,19 @@ public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
         realm.commitTransaction();
         realm.close();
     }
+
+    @Override
+    public void removeById(long id) {
+        final Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        final Threshold threshold = realm
+            .where(Threshold.class)
+            .equalTo("id", id)
+            .findFirst();
+        if (threshold != null) {
+            threshold.deleteFromRealm();
+        }
+        realm.commitTransaction();
+        realm.close();
+    }
 }

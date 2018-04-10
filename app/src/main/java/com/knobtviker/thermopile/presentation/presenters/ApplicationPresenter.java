@@ -1,9 +1,6 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Display;
@@ -11,16 +8,8 @@ import android.view.Display;
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
 import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
-import com.knobtviker.thermopile.data.models.local.Acceleration;
-import com.knobtviker.thermopile.data.models.local.AirQuality;
-import com.knobtviker.thermopile.data.models.local.Altitude;
-import com.knobtviker.thermopile.data.models.local.AngularVelocity;
-import com.knobtviker.thermopile.data.models.local.Humidity;
-import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
-import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
@@ -37,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
-import io.reactivex.android.MainThreadDisposable;
 import io.reactivex.disposables.Disposable;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -106,47 +94,110 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     }
 
     @Override
-    public void tick() {
+    public void observeTemperatureChanged(@NonNull Context context) {
         compositeDisposable.add(
             Observable
-                .interval(1L, TimeUnit.SECONDS)
+                .defer(() -> peripheralsRepository.observeTemperatureBuffered(context))
                 .subscribe(
-                    ack -> view.onTick(),
+                    atmosphereRepository::saveTemperature,
                     this::error
                 )
         );
     }
 
     @Override
-    public void observeMinuteTick(@NonNull Context context) {
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_TIME_TICK);
-
+    public void observePressureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable.defer(() ->
-                Observable.create(emitter -> {
-                    final BroadcastReceiver receiver = new BroadcastReceiver() {
-
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            emitter.onNext(true);
-                        }
-                    };
-
-                    context.registerReceiver(receiver, filter);
-
-                    emitter.setDisposable(new MainThreadDisposable() {
-                        @Override
-                        protected void onDispose() {
-                            context.unregisterReceiver(receiver);
-
-                            dispose();
-                        }
-                    });
-                })
-            )
+            Observable
+                .defer(() -> peripheralsRepository.observePressureBuffered(context))
                 .subscribe(
-                    item -> view.onMinuteTick(),
+                    atmosphereRepository::savePressure,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void observeAltitudeChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeAltitudeBuffered(context))
+                .subscribe(
+                    atmosphereRepository::saveAltitude,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void observeHumidityChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeHumidityBuffered(context))
+                .subscribe(
+                    atmosphereRepository::saveHumidity,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void observeAirQualityChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeAirQualityBuffered(context))
+                .subscribe(
+                    atmosphereRepository::saveAirQuality,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void observeLuminosityChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeLuminosityBuffered(context))
+                .subscribe(
+                    atmosphereRepository::saveLuminosity,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void observeAccelerationChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeAccelerationBuffered(context))
+                .subscribe(
+                    atmosphereRepository::saveAccelerations,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observeAngularVelocityChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeAngularVelocityBuffered(context))
+                .subscribe(
+                    atmosphereRepository::saveAngularVelocities,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observeMagneticFieldChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeMagneticFieldBuffered(context))
+                .subscribe(
+                    atmosphereRepository::saveMagneticFields,
                     this::error,
                     this::completed
                 )
@@ -229,45 +280,5 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveDefaultSensors(@NonNull List<PeripheralDevice> foundSensors) {
         peripheralsRepository.saveConnected(foundSensors, true);
-    }
-
-    @Override
-    public void saveTemperature(@NonNull List<Temperature> items) {
-        atmosphereRepository.saveTemperature(items);
-    }
-
-    @Override
-    public void savePressure(@NonNull List<Pressure> items) {
-        atmosphereRepository.savePressure(items);
-    }
-
-    @Override
-    public void saveHumidity(@NonNull List<Humidity> items) {
-        atmosphereRepository.saveHumidity(items);
-    }
-
-    @Override
-    public void saveAltitude(@NonNull List<Altitude> items) {
-        atmosphereRepository.saveAltitude(items);
-    }
-
-    @Override
-    public void saveAirQuality(@NonNull List<AirQuality> items) {
-        atmosphereRepository.saveAirQuality(items);
-    }
-
-    @Override
-    public void saveAccelerations(@NonNull List<Acceleration> items) {
-        atmosphereRepository.saveAccelerations(items);
-    }
-
-    @Override
-    public void saveAngularVelocities(@NonNull List<AngularVelocity> items) {
-        atmosphereRepository.saveAngularVelocities(items);
-    }
-
-    @Override
-    public void saveMagneticFields(@NonNull List<MagneticField> items) {
-        atmosphereRepository.saveMagneticFields(items);
     }
 }

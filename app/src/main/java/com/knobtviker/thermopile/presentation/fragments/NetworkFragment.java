@@ -27,7 +27,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.raw.EnvironmentProfile;
 import com.knobtviker.thermopile.data.sources.raw.GattServerCallback;
 import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
@@ -54,8 +53,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     public static final String TAG = NetworkFragment.class.getSimpleName();
 
     private long settingsId = -1L;
-
-    private Atmosphere atmosphere = Atmosphere.EMPTY();
 
     @Nullable
     private BluetoothGattServer gattServer;
@@ -125,6 +122,11 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
     @Override
     public void onResume() {
+        presenter.observeTemperatureChanged(getContext());
+        presenter.observePressureChanged(getContext());
+        presenter.observeHumidityChanged(getContext());
+        presenter.observeAirQualityChanged(getContext());
+        presenter.observeAccelerationChanged(getContext());
         presenter.hasBluetooth();
 
         setupWifi(hasWiFi);
@@ -180,8 +182,28 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     }
 
     @Override
-    public void onDataChanged(@NonNull Atmosphere atmosphere) {
-        this.atmosphere = atmosphere;
+    public void onTemperatureChanged(float value) {
+
+    }
+
+    @Override
+    public void onPressureChanged(float value) {
+
+    }
+
+    @Override
+    public void onHumidityChanged(float value) {
+
+    }
+
+    @Override
+    public void onAirQualityChanged(float value) {
+
+    }
+
+    @Override
+    public void onAccelerationChanged(float[] values) {
+
     }
 
     @Override
@@ -254,14 +276,14 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         if (gattServer != null) {
             byte[] response = new byte[0];
             if (uuid.equals(EnvironmentProfile.UUID_TEMPERATURE)) {
-                response = EnvironmentProfile.toByteArray(Math.round(atmosphere.temperature()));
-                Log.i(TAG, atmosphere.temperature() + "");
+//                response = EnvironmentProfile.toByteArray(Math.round(atmosphere.temperature()));
+//                Log.i(TAG, atmosphere.temperature() + "");
             } else if (uuid.equals(EnvironmentProfile.UUID_PRESSURE)) {
 //                response = EnvironmentProfile.toByteArray(atmosphere.pressure());
-                Log.i(TAG, atmosphere.pressure() + "");
+//                Log.i(TAG, atmosphere.pressure() + "");
             } else if (uuid.equals(EnvironmentProfile.UUID_HUMIDITY)) {
 //                response = EnvironmentProfile.toByteArray(atmosphere.humidity());
-                Log.i(TAG, atmosphere.humidity() + "");
+//                Log.i(TAG, atmosphere.humidity() + "");
             } else {
                 Log.e(TAG, "Invalid Characteristic Read: " + uuid);
                 gattServer.sendResponse(device, requestId, status, 0, null);

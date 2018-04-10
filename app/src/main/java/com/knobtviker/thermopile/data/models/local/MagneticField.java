@@ -2,7 +2,6 @@ package com.knobtviker.thermopile.data.models.local;
 
 import com.knobtviker.thermopile.data.models.local.implementation.CartesianValue;
 
-import io.reactivex.annotations.NonNull;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 
@@ -12,14 +11,11 @@ import io.realm.annotations.Index;
 
 public class MagneticField extends RealmObject implements CartesianValue {
 
-    public MagneticField(final long timestamp, final float valueX, final float valueY, final float valueZ, final int accuracy, @NonNull final String vendor, @NonNull final String name) {
+    public MagneticField(final long timestamp, final float valueX, final float valueY, final float valueZ) {
         timestamp(timestamp);
         valueX(valueX);
         valueY(valueY);
         valueZ(valueZ);
-        accuracy(accuracy);
-        vendor(vendor);
-        name(name);
     }
 
     public MagneticField(){}
@@ -32,12 +28,6 @@ public class MagneticField extends RealmObject implements CartesianValue {
     private float valueY;
 
     private float valueZ;
-
-    private int accuracy;
-
-    private String vendor;
-
-    private String name;
 
     @Override
     public long timestamp() {
@@ -77,35 +67,5 @@ public class MagneticField extends RealmObject implements CartesianValue {
     @Override
     public void valueZ(float valueZ) {
         this.valueZ = valueZ;
-    }
-
-    @Override
-    public int accuracy() {
-        return accuracy;
-    }
-
-    @Override
-    public void accuracy(int accuracy) {
-        this.accuracy = accuracy;
-    }
-
-    @Override
-    public String vendor() {
-        return vendor;
-    }
-
-    @Override
-    public void vendor(@NonNull String vendor) {
-        this.vendor = vendor;
-    }
-
-    @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
-    public void name(@NonNull String name) {
-        this.name = name;
     }
 }

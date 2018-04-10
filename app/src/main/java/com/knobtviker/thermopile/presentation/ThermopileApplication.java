@@ -22,17 +22,8 @@ import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231Senso
 import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
-import com.knobtviker.thermopile.data.models.local.Acceleration;
-import com.knobtviker.thermopile.data.models.local.AirQuality;
-import com.knobtviker.thermopile.data.models.local.Altitude;
-import com.knobtviker.thermopile.data.models.local.AngularVelocity;
-import com.knobtviker.thermopile.data.models.local.Humidity;
-import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
-import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Temperature;
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
@@ -40,12 +31,9 @@ import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
 import com.knobtviker.thermopile.presentation.utils.predicates.PeripheralDevicePredicate;
 
-import org.joda.time.DateTimeUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import io.realm.RealmResults;
 
@@ -60,17 +48,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     private LocalBroadcastManager localBroadcastManager;
 
     private List<PeripheralDevice> peripherals = new ArrayList<>(0);
-
-    private Atmosphere atmosphere = Atmosphere.EMPTY();
-
-    private ConcurrentLinkedQueue<Temperature> temperatures = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<Pressure> pressures = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<Humidity> humidities = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<Altitude> altitudes = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<AirQuality> airQualities = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<Acceleration> accelerations = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<AngularVelocity> angularVelocities = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<MagneticField> magneticFields = new ConcurrentLinkedQueue<>();
 
     @Override
     public void onCreate() {
@@ -87,32 +64,21 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
-            atmosphere = atmosphere.withTemperature(sensorEvent.values[0]);
+            broadcastTemperature(sensorEvent.values[0]);
         }
-
-        temperatures.add(new Temperature(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
     }
 
     @Override
     protected void onPressureChanged(@NonNull SensorEvent sensorEvent) {
-        final long now = DateTimeUtils.currentTimeMillis();
-        final boolean isSensorAllowed = peripherals
+        if (peripherals
             .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor));
+            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
+            ) {
+            broadcastPressure(sensorEvent.values[0]);
 
-        if (isSensorAllowed) {
-            atmosphere = atmosphere.withPressure(sensorEvent.values[0]);
+            final float altitudeValue = SensorManager.getAltitude(sensorEvent.values[0], SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
+            broadcastAltitude(altitudeValue);
         }
-
-        pressures.add(new Pressure(now, sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
-
-        final float altitudeValue = SensorManager.getAltitude(sensorEvent.values[0], SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
-
-        if (isSensorAllowed) {
-            atmosphere = atmosphere.withAltitude(altitudeValue);
-        }
-
-        altitudes.add(new Altitude(now, altitudeValue, sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
     }
 
     @Override
@@ -121,10 +87,8 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
-            atmosphere = atmosphere.withHumidity(sensorEvent.values[0]);
+            broadcastHumidity(sensorEvent.values[0]);
         }
-
-        humidities.add(new Humidity(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
     }
 
     @Override
@@ -133,10 +97,8 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
-            atmosphere = atmosphere.withAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
+            broadcastAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
         }
-
-        airQualities.add(new AirQuality(DateTimeUtils.currentTimeMillis(), sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
     }
 
     @Override
@@ -145,8 +107,9 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
+            broadcastLuminosity(sensorEvent.values[0]);
             //TODO: Google dropped Automatic Brightness Mode in DP7. Do your own math with manual mode. Less light == lower screen brightness.
-            Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0]) + " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
+//            Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0]) + " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
         }
     }
 
@@ -156,10 +119,8 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
-            atmosphere = atmosphere.withAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+            broadcastAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
         }
-
-        accelerations.add(new Acceleration(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
     }
 
     @Override
@@ -168,10 +129,8 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
-            atmosphere = atmosphere.withAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+            broadcastAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
         }
-
-        angularVelocities.add(new AngularVelocity(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
     }
 
     @Override
@@ -180,10 +139,8 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
-            atmosphere = atmosphere.withMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
+            broadcastMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
         }
-
-        magneticFields.add(new MagneticField(DateTimeUtils.currentTimeMillis(), sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2], sensorEvent.accuracy, sensorEvent.sensor.getVendor(), sensorEvent.sensor.getName()));
     }
 
     @Override
@@ -207,16 +164,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    public void onTick() {
-        save();
-    }
-
-    @Override
-    public void onMinuteTick() {
-        Log.d(TAG, "INTERPOLATION IN REALM HERE IF FULL HOUR");
-    }
-
-    @Override
     public void showScreensaver() {
         Router.showScreensaver(this);
         brightness(24);
@@ -233,8 +180,16 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
     private void initPresenter() {
         presenter = new ApplicationPresenter(this);
-        presenter.observeMinuteTick(this);
-        presenter.tick();
+
+        presenter.observeTemperatureChanged(this);
+        presenter.observePressureChanged(this);
+        presenter.observeAltitudeChanged(this);
+        presenter.observeHumidityChanged(this);
+        presenter.observeAirQualityChanged(this);
+        presenter.observeLuminosityChanged(this);
+        presenter.observeAccelerationChanged(this);
+        presenter.observeAngularVelocityChanged(this);
+        presenter.observeMagneticFieldChanged(this);
 
         presenter.initScreen(160, RxScreenManager.ROTATION_180);
         presenter.brightness(255);
@@ -364,48 +319,57 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         presenter.brightness(value);
     }
 
-    private void save() {
-        atmosphere = atmosphere.withTimestamp(DateTimeUtils.currentTimeMillis());
-
-        broadcast();
-
-        if (!temperatures.isEmpty()) {
-            presenter.saveTemperature(new ArrayList<>(temperatures));
-            temperatures.clear();
-        }
-        if (!pressures.isEmpty()) {
-            presenter.savePressure(new ArrayList<>(pressures));
-            pressures.clear();
-        }
-        if (!humidities.isEmpty()) {
-            presenter.saveHumidity(new ArrayList<>(humidities));
-            humidities.clear();
-        }
-        if (!altitudes.isEmpty()) {
-            presenter.saveAltitude(new ArrayList<>(altitudes));
-            altitudes.clear();
-        }
-        if (!airQualities.isEmpty()) {
-            presenter.saveAirQuality(new ArrayList<>(airQualities));
-            airQualities.clear();
-        }
-        if (!accelerations.isEmpty()) {
-            presenter.saveAccelerations(new ArrayList<>(accelerations));
-            accelerations.clear();
-        }
-        if (!angularVelocities.isEmpty()) {
-            presenter.saveAngularVelocities(new ArrayList<>(angularVelocities));
-            angularVelocities.clear();
-        }
-        if (!magneticFields.isEmpty()) {
-            presenter.saveMagneticFields(new ArrayList<>(magneticFields));
-            magneticFields.clear();
-        }
+    private void broadcastTemperature(final float value) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_TEMPERATURE));
+        intent.putExtra(Constants.KEY_TEMPERATURE, value);
+        localBroadcastManager.sendBroadcast(intent);
     }
 
-    private void broadcast() {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_DATA));
-        intent.putExtra(Constants.KEY_ATMOSPHERE, atmosphere);
+    private void broadcastPressure(final float value) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_PRESSURE));
+        intent.putExtra(Constants.KEY_PRESSURE, value);
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void broadcastAltitude(final float value) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_ALTITUDE));
+        intent.putExtra(Constants.KEY_ALTITUDE, value);
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void broadcastHumidity(final float value) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_HUMIDITY));
+        intent.putExtra(Constants.KEY_HUMIDITY, value);
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void broadcastAirQuality(final float value) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_AIR_QUALITY));
+        intent.putExtra(Constants.KEY_AIR_QUALITY, value);
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void broadcastLuminosity(final float value) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_LUMINOSITY));
+        intent.putExtra(Constants.KEY_LUMINOSITY, value);
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void broadcastAcceleration(final float[] values) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_ACCELERATION));
+        intent.putExtra(Constants.KEY_ACCELERATION, values);
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void broadcastAngularVelocity(final float[] values) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_ANGULAR_VELOCITY));
+        intent.putExtra(Constants.KEY_ANGULAR_VELOCITY, values);
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void broadcastMagneticField(final float[] values) {
+        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_MAGNETIC_FIELD));
+        intent.putExtra(Constants.KEY_MAGNETIC_FIELD, values);
         localBroadcastManager.sendBroadcast(intent);
     }
 

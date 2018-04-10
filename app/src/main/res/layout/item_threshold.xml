@@ -4,15 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
-    android:layout_width="0dp"
+    android:layout_width="wrap_content"
     android:layout_height="@dimen/height_threshold"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackgroundBorderless"
     app:layout_constrainedHeight="true"
     app:layout_constrainedWidth="true"
-    app:layout_constraintHeight_default="wrap"
-    app:layout_constraintWidth_default="wrap"
-    tools:layout_height="56dp"
+    tools:layout_height="@dimen/height_threshold"
     tools:layout_width="300dp">
 
     <TextView
@@ -23,5 +21,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="30 °C"/>
+
+    <ImageButton
+        android:id="@+id/button_remove"
+        style="@style/Widget.AppCompat.Light.ActionButton"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:visibility="invisible"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="@id/textview_temperature"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/textview_temperature"
+        app:layout_constraintEnd_toEndOf="@id/textview_temperature"
+        app:layout_constraintTop_toTopOf="@id/textview_temperature"/>
 
 </android.support.constraint.ConstraintLayout>

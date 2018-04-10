@@ -39,4 +39,8 @@ public class ThresholdRepository extends AbstractRepository {
     public void save(@NonNull final Threshold item) {
         thresholdLocalDataSource.save(item);
     }
+
+    public void removeById(final long id) {
+        thresholdLocalDataSource.removeById(id);
+    }
 }

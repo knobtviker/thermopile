@@ -24,6 +24,7 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.utils.Router;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
+import com.knobtviker.thermopile.presentation.views.listeners.ScheduleListener;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import org.joda.time.DateTime;
@@ -44,7 +45,7 @@ import static android.support.constraint.ConstraintSet.TOP;
  * Created by bojan on 15/06/2017.
  */
 
-public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
+public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View, ScheduleListener {
     public static final String TAG = ScheduleFragment.class.getSimpleName();
 
     @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday, R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
@@ -117,6 +118,16 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         populate(thresholds);
     }
 
+    @Override
+    public void showThreshold(long id) {
+        Router.showThreshold(getContext(), id);
+    }
+
+    @Override
+    public void removeThreshold(long id) {
+        presenter.removeThresholdById(id);
+    }
+
     @OnClick({R.id.button_back, R.id.button_add})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
@@ -177,13 +188,16 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 final ConstraintLayout layout = hourLayouts.get(threshold.day());
 
                 final View thresholdView = layoutInflater.inflate(R.layout.item_threshold, null);
-                final ThresholdViewHolder thresholdViewHolder = new ThresholdViewHolder(thresholdView);
+
+                ThresholdViewHolder.bind(
+                    thresholdView,
+                    threshold.id(),
+                    threshold.color(),
+                    String.format("%s °C", String.valueOf(threshold.temperature())), //TODO: Fix this hardcoded temperature unit. Use Settings.
+                    this
+                );
 
                 thresholdView.setId(View.generateViewId());
-
-                thresholdViewHolder.setBackground(getContext().getColor(threshold.color()), getResources().getDimensionPixelSize(R.dimen.height_threshold));
-                //TODO: Fix this hardcoded temperature unit. Use Settings.
-                thresholdViewHolder.textViewTemperature.setText(String.format("%s °C", String.valueOf(threshold.temperature())));
 
                 layout.addView(thresholdView);
 
@@ -205,8 +219,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 set.connect(thresholdView.getId(), BOTTOM, ConstraintSet.PARENT_ID, BOTTOM, 8);
 
                 set.applyTo(layout);
-
-                thresholdViewHolder.rootLayout.setOnClickListener(view -> Router.showThreshold(getContext(), threshold.id()));
             });
     }
 

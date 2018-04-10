@@ -103,4 +103,9 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
 
         completed();
     }
+
+    @Override
+    public void removeThresholdById(long id) {
+        thresholdRepository.removeById(id);
+    }
 }

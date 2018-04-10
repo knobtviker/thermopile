@@ -5,6 +5,7 @@ import com.knobtviker.thermopile.data.sources.local.AirQualityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AltitudeLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AngularVelocityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.HumidityLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.LuminosityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
@@ -42,6 +43,11 @@ public class AtmosphereDataModule {
     @Provides
     static AirQualityLocalDataSource provideAirQualityLocalDataSource() {
         return new AirQualityLocalDataSource();
+    }
+
+    @Provides
+    static LuminosityLocalDataSource provideLuminosityLocalDataSource() {
+        return new LuminosityLocalDataSource();
     }
 
     @Provides

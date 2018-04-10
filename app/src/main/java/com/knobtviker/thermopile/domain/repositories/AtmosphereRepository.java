@@ -7,6 +7,7 @@ import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Altitude;
 import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Luminosity;
 import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
@@ -15,6 +16,7 @@ import com.knobtviker.thermopile.data.sources.local.AirQualityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AltitudeLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AngularVelocityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.HumidityLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.LuminosityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
@@ -47,6 +49,9 @@ public class AtmosphereRepository extends AbstractRepository {
 
     @Inject
     AirQualityLocalDataSource airQualityLocalDataSource;
+
+    @Inject
+    LuminosityLocalDataSource luminosityLocalDataSource;
 
     @Inject
     AccelerationLocalDataSource accelerationLocalDataSource;
@@ -99,6 +104,10 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public void saveAirQuality(@NonNull final List<AirQuality> items) {
         airQualityLocalDataSource.save(items);
+    }
+
+    public void saveLuminosity(@NonNull final List<Luminosity> items) {
+        luminosityLocalDataSource.save(items);
     }
 
     public void saveAccelerations(@NonNull final List<Acceleration> items) {

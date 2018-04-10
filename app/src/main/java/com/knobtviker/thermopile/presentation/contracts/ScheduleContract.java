@@ -28,5 +28,7 @@ public interface ScheduleContract {
         void settings(@NonNull final Realm realm);
 
         void thresholds(@NonNull final Realm realm);
+
+        void removeThresholdById(final long id);
     }
 }

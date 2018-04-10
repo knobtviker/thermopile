@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
 import com.knobtviker.thermopile.data.sources.raw.RelayRawDataSource;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
@@ -178,13 +177,85 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         Log.e(TAG, throwable.getMessage(), throwable);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onDataChanged(@NonNull final Atmosphere atmosphere) {
-        onTemperatureChanged(atmosphere.temperature());
-        onHumidityChanged(atmosphere.humidity());
-        onPressureChanged(atmosphere.pressure());
-        onAirQualityChanged(atmosphere.airQuality());
-        onMotionChanged(atmosphere.acceleration(), atmosphere.angularVelocity(), atmosphere.magneticField());
+    public void onTemperatureChanged(final float value) {
+        arcViewTemperature.setProgress(value / Constants.MEASURED_TEMPERATURE_MAX);
+        textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))));
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onHumidityChanged(final float value) {
+        arcViewHumidity.setProgress(value / Constants.MEASURED_HUMIDITY_MAX);
+        textViewHumidity.setText(String.valueOf(MathKit.round(value)));
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onPressureChanged(final float value) {
+        arcViewPressure.setProgress(value / Constants.MEASURED_PRESSURE_MAX);
+        textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, value))));
+    }
+
+    @Override
+    public void onAirQualityChanged(final float value) {
+        final Pair<String, Integer> pair = convertIAQValueToLabelAndColor(value);
+
+        textViewIAQ.setText(pair.first);
+        arcViewIAQ.setProgressColor(pair.second);
+        arcViewIAQ.setProgress((500.0f - value) / 500.0f);
+    }
+
+    // Calculate pitch, roll, and heading.
+    // Pitch/roll calculations take from this app note:
+    // http://cache.freescale.com/files/sensors/doc/app_note/AN3461.pdf?fpsp=1
+    // Heading calculations taken from this app note:
+    // http://www51.honeywell.com/aero/common/documents/myaerospacecatalog-documents/Defense_Brochures-documents/Magnetic__Literature_Application_notes-documents/AN203_Compass_Heading_Using_Magnetometers.pdf
+    // The LSM9DS1's mag x and y axes are opposite to the accelerometer,
+    // so my, mx are substituted for each other.
+    // Pay attention what the position of the sensor is ato its hardcoded axes, hence the index shuffle.
+//    private void onMotionChanged(final float[] acceleration, final float[] angularVelocity, final float[] magneticField) {
+    @Override
+    public void onAccelerationChanged(final float[] values) {
+        final double ax = values[0];
+        final double ay = values[2];
+        final double az = values[1]; //možda minus
+//
+//        final double mx = -magneticField[2];
+//        final double my = -magneticField[0];
+//        final double mz = magneticField[1];
+//
+//        double roll = Math.atan2(ay, az);
+//
+//        double pitch = Math.atan2(-ax, Math.sqrt(Math.pow(ay, 2) + Math.pow(az, 2)));
+//
+//        double heading;
+//        if (my == 0) {
+//            heading = (mx < 0) ? Math.PI : 0;
+//        } else {
+//            heading = Math.atan2(mx, my);
+//        }
+//
+//        heading -= Constants.DECLINATION * Math.PI / 180;
+//
+//        if (heading > Math.PI) {
+//            heading -= (2 * Math.PI);
+//        } else if (heading < -Math.PI) {
+//            heading += (2 * Math.PI);
+//        } else if (heading < 0) {
+//            heading += 2 * Math.PI;
+//        }
+//
+//        // Convert everything from radians to degrees:
+//        heading *= 180.0 / Math.PI;
+//        pitch *= 180.0 / Math.PI;
+//        roll *= 180.0 / Math.PI;
+
+        //Peak ground acceleration calculation
+        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az + SensorManager.GRAVITY_EARTH, 2)), 19.61330000);
+        arcViewMotion.setProgress(value / 19.61330000f); //TODO: This hardcoded value must be set according to selected unit value for acceleration in Settings
+        textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));
     }
 
     @Override
@@ -256,81 +327,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         recyclerViewThresholds.addOnScrollListener(DayScrollListener.create(this));
     }
 
-    @SuppressLint("SetTextI18n")
-    private void onTemperatureChanged(final float value) {
-        arcViewTemperature.setProgress(value / Constants.MEASURED_TEMPERATURE_MAX);
-        textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))));
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void onHumidityChanged(final float value) {
-        arcViewHumidity.setProgress(value / Constants.MEASURED_HUMIDITY_MAX);
-        textViewHumidity.setText(String.valueOf(MathKit.round(value)));
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void onPressureChanged(final float value) {
-        arcViewPressure.setProgress(value / Constants.MEASURED_PRESSURE_MAX);
-        textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, value))));
-    }
-
-    private void onAirQualityChanged(final float value) {
-        final Pair<String, Integer> pair = convertIAQValueToLabelAndColor(value);
-
-        textViewIAQ.setText(pair.first);
-        arcViewIAQ.setProgressColor(pair.second);
-        arcViewIAQ.setProgress((500.0f - value) / 500.0f);
-    }
-
-    // Calculate pitch, roll, and heading.
-    // Pitch/roll calculations take from this app note:
-    // http://cache.freescale.com/files/sensors/doc/app_note/AN3461.pdf?fpsp=1
-    // Heading calculations taken from this app note:
-    // http://www51.honeywell.com/aero/common/documents/myaerospacecatalog-documents/Defense_Brochures-documents/Magnetic__Literature_Application_notes-documents/AN203_Compass_Heading_Using_Magnetometers.pdf
-    // The LSM9DS1's mag x and y axes are opposite to the accelerometer,
-    // so my, mx are substituted for each other.
-    // Pay attention what the position of the sensor is ato its hardcoded axes, hence the index shuffle.
-    private void onMotionChanged(final float[] acceleration, final float[] angularVelocity, final float[] magneticField) {
-        final double ax = acceleration[0];
-        final double ay = acceleration[2];
-        final double az = acceleration[1]; //možda minus
-//
-//        final double mx = -magneticField[2];
-//        final double my = -magneticField[0];
-//        final double mz = magneticField[1];
-//
-//        double roll = Math.atan2(ay, az);
-//
-//        double pitch = Math.atan2(-ax, Math.sqrt(Math.pow(ay, 2) + Math.pow(az, 2)));
-//
-//        double heading;
-//        if (my == 0) {
-//            heading = (mx < 0) ? Math.PI : 0;
-//        } else {
-//            heading = Math.atan2(mx, my);
-//        }
-//
-//        heading -= Constants.DECLINATION * Math.PI / 180;
-//
-//        if (heading > Math.PI) {
-//            heading -= (2 * Math.PI);
-//        } else if (heading < -Math.PI) {
-//            heading += (2 * Math.PI);
-//        } else if (heading < 0) {
-//            heading += 2 * Math.PI;
-//        }
-//
-//        // Convert everything from radians to degrees:
-//        heading *= 180.0 / Math.PI;
-//        pitch *= 180.0 / Math.PI;
-//        roll *= 180.0 / Math.PI;
-
-        //Peak ground acceleration calculation
-        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az + SensorManager.GRAVITY_EARTH, 2)), 19.61330000);
-        arcViewMotion.setProgress(value / 19.61330000f); //TODO: This hardcoded value must be set according to selected unit value for acceleration in Settings
-        textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));
-    }
-
     private void setFormatClock() {
         textViewClock.setTimeZone(dateTimeZone.toString());
         if (formatClock == Constants.CLOCK_MODE_12H) {
@@ -396,7 +392,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void data() {
-        presenter.observeDataChanged(getContext());
+        presenter.observeTemperatureChanged(getContext());
+        presenter.observePressureChanged(getContext());
+        presenter.observeHumidityChanged(getContext());
+        presenter.observeAirQualityChanged(getContext());
+        presenter.observeAccelerationChanged(getContext());
         presenter.settings(realm);
     }
 

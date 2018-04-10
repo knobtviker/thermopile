@@ -5,21 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
-import com.knobtviker.thermopile.data.models.presentation.Atmosphere;
+import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerThresholdDataComponent;
+import com.knobtviker.thermopile.domain.repositories.PeripheralsRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
 import io.reactivex.android.MainThreadDisposable;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -32,6 +30,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
     private final MainContract.View view;
 
+    private final PeripheralsRepository peripheralsRepository;
     private final SettingsRepository settingsRepository;
     private final ThresholdRepository thresholdRepository;
 
@@ -42,6 +41,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         super(view);
 
         this.view = view;
+        this.peripheralsRepository = DaggerPeripheralsDataComponent.create().repository();
         this.settingsRepository = DaggerSettingsDataComponent.create().repository();
         this.thresholdRepository = DaggerThresholdDataComponent.create().repository();
     }
@@ -85,40 +85,64 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     }
 
     @Override
-    public void observeDataChanged(@NonNull Context context) {
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(String.format("%s.%s", context.getPackageName(), Constants.ACTION_NEW_DATA));
-        
+    public void observeTemperatureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable.defer(() ->
-                Observable.create((ObservableEmitter<Atmosphere> emitter) -> {
-                    final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
-                    final BroadcastReceiver receiver = new BroadcastReceiver() {
-
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            if (intent.hasExtra(Constants.KEY_ATMOSPHERE)) {
-                                emitter.onNext(intent.getParcelableExtra(Constants.KEY_ATMOSPHERE));
-                            } else {
-                                emitter.onError(new NoSuchFieldException());
-                            }
-                        }
-                    };
-
-                    localBroadcastManager.registerReceiver(receiver, filter);
-
-                    emitter.setDisposable(new MainThreadDisposable() {
-                        @Override
-                        protected void onDispose() {
-                            localBroadcastManager.unregisterReceiver(receiver);
-
-                            dispose();
-                        }
-                    });
-                })
-            )
+            Observable
+                .defer(() -> peripheralsRepository.observeTemperature(context))
                 .subscribe(
-                    view::onDataChanged,
+                    view::onTemperatureChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observePressureChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observePressure(context))
+                .subscribe(
+                    view::onPressureChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observeHumidityChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeHumidity(context))
+                .subscribe(
+                    view::onHumidityChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observeAirQualityChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeAirQuality(context))
+                .subscribe(
+                    view::onAirQualityChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observeAccelerationChanged(@NonNull Context context) {
+        compositeDisposable.add(
+            Observable
+                .defer(() -> peripheralsRepository.observeAcceleration(context))
+                .subscribe(
+                    view::onAccelerationChanged,
                     this::error,
                     this::completed
                 )

@@ -7,9 +7,26 @@ package com.knobtviker.thermopile.presentation.utils;
 public class Constants {
     public static final int REQUEST_CODE_BLUETOOTH_DISCOVERABILITY = 8008;
 
-    public static final String ACTION_NEW_DATA = "ACTION_NEW_DATA";
+    public static final String ACTION_NEW_TEMPERATURE = "ACTION_NEW_TEMPERATURE";
+    public static final String ACTION_NEW_PRESSURE = "ACTION_NEW_PRESSURE";
+    public static final String ACTION_NEW_ALTITUDE = "ACTION_NEW_ALTITUDE";
+    public static final String ACTION_NEW_HUMIDITY = "ACTION_NEW_HUMIDITY";
+    public static final String ACTION_NEW_AIR_QUALITY = "ACTION_NEW_AIR_QUALITY";
+    public static final String ACTION_NEW_LUMINOSITY = "ACTION_NEW_LUMINOSITY";
+    public static final String ACTION_NEW_ACCELERATION = "ACTION_NEW_ACCELERATION";
+    public static final String ACTION_NEW_ANGULAR_VELOCITY = "ACTION_NEW_ANGULAR_VELOCITY";
+    public static final String ACTION_NEW_MAGNETIC_FIELD = "ACTION_NEW_MAGNETIC_FIELD";
 
-    public static final String KEY_ATMOSPHERE = "key_atmosphere";
+    public static final String KEY_TEMPERATURE = "key_temperature";
+    public static final String KEY_PRESSURE = "key_pressure";
+    public static final String KEY_ALTITUDE = "key_pressure";
+    public static final String KEY_HUMIDITY = "key_humidity";
+    public static final String KEY_AIR_QUALITY = "key_air_quality";
+    public static final String KEY_LUMINOSITY = "key_luminosity";
+    public static final String KEY_ACCELERATION = "key_acceleration";
+    public static final String KEY_ANGULAR_VELOCITY = "key_angular_velocity";
+    public static final String KEY_MAGNETIC_FIELD = "key_magnetic_field";
+
     public static final String KEY_DAY = "key_day";
     public static final String KEY_START_MINUTE = "key_start_minute";
     public static final String KEY_MAX_WIDTH = "key_max_width";

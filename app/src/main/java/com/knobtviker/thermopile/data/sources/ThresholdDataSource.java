@@ -22,5 +22,7 @@ public interface ThresholdDataSource {
         RealmResults<Threshold> loadById(@NonNull final Realm realm, final long thresholdId);
 
         void save(@NonNull final Threshold item);
+
+        void removeById(final long id);
     }
 }

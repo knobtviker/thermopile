@@ -5,16 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
-import com.knobtviker.thermopile.data.models.local.Acceleration;
-import com.knobtviker.thermopile.data.models.local.AirQuality;
-import com.knobtviker.thermopile.data.models.local.Altitude;
-import com.knobtviker.thermopile.data.models.local.AngularVelocity;
-import com.knobtviker.thermopile.data.models.local.Humidity;
-import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
-import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
@@ -35,18 +27,28 @@ public interface ApplicationContract {
 
         void onPeripherals(@NonNull final RealmResults<PeripheralDevice> peripheralDevices);
 
-        void onTick();
-
-        void onMinuteTick();
-
         void showScreensaver();
     }
 
     interface Presenter extends BasePresenter {
 
-        void tick();
+        void observeTemperatureChanged(@NonNull final Context context);
 
-        void observeMinuteTick(@NonNull final Context context);
+        void observePressureChanged(@NonNull final Context context);
+
+        void observeAltitudeChanged(@NonNull final Context context);
+
+        void observeHumidityChanged(@NonNull final Context context);
+
+        void observeAirQualityChanged(@NonNull final Context context);
+
+        void observeLuminosityChanged(@NonNull final Context context);
+
+        void observeAccelerationChanged(@NonNull final Context context);
+
+        void observeAngularVelocityChanged(@NonNull final Context context);
+
+        void observeMagneticFieldChanged(@NonNull final Context context);
 
         void createScreensaver();
 
@@ -65,21 +67,5 @@ public interface ApplicationContract {
         RealmResults<PeripheralDevice> defaultSensors(@NonNull final Realm realm);
 
         void saveDefaultSensors(@NonNull final List<PeripheralDevice> foundSensors);
-
-        void saveTemperature(@NonNull final List<Temperature> items);
-
-        void savePressure(@NonNull final List<Pressure> items);
-
-        void saveHumidity(@NonNull final List<Humidity> items);
-
-        void saveAltitude(@NonNull final List<Altitude> items);
-
-        void saveAirQuality(@NonNull final List<AirQuality> items);
-
-        void saveAccelerations(@NonNull final List<Acceleration> items);
-
-        void saveAngularVelocities(@NonNull final List<AngularVelocity> items);
-
-        void saveMagneticFields(@NonNull final List<MagneticField> items);
     }
 }

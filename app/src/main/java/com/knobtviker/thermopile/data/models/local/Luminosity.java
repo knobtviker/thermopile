@@ -9,14 +9,14 @@ import io.realm.annotations.Index;
  * Created by bojan on 27/12/2017.
  */
 
-public class Humidity extends RealmObject implements SingleValue {
+public class Luminosity extends RealmObject implements SingleValue {
 
-    public Humidity(final long timestamp, final float value) {
+    public Luminosity(final long timestamp, final float value) {
         timestamp(timestamp);
         value(value);
     }
 
-    public Humidity(){}
+    public Luminosity(){}
 
     @Index
     private long timestamp;
