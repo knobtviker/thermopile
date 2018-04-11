@@ -27,14 +27,10 @@ import io.realm.RealmConfiguration;
 
 public class Database {
 
-//    @Nullable
-//    private static RealmConfiguration onDiskRealmConfig;
-
     //TODO: Enable encryption
     public static void init(@NonNull final Context context) {
         Realm.init(context);
 
-//        buildRealmInMemory();
         buildRealmOnDisk();
     }
 
@@ -42,31 +38,12 @@ public class Database {
         return Realm.getDefaultInstance();
     }
 
-//    public static Realm getPersistentInstance() {
-//        return Realm.getInstance(onDiskRealmConfig);
-//    }
-
-    private static void buildRealmInMemory() {
-        final RealmConfiguration configuration = new RealmConfiguration.Builder()
-            .inMemory()
-            .name(BuildConfig.MEMORY_DATABASE_NAME)
-            .schemaVersion(BuildConfig.DATABASE_VERSION)
-//            .deleteRealmIfMigrationNeeded()
-//            .initialData(realm -> {
-//                realm.insert(defaultSettings());
-//                realm.insert(mockThresholds());
-//            })
-            .build();
-
-        Realm.setDefaultConfiguration(configuration);
-    }
-
     private static void buildRealmOnDisk() {
         final RealmConfiguration configuration = new RealmConfiguration.Builder()
             .name(BuildConfig.DATABASE_NAME)
             .schemaVersion(BuildConfig.DATABASE_VERSION)
 //            .deleteRealmIfMigrationNeeded()
-            .compactOnLaunch(CompactCallback.create())
+//            .compactOnLaunch(CompactCallback.create())
             .initialData(realm -> {
                 realm.insert(defaultSettings());
                 realm.insert(defaultPeripherals());

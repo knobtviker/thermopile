@@ -44,7 +44,7 @@ import io.realm.RealmResults;
 
 public class PeripheralsRepository extends AbstractRepository {
 
-    private static final int BATCH_SIZE = 1000;
+    private static final int BATCH_SIZE = 100;
 
     @Inject
     PeripheralLocalDataSource peripheralLocalDataSource;
@@ -83,118 +83,130 @@ public class PeripheralsRepository extends AbstractRepository {
 
     public Observable<Float> observeTemperature(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_TEMPERATURE, Constants.KEY_TEMPERATURE)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<Float> observePressure(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_PRESSURE, Constants.KEY_PRESSURE)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<Float> observeHumidity(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_HUMIDITY, Constants.KEY_HUMIDITY)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<Float> observeAirQuality(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_AIR_QUALITY, Constants.KEY_AIR_QUALITY)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<float[]> observeAcceleration(@NonNull final Context context) {
         return observeCartesianValue(context, Constants.ACTION_NEW_ACCELERATION, Constants.KEY_ACCELERATION)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<List<Temperature>> observeTemperatureBuffered(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_TEMPERATURE, Constants.KEY_TEMPERATURE)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .map(value -> new Temperature(DateTimeUtils.currentTimeMillis(), value))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<List<Pressure>> observePressureBuffered(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_PRESSURE, Constants.KEY_PRESSURE)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .map(value -> new Pressure(DateTimeUtils.currentTimeMillis(), value))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<List<Altitude>> observeAltitudeBuffered(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_ALTITUDE, Constants.KEY_ALTITUDE)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .map(value -> new Altitude(DateTimeUtils.currentTimeMillis(), value))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<List<Humidity>> observeHumidityBuffered(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_HUMIDITY, Constants.KEY_HUMIDITY)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .map(value -> new Humidity(DateTimeUtils.currentTimeMillis(), value))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<List<AirQuality>> observeAirQualityBuffered(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_AIR_QUALITY, Constants.KEY_AIR_QUALITY)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .map(value -> new AirQuality(DateTimeUtils.currentTimeMillis(), value))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<List<Luminosity>> observeLuminosityBuffered(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_LUMINOSITY, Constants.KEY_LUMINOSITY)
-            .subscribeOn(schedulerProvider.computation)
+            .subscribeOn(schedulerProvider.io)
             .distinctUntilChanged()
             .map(value -> new Luminosity(DateTimeUtils.currentTimeMillis(), value))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<List<Acceleration>> observeAccelerationBuffered(@NonNull final Context context) {
         return observeCartesianValue(context, Constants.ACTION_NEW_ACCELERATION, Constants.KEY_ACCELERATION)
-            .subscribeOn(schedulerProvider.computation)
-            .distinctUntilChanged((floatsOld, floatsNew) -> floatsOld[0] == floatsNew[0] && floatsOld[1] == floatsNew[1] && floatsOld[2] == floatsNew[2])
+            .subscribeOn(schedulerProvider.io)
+            .distinctUntilChanged((floatsOld, floatsNew) -> {
+                final double valueOld = Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2));
+                final double valueNew = Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2));
+                return valueOld == valueNew;
+            })
             .map(values -> new Acceleration(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<List<AngularVelocity>> observeAngularVelocityBuffered(@NonNull final Context context) {
         return observeCartesianValue(context, Constants.ACTION_NEW_ANGULAR_VELOCITY, Constants.KEY_ANGULAR_VELOCITY)
-            .subscribeOn(schedulerProvider.computation)
-            .distinctUntilChanged((floatsOld, floatsNew) -> floatsOld[0] == floatsNew[0] && floatsOld[1] == floatsNew[1] && floatsOld[2] == floatsNew[2])
+            .subscribeOn(schedulerProvider.io)
+            .distinctUntilChanged((floatsOld, floatsNew) -> {
+                final double valueOld = Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2));
+                final double valueNew = Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2));
+                return valueOld == valueNew;
+            })
             .map(values -> new AngularVelocity(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<List<MagneticField>> observeMagneticFieldBuffered(@NonNull final Context context) {
         return observeCartesianValue(context, Constants.ACTION_NEW_MAGNETIC_FIELD, Constants.KEY_MAGNETIC_FIELD)
-            .subscribeOn(schedulerProvider.computation)
-            .distinctUntilChanged((floatsOld, floatsNew) -> floatsOld[0] == floatsNew[0] && floatsOld[1] == floatsNew[1] && floatsOld[2] == floatsNew[2])
+            .subscribeOn(schedulerProvider.io)
+            .distinctUntilChanged((floatsOld, floatsNew) -> {
+                final double valueOld = Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2));
+                final double valueNew = Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2));
+                return valueOld == valueNew;
+            })
             .map(values -> new MagneticField(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
             .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.computation);
+            .observeOn(schedulerProvider.io);
     }
 
     private Observable<Float> observeSingleValue(@NonNull final Context context, @NonNull final String action, @NonNull final String key) {
@@ -228,7 +240,8 @@ public class PeripheralsRepository extends AbstractRepository {
                     dispose();
                 }
             });
-        });
+        })
+            .startWith(0.0f);
     }
 
     private Observable<float[]> observeCartesianValue(@NonNull final Context context, @NonNull final String action, @NonNull final String key) {
@@ -245,7 +258,11 @@ public class PeripheralsRepository extends AbstractRepository {
                     if (intent.hasExtra(key)) {
                         final float[] values = intent.getFloatArrayExtra(key);
 
-                        emitter.onNext(new float[]{normalized(values[0]), normalized(values[1]), normalized(values[2])});
+                        emitter.onNext(new float[]{
+                            normalizedToScale(1, values[0]),
+                            normalizedToScale(1, values[1]),
+                            normalizedToScale(1, values[2])
+                        });
                     } else {
                         emitter.onError(new NoSuchFieldException());
                     }
@@ -262,13 +279,17 @@ public class PeripheralsRepository extends AbstractRepository {
                     dispose();
                 }
             });
-        });
+        })
+            .startWith(new float[]{0.0f, 0.0f, 0.0f});
     }
 
     private float normalized(final float input) {
-        BigDecimal bd = new BigDecimal((double) input);
-        bd = bd.setScale(1, RoundingMode.HALF_UP);
+        return input == 0.0f ? 0.0f : normalizedToScale(0, input);
+    }
 
-        return bd.floatValue();
+    private float normalizedToScale(final int scale, final float input) {
+        return new BigDecimal((double) input)
+            .setScale(scale, RoundingMode.HALF_UP)
+            .floatValue();
     }
 }
