@@ -17,7 +17,6 @@ import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -177,7 +176,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.layout_wifi_connected:
-                Log.i(TAG, "Open WiFiActivity");
+                Timber.i("Open WiFiActivity");
                 break;
         }
     }
@@ -269,7 +268,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
     @Override
     public void onGattConnectionStateChange(@NonNull BluetoothDevice device, int status, int newState) {
-        Log.i(TAG, "onGattConnectionStateChange: " + device.toString() + " status: " + status + " newState: " + newState);
+        Timber.i(String.format("onGattConnectionStateChange: %s status: %d newState: %d", device.toString(), status, newState));
     }
 
     @Override
@@ -286,7 +285,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 //                response = EnvironmentProfile.toByteArray(atmosphere.humidity());
 //                Log.i(TAG, atmosphere.humidity() + "");
             } else {
-                Log.e(TAG, "Invalid Characteristic Read: " + uuid);
+                Timber.e("Invalid Characteristic Read: %s", uuid);
                 gattServer.sendResponse(device, requestId, status, 0, null);
             }
 
@@ -435,7 +434,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         try {
             return InetAddress.getByAddress(ipByteArray).getHostAddress();
         } catch (UnknownHostException ex) {
-            Log.e(TAG, ex.getMessage(), ex);
+            Timber.e(ex);
             return null;
         }
     }

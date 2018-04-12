@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,13 +127,13 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
                 }
                 break;
             case R.id.button_help:
-                Log.i(TAG, "Show HelpActivity");
+                Timber.i("Show HelpActivity");
                 break;
             case R.id.button_feedback:
-                Log.i(TAG, "Show FeedbackActivity");
+                Timber.i("Show FeedbackActivity");
                 break;
             case R.id.button_about:
-                Log.i(TAG, "Show AboutActivity");
+                Timber.i("Show AboutActivity");
                 break;
         }
     }

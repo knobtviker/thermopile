@@ -5,15 +5,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.knobtviker.thermopile.R;
+
+import org.joda.time.DateTimeUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import timber.log.Timber;
 
+//TODO: This needs to be finished and made as JSON logger.
 public class FileLoggingTree extends Timber.DebugTree {
 
     private static final String TAG = FileLoggingTree.class.getSimpleName();
@@ -37,12 +39,9 @@ public class FileLoggingTree extends Timber.DebugTree {
                 directory.mkdir();
             }
 
-            final String fileNameTimeStamp = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-            final String logTimeStamp = new SimpleDateFormat("E MMM dd yyyy 'at' hh:mm:ss:SSS aaa", Locale.getDefault()).format(new Date());
+            final String filename = String.format("%s.json", context.getString(R.string.app_name));
 
-            final String fileName = fileNameTimeStamp + ".html";
-
-            final File file = new File(String.format("%s/logs%s%s", context.getFilesDir(), File.separator, fileName));
+            final File file = new File(String.format("%s/logs%s%s", context.getFilesDir(), File.separator, filename));
 
             file.createNewFile();
 
@@ -50,7 +49,7 @@ public class FileLoggingTree extends Timber.DebugTree {
 
                 final OutputStream fileOutputStream = new FileOutputStream(file, true);
 
-                fileOutputStream.write(("<p style=\"background:lightgray;\"><strong style=\"background:lightblue;\">&nbsp&nbsp" + logTimeStamp + " :&nbsp&nbsp</strong>&nbsp&nbsp" + message + "</p>").getBytes());
+                fileOutputStream.write(("<p style=\"background:lightgray;\"><strong style=\"background:lightblue;\">&nbsp&nbsp" + DateTimeUtils.currentTimeMillis() + " :&nbsp&nbsp</strong>&nbsp&nbsp" + message + "</p>").getBytes());
                 fileOutputStream.close();
 
             }

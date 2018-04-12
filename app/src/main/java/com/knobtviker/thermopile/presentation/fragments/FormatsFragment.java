@@ -54,7 +54,7 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         return inflater.inflate(R.layout.fragment_formats, container, false);
@@ -100,7 +100,9 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (spinnerFormatDate.isEnabled() && spinnerAdapterDate != null && !TextUtils.isEmpty(spinnerAdapterDate.getItem(i))) {
                     formatDate = spinnerAdapterDate.getItem(i);
-                    presenter.saveFormatDate(settingsId, spinnerAdapterDate.getItem(i));
+                    if (!TextUtils.isEmpty(formatDate)) {
+                        presenter.saveFormatDate(settingsId, formatDate);
+                    }
                 }
             }
 
