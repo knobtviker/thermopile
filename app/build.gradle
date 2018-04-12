@@ -70,11 +70,19 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:gridlayout-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.bignerdranch.android:simple-item-decoration:1.0.0'
+    implementation('com.philliphsu:bottomsheetpickers:2.4.1') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'gridlayout-v7'
+    }
+    compile 'com.xw.repo:bubbleseekbar:3.17'
     //other
+    implementation 'com.jakewharton.timber:timber:4.7.0'
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.uphyca:stetho_realm:2.2.2'
     implementation 'com.bugfender.sdk:android:1.0.5'

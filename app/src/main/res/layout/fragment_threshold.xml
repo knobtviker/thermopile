@@ -67,149 +67,155 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingTop="@dimen/margin_default"
-        android:paddingBottom="@dimen/margin_default"
-        android:paddingLeft="@dimen/margin_default"
-        android:paddingRight="@dimen/margin_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_temperature"
-            android:layout_width="0dp"
-            android:layout_height="?attr/listPreferredItemHeightSmall"
+        <TextView
+            android:id="@+id/textview_title_temperature"
+            style="@style/TextAppearance.Section"
+            android:text="Temperature"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <TextView
-                android:id="@+id/textview_temperature"
-                style="@style/TextAppearance.Item.ThresholdTemperature"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toStartOf="parent"
+        <!--<SeekBar-->
+            <!--android:id="@+id/seekbar_temperature"-->
+            <!--style="@style/Widget.AppCompat.SeekBar.Discrete"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_marginLeft="@dimen/margin_default"-->
+            <!--android:layout_marginRight="@dimen/margin_default"-->
+            <!--android:layout_height="?attr/listPreferredItemHeightSmall"-->
+            <!--android:layout_marginTop="@dimen/margin_small"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@id/textview_title_temperature"-->
+            <!--android:paddingLeft="0dp"-->
+            <!--android:paddingRight="0dp"/>-->
+
+        <com.xw.repo.BubbleSeekBar
+            android:id="@+id/seekbar_temperature"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_temperature"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:bsb_bubble_color="@color/blue_500"
+            app:bsb_bubble_text_color="@color/yellow_500"
+            app:bsb_max="50.0"
+            app:bsb_min="-50"
+            app:bsb_progress="0"
+            app:bsb_second_track_color="@color/red_500"
+            app:bsb_section_count="5"
+            app:bsb_section_text_position="sides"
+            app:bsb_show_progress_in_float="true"
+            app:bsb_show_section_mark="true"
+            app:bsb_show_section_text="true"
+            app:bsb_show_thumb_text="true"
+            app:bsb_track_color="@color/green_500"/>
+
+        <View
+            android:id="@+id/divider_temperature"
+            style="@style/Widget.Divider.Settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/seekbar_temperature"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_time"
+            android:layout_width="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_temperature"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_split"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="30 °C"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_time_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_temperature">
-
-            <TextView
-                android:id="@+id/textview_title_time"
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time"
-                android:textAllCaps="true"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintGuide_percent="0.5"
+                android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_timepicker"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_time_title">
-
-            <TimePicker
-                android:id="@+id/timepicker_start"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:timePickerMode="spinner"
-                app:layout_constraintEnd_toStartOf="@+id/timepicker_end"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TimePicker
-                android:id="@+id/timepicker_end"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:timePickerMode="spinner"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/timepicker_start"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_temperature_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_xsmall"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_timepicker">
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
 
             <TextView
-                android:id="@+id/textview_title_temperature"
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Temperature"
-                android:textAllCaps="true"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/textview_time_start"
+                style="@style/TextAppearance.Section"
+                android:text="Start time"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintEnd_toStartOf="@+id/button_time_start"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <Button
+                android:id="@+id/button_time_start"
+                tools:text="14:28"
+                style="@style/Button.Borderless.Colored"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintEnd_toStartOf="@id/guideline_split"
+                app:layout_constraintStart_toEndOf="@id/textview_time_start"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/textview_time_end"
+                style="@style/TextAppearance.Section"
+                android:text="End time"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/guideline_split"
+                app:layout_constraintStart_toEndOf="@+id/button_time_end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <Button
+                android:id="@+id/button_time_end"
+                tools:text="23:42"
+                style="@style/Button.Borderless.Colored"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/textview_time_end"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 
-        <SeekBar
-            android:id="@+id/arc_temperature"
-            style="@style/Widget.AppCompat.SeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/listPreferredItemHeightSmall"
-            android:layout_marginTop="@dimen/margin_small"
+        <View
+            android:id="@+id/divider_time"
+            style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_temperature_title"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:progressDrawable="@drawable/shape_background_seekbar_linear"/>
+            app:layout_constraintTop_toBottomOf="@id/layout_time"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_color_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
+        <TextView
+            android:id="@+id/textview_title_color"
+            style="@style/TextAppearance.Section"
+            android:text="Color"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/arc_temperature">
-
-            <TextView
-                android:id="@+id/textview_title_color"
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Color"
-                android:textAllCaps="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-        </android.support.constraint.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@id/divider_time"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_colors"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_color_title"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_color"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"/>
+
+        <View
+            android:id="@+id/divider_color"
+            style="@style/Widget.Divider.Settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerview_colors"/>
 
     </android.support.constraint.ConstraintLayout>
 

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ import org.joda.time.DateTimeZone;
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -91,7 +91,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     public void onLoad(@NonNull Settings settings) {

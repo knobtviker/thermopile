@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
-import com.knobtviker.thermopile.data.sources.raw.RelayRawDataSource;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
@@ -37,6 +35,7 @@ import org.joda.time.DateTimeZone;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.realm.RealmResults;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 09/06/2017.
@@ -174,7 +173,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     @SuppressLint("SetTextI18n")
@@ -295,14 +294,14 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onActionDownClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.floatingactionbutton_down:
-                RelayRawDataSource.getInstance()
-                    .on()
-                    .subscribe();
+//                RelayRawDataSource.getInstance()
+//                    .on()
+//                    .subscribe();
                 break;
             case R.id.floatingactionbutton_up:
-                RelayRawDataSource.getInstance()
-                    .off()
-                    .subscribe();
+//                RelayRawDataSource.getInstance()
+//                    .off()
+//                    .subscribe();
                 break;
             case R.id.button_charts:
                 //TBD...

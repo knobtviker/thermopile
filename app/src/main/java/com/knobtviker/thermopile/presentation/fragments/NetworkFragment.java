@@ -44,6 +44,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -141,7 +142,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     @Override

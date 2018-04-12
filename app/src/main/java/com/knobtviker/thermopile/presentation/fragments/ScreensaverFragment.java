@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,10 @@ import com.knobtviker.thermopile.presentation.utils.MathKit;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.Objects;
+
 import butterknife.BindView;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -97,7 +99,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public void onResume() {
         data();
 
-        getView().setKeepScreenOn(true);
+        Objects.requireNonNull(getView()).setKeepScreenOn(true);
 
         super.onResume();
     }
@@ -106,7 +108,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public void onPause() {
         super.onPause();
 
-        getView().setKeepScreenOn(false);
+        Objects.requireNonNull(getView()).setKeepScreenOn(false);
     }
 
     @Override
@@ -116,7 +118,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     @SuppressLint("SetTextI18n")

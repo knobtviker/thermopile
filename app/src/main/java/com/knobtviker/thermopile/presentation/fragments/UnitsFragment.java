@@ -3,7 +3,6 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import com.knobtviker.thermopile.presentation.presenters.UnitsPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import butterknife.BindView;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -93,7 +93,7 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     public void onLoad(@NonNull Settings settings) {

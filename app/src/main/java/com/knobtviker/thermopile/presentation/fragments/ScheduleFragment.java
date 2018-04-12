@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +35,7 @@ import java.util.stream.IntStream;
 import butterknife.BindViews;
 import butterknife.OnClick;
 import io.realm.RealmResults;
+import timber.log.Timber;
 
 import static android.support.constraint.ConstraintSet.BOTTOM;
 import static android.support.constraint.ConstraintSet.START;
@@ -106,7 +106,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     @Override

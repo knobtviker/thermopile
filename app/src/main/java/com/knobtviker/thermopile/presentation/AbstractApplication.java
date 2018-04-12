@@ -14,9 +14,12 @@ import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
+import com.knobtviker.thermopile.presentation.utils.FileLoggingTree;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import timber.log.Timber;
 
 
 public abstract class AbstractApplication<P extends BasePresenter> extends Application implements SensorEventListener {
@@ -27,6 +30,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public void onCreate() {
         super.onCreate();
 
+        plantTree();
 //        initCrashlytics();
         initBugfender();
         initJodaTime();
@@ -144,8 +148,8 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     protected abstract void onMagneticFieldChanged(@NonNull final SensorEvent sensorEvent);
 
-    private void initJodaTime() {
-        JodaTimeAndroid.init(this);
+    private void plantTree() {
+        Timber.plant(new FileLoggingTree(this));
     }
 
 //    private void initCrashlytics() {
@@ -157,6 +161,10 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         Bugfender.enableLogcatLogging();
         Bugfender.enableUIEventLogging(this);
         Bugfender.enableCrashReporting();
+    }
+
+    private void initJodaTime() {
+        JodaTimeAndroid.init(this);
     }
 
     private void initDatabase() {

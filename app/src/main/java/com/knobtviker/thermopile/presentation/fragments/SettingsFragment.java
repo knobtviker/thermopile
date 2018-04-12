@@ -23,6 +23,7 @@ import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicat
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -115,7 +116,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     @OnClick({R.id.button_back, R.id.button_help, R.id.button_feedback, R.id.button_about})

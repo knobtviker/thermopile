@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.presentation;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -9,7 +8,6 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 
 import com.google.android.things.device.TimeManager;
 import com.google.common.collect.ImmutableList;
@@ -27,8 +25,8 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.Router;
+import com.knobtviker.thermopile.presentation.utils.factories.IntentFactory;
 import com.knobtviker.thermopile.presentation.utils.predicates.PeripheralDevicePredicate;
 
 import java.io.IOException;
@@ -36,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmResults;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -150,7 +149,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     @Override
@@ -320,57 +319,39 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     private void broadcastTemperature(final float value) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_TEMPERATURE));
-        intent.putExtra(Constants.KEY_TEMPERATURE, value);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.temperature(this, value));
     }
 
     private void broadcastPressure(final float value) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_PRESSURE));
-        intent.putExtra(Constants.KEY_PRESSURE, value);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.pressure(this, value));
     }
 
     private void broadcastAltitude(final float value) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_ALTITUDE));
-        intent.putExtra(Constants.KEY_ALTITUDE, value);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.altitude(this, value));
     }
 
     private void broadcastHumidity(final float value) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_HUMIDITY));
-        intent.putExtra(Constants.KEY_HUMIDITY, value);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.humidity(this, value));
     }
 
     private void broadcastAirQuality(final float value) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_AIR_QUALITY));
-        intent.putExtra(Constants.KEY_AIR_QUALITY, value);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.airQuality(this, value));
     }
 
     private void broadcastLuminosity(final float value) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_LUMINOSITY));
-        intent.putExtra(Constants.KEY_LUMINOSITY, value);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.luminosity(this, value));
     }
 
     private void broadcastAcceleration(final float[] values) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_ACCELERATION));
-        intent.putExtra(Constants.KEY_ACCELERATION, values);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.acceleration(this, values));
     }
 
     private void broadcastAngularVelocity(final float[] values) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_ANGULAR_VELOCITY));
-        intent.putExtra(Constants.KEY_ANGULAR_VELOCITY, values);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.angularVelocity(this, values));
     }
 
     private void broadcastMagneticField(final float[] values) {
-        final Intent intent = new Intent(String.format("%s.%s", getPackageName(), Constants.ACTION_NEW_MAGNETIC_FIELD));
-        intent.putExtra(Constants.KEY_MAGNETIC_FIELD, values);
-        localBroadcastManager.sendBroadcast(intent);
+        localBroadcastManager.sendBroadcast(IntentFactory.magneticField(this, values));
     }
 
     private boolean isThingsDevice(@NonNull final Context context) {

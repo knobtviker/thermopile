@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindViews;
 import io.realm.RealmResults;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -78,7 +78,7 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
 
     @Override
     public void showError(@NonNull Throwable throwable) {
-        Log.e(TAG, throwable.getMessage(), throwable);
+        Timber.e(throwable);
     }
 
     @Override
