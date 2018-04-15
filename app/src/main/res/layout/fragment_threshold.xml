@@ -81,21 +81,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <!--<SeekBar-->
-            <!--android:id="@+id/seekbar_temperature"-->
-            <!--style="@style/Widget.AppCompat.SeekBar.Discrete"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_marginLeft="@dimen/margin_default"-->
-            <!--android:layout_marginRight="@dimen/margin_default"-->
-            <!--android:layout_height="?attr/listPreferredItemHeightSmall"-->
-            <!--android:layout_marginTop="@dimen/margin_small"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@id/textview_title_temperature"-->
-            <!--android:paddingLeft="0dp"-->
-            <!--android:paddingRight="0dp"/>-->
-
-        <com.xw.repo.BubbleSeekBar
+        <com.knobtviker.thermopile.presentation.views.DiscreteSeekBar
             android:id="@+id/seekbar_temperature"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,19 +90,29 @@
             android:layout_marginRight="@dimen/margin_default"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:bsb_bubble_color="@color/blue_500"
-            app:bsb_bubble_text_color="@color/yellow_500"
-            app:bsb_max="50.0"
-            app:bsb_min="-50"
-            app:bsb_progress="0"
-            app:bsb_second_track_color="@color/red_500"
-            app:bsb_section_count="5"
-            app:bsb_section_text_position="sides"
-            app:bsb_show_progress_in_float="true"
-            app:bsb_show_section_mark="true"
-            app:bsb_show_section_text="true"
-            app:bsb_show_thumb_text="true"
-            app:bsb_track_color="@color/green_500"/>
+            app:discrete_bubble_color="@color/colorAccent"
+            app:discrete_bubble_text_color="@color/white"
+            app:discrete_max="35.0"
+            app:discrete_min="5.0"
+            app:discrete_progress="0"
+            app:discrete_section_count="30"
+            app:discrete_section_text_position="sides"
+            app:discrete_show_progress_in_float="true"
+            app:discrete_show_section_mark="true"
+            app:discrete_show_section_text="true"
+            app:discrete_show_thumb_text="true"
+            app:discrete_touch_to_seek="true"
+            app:discrete_seek_by_section="true"
+            app:discrete_seek_step_section="true"
+            app:discrete_bubble_text_size="14sp"
+            app:discrete_is_float_type="false"
+            app:discrete_thumb_text_size="14sp"
+            app:discrete_thumb_radius="24dp"
+            app:discrete_thumb_radius_on_dragging="16dp"
+            app:discrete_thumb_color="@color/colorAccent"
+            app:discrete_thumb_text_color="?android:textColorPrimary"
+            app:discrete_track_size="8dp"
+            app:discrete_track_color="?android:textColorSecondary"/>
 
         <View
             android:id="@+id/divider_temperature"

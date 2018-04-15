@@ -20,10 +20,10 @@ import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.ColorCommunicator;
 import com.philliphsu.bottomsheetpickers.time.grid.GridTimePickerDialog;
-import com.xw.repo.BubbleSeekBar;
 
 import org.joda.time.DateTime;
 
@@ -70,7 +70,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     public Button buttonTimeEnd;
 
     @BindView(R.id.seekbar_temperature)
-    public BubbleSeekBar seekBarTemperature;
+    public DiscreteSeekBar seekBarTemperature;
 
     @BindView(R.id.recyclerview_colors)
     public RecyclerView recyclerViewColors;

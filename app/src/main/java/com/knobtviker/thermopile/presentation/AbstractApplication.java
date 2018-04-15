@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -31,6 +32,8 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         super.onCreate();
 
         plantTree();
+
+        surveyMemory();
 //        initCrashlytics();
         initBugfender();
         initJodaTime();
@@ -150,6 +153,13 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     private void plantTree() {
         Timber.plant(new FileLoggingTree(this));
+    }
+
+    private void surveyMemory() {
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        final int memoryClass = activityManager.getMemoryClass();
+
+        Timber.i("Memory class: %d", memoryClass); // 256MB for RPi3
     }
 
 //    private void initCrashlytics() {
