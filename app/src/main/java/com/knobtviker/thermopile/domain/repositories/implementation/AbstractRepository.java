@@ -9,7 +9,7 @@ import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 
 public abstract class AbstractRepository {
 
-    protected SchedulerProvider schedulerProvider;
+    protected final SchedulerProvider schedulerProvider;
 
     protected AbstractRepository() {
         this.schedulerProvider = DaggerSchedulerProviderComponent.create().scheduler();

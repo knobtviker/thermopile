@@ -8,7 +8,6 @@
     <color name="black">#000000</color>
     <color name="white">#fefefe</color>
     <color name="dark_gray">#212121</color>
-    <color name="gray">#303030</color>
     <color name="light_gray">#424242</color>
 
     <color name="arc_temperature">@color/red_500</color>
@@ -16,10 +15,6 @@
     <color name="arc_humidity">@color/blue_500</color>
     <color name="arc_iaq">@color/light_green_500</color>
     <color name="arc_motion">@color/brown_500</color>
-
-    <color name="vanilla">#fff8e1</color>
-    <color name="red">#d32f2f</color>
-    <color name="blue">#1976d2</color>
 
     <color name="red_500">#F44336</color>
     <color name="deep_purple_500">#673AB7</color>

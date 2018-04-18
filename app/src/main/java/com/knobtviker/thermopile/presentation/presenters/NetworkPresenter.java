@@ -33,7 +33,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     private final PeripheralsRepository peripheralsRepository;
     private final SettingsRepository settingsRepository;
 
-    private RxBluetoothManager rxBluetoothManager;
+    private final RxBluetoothManager rxBluetoothManager;
 
     public NetworkPresenter(@NonNull final Context context, @NonNull final NetworkContract.View view) {
         super(view);

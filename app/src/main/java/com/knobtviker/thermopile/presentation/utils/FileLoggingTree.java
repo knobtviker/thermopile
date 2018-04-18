@@ -20,7 +20,7 @@ public class FileLoggingTree extends Timber.DebugTree {
 
     private static final String TAG = FileLoggingTree.class.getSimpleName();
 
-    private Context context;
+    private final Context context;
 
     public FileLoggingTree(Context context) {
         this.context = context;

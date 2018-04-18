@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintSet;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
@@ -40,7 +39,6 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     private final Context context;
 
     private final LayoutInflater layoutInflater;
-    private final int colorTransparent;
     private final ImmutableList<String> days;
 
     private ImmutableList<Interval> emptyDays = ImmutableList.of();
@@ -51,12 +49,12 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         this.context = context;
 
         this.layoutInflater = LayoutInflater.from(context);
-        this.colorTransparent = ContextCompat.getColor(context, android.R.color.transparent);
         this.days = ImmutableList.copyOf(context.getResources().getStringArray(R.array.weekdays));
 
         setEmptyDays();
     }
 
+    @NonNull
     @Override
     public ThresholdLineViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
         return new ThresholdLineViewHolder(layoutInflater.inflate(R.layout.item_threshold_line, null));

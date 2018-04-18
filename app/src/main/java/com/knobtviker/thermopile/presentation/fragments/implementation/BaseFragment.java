@@ -96,11 +96,10 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
 
     private void setupActionBar(@Nullable final Toolbar toolbar, final boolean homeAsUp) {
         final Optional<Toolbar> toolbarOptional = Optional.ofNullable(toolbar);
-        if (toolbarOptional.isPresent()) {
-            final Toolbar toolbarInternal = toolbarOptional.get();
+        toolbarOptional.ifPresent(toolbar1 -> {
 
             final Activity activity = getActivity();
-            activity.setActionBar(toolbarInternal);
+            activity.setActionBar(toolbar1);
 
             final Optional<ActionBar> actionBarOptional = Optional.ofNullable(activity.getActionBar());
             if (actionBarOptional.isPresent()) {
@@ -110,7 +109,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
                 actionBar.setDisplayUseLogoEnabled(false);
                 actionBar.setDisplayShowCustomEnabled(true);
             }
-        }
+        });
     }
 
     protected void bind(@NonNull final Fragment fragment, @NonNull final View view) {

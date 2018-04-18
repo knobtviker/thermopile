@@ -113,21 +113,20 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         setHasOptionsMenu(true);
 
         final Optional<Bundle> argumentsOptional = Optional.ofNullable(getArguments());
-        if (argumentsOptional.isPresent()) {
-            final Bundle arguments = argumentsOptional.get();
-            if (arguments.containsKey(Constants.KEY_DAY)) {
-                day = arguments.getInt(Constants.KEY_DAY, -1);
+        argumentsOptional.ifPresent(bundle -> {
+            if (bundle.containsKey(Constants.KEY_DAY)) {
+                day = bundle.getInt(Constants.KEY_DAY, -1);
             }
-            if (arguments.containsKey(Constants.KEY_START_MINUTE)) {
-                startMinute = arguments.getInt(Constants.KEY_START_MINUTE, -1);
+            if (bundle.containsKey(Constants.KEY_START_MINUTE)) {
+                startMinute = bundle.getInt(Constants.KEY_START_MINUTE, -1);
             }
-            if (arguments.containsKey(Constants.KEY_MAX_WIDTH)) {
-                maxWidth = arguments.getInt(Constants.KEY_MAX_WIDTH, -1);
+            if (bundle.containsKey(Constants.KEY_MAX_WIDTH)) {
+                maxWidth = bundle.getInt(Constants.KEY_MAX_WIDTH, -1);
             }
-            if (arguments.containsKey(Constants.KEY_THRESHOLD_ID)) {
-                thresholdId = arguments.getLong(Constants.KEY_THRESHOLD_ID, -1L);
+            if (bundle.containsKey(Constants.KEY_THRESHOLD_ID)) {
+                thresholdId = bundle.getLong(Constants.KEY_THRESHOLD_ID, -1L);
             }
-        }
+        });
     }
 
     @Override
@@ -211,7 +210,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                 startTimeHour = hourOfDay;
                 startTimeMinute = minute;
                 final String startTime = new DateTime()
-                    .withDayOfWeek(day+1)
+                    .withDayOfWeek(day + 1)
                     .withHourOfDay(startTimeHour)
                     .withMinuteOfHour(startTimeMinute)
                     .toString("HH:mm");
@@ -228,7 +227,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                 endTimeHour = hourOfDay;
                 endTimeMinute = minute;
                 final String endTime = new DateTime()
-                    .withDayOfWeek(day+1)
+                    .withDayOfWeek(day + 1)
                     .withHourOfDay(endTimeHour)
                     .withMinuteOfHour(endTimeMinute)
                     .toString("HH:mm");
@@ -281,13 +280,13 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         gridtimeEnd.setStartTime(threshold.endHour(), threshold.endMinute());
 
         final String startTime = new DateTime()
-            .withDayOfWeek(day+1)
+            .withDayOfWeek(day + 1)
             .withHourOfDay(startTimeHour)
             .withMinuteOfHour(startTimeMinute)
             .toString("HH:mm");
         buttonTimeStart.setText(startTime);
         final String endTime = new DateTime()
-            .withDayOfWeek(day+1)
+            .withDayOfWeek(day + 1)
             .withHourOfDay(endTimeHour)
             .withMinuteOfHour(endTimeMinute)
             .toString("HH:mm");
@@ -304,13 +303,13 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
         gridtimeStart.setStartTime(startHour, startMinute);
         final String startTime = new DateTime()
-            .withDayOfWeek(day+1)
+            .withDayOfWeek(day + 1)
             .withHourOfDay(startHour)
             .withMinuteOfHour(startMinute)
             .toString("HH:mm");
         buttonTimeStart.setText(startTime);
         final String endTime = new DateTime()
-            .withDayOfWeek(day+1)
+            .withDayOfWeek(day + 1)
             .withHourOfDay(startHour)
             .withMinuteOfHour(startMinute)
             .toString("HH:mm");

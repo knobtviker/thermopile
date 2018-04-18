@@ -23,7 +23,6 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.utils.Router;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
-import com.knobtviker.thermopile.presentation.views.listeners.ScheduleListener;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import org.joda.time.DateTime;
@@ -45,7 +44,7 @@ import static android.support.constraint.ConstraintSet.TOP;
  * Created by bojan on 15/06/2017.
  */
 
-public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View, ScheduleListener {
+public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
     public static final String TAG = ScheduleFragment.class.getSimpleName();
 
     @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday, R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
@@ -240,15 +239,5 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
             .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
             .create()
             .show();
-    }
-
-    @Override
-    public void showThreshold(long id) {
-        Router.showThreshold(getContext(), id);
-    }
-
-    @Override
-    public void removeThreshold(long id) {
-        presenter.removeThresholdById(id);
     }
 }

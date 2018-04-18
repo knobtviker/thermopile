@@ -248,9 +248,9 @@ public class PeripheralsRepository extends AbstractRepository {
                             final float[] values = intent.getFloatArrayExtra(key);
 
                             emitter.onNext(new float[]{
-                                normalizedToScale(1, values[0]),
-                                normalizedToScale(1, values[1]),
-                                normalizedToScale(1, values[2])
+                                normalizedToScale(values[0]),
+                                normalizedToScale(values[1]),
+                                normalizedToScale(values[2])
                             });
                         } else {
                             emitter.onError(new NoSuchFieldException());
@@ -273,14 +273,10 @@ public class PeripheralsRepository extends AbstractRepository {
     }
 
     private float normalized(final float input) {
-//        return normalizedToScale(0, input);
         return Math.round(input);
     }
 
-    private float normalizedToScale(final int scale, final float input) {
-//        return input == 0.0f ? 0.0f : new BigDecimal((double) input)
-//            .setScale(scale, RoundingMode.HALF_UP)
-//            .floatValue();
+    private float normalizedToScale(final float input) {
         return Math.round(input * 10) / 10;
     }
 }

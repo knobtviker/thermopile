@@ -43,9 +43,9 @@
             <TextView
                 android:id="@+id/textview_date"
                 style="@style/TextAppearance.Date"
-                android:gravity="center_vertical|left"
-                android:paddingLeft="@dimen/margin_default"
-                android:paddingRight="@dimen/margin_large"
+                android:gravity="center_vertical|start"
+                android:paddingStart="@dimen/margin_default"
+                android:paddingEnd="@dimen/margin_large"
                 app:layout_constraintBottom_toBottomOf="@id/textview_clock"
                 app:layout_constraintEnd_toStartOf="@id/textview_clock"
                 app:layout_constraintStart_toStartOf="parent"
