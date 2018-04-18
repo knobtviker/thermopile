@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.presentation.utils.ColorKit;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -36,7 +37,7 @@ public class ThresholdViewHolder {
     @State
     private int state = State.STATE_DEFAULT;
 
-    private final int color;
+    private final String color;
 
     private final int height;
 
@@ -50,11 +51,11 @@ public class ThresholdViewHolder {
     public ImageButton buttonRemove;
 
 
-    public static ThresholdViewHolder bind(@NonNull final View view, final int color, @NonNull final String value) {
+    public static ThresholdViewHolder bind(@NonNull final View view, @NonNull final String color, @NonNull final String value) {
         return new ThresholdViewHolder(view, color, value);
     }
 
-    private ThresholdViewHolder(@NonNull final View view, final int color, @NonNull final String value) {
+    private ThresholdViewHolder(@NonNull final View view, @NonNull final String color, @NonNull final String value) {
         ButterKnife.bind(this, view);
 
         this.color = color;
@@ -71,7 +72,7 @@ public class ThresholdViewHolder {
         final ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
         shapeDrawable.setIntrinsicHeight(height);
         shapeDrawable.setIntrinsicWidth(height);
-        shapeDrawable.getPaint().setColor(context.getColor(color));
+        shapeDrawable.getPaint().setColor(ColorKit.colorFromString(color));
 
         final float[] radii = {height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f, height / 2.0f};
 

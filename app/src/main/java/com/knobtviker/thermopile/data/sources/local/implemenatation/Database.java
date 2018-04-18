@@ -12,6 +12,7 @@ import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.presentation.utils.ColorKit;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.util.ArrayList;
@@ -31,14 +32,14 @@ public class Database {
     public static void init(@NonNull final Context context) {
         Realm.init(context);
 
-        buildRealmOnDisk();
+        buildRealmOnDisk(context);
     }
 
     public static Realm getDefaultInstance() {
         return Realm.getDefaultInstance();
     }
 
-    private static void buildRealmOnDisk() {
+    private static void buildRealmOnDisk(@NonNull final Context context) {
         final RealmConfiguration configuration = new RealmConfiguration.Builder()
             .name(BuildConfig.DATABASE_NAME)
             .schemaVersion(BuildConfig.DATABASE_VERSION)
@@ -47,7 +48,7 @@ public class Database {
             .initialData(realm -> {
                 realm.insert(defaultSettings());
                 realm.insert(defaultPeripherals());
-                realm.insert(mockThresholds());
+                realm.insert(mockThresholds(context));
             })
             .build();
 
@@ -81,7 +82,7 @@ public class Database {
         );
     }
 
-    private static ImmutableList<Threshold> mockThresholds() {
+    private static ImmutableList<Threshold> mockThresholds(@NonNull final Context context) {
         final List<Threshold> mocks = new ArrayList<>(0);
         IntStream.range(0, 7)
             .forEach(
@@ -91,7 +92,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(10L);
                         mockThreshold.temperature(22);
-                        mockThreshold.color(R.color.blue_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.blue_500)));
                         mockThreshold.startHour(10);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(12);
@@ -103,7 +104,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(11L);
                         mockThreshold.temperature(25);
-                        mockThreshold.color(R.color.red_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.red_500)));
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(22);
@@ -116,7 +117,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(20L);
                         mockThreshold.temperature(23);
-                        mockThreshold.color(R.color.grey_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.grey_500)));
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(11);
@@ -128,7 +129,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(21L);
                         mockThreshold.temperature(24);
-                        mockThreshold.color(R.color.purple_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.purple_500)));
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(23);
@@ -141,7 +142,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(30L);
                         mockThreshold.temperature(21);
-                        mockThreshold.color(R.color.light_green_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.light_green_500)));
                         mockThreshold.startHour(12);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
@@ -153,7 +154,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(31L);
                         mockThreshold.temperature(20);
-                        mockThreshold.color(R.color.pink_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.pink_500)));
                         mockThreshold.startHour(18);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(23);
@@ -165,8 +166,8 @@ public class Database {
                     if (day == 3) {
                         mockThreshold = new Threshold();
                         mockThreshold.id(40L);
-                        mockThreshold.temperature(217);
-                        mockThreshold.color(R.color.light_blue_500);
+                        mockThreshold.temperature(27);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.light_blue_500)));
                         mockThreshold.startHour(8);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
@@ -178,7 +179,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(41L);
                         mockThreshold.temperature(18);
-                        mockThreshold.color(R.color.deep_orange_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.deep_orange_500)));
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(20);
@@ -191,7 +192,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(50L);
                         mockThreshold.temperature(20);
-                        mockThreshold.color(R.color.teal_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.teal_500)));
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(17);
@@ -203,7 +204,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(51L);
                         mockThreshold.temperature(22);
-                        mockThreshold.color(R.color.amber_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.amber_500)));
                         mockThreshold.startHour(17);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(23);
@@ -216,7 +217,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(60L);
                         mockThreshold.temperature(23);
-                        mockThreshold.color(R.color.indigo_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.indigo_500)));
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(20);
@@ -229,7 +230,7 @@ public class Database {
                         mockThreshold = new Threshold();
                         mockThreshold.id(70L);
                         mockThreshold.temperature(24);
-                        mockThreshold.color(R.color.green_500);
+                        mockThreshold.color(ColorKit.colorToString(context.getColor(R.color.green_500)));
                         mockThreshold.startHour(0);
                         mockThreshold.startMinute(0);
                         mockThreshold.endHour(19);

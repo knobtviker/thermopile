@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:foreground="?attr/selectableItemBackgroundBorderless"
+    android:foreground="@drawable/ripple_threshold_color"
     android:layout_width="?attr/listPreferredItemHeightSmall"
     android:layout_height="?attr/listPreferredItemHeightSmall">
 

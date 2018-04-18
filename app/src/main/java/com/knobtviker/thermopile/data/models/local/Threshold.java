@@ -30,7 +30,7 @@ public class Threshold extends RealmObject implements BaseModel {
 
     private int temperature;
 
-    private int color;
+    private String color;
 
     @Override
     public long id() {
@@ -90,11 +90,11 @@ public class Threshold extends RealmObject implements BaseModel {
         this.temperature = temperature;
     }
 
-    public int color() {
+    public String color() {
         return color;
     }
 
-    public void color(final int color) {
+    public void color(final String color) {
         this.color = color;
     }
 }

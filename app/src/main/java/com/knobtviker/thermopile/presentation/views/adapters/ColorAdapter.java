@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.presentation.utils.ColorKit;
 import com.knobtviker.thermopile.presentation.views.viewholders.ColorViewHolder;
 
 /**
@@ -21,22 +22,22 @@ import com.knobtviker.thermopile.presentation.views.viewholders.ColorViewHolder;
 
 public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
-    private final ImmutableList<Integer> colors;
+    private final ImmutableList<String> colors;
 
     private final LayoutInflater layoutInflater;
 
     private final int radius;
 
-    private int selectedColor;
+    private String selectedColor;
 
     public ColorAdapter(@NonNull final Context context) {
         this.layoutInflater = LayoutInflater.from(context);
         this.radius = context.getResources().getDimensionPixelSize(R.dimen.corner_24dp);
 
         final TypedArray colors500TypedArray = context.getResources().obtainTypedArray(R.array.colors_500);
-        final Integer[] colors500 = new Integer[colors500TypedArray.length()];
+        final String[] colors500 = new String[colors500TypedArray.length()];
         for (int i = 0; i < colors500TypedArray.length(); i++) {
-            colors500[i] = colors500TypedArray.getColor(i, 0);
+            colors500[i] = ColorKit.colorToString(colors500TypedArray.getColor(i, 0));
         }
         colors500TypedArray.recycle();
 
@@ -53,7 +54,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ColorViewHolder colorViewHolder, int position) {
-        final int color = colors.get(position);
+        final int color = ColorKit.colorFromString(colors.get(position));
 
         final ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
         shapeDrawable.setIntrinsicHeight(radius*2);
@@ -61,8 +62,8 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
         shapeDrawable.getPaint().setColor(color);
 
         colorViewHolder.backgroundView.setBackground(shapeDrawable);
-        colorViewHolder.imageViewSelected.setVisibility(selectedColor == color ? View.VISIBLE : View.GONE);
-        colorViewHolder.backgroundView.setOnClickListener(view -> setSelectedColor(color));
+        colorViewHolder.imageViewSelected.setVisibility(selectedColor.equalsIgnoreCase(colors.get(position)) ? View.VISIBLE : View.GONE);
+        colorViewHolder.backgroundView.setOnClickListener(view -> setSelectedColor(colors.get(position)));
     }
 
     @Override
@@ -81,11 +82,11 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 //        return colors.get(position);
 //    }
 
-    public int getSelectedColor() {
+    public String getSelectedColor() {
         return selectedColor;
     }
 
-    public void setSelectedColor(final int color) {
+    public void setSelectedColor(@NonNull final String color) {
         selectedColor = color;
 
         notifyDataSetChanged();

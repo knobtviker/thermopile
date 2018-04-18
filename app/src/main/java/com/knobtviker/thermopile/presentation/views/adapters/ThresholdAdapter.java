@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.presentation.views.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintSet;
@@ -68,7 +69,7 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         final Interval interval = pair.second;
 
         if (threshold != null) {
-            holder.viewIndicator.setBackgroundColor(context.getColor(threshold.color()));
+            holder.viewIndicator.setBackgroundColor(Color.parseColor(threshold.color()));
             holder.textViewTemperature.setText(String.valueOf(threshold.temperature()));
         } else {
             holder.viewIndicator.setBackgroundResource(R.drawable.empty_interval_line);
