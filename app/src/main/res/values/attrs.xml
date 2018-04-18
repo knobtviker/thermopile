@@ -33,6 +33,7 @@
     </declare-styleable>
 
     <declare-styleable name="DiscreteSeekBar">
+        <attr name="discrete_unit" format="string"/>
         <attr name="discrete_min" format="float|reference"/> <!--min < max, default: 0.0f-->
         <attr name="discrete_max" format="float|reference"/> <!--min < max, default: 100.0f-->
         <attr name="discrete_progress" format="float|reference"/> <!--real time progress value, default: min-->

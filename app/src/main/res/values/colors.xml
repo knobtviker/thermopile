@@ -49,6 +49,7 @@
     <color name="iaq_401_500">#000000</color>
 
     <array name="colors_500">
+        <item>@color/colorAccent</item>
         <item>@color/red_500</item>
         <item>@color/deep_purple_500</item>
         <item>@color/light_blue_500</item>
@@ -68,6 +69,7 @@
         <item>@color/lime_500</item>
         <item>@color/orange_500</item>
         <item>@color/grey_500</item>
+        <item>@color/black</item>
     </array>
 
     <array name="colors_iaq">

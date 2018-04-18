@@ -85,15 +85,18 @@
             android:id="@+id/seekbar_temperature"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="56dp"
             app:layout_constraintTop_toBottomOf="@id/textview_title_temperature"
             android:layout_marginLeft="@dimen/margin_default"
             android:layout_marginRight="@dimen/margin_default"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:discrete_unit="@string/unit_temperature_celsius"
             app:discrete_bubble_color="@color/colorAccent"
             app:discrete_bubble_text_color="@color/white"
-            app:discrete_max="35.0"
-            app:discrete_min="5.0"
+            app:discrete_bubble_text_size="8sp"
+            app:discrete_max="35"
+            app:discrete_min="5"
             app:discrete_progress="0"
             app:discrete_section_count="30"
             app:discrete_section_text_position="sides"
@@ -104,14 +107,13 @@
             app:discrete_touch_to_seek="true"
             app:discrete_seek_by_section="true"
             app:discrete_seek_step_section="true"
-            app:discrete_bubble_text_size="14sp"
             app:discrete_is_float_type="false"
             app:discrete_thumb_text_size="14sp"
-            app:discrete_thumb_radius="24dp"
-            app:discrete_thumb_radius_on_dragging="16dp"
+            app:discrete_thumb_radius="8dp"
+            app:discrete_thumb_radius_on_dragging="4dp"
             app:discrete_thumb_color="@color/colorAccent"
             app:discrete_thumb_text_color="?android:textColorPrimary"
-            app:discrete_track_size="8dp"
+            app:discrete_track_size="2dp"
             app:discrete_track_color="?android:textColorSecondary"/>
 
         <View
@@ -181,7 +183,7 @@
 
         <View
             android:id="@+id/divider_time"
-            style="@style/Widget.Divider.Settings"
+            style="@style/Widget.Divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_time"/>
@@ -199,19 +201,13 @@
             android:id="@+id/recyclerview_colors"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textview_title_color"
             android:layout_marginLeft="@dimen/margin_default"
             android:layout_marginRight="@dimen/margin_default"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/margin_small"/>
-
-        <View
-            android:id="@+id/divider_color"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recyclerview_colors"/>
 
     </android.support.constraint.ConstraintLayout>
 

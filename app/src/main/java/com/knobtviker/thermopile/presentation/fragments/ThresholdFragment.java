@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.dgreenhalgh.android.simpleitemdecoration.linear.DividerItemDecoration;
+import com.dgreenhalgh.android.simpleitemdecoration.grid.GridDividerItemDecoration;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
@@ -22,7 +22,6 @@ import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
-import com.knobtviker.thermopile.presentation.views.communicators.ColorCommunicator;
 import com.philliphsu.bottomsheetpickers.time.grid.GridTimePickerDialog;
 
 import org.joda.time.DateTime;
@@ -38,7 +37,7 @@ import timber.log.Timber;
  * Created by bojan on 28/10/2017.
  */
 
-public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter> implements ThresholdContract.View, ColorCommunicator {
+public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter> implements ThresholdContract.View {
     public static String TAG = ThresholdFragment.class.getSimpleName();
 
     private int day = -1;
@@ -57,9 +56,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private int endTimeMinute = -1;
 
-    GridTimePickerDialog gridtimeStart;
+    private GridTimePickerDialog gridtimeStart;
 
-    GridTimePickerDialog gridtimeEnd;
+    private GridTimePickerDialog gridtimeEnd;
 
     private ColorAdapter colorAdapter;
 
@@ -142,9 +141,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setupSeekBar();
         setupTimePickers();
         setupRecyclerView();
-        setupSeekBar();
     }
 
     @Override
@@ -179,11 +178,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         getActivity().finish();
     }
 
-    @Override
-    public void onSelectedColor(int color) {
-//        applyColor(color);
-    }
-
     @OnClick({R.id.button_back, R.id.button_save, R.id.button_time_start, R.id.button_time_end})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
@@ -200,6 +194,10 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                 showEndTimePicker();
                 break;
         }
+    }
+
+    private void setupSeekBar() {
+        //TODO: Use newBuilder() to apply Settings, min, max and section count constants
     }
 
     private void setupTimePickers() {
@@ -243,34 +241,13 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             .build();
     }
 
-    private void setupSeekBar() {
-//        seekBarTemperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-////                textViewTemperature.setText(String.format("%s °C", String.valueOf(i))); //TODO: This needs to be calculated with units from Settings
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//                //DO NOTHING
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//                //DO NOTHING
-//            }
-//        });
-    }
-
     private void setupRecyclerView() {
-        colorAdapter = new ColorAdapter(getContext(), this);
+        colorAdapter = new ColorAdapter(getContext());
 
         recyclerViewColors.setHasFixedSize(true);
-        recyclerViewColors.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewColors.setLayoutManager(new GridLayoutManager(getContext(), 7));
         recyclerViewColors.setAdapter(colorAdapter);
-        recyclerViewColors.addItemDecoration(new DividerItemDecoration(ContextCompat.getDrawable(getContext(), R.drawable.divider_horizontal_colors)));
-
-//        applyColor(colorAdapter.getItem(0));
+        recyclerViewColors.addItemDecoration(new GridDividerItemDecoration(ContextCompat.getDrawable(getContext(), R.drawable.divider_horizontal_colors), ContextCompat.getDrawable(getContext(), R.drawable.divider_horizontal_colors), 7));
     }
 
     private void save() {
@@ -316,9 +293,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             .toString("HH:mm");
         buttonTimeEnd.setText(endTime);
 
-//        colorAdapter.setSelectedColor(threshold.color());
-
-//        applyColor(threshold.color());
+        colorAdapter.setSelectedColor(threshold.color());
     }
 
     private void populate(final int startMinuteX, final int maxWidth) {
@@ -341,21 +316,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             .toString("HH:mm");
         buttonTimeEnd.setText(endTime);
     }
-
-//    private void applyColor(final int color) {
-//        final ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
-//        shapeDrawable.setIntrinsicHeight(getResources().getDimensionPixelSize(R.dimen.corner_24dp) * 2);
-//        shapeDrawable.setIntrinsicWidth(getResources().getDimensionPixelSize(R.dimen.corner_24dp) * 2);
-//        shapeDrawable.getPaint().setColor(color);
-//
-//        final GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{color, 0x00000000});
-//        gradientDrawable.setAlpha(211);
-//        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-//        gradientDrawable.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.corner_24dp));
-//
-////        textViewTemperature.setBackground(shapeDrawable);
-////        layoutTemperature.setBackground(gradientDrawable);
-//    }
 
     private void showStartTimePicker() {
         gridtimeStart.show(getActivity().getSupportFragmentManager(), "GridTimePickerDialogStart");

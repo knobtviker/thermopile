@@ -304,7 +304,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //                    .subscribe();
                 break;
             case R.id.button_charts:
-                //TBD...
+                mainCommunicator.showCharts();
 //                Router.bootAnimation(getContext());
                 break;
             case R.id.button_schedule:

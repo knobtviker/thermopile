@@ -49,7 +49,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public static final String TAG = ScheduleFragment.class.getSimpleName();
 
     @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday, R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
-    public List<ConstraintLayout> hourLayouts;
+    public List<ConstraintLayout> weekdayLayouts;
 
     private MainCommunicator mainCommunicator;
 
@@ -118,16 +118,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         populate(thresholds);
     }
 
-    @Override
-    public void showThreshold(long id) {
-        Router.showThreshold(getContext(), id);
-    }
-
-    @Override
-    public void removeThreshold(long id) {
-        presenter.removeThresholdById(id);
-    }
-
     @OnClick({R.id.button_back, R.id.button_add})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
@@ -147,9 +137,9 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         final int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
         IntStream
-            .range(0, hourLayouts.size())
+            .range(0, weekdayLayouts.size())
             .forEach(index ->
-                hourLayouts
+                weekdayLayouts
                     .get(index)
                     .setOnTouchListener(new View.OnTouchListener() {
 
@@ -170,7 +160,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
 
                                 if (Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)) <= touchSlop) {
-                                    Router.showThreshold(getContext(), index, startX, hourLayouts.get(0).getWidth());
+                                    Router.showThreshold(getContext(), index, startX, weekdayLayouts.get(0).getWidth());
                                 }
                             }
                             return true;
@@ -179,25 +169,40 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     }
 
     private void populate(@NonNull final RealmResults<Threshold> thresholds) {
-        hourLayouts.forEach(ViewGroup::removeAllViewsInLayout);
+        weekdayLayouts.forEach(ViewGroup::removeAllViewsInLayout);
 
         final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 
         thresholds
             .forEach(threshold -> {
-                final ConstraintLayout layout = hourLayouts.get(threshold.day());
+                final ConstraintLayout layout = weekdayLayouts.get(threshold.day());
 
                 final View thresholdView = layoutInflater.inflate(R.layout.item_threshold, null);
 
-                ThresholdViewHolder.bind(
+                final ThresholdViewHolder thresholdViewHolder = ThresholdViewHolder.bind(
                     thresholdView,
-                    threshold.id(),
                     threshold.color(),
-                    String.format("%s °C", String.valueOf(threshold.temperature())), //TODO: Fix this hardcoded temperature unit. Use Settings.
-                    this
+                    String.format("%s °C", String.valueOf(threshold.temperature())) //TODO: Fix this hardcoded temperature unit. Use Settings.
                 );
 
                 thresholdView.setId(View.generateViewId());
+
+                thresholdViewHolder.rootLayout.setOnClickListener(v -> {
+                    if (thresholdViewHolder.getState() == ThresholdViewHolder.State.STATE_DEFAULT) {
+                        Router.showThreshold(getContext(), threshold.id());
+                    } else {
+                        thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_DEFAULT);
+                    }
+                });
+                thresholdViewHolder.buttonRemove.setOnClickListener(v -> presenter.removeThresholdById(threshold.id()));
+                thresholdViewHolder.rootLayout.setOnLongClickListener(v -> {
+                    thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_REMOVE);
+                    return true;
+                });
+                thresholdViewHolder.textViewTemperature.setOnLongClickListener(v -> {
+                    thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_REMOVE);
+                    return true;
+                });
 
                 layout.addView(thresholdView);
 
@@ -230,10 +235,20 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
             .setCancelable(true)
             .setSingleChoiceItems(days, -1, (dialogInterface, index) -> {
                 dialogInterface.dismiss();
-                Router.showThreshold(getContext(), index, 0, hourLayouts.get(0).getWidth());
+                Router.showThreshold(getContext(), index, 0, weekdayLayouts.get(0).getWidth());
             })
             .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
             .create()
             .show();
+    }
+
+    @Override
+    public void showThreshold(long id) {
+        Router.showThreshold(getContext(), id);
+    }
+
+    @Override
+    public void removeThreshold(long id) {
+        presenter.removeThresholdById(id);
     }
 }

@@ -8,6 +8,8 @@ public interface MainCommunicator {
 
     void showMain();
 
+    void showCharts();
+
     void showSchedule();
 
     void showSettings();

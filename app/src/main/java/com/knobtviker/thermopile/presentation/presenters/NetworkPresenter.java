@@ -64,8 +64,8 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     @Override
     public void observeTemperatureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository.observeTemperature(context))
+            peripheralsRepository
+                .observeTemperature(context)
                 .subscribe(
                     view::onTemperatureChanged,
                     this::error,
@@ -77,8 +77,8 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     @Override
     public void observePressureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository.observePressure(context))
+            peripheralsRepository
+                .observePressure(context)
                 .subscribe(
                     view::onPressureChanged,
                     this::error,
@@ -90,8 +90,8 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     @Override
     public void observeHumidityChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository.observeHumidity(context))
+            peripheralsRepository
+                .observeHumidity(context)
                 .subscribe(
                     view::onHumidityChanged,
                     this::error,
@@ -103,8 +103,8 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     @Override
     public void observeAirQualityChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository.observeAirQuality(context))
+            peripheralsRepository
+                .observeAirQuality(context)
                 .subscribe(
                     view::onAirQualityChanged,
                     this::error,
@@ -116,8 +116,8 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     @Override
     public void observeAccelerationChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository.observeAcceleration(context))
+             peripheralsRepository
+                 .observeAcceleration(context)
                 .subscribe(
                     view::onAccelerationChanged,
                     this::error,

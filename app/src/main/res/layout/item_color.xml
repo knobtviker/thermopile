@@ -22,11 +22,12 @@
     
     <ImageView
         android:id="@+id/imageview_selected"
-        app:layout_constraintCircle="@id/background_view"
-        app:layout_constraintCircleAngle="45"
-        app:layout_constraintCircleRadius="12dp"
         android:visibility="gone"
-        android:src="@drawable/ic_save"
+        app:layout_constraintTop_toTopOf="@id/background_view"
+        app:layout_constraintBottom_toBottomOf="@id/background_view"
+        app:layout_constraintEnd_toEndOf="@id/background_view"
+        app:layout_constraintStart_toStartOf="@id/background_view"
+        android:src="@drawable/ic_save_white"
         android:layout_width="24dp"
         android:layout_height="24dp"/>
 

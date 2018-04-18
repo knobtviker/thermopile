@@ -24,12 +24,13 @@ import com.google.android.things.bluetooth.BluetoothClassFactory;
 import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.google.android.things.bluetooth.BluetoothProfileManager;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.android.MainThreadDisposable;
+import io.reactivex.disposables.Disposables;
 
 import static android.content.Context.BLUETOOTH_SERVICE;
 
@@ -153,11 +154,13 @@ public class RxBluetoothManager {
      * @return RxJava2 Observable getInstance BluetoothState
      */
     public Observable<Integer> state() {
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-
         return Observable.defer(() ->
             Observable.create(emitter -> {
+                final IntentFilter filter = new IntentFilter();
+                filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
+                final WeakReference<Context> contextWeakReference = new WeakReference<>(context.getApplicationContext());
+
                 final BroadcastReceiver receiver = new BroadcastReceiver() {
 
                     @Override
@@ -166,16 +169,15 @@ public class RxBluetoothManager {
                     }
                 };
 
-                context.registerReceiver(receiver, filter);
+                if (contextWeakReference.get() != null) {
+                    contextWeakReference.get().registerReceiver(receiver, filter);
+                }
 
-                emitter.setDisposable(new MainThreadDisposable() {
-                    @Override
-                    protected void onDispose() {
-                        context.unregisterReceiver(receiver);
-
-                        dispose();
+                emitter.setDisposable(Disposables.fromRunnable(() -> {
+                    if (contextWeakReference.get() != null) {
+                        contextWeakReference.get().unregisterReceiver(receiver);
                     }
-                });
+                }));
             }));
     }
 

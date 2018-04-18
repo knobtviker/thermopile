@@ -26,15 +26,14 @@ import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import org.joda.time.DateTimeUtils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
-import io.reactivex.android.MainThreadDisposable;
+import io.reactivex.disposables.Disposables;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -173,11 +172,7 @@ public class PeripheralsRepository extends AbstractRepository {
     public Observable<List<Acceleration>> observeAccelerationBuffered(@NonNull final Context context) {
         return observeCartesianValue(context, Constants.ACTION_NEW_ACCELERATION, Constants.KEY_ACCELERATION)
             .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged((floatsOld, floatsNew) -> {
-                final double valueOld = Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2));
-                final double valueNew = Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2));
-                return valueOld == valueNew;
-            })
+            .distinctUntilChanged((floatsOld, floatsNew) -> Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2)) == Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2)))
             .map(values -> new Acceleration(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
             .buffer(BATCH_SIZE)
             .observeOn(schedulerProvider.io);
@@ -186,11 +181,7 @@ public class PeripheralsRepository extends AbstractRepository {
     public Observable<List<AngularVelocity>> observeAngularVelocityBuffered(@NonNull final Context context) {
         return observeCartesianValue(context, Constants.ACTION_NEW_ANGULAR_VELOCITY, Constants.KEY_ANGULAR_VELOCITY)
             .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged((floatsOld, floatsNew) -> {
-                final double valueOld = Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2));
-                final double valueNew = Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2));
-                return valueOld == valueNew;
-            })
+            .distinctUntilChanged((floatsOld, floatsNew) -> Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2)) == Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2)))
             .map(values -> new AngularVelocity(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
             .buffer(BATCH_SIZE)
             .observeOn(schedulerProvider.io);
@@ -199,97 +190,97 @@ public class PeripheralsRepository extends AbstractRepository {
     public Observable<List<MagneticField>> observeMagneticFieldBuffered(@NonNull final Context context) {
         return observeCartesianValue(context, Constants.ACTION_NEW_MAGNETIC_FIELD, Constants.KEY_MAGNETIC_FIELD)
             .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged((floatsOld, floatsNew) -> {
-                final double valueOld = Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2));
-                final double valueNew = Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2));
-                return valueOld == valueNew;
-            })
+            .distinctUntilChanged((floatsOld, floatsNew) -> Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2)) == Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2)))
             .map(values -> new MagneticField(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
             .buffer(BATCH_SIZE)
             .observeOn(schedulerProvider.io);
     }
 
     private Observable<Float> observeSingleValue(@NonNull final Context context, @NonNull final String action, @NonNull final String key) {
-        return Observable.create((ObservableEmitter<Float> emitter) -> {
-            final IntentFilter filter = new IntentFilter();
-            filter.addAction(String.format("%s.%s", context.getPackageName(), action));
+        return Observable.defer(() ->
+            Observable.create((ObservableEmitter<Float> emitter) -> {
+                final IntentFilter filter = new IntentFilter();
+                filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
 
-            final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+                final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
 
-            final BroadcastReceiver receiver = new BroadcastReceiver() {
+                final BroadcastReceiver receiver = new BroadcastReceiver() {
 
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.hasExtra(key)) {
-                        final float value = intent.getFloatExtra(key, 0.0f);
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        if (intent.hasExtra(key)) {
+                            final float value = intent.getFloatExtra(key, 0.0f);
 
-                        emitter.onNext(normalized(value));
-                    } else {
-                        emitter.onError(new NoSuchFieldException());
+                            emitter.onNext(normalized(value));
+                        } else {
+                            emitter.onError(new NoSuchFieldException());
+                        }
                     }
+                };
+
+                if (localBroadcastManagerWeakReference.get() != null) {
+                    localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
                 }
-            };
 
-            localBroadcastManager.registerReceiver(receiver, filter);
-
-            emitter.setDisposable(new MainThreadDisposable() {
-                @Override
-                protected void onDispose() {
-                    localBroadcastManager.unregisterReceiver(receiver);
-
-                    dispose();
-                }
-            });
-        })
+                emitter.setDisposable(Disposables.fromRunnable(() -> {
+                    if (localBroadcastManagerWeakReference.get() != null) {
+                        localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
+                    }
+                }));
+            })
+        )
             .startWith(0.0f);
     }
 
     private Observable<float[]> observeCartesianValue(@NonNull final Context context, @NonNull final String action, @NonNull final String key) {
-        return Observable.create((ObservableEmitter<float[]> emitter) -> {
-            final IntentFilter filter = new IntentFilter();
-            filter.addAction(String.format("%s.%s", context.getPackageName(), action));
+        return Observable.defer(() ->
+            Observable.create((ObservableEmitter<float[]> emitter) -> {
+                final IntentFilter filter = new IntentFilter();
+                filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
 
-            final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+                final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
 
-            final BroadcastReceiver receiver = new BroadcastReceiver() {
+                final BroadcastReceiver receiver = new BroadcastReceiver() {
 
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.hasExtra(key)) {
-                        final float[] values = intent.getFloatArrayExtra(key);
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        if (intent.hasExtra(key)) {
+                            final float[] values = intent.getFloatArrayExtra(key);
 
-                        emitter.onNext(new float[]{
-                            normalizedToScale(1, values[0]),
-                            normalizedToScale(1, values[1]),
-                            normalizedToScale(1, values[2])
-                        });
-                    } else {
-                        emitter.onError(new NoSuchFieldException());
+                            emitter.onNext(new float[]{
+                                normalizedToScale(1, values[0]),
+                                normalizedToScale(1, values[1]),
+                                normalizedToScale(1, values[2])
+                            });
+                        } else {
+                            emitter.onError(new NoSuchFieldException());
+                        }
                     }
+                };
+
+                if (localBroadcastManagerWeakReference.get() != null) {
+                    localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
                 }
-            };
 
-            localBroadcastManager.registerReceiver(receiver, filter);
-
-            emitter.setDisposable(new MainThreadDisposable() {
-                @Override
-                protected void onDispose() {
-                    localBroadcastManager.unregisterReceiver(receiver);
-
-                    dispose();
-                }
-            });
-        })
+                emitter.setDisposable(Disposables.fromRunnable(() -> {
+                    if (localBroadcastManagerWeakReference.get() != null) {
+                        localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
+                    }
+                }));
+            })
+        )
             .startWith(new float[]{0.0f, 0.0f, 0.0f});
     }
 
     private float normalized(final float input) {
-        return input == 0.0f ? 0.0f : normalizedToScale(0, input);
+//        return normalizedToScale(0, input);
+        return Math.round(input);
     }
 
     private float normalizedToScale(final int scale, final float input) {
-        return new BigDecimal((double) input)
-            .setScale(scale, RoundingMode.HALF_UP)
-            .floatValue();
+//        return input == 0.0f ? 0.0f : new BigDecimal((double) input)
+//            .setScale(scale, RoundingMode.HALF_UP)
+//            .floatValue();
+        return Math.round(input * 10) / 10;
     }
 }

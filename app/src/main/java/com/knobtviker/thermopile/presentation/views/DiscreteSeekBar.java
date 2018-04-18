@@ -22,7 +22,9 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -55,6 +57,8 @@ public class DiscreteSeekBar extends View {
     }
 
     // Values
+    @Nullable
+    private String unit; // unit
     private float min; // min
     private float max; // max
     private float progress; // real time value
@@ -142,6 +146,7 @@ public class DiscreteSeekBar extends View {
         super(context, attrs, defStyleAttr);
 
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DiscreteSeekBar, defStyleAttr, 0);
+        unit = typedArray.getString(R.styleable.DiscreteSeekBar_discrete_unit);
         min = typedArray.getFloat(R.styleable.DiscreteSeekBar_discrete_min, 0.0f);
         max = typedArray.getFloat(R.styleable.DiscreteSeekBar_discrete_max, 100.0f);
         progress = typedArray.getFloat(R.styleable.DiscreteSeekBar_discrete_progress, min);
@@ -215,7 +220,7 @@ public class DiscreteSeekBar extends View {
 
         // init BubbleView
         bubbleView = new BubbleView(context);
-        bubbleView.setProgressText(isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+        bubbleView.setProgressText(String.format("%s%s", isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()), TextUtils.isEmpty(unit) ? "" : String.format(" %s", unit)));
 
         layoutParams = new WindowManager.LayoutParams();
         layoutParams.gravity = Gravity.START | Gravity.TOP;
@@ -474,7 +479,7 @@ public class DiscreteSeekBar extends View {
         }
         bubbleCenterRawX = calculateCenterRawXofBubbleView();
         bubbleCenterRawSolidY = point[1] - bubbleView.getMeasuredHeight();
-        bubbleCenterRawSolidY -= dp2px(24);
+//        bubbleCenterRawSolidY -= dp2px(2);
 
         final Context context = getContext();
         if (context instanceof Activity) {
@@ -600,9 +605,9 @@ public class DiscreteSeekBar extends View {
 
             if (isFloatType || (isShowProgressInFloat && sectionTextPosition == TextPosition.BOTTOM_SIDES &&
                 progress != min && progress != max)) {
-                canvas.drawText(String.valueOf(getProgressFloat()), thumbCenterX, y_, paint);
+                canvas.drawText(String.format("%s%s", String.valueOf(getProgressFloat()), TextUtils.isEmpty(unit) ? "" : String.format(" %s", unit)), thumbCenterX, y_, paint);
             } else {
-                canvas.drawText(String.valueOf(getProgress()), thumbCenterX, y_, paint);
+                canvas.drawText(String.format("%s%s", String.valueOf(getProgress()), TextUtils.isEmpty(unit) ? "" : String.format(" %s", unit)), thumbCenterX, y_, paint);
             }
         }
 
@@ -745,8 +750,7 @@ public class DiscreteSeekBar extends View {
                             bubbleCenterRawX = calculateCenterRawXofBubbleView();
                             layoutParams.x = (int) (bubbleCenterRawX + 0.5f);
                             windowManager.updateViewLayout(bubbleView, layoutParams);
-                            bubbleView.setProgressText(isShowProgressInFloat ?
-                                String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+                            bubbleView.setProgressText(String.format("%s%s", isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()), TextUtils.isEmpty(unit) ? "" : String.format(" %s", unit)));
                         }
 
                         invalidate();
@@ -910,7 +914,7 @@ public class DiscreteSeekBar extends View {
                     bubbleCenterRawX = calculateCenterRawXofBubbleView();
                     layoutParams.x = (int) (bubbleCenterRawX + 0.5f);
                     windowManager.updateViewLayout(bubbleView, layoutParams);
-                    bubbleView.setProgressText(isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+                    bubbleView.setProgressText(String.format("%s%s", isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()), TextUtils.isEmpty(unit) ? "" : String.format(" %s", unit)));
                 }
 
                 invalidate();
@@ -994,7 +998,7 @@ public class DiscreteSeekBar extends View {
                 }
             })
             .start();
-        bubbleView.setProgressText(isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+        bubbleView.setProgressText(String.format("%s%s", isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()), TextUtils.isEmpty(unit) ? "" : String.format(" %s", unit)));
     }
 
     /**
@@ -1194,7 +1198,7 @@ public class DiscreteSeekBar extends View {
     }
     /////// Api ends ///////////////////////////////////////////////////////////////////////////////
 
-    void config(Builder builder) {
+    void config(@NonNull final Builder builder) {
         min = builder.min;
         max = builder.max;
         progress = builder.progress;
@@ -1243,7 +1247,7 @@ public class DiscreteSeekBar extends View {
         requestLayout();
     }
 
-    public Builder getConfigBuilder() {
+    public Builder newBuilder() {
         if (builder == null) {
             builder = new Builder(this);
         }
@@ -1303,7 +1307,7 @@ public class DiscreteSeekBar extends View {
             super.onRestoreInstanceState(bundle.getParcelable("save_instance"));
 
             if (bubbleView != null) {
-                bubbleView.setProgressText(isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+                bubbleView.setProgressText(String.format("%s%s", isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress()), TextUtils.isEmpty(unit) ? "" : String.format(" %s", unit)));
             }
 
             setProgress(progress);
@@ -1409,7 +1413,10 @@ public class DiscreteSeekBar extends View {
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-            setMeasuredDimension(3 * bubbleRadius, 3 * bubbleRadius);
+            setMeasuredDimension(
+                3 * bubbleRadius,
+                3 * bubbleRadius
+            );
 
             bubbleRectF.set(
                 getMeasuredWidth() / 2f - bubbleRadius,
@@ -1424,11 +1431,11 @@ public class DiscreteSeekBar extends View {
             super.onDraw(canvas);
 
             bubblePath.reset();
-            float x0 = getMeasuredWidth() / 2f;
-            float y0 = getMeasuredHeight() - bubbleRadius / 3f;
+            final float x0 = getMeasuredWidth() / 2f;
+            final float y0 = getMeasuredHeight() - bubbleRadius / 3f;
             bubblePath.moveTo(x0, y0);
-            float x1 = (float) (getMeasuredWidth() / 2f - Math.sqrt(3) / 2f * bubbleRadius);
-            float y1 = 3 / 2f * bubbleRadius;
+            final float x1 = (float) (getMeasuredWidth() / 2f - Math.sqrt(3) / 2f * bubbleRadius);
+            final float y1 = 3 / 2f * bubbleRadius;
             bubblePath.quadTo(
                 x1 - dp2px(2),
                 y1 - dp2px(2),
@@ -1437,7 +1444,7 @@ public class DiscreteSeekBar extends View {
             );
             bubblePath.arcTo(bubbleRectF, 150, 240);
 
-            float x2 = (float) (getMeasuredWidth() / 2f + Math.sqrt(3) / 2f * bubbleRadius);
+            final float x2 = (float) (getMeasuredWidth() / 2f + Math.sqrt(3) / 2f * bubbleRadius);
             bubblePath.quadTo(
                 x2 + dp2px(2), y1 - dp2px(2),
                 x0, y0
@@ -1450,12 +1457,12 @@ public class DiscreteSeekBar extends View {
             bubblePaint.setTextSize(bubbleTextSize);
             bubblePaint.setColor(bubbleTextColor);
             bubblePaint.getTextBounds(bubbleProgressText, 0, bubbleProgressText.length(), bubbleRect);
-            Paint.FontMetrics fm = bubblePaint.getFontMetrics();
-            float baseline = bubbleRadius + (fm.descent - fm.ascent) / 2f - fm.descent;
+            final Paint.FontMetrics fontMetrics = bubblePaint.getFontMetrics();
+            final float baseline = bubbleRadius + (fontMetrics.descent - fontMetrics.ascent) / 2f - fontMetrics.descent;
             canvas.drawText(bubbleProgressText, getMeasuredWidth() / 2f, baseline, bubblePaint);
         }
 
-        void setProgressText(String progressText) {
+        void setProgressText(@NonNull final String progressText) {
             if (progressText != null && !bubbleProgressText.equals(progressText)) {
                 bubbleProgressText = progressText;
                 invalidate();
@@ -1464,6 +1471,7 @@ public class DiscreteSeekBar extends View {
     }
 
     public static class Builder {
+        String unit;
         float min;
         float max;
         float progress;
@@ -1508,6 +1516,11 @@ public class DiscreteSeekBar extends View {
 
         public void build() {
             discreteSeekBar.config(this);
+        }
+
+        public Builder unit(@NonNull final String unit) {
+            this.unit = unit;
+            return this;
         }
 
         public Builder min(final float min) {
@@ -1683,6 +1696,11 @@ public class DiscreteSeekBar extends View {
         public Builder rtl(final boolean rtl) {
             this.rtl = rtl;
             return this;
+        }
+
+
+        public String getUnit() {
+            return unit;
         }
 
         public float getMin() {

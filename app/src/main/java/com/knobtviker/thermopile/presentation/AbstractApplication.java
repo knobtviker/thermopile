@@ -33,7 +33,8 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
         plantTree();
 
-        surveyMemory();
+        memoryClass();
+        memoryInfo();
 //        initCrashlytics();
         initBugfender();
         initJodaTime();
@@ -155,11 +156,19 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         Timber.plant(new FileLoggingTree(this));
     }
 
-    private void surveyMemory() {
+    private void memoryClass() {
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final int memoryClass = activityManager.getMemoryClass();
 
         Timber.i("Memory class: %d", memoryClass); // 256MB for RPi3
+    }
+
+    public void memoryInfo() {
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(memoryInfo);
+
+        Timber.i("Memory info -> Available: %d Total: %d Threshold: %d Is low: %s", memoryInfo.availMem, memoryInfo.totalMem, memoryInfo.threshold, memoryInfo.lowMemory);
     }
 
 //    private void initCrashlytics() {
