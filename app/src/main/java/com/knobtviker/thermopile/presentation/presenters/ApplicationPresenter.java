@@ -1,12 +1,14 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
 import android.content.Context;
+import android.hardware.Sensor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Display;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
+import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680;
 import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -55,7 +57,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Nullable
     private Disposable screensaverDisposable;
 
-    public ApplicationPresenter(@NonNull final ApplicationContract.View view) {
+    public ApplicationPresenter(@NonNull final Context context, @NonNull final ApplicationContract.View view) {
         super(view);
 
         this.view = view;
@@ -280,5 +282,46 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveDefaultSensors(@NonNull List<PeripheralDevice> foundSensors) {
         peripheralsRepository.saveConnected(foundSensors, true);
+    }
+
+    @Override
+    public void observeSensors(@NonNull Context context) {
+        compositeDisposable.add(
+            peripheralsRepository
+                .observeSensors(context)
+                .subscribe(
+                    sensorEvent -> {
+                        switch (sensorEvent.sensor.getType()) {
+                            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                                view.onTemperatureChanged(sensorEvent);
+                                break;
+                            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                                view.onHumidityChanged(sensorEvent);
+                                break;
+                            case Sensor.TYPE_PRESSURE:
+                                view.onPressureChanged(sensorEvent);
+                                break;
+                            case Sensor.TYPE_LIGHT:
+                                view.onLuminosityChanged(sensorEvent);
+                                break;
+                            case Sensor.TYPE_ACCELEROMETER: //[m/s^2]
+                                view.onAccelerationChanged(sensorEvent);
+                                break;
+                            case Sensor.TYPE_GYROSCOPE: //[°/s]
+                                view.onAngularVelocityChanged(sensorEvent);
+                                break;
+                            case Sensor.TYPE_MAGNETIC_FIELD:
+                                view.onMagneticFieldChanged(sensorEvent);
+                                break;
+                            case Sensor.TYPE_DEVICE_PRIVATE_BASE:
+                                if (sensorEvent.sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
+                                    view.onAirQualityChanged(sensorEvent);
+                                    break;
+                                }
+                                break;
+                        }
+                    }
+                )
+        );
     }
 }

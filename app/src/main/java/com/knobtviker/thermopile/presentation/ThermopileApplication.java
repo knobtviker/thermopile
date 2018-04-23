@@ -58,7 +58,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    protected void onTemperatureChanged(@NonNull SensorEvent sensorEvent) {
+    public void onTemperatureChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
@@ -68,7 +68,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    protected void onPressureChanged(@NonNull SensorEvent sensorEvent) {
+    public void onPressureChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
@@ -81,7 +81,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    protected void onHumidityChanged(@NonNull SensorEvent sensorEvent) {
+    public void onHumidityChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
@@ -91,7 +91,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    protected void onAirQualityChanged(@NonNull SensorEvent sensorEvent) {
+    public void onAirQualityChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
@@ -101,7 +101,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    protected void onLuminosityChanged(@NonNull SensorEvent sensorEvent) {
+    public void onLuminosityChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
@@ -113,7 +113,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    protected void onAccelerationChanged(@NonNull SensorEvent sensorEvent) {
+    public void onAccelerationChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
@@ -123,7 +123,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    protected void onAngularVelocityChanged(@NonNull SensorEvent sensorEvent) {
+    public void onAngularVelocityChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
@@ -133,7 +133,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    protected void onMagneticFieldChanged(@NonNull SensorEvent sensorEvent) {
+    public void onMagneticFieldChanged(@NonNull SensorEvent sensorEvent) {
         if (peripherals
             .stream()
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
@@ -178,7 +178,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     private void initPresenter() {
-        presenter = new ApplicationPresenter(this);
+        presenter = new ApplicationPresenter(this,this);
 
         presenter.observeTemperatureChanged(this);
         presenter.observePressureChanged(this);
@@ -207,7 +207,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             return;
         }
 
-        registerSensorCallback();
+        presenter.observeSensors(this);
 
         final List<PeripheralDevice> foundSensors = new ArrayList<>(0);
 

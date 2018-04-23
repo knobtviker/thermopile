@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -21,6 +23,8 @@ import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.sources.local.PeripheralLocalDataSource;
 import com.knobtviker.thermopile.data.sources.raw.PeripheralRawDataSource;
+import com.knobtviker.thermopile.data.sources.raw.rxsensormanager.RxSensorEvent;
+import com.knobtviker.thermopile.data.sources.raw.rxsensormanager.RxSensorManager;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
@@ -31,6 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposables;
@@ -78,6 +83,15 @@ public class PeripheralsRepository extends AbstractRepository {
 
     public void saveEnabled(@NonNull final PeripheralDevice item, final int type, final boolean isEnabled) {
         peripheralLocalDataSource.saveEnabled(item, type, isEnabled);
+    }
+
+    public Flowable<SensorEvent> observeSensors(@NonNull final Context context) {
+        return new RxSensorManager(context)
+            .observeSensors(SensorManager.SENSOR_DELAY_UI)
+            .subscribeOn(schedulerProvider.computation)
+            .filter(RxSensorEvent::hasSensorEvent)
+            .map(RxSensorEvent::getSensorEvent)
+            .observeOn(schedulerProvider.ui);
     }
 
     public Observable<Float> observeTemperature(@NonNull final Context context) {

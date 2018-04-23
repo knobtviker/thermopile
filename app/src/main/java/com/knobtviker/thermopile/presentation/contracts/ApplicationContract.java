@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
 import android.content.Context;
+import android.hardware.SensorEvent;
 import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
@@ -23,6 +24,22 @@ public interface ApplicationContract {
 
     interface View extends BaseView {
 
+        void onTemperatureChanged(@NonNull final SensorEvent sensorEvent);
+
+        void onPressureChanged(@NonNull final SensorEvent sensorEvent);
+
+        void onHumidityChanged(@NonNull final SensorEvent sensorEvent);
+
+        void onAirQualityChanged(@NonNull final SensorEvent sensorEvent);
+
+        void onLuminosityChanged(@NonNull final SensorEvent sensorEvent);
+
+        void onAccelerationChanged(@NonNull final SensorEvent sensorEvent);
+
+        void onAngularVelocityChanged(@NonNull final SensorEvent sensorEvent);
+
+        void onMagneticFieldChanged(@NonNull final SensorEvent sensorEvent);
+
         void onSettings(@NonNull final Settings settings);
 
         void onPeripherals(@NonNull final RealmResults<PeripheralDevice> peripheralDevices);
@@ -31,6 +48,8 @@ public interface ApplicationContract {
     }
 
     interface Presenter extends BasePresenter {
+
+        void observeSensors(@NonNull final Context context);
 
         void observeTemperatureChanged(@NonNull final Context context);
 

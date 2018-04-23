@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -26,7 +27,7 @@ public class ArcView extends View {
     private int height = 0;
 
     @Nullable
-    private final TypedArray typedArray;
+    private TypedArray typedArray;
 
     private float progress = 0.0f;
     private int progressColor = 0;
@@ -39,7 +40,7 @@ public class ArcView extends View {
     public ArcView(Context context) {
         super(context);
 
-        typedArray = null;
+        obtainTypedArray(context, null);
         attributes();
         setup();
     }
@@ -47,8 +48,7 @@ public class ArcView extends View {
     public ArcView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
-        typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ArcView, 0, 0);
-
+        obtainTypedArray(context, attrs);
         attributes();
         setup();
     }
@@ -56,8 +56,7 @@ public class ArcView extends View {
     public ArcView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ArcView, 0, 0);
-
+        obtainTypedArray(context, attrs);
         attributes();
         setup();
     }
@@ -116,6 +115,10 @@ public class ArcView extends View {
 
     public float getProgress() {
         return progress;
+    }
+
+    private void obtainTypedArray(@NonNull final Context context, @Nullable AttributeSet attrs) {
+        typedArray = attrs == null ? null : context.getTheme().obtainStyledAttributes(attrs, R.styleable.ArcView, 0, 0);
     }
 
     private void attributes() {
