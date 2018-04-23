@@ -2,11 +2,8 @@ package com.knobtviker.thermopile.presentation;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.google.android.things.device.TimeManager;
@@ -26,8 +23,6 @@ import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.Router;
-import com.knobtviker.thermopile.presentation.utils.factories.IntentFactory;
-import com.knobtviker.thermopile.presentation.utils.predicates.PeripheralDevicePredicate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,102 +38,11 @@ import timber.log.Timber;
 public class ThermopileApplication extends AbstractApplication<ApplicationContract.Presenter> implements ApplicationContract.View {
     private static final String TAG = ThermopileApplication.class.getSimpleName();
 
-    private LocalBroadcastManager localBroadcastManager;
-
-    private List<PeripheralDevice> peripherals = new ArrayList<>(0);
-
     @Override
     public void onCreate() {
         super.onCreate();
 
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
-
         initPresenter();
-    }
-
-    @Override
-    public void onTemperatureChanged(@NonNull SensorEvent sensorEvent) {
-        if (peripherals
-            .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
-            ) {
-            broadcastTemperature(sensorEvent.values[0]);
-        }
-    }
-
-    @Override
-    public void onPressureChanged(@NonNull SensorEvent sensorEvent) {
-        if (peripherals
-            .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
-            ) {
-            broadcastPressure(sensorEvent.values[0]);
-
-            final float altitudeValue = SensorManager.getAltitude(sensorEvent.values[0], SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
-            broadcastAltitude(altitudeValue);
-        }
-    }
-
-    @Override
-    public void onHumidityChanged(@NonNull SensorEvent sensorEvent) {
-        if (peripherals
-            .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
-            ) {
-            broadcastHumidity(sensorEvent.values[0]);
-        }
-    }
-
-    @Override
-    public void onAirQualityChanged(@NonNull SensorEvent sensorEvent) {
-        if (peripherals
-            .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
-            ) {
-            broadcastAirQuality(sensorEvent.values[Bme680SensorDriver.INDOOR_AIR_QUALITY_INDEX]);
-        }
-    }
-
-    @Override
-    public void onLuminosityChanged(@NonNull SensorEvent sensorEvent) {
-        if (peripherals
-            .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
-            ) {
-            broadcastLuminosity(sensorEvent.values[0]);
-//            TODO: Google dropped Automatic Brightness Mode in DP7. Do your own math with manual mode. Less light == lower screen brightness.
-//            Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0]) + " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
-        }
-    }
-
-    @Override
-    public void onAccelerationChanged(@NonNull SensorEvent sensorEvent) {
-        if (peripherals
-            .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
-            ) {
-            broadcastAcceleration(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
-        }
-    }
-
-    @Override
-    public void onAngularVelocityChanged(@NonNull SensorEvent sensorEvent) {
-        if (peripherals
-            .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
-            ) {
-            broadcastAngularVelocity(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
-        }
-    }
-
-    @Override
-    public void onMagneticFieldChanged(@NonNull SensorEvent sensorEvent) {
-        if (peripherals
-            .stream()
-            .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
-            ) {
-            broadcastMagneticField(new float[]{sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]});
-        }
     }
 
     @Override
@@ -154,11 +58,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     @Override
     public void onSettings(@NonNull Settings settings) {
         AppCompatDelegate.setDefaultNightMode(settings.theme());
-    }
-
-    @Override
-    public void onPeripherals(@NonNull List<PeripheralDevice> peripheralDevices) {
-        this.peripherals = peripheralDevices;
     }
 
     @Override
@@ -178,16 +77,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
     private void initPresenter() {
         presenter = new ApplicationPresenter(this);
-
-        presenter.observeTemperatureChanged(this);
-        presenter.observePressureChanged(this);
-        presenter.observeAltitudeChanged(this);
-        presenter.observeHumidityChanged(this);
-        presenter.observeAirQualityChanged(this);
-        presenter.observeLuminosityChanged(this);
-        presenter.observeAccelerationChanged(this);
-        presenter.observeAngularVelocityChanged(this);
-        presenter.observeMagneticFieldChanged(this);
 
         presenter.initScreen(160, RxScreenManager.ROTATION_180);
         presenter.brightness(255);
@@ -315,42 +204,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
     private void brightness(final int value) {
         presenter.brightness(value);
-    }
-
-    private void broadcastTemperature(final float value) {
-        localBroadcastManager.sendBroadcast(IntentFactory.temperature(this, value));
-    }
-
-    private void broadcastPressure(final float value) {
-        localBroadcastManager.sendBroadcast(IntentFactory.pressure(this, value));
-    }
-
-    private void broadcastAltitude(final float value) {
-        localBroadcastManager.sendBroadcast(IntentFactory.altitude(this, value));
-    }
-
-    private void broadcastHumidity(final float value) {
-        localBroadcastManager.sendBroadcast(IntentFactory.humidity(this, value));
-    }
-
-    private void broadcastAirQuality(final float value) {
-        localBroadcastManager.sendBroadcast(IntentFactory.airQuality(this, value));
-    }
-
-    private void broadcastLuminosity(final float value) {
-        localBroadcastManager.sendBroadcast(IntentFactory.luminosity(this, value));
-    }
-
-    private void broadcastAcceleration(final float[] values) {
-        localBroadcastManager.sendBroadcast(IntentFactory.acceleration(this, values));
-    }
-
-    private void broadcastAngularVelocity(final float[] values) {
-        localBroadcastManager.sendBroadcast(IntentFactory.angularVelocity(this, values));
-    }
-
-    private void broadcastMagneticField(final float[] values) {
-        localBroadcastManager.sendBroadcast(IntentFactory.magneticField(this, values));
     }
 
     private boolean isThingsDevice(@NonNull final Context context) {

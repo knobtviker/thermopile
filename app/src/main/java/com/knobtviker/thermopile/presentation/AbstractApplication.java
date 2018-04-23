@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.bugfender.sdk.Bugfender;
 import com.facebook.stetho.Stetho;
@@ -21,6 +22,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     protected P presenter;
 
+    @NonNull
+    protected String packageName;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -29,6 +33,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
         memoryClass();
         memoryInfo();
+        packageName();
 //        initCrashlytics();
         initBugfender();
         initJodaTime();
@@ -44,6 +49,10 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     private void plantTree() {
         Timber.plant(new FileLoggingTree(this));
+    }
+
+    private void packageName() {
+        this.packageName = getPackageName();
     }
 
     private void memoryClass() {
