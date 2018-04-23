@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 
 import io.reactivex.FlowableEmitter;
 
-public class RxSensorEventTransciever {
+public class RxSensorEventTransceiver {
 
     @Nullable
     private FlowableEmitter<RxSensorEvent> emitter;
@@ -16,8 +16,8 @@ public class RxSensorEventTransciever {
     @NonNull
     private SensorEventListener listener;
 
-    public static RxSensorEventTransciever create() {
-        return new RxSensorEventTransciever();
+    public static RxSensorEventTransceiver create() {
+        return new RxSensorEventTransceiver();
     }
 
     public void setEmitter(@NonNull final FlowableEmitter<RxSensorEvent> emitter) {
@@ -29,7 +29,7 @@ public class RxSensorEventTransciever {
         return listener;
     }
 
-    private RxSensorEventTransciever() {
+    private RxSensorEventTransceiver() {
     }
 
     private SensorEventListener createListener() {

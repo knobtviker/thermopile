@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -107,7 +106,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
             .anyMatch(PeripheralDevicePredicate.allowed(sensorEvent.sensor))
             ) {
             broadcastLuminosity(sensorEvent.values[0]);
-            //TODO: Google dropped Automatic Brightness Mode in DP7. Do your own math with manual mode. Less light == lower screen brightness.
+//            TODO: Google dropped Automatic Brightness Mode in DP7. Do your own math with manual mode. Less light == lower screen brightness.
 //            Log.i(TAG, "Measured: " + sensorEvent.values[0] + " lx --- Fitted: " + TSL2561SensorDriver.getFittedLuminosity(sensorEvent.values[0]) + " lx --- Screen brightness: " + TSL2561SensorDriver.getScreenBrightness(sensorEvent.values[0]));
         }
     }
@@ -158,8 +157,8 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    public void onPeripherals(@NonNull RealmResults<PeripheralDevice> peripheralDevices) {
-        this.peripherals = peripheralDevices.subList(0, peripheralDevices.size());
+    public void onPeripherals(@NonNull List<PeripheralDevice> peripheralDevices) {
+        this.peripherals = peripheralDevices;
     }
 
     @Override
@@ -178,7 +177,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     private void initPresenter() {
-        presenter = new ApplicationPresenter(this,this);
+        presenter = new ApplicationPresenter(this);
 
         presenter.observeTemperatureChanged(this);
         presenter.observePressureChanged(this);

@@ -1,9 +1,11 @@
 package com.knobtviker.thermopile.data.sources.raw.rxsensormanager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.List;
@@ -14,17 +16,24 @@ import io.reactivex.FlowableEmitter;
 
 public final class RxSensorManager {
 
+    @SuppressLint("StaticFieldLeak")
+    private static RxSensorManager INSTANCE = null;
+
     private SensorManager sensorManager;
 
-    private RxSensorManager() {
+    public static synchronized RxSensorManager getInstance(@NonNull final Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new RxSensorManager(context.getApplicationContext());
+        }
+        return INSTANCE;
     }
 
     /**
-     * Creates ReactiveSensors object
+     * Creates RxSensorManager object
      *
      * @param context context
      */
-    public RxSensorManager(Context context) {
+    private RxSensorManager(@NonNull final Context context) {
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
     }
 
@@ -34,7 +43,7 @@ public final class RxSensorManager {
      * @return list of sensors
      */
     public List<Sensor> getSensors() {
-        return sensorManager.getSensorList(Sensor.TYPE_ALL);
+        return sensorManager.getDynamicSensorList(Sensor.TYPE_ALL);
     }
 
     /**
@@ -55,7 +64,7 @@ public final class RxSensorManager {
      * @return RxJava Observable with ReactiveSensorEvent
      */
     public Flowable<RxSensorEvent> observeSensors() {
-        return observeSensors(SensorManager.SENSOR_DELAY_NORMAL, null);
+        return observeSensors(SensorManager.SENSOR_DELAY_UI, null);
     }
 
     /**
@@ -85,42 +94,75 @@ public final class RxSensorManager {
      * @return RxJava Observable with ReactiveSensorEvent
      */
     public Flowable<RxSensorEvent> observeSensors(final int samplingPeriodInUs, @Nullable final Handler handler, final BackpressureStrategy strategy) {
-//        if (!hasSensor(sensorType)) {
-//            final String format = "Sensor with id = %d is not available on this device. Did you call registerDynamicSensorCallback for this sensor?";
-//            final String message = String.format(Locale.getDefault(), format, sensorType);
-//            return Flowable.error(new Exception(message));
-//        }
-
-        final RxSensorEventTransciever transciever = RxSensorEventTransciever.create();
+        final RxSensorEventTransceiver transceiver = RxSensorEventTransceiver.create();
 
         final SensorManager.DynamicSensorCallback callback = new SensorManager.DynamicSensorCallback() {
             @Override
             public void onDynamicSensorConnected(Sensor sensor) {
                 if (handler == null) {
-                    sensorManager.registerListener(transciever.listener(), sensor, samplingPeriodInUs);
+                    sensorManager.registerListener(transceiver.listener(), sensor, samplingPeriodInUs);
                 } else {
-                    sensorManager.registerListener(transciever.listener(), sensor, samplingPeriodInUs, handler);
+                    sensorManager.registerListener(transceiver.listener(), sensor, samplingPeriodInUs, handler);
                 }
             }
 
             @Override
             public void onDynamicSensorDisconnected(Sensor sensor) {
-                sensorManager.unregisterListener(transciever.listener());
-//                if (handler != null) {
-//                    handler = null;
-//                }
+                sensorManager.unregisterListener(transceiver.listener());
             }
         };
 
         return Flowable.create((FlowableEmitter<RxSensorEvent> emitter) -> {
-                transciever.setEmitter(emitter);
+                transceiver.setEmitter(emitter);
 
                 sensorManager.registerDynamicSensorCallback(callback);
             },
             strategy
         )
-            .doOnCancel(() -> {
-                sensorManager.unregisterDynamicSensorCallback(callback);
-            });
+            .doOnCancel(() -> sensorManager.unregisterDynamicSensorCallback(callback));
+    }
+
+    public Flowable<RxSensorEvent> observeSensorsByType(final int sensorType) {
+        return observeSensors(sensorType, SensorManager.SENSOR_DELAY_UI, null);
+    }
+
+    public Flowable<RxSensorEvent> observeSensors(final int sensorType, final int samplingPeriodInUs) {
+        return observeSensors(sensorType, samplingPeriodInUs, null);
+    }
+
+    public Flowable<RxSensorEvent> observeSensors(final int sensorType, final int samplingPeriodInUs, @Nullable final Handler handler) {
+        return observeSensors(sensorType, samplingPeriodInUs, handler, BackpressureStrategy.BUFFER);
+    }
+
+    public Flowable<RxSensorEvent> observeSensors(final int sensorType, final int samplingPeriodInUs, @Nullable final Handler handler, final BackpressureStrategy strategy) {
+        final RxSensorEventTransceiver transceiver = RxSensorEventTransceiver.create();
+
+        final SensorManager.DynamicSensorCallback callback = new SensorManager.DynamicSensorCallback() {
+            @Override
+            public void onDynamicSensorConnected(Sensor sensor) {
+                if (sensor.getType() == sensorType) {
+                    if (handler == null) {
+                        sensorManager.registerListener(transceiver.listener(), sensor, samplingPeriodInUs);
+                    } else {
+                        sensorManager.registerListener(transceiver.listener(), sensor, samplingPeriodInUs, handler);
+                    }
+                }
+            }
+
+            @Override
+            public void onDynamicSensorDisconnected(Sensor sensor) {
+                if (sensor.getType() == sensorType) {
+                    sensorManager.unregisterListener(transceiver.listener());
+                }
+            }
+        };
+
+        return Flowable.create((FlowableEmitter<RxSensorEvent> emitter) -> {
+                transceiver.setEmitter(emitter);
+                sensorManager.registerDynamicSensorCallback(callback);
+            },
+            strategy
+        )
+            .doOnCancel(() -> sensorManager.unregisterDynamicSensorCallback(callback));
     }
 }

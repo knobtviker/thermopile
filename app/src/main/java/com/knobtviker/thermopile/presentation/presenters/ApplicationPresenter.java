@@ -57,7 +57,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Nullable
     private Disposable screensaverDisposable;
 
-    public ApplicationPresenter(@NonNull final Context context, @NonNull final ApplicationContract.View view) {
+    public ApplicationPresenter(@NonNull final ApplicationContract.View view) {
         super(view);
 
         this.view = view;
@@ -174,8 +174,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                 .defer(() -> peripheralsRepository.observeAccelerationBuffered(context))
                 .subscribe(
                     atmosphereRepository::saveAccelerations,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -187,8 +186,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                 .defer(() -> peripheralsRepository.observeAngularVelocityBuffered(context))
                 .subscribe(
                     atmosphereRepository::saveAngularVelocities,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -200,8 +198,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                 .defer(() -> peripheralsRepository.observeMagneticFieldBuffered(context))
                 .subscribe(
                     atmosphereRepository::saveMagneticFields,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -270,7 +267,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         resultsPeripherals = peripheralsRepository.load(realm);
 
         if (resultsPeripherals != null && !resultsPeripherals.isEmpty()) {
-            view.onPeripherals(resultsPeripherals);
+            view.onPeripherals(realm.copyFromRealm(resultsPeripherals));
         }
     }
 

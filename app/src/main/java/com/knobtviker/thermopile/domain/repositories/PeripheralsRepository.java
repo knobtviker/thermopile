@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -86,12 +85,12 @@ public class PeripheralsRepository extends AbstractRepository {
     }
 
     public Flowable<SensorEvent> observeSensors(@NonNull final Context context) {
-        return new RxSensorManager(context)
-            .observeSensors(SensorManager.SENSOR_DELAY_UI)
-            .subscribeOn(schedulerProvider.computation)
+        return RxSensorManager.getInstance(context)
+            .observeSensors()
+            .subscribeOn(schedulerProvider.io)
             .filter(RxSensorEvent::hasSensorEvent)
             .map(RxSensorEvent::getSensorEvent)
-            .observeOn(schedulerProvider.ui);
+            .observeOn(schedulerProvider.io);
     }
 
     public Observable<Float> observeTemperature(@NonNull final Context context) {

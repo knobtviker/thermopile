@@ -42,7 +42,7 @@ public interface ApplicationContract {
 
         void onSettings(@NonNull final Settings settings);
 
-        void onPeripherals(@NonNull final RealmResults<PeripheralDevice> peripheralDevices);
+        void onPeripherals(@NonNull final List<PeripheralDevice> peripheralDevices);
 
         void showScreensaver();
     }
