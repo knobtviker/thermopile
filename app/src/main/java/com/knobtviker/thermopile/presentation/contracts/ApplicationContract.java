@@ -36,10 +36,6 @@ public interface ApplicationContract {
 
         void destroyScreensaver();
 
-        void initScreen(final int density, final int rotation);
-
-        void brightness(final int brightness);
-
         void settings(@NonNull final Realm realm);
 
         void peripherals(@NonNull final Realm realm);

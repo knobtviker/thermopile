@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.knobtviker.thermopile">
 
+    <uses-permission android:name="com.google.android.things.permission.USE_PERIPHERAL_IO"/>
     <uses-permission android:name="com.google.android.things.permission.MANAGE_SENSOR_DRIVERS"/>
-    <uses-permission android:name="com.google.android.things.permission.MODIFY_SCREEN_SETTINGS"/>
-    <uses-permission android:name="com.google.android.things.permission.REBOOT"/>
-    <uses-permission android:name="com.google.android.things.permission.CHANGE_TIME" />
+    <uses-permission android:name="com.google.android.things.permission.SET_TIME"/>
     <uses-permission android:name="com.google.android.things.permission.MANAGE_BLUETOOTH"/>
+    <uses-permission android:name="com.google.android.things.permission.REBOOT"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -16,6 +16,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" tools:node="remove" />
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -25,11 +29,11 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="06eb5517925cdf93cc60fee7590b67f1406754f2" />
+            android:value="${fabricApiKey}"/>
 
         <uses-library android:name="com.google.android.things"/>
 
-        <activity android:name=".presentation.activities.MainActivity">
+        <activity android:name=".presentation.activities.MainActivity" android:screenOrientation="reverseLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -38,14 +42,14 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.IOT_LAUNCHER"/>
+                <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.activities.ScreenSaverActivity" />
-        <activity android:name=".presentation.activities.ThresholdActivity"/>
-        <activity android:name=".presentation.activities.BootAnimationActivity"/>
+        <activity android:name=".presentation.activities.ScreenSaverActivity" android:screenOrientation="reverseLandscape"/>
+        <activity android:name=".presentation.activities.ThresholdActivity" android:screenOrientation="reverseLandscape"/>
+        <activity android:name=".presentation.activities.BootAnimationActivity" android:screenOrientation="reverseLandscape"/>
 
     </application>
 

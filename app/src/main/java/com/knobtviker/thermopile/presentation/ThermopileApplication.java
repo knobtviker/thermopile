@@ -16,7 +16,6 @@ import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231;
 import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
-import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
@@ -63,12 +62,12 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     @Override
     public void showScreensaver() {
         Router.showScreensaver(this);
-        brightness(24);
+        //TODO: Set brighteness to around 24
     }
 
     public void createScreensaver() {
-        brightness(255);
         presenter.createScreensaver();
+        //TODO: set brightness to 255
     }
 
     public void destroyScreensaver() {
@@ -78,8 +77,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     private void initPresenter() {
         presenter = new ApplicationPresenter(this);
 
-        presenter.initScreen(160, RxScreenManager.ROTATION_180);
-        presenter.brightness(255);
         presenter.createScreensaver();
 
         presenter.settings(Database.getDefaultInstance());
@@ -200,10 +197,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         lsm9ds1SensorDriver.registerAccelerometerSensor();
         lsm9ds1SensorDriver.registerGyroscopeSensor();
         lsm9ds1SensorDriver.registerMagneticFieldSensor();
-    }
-
-    private void brightness(final int value) {
-        presenter.brightness(value);
     }
 
     private boolean isThingsDevice(@NonNull final Context context) {

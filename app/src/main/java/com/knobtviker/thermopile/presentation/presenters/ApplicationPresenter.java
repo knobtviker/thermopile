@@ -6,13 +6,11 @@ import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.Display;
 
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
 import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680;
 import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680SensorDriver;
-import com.knobtviker.android.things.contrib.community.support.rxscreenmanager.RxScreenManager;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
@@ -52,8 +50,6 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     private final PeripheralsRepository peripheralsRepository;
 
-    private final RxScreenManager rxScreenManager;
-
     private final Scheduler scheduler;
 
     private List<PeripheralDevice> peripherals;
@@ -73,7 +69,6 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         this.settingsRepository = DaggerSettingsDataComponent.create().repository();
         this.peripheralsRepository = DaggerPeripheralsDataComponent.create().repository();
         this.scheduler = DaggerSchedulerProviderComponent.create().scheduler().screensaver;
-        this.rxScreenManager = RxScreenManager.create(Display.DEFAULT_DISPLAY);
     }
 
     @Override
@@ -254,28 +249,6 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             screensaverDisposable.dispose();
             screensaverDisposable = null;
         }
-    }
-
-    @Override
-    public void initScreen(int density, int rotation) {
-        Completable.concatArray(
-            rxScreenManager.lockRotation(rotation),
-            rxScreenManager.displayDensity(density)
-        )
-            .subscribe(
-                this::completed,
-                this::error
-            );
-    }
-
-    @Override
-    public void brightness(int brightness) {
-        rxScreenManager
-            .brightness(brightness)
-            .subscribe(
-                this::completed,
-                this::error
-            );
     }
 
     @Override

@@ -7,7 +7,11 @@ import android.support.annotation.NonNull;
 
 import com.bugfender.sdk.Bugfender;
 import com.facebook.stetho.Stetho;
+import com.instabug.library.Instabug;
+import com.instabug.library.InstabugColorTheme;
+import com.instabug.library.invocation.InstabugInvocationEvent;
 import com.knobtviker.thermopile.BuildConfig;
+import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.FileLoggingTree;
@@ -36,6 +40,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         packageName();
 //        initCrashlytics();
         initBugfender();
+        initInstabug();
         initJodaTime();
         initDatabase();
     }
@@ -79,6 +84,23 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         Bugfender.enableLogcatLogging();
         Bugfender.enableUIEventLogging(this);
         Bugfender.enableCrashReporting();
+    }
+
+    private void initInstabug() {
+        new Instabug.Builder(this, BuildConfig.KEY_INSTABUG)
+            .setInvocationEvent(InstabugInvocationEvent.NONE)
+            .build();
+
+        Instabug.setEmailFieldRequired(false, 0);
+        Instabug.setCommentFieldRequired(false);
+        Instabug.setAttachmentTypesEnabled(true, true, false, false);
+        Instabug.setIntroMessageEnabled(false);
+        Instabug.setShouldPlayConversationSounds(false);
+        Instabug.setEnableInAppNotificationSound(false);
+        Instabug.setEnableSystemNotificationSound(false);
+        Instabug.setSuccessDialogEnabled(false);
+        Instabug.setTheme(InstabugColorTheme.InstabugColorThemeDark);
+        Instabug.setPrimaryColor(getColor(R.color.colorAccent));
     }
 
     private void initJodaTime() {
