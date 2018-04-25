@@ -9,3 +9,5 @@
 .externalNativeBuild
 /connect_remote
 /uninstall_remote
+/keys.properties
+app/fabric.properties

@@ -16,14 +16,19 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission
+        android:name="android.permission.RECORD_AUDIO"
+        tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.MODIFY_AUDIO_SETTINGS"
+        tools:node="remove"/>
 
     <application
-        android:icon="@mipmap/ic_launcher"
         android:name=".presentation.ThermopileApplication"
+        android:extractNativeLibs="false"
+        android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
 
@@ -33,7 +38,9 @@
 
         <uses-library android:name="com.google.android.things"/>
 
-        <activity android:name=".presentation.activities.MainActivity" android:screenOrientation="reverseLandscape">
+        <activity
+            android:name=".presentation.activities.MainActivity"
+            android:screenOrientation="reverseLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -47,9 +54,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.activities.ScreenSaverActivity" android:screenOrientation="reverseLandscape"/>
-        <activity android:name=".presentation.activities.ThresholdActivity" android:screenOrientation="reverseLandscape"/>
-        <activity android:name=".presentation.activities.BootAnimationActivity" android:screenOrientation="reverseLandscape"/>
+        <activity
+            android:name=".presentation.activities.ScreenSaverActivity"
+            android:screenOrientation="reverseLandscape"/>
+        <activity
+            android:name=".presentation.activities.ThresholdActivity"
+            android:screenOrientation="reverseLandscape"/>
+        <activity
+            android:name=".presentation.activities.BootAnimationActivity"
+            android:screenOrientation="reverseLandscape"/>
 
     </application>
 

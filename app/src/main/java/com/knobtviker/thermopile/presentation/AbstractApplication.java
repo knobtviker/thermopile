@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.bugfender.sdk.Bugfender;
 import com.facebook.stetho.Stetho;
@@ -76,31 +77,37 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     }
 
 //    private void initCrashlytics() {
-//        Fabric.with(this, new Crashlytics());
+//        if (!TextUtils.isEmpty(BuildConfig.KEY_FABRIC)) {
+//            Fabric.with(this, new Crashlytics());
+//        }
 //    }
 
     private void initBugfender() {
-        Bugfender.init(this, BuildConfig.KEY_BUGFENDER, BuildConfig.DEBUG);
-        Bugfender.enableLogcatLogging();
-        Bugfender.enableUIEventLogging(this);
-        Bugfender.enableCrashReporting();
+        if (!TextUtils.isEmpty(BuildConfig.KEY_BUGFENDER)) {
+            Bugfender.init(this, BuildConfig.KEY_BUGFENDER, BuildConfig.DEBUG);
+            Bugfender.enableLogcatLogging();
+            Bugfender.enableUIEventLogging(this);
+            Bugfender.enableCrashReporting();
+        }
     }
 
     private void initInstabug() {
-        new Instabug.Builder(this, BuildConfig.KEY_INSTABUG)
-            .setInvocationEvent(InstabugInvocationEvent.NONE)
-            .build();
+        if (!TextUtils.isEmpty(BuildConfig.KEY_INSTABUG)) {
+            new Instabug.Builder(this, BuildConfig.KEY_INSTABUG)
+                .setInvocationEvent(InstabugInvocationEvent.NONE)
+                .build();
 
-        Instabug.setEmailFieldRequired(false, 0);
-        Instabug.setCommentFieldRequired(false);
-        Instabug.setAttachmentTypesEnabled(true, true, false, false);
-        Instabug.setIntroMessageEnabled(false);
-        Instabug.setShouldPlayConversationSounds(false);
-        Instabug.setEnableInAppNotificationSound(false);
-        Instabug.setEnableSystemNotificationSound(false);
-        Instabug.setSuccessDialogEnabled(false);
-        Instabug.setTheme(InstabugColorTheme.InstabugColorThemeDark);
-        Instabug.setPrimaryColor(getColor(R.color.colorAccent));
+            Instabug.setEmailFieldRequired(false, 0);
+            Instabug.setCommentFieldRequired(false);
+            Instabug.setAttachmentTypesEnabled(true, true, false, false);
+            Instabug.setIntroMessageEnabled(false);
+            Instabug.setShouldPlayConversationSounds(false);
+            Instabug.setEnableInAppNotificationSound(false);
+            Instabug.setEnableSystemNotificationSound(false);
+            Instabug.setSuccessDialogEnabled(false);
+            Instabug.setTheme(InstabugColorTheme.InstabugColorThemeDark);
+            Instabug.setPrimaryColor(getColor(R.color.colorAccent));
+        }
     }
 
     private void initJodaTime() {
