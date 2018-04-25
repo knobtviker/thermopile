@@ -3,10 +3,8 @@ package com.knobtviker.thermopile.presentation.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.MotionEvent;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
 import com.knobtviker.thermopile.presentation.fragments.ThresholdFragment;
 import com.knobtviker.thermopile.presentation.utils.Constants;
@@ -55,15 +53,5 @@ public class ThresholdActivity extends BaseActivity {
                 .add(R.id.fragment_container, thresholdFragment)
                 .commitNowAllowingStateLoss();
         }
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            ((ThermopileApplication) getApplication()).destroyScreensaver();
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            ((ThermopileApplication) getApplication()).createScreensaver();
-        }
-        return super.dispatchTouchEvent(event);
     }
 }
