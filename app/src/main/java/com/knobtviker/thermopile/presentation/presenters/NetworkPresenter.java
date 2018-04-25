@@ -3,7 +3,6 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattServerCallback;
-import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
@@ -17,6 +16,8 @@ import com.knobtviker.thermopile.domain.repositories.PeripheralsRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -219,10 +220,10 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void setBluetoothDeviceClass(final int service, final int device) {
+    public void setBluetoothDeviceClass(final int service, final int device, final int ioCapability) {
         compositeDisposable.add(
             rxBluetoothManager
-                .setDeviceClass(service, device)
+                .setDeviceClass(service, device, ioCapability)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -233,10 +234,10 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void setBluetoothProfile(final int profile) {
+    public void setBluetoothProfiles(@NonNull final List<Integer> profiles) {
         compositeDisposable.add(
             rxBluetoothManager
-                .setProfile(BluetoothProfile.GATT_SERVER)
+                .setProfiles(profiles)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

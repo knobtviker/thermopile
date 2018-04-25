@@ -25,7 +25,6 @@ import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.google.android.things.bluetooth.BluetoothProfileManager;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -181,12 +180,14 @@ public class RxBluetoothManager {
             }));
     }
 
-    public Completable setDeviceClass(final int service, final int device) {
+    public Completable setDeviceClass(final int service, final int device, final int ioCapability) {
         return Completable.defer(() ->
             Completable.create(
                 emitter -> {
                     if (!emitter.isDisposed()) {
                         final BluetoothConfigManager configManager = BluetoothConfigManager.getInstance();
+                        configManager.setIoCapability(ioCapability);
+
                         final BluetoothClass deviceClass = BluetoothClassFactory.build(service, device);
 
                         if (configManager.setBluetoothClass(deviceClass)) {
@@ -200,16 +201,13 @@ public class RxBluetoothManager {
         );
     }
 
-    public Completable setProfile(final int profile) {
+    public Completable setProfiles(@NonNull final List<Integer> profiles) {
         return Completable.defer(() ->
             Completable.create(
                 emitter -> {
                     if (!emitter.isDisposed()) {
                         final BluetoothProfileManager profileManager = BluetoothProfileManager.getInstance();
-                        final List<Integer> enabledProfiles = profileManager.getEnabledProfiles();
-                        if (!enabledProfiles.contains(profile)) {
-                            profileManager.enableProfiles(Collections.singletonList(profile));
-                        }
+                        profileManager.setEnabledProfiles(profiles);
                         emitter.onComplete();
                     }
                 }
@@ -339,7 +337,7 @@ public class RxBluetoothManager {
      * This will issue a request to make the local device discoverable to other devices. By default,
      * the device will become discoverable for 120 seconds.
      *
-     * @param activity Activity
+     * @param activity    Activity
      * @param requestCode request code
      */
     public void enableDiscoverability(@NonNull final Activity activity, final int requestCode) {
@@ -351,9 +349,9 @@ public class RxBluetoothManager {
      * the device will become discoverable for 120 seconds.  Maximum duration is capped at 300
      * seconds.
      *
-     * @param activity Activity
+     * @param activity    Activity
      * @param requestCode request code
-     * @param duration discoverability duration in seconds
+     * @param duration    discoverability duration in seconds
      */
     public void enableDiscoverability(@NonNull final Activity activity, final int requestCode, final int duration) {
         final Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);

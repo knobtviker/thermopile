@@ -25,10 +25,12 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.sources.raw.EnvironmentProfile;
 import com.knobtviker.thermopile.data.sources.raw.GattServerCallback;
 import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
+import com.knobtviker.thermopile.data.sources.raw.TimeProfile;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
@@ -39,6 +41,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
+import java.util.Collections;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -256,7 +259,11 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         this.gattServer = gattServer;
 
         //TODO: Finish ESS and ESP BLE profile and service
-        this.gattServer.addService(EnvironmentProfile.createService());
+        final EnvironmentProfile environmentProfile = new EnvironmentProfile();
+        final TimeProfile timeProfile = new TimeProfile();
+
+        this.gattServer.addService(environmentProfile.createService());
+        this.gattServer.addService(timeProfile.createService());
     }
 
     @Override
@@ -275,22 +282,22 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     public void onGattSendResponse(@NonNull BluetoothDevice device, int requestId, int status, @NonNull UUID uuid) {
         if (gattServer != null) {
             byte[] response = new byte[0];
-            if (uuid.equals(EnvironmentProfile.UUID_TEMPERATURE)) {
+//            if (uuid.equals(EnvironmentProfile.UUID_TEMPERATURE)) {
 //                response = EnvironmentProfile.toByteArray(Math.round(atmosphere.temperature()));
 //                Log.i(TAG, atmosphere.temperature() + "");
-            } else if (uuid.equals(EnvironmentProfile.UUID_PRESSURE)) {
+//            } else if (uuid.equals(EnvironmentProfile.UUID_PRESSURE)) {
 //                response = EnvironmentProfile.toByteArray(atmosphere.pressure());
 //                Log.i(TAG, atmosphere.pressure() + "");
-            } else if (uuid.equals(EnvironmentProfile.UUID_HUMIDITY)) {
+//            } else if (uuid.equals(EnvironmentProfile.UUID_HUMIDITY)) {
 //                response = EnvironmentProfile.toByteArray(atmosphere.humidity());
 //                Log.i(TAG, atmosphere.humidity() + "");
-            } else {
-                Timber.e("Invalid Characteristic Read: %s", uuid);
-                gattServer.sendResponse(device, requestId, status, 0, null);
-            }
-
-            gattServer.sendResponse(device, requestId, status, 0, response);
+        } else {
+            Timber.e("Invalid Characteristic Read: %s", uuid);
+            gattServer.sendResponse(device, requestId, status, 0, null);
         }
+
+//            gattServer.sendResponse(device, requestId, status, 0, response);
+//        }
     }
 
     @Override
@@ -315,8 +322,9 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         switchBluetoothGatt.setVisibility(isOn ? View.VISIBLE : View.GONE);
 
         if (isOn) {
-            presenter.setBluetoothDeviceClass(BluetoothClass.Service.INFORMATION, BluetoothClass.Device.COMPUTER_SERVER);
-            presenter.setBluetoothProfile(BluetoothProfile.GATT_SERVER);
+            presenter.setBluetoothDeviceClass(BluetoothClass.Service.INFORMATION, BluetoothClass.Device.COMPUTER_SERVER, BluetoothConfigManager.IO_CAPABILITY_IO
+            );
+            presenter.setBluetoothProfiles(Collections.singletonList(BluetoothProfile.GATT_SERVER));
 
             switchBluetoothGatt.setEnabled(false);
             presenter.isGattServerRunning();
@@ -348,25 +356,26 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     private void startAdvertising() {
         presenter.startBluetoothAdvertising(
             new AdvertiseSettings.Builder()
-                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
                 .setConnectable(true)
                 .setTimeout(0)
-                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
                 .build(),
             new AdvertiseData.Builder()
                 .setIncludeDeviceName(true)
                 .setIncludeTxPowerLevel(false)
-                .addServiceUuid(new ParcelUuid(EnvironmentProfile.UUID_ENVIRONMENT_SERVICE))
+                .addServiceUuid(new ParcelUuid(TimeProfile.TIME_SERVICE))
+                .addServiceUuid(new ParcelUuid(EnvironmentProfile.ENVIRONMENT_SENSING_SERVICE))
                 .build(),
             new AdvertiseCallback() {
                 @Override
                 public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-//                        Log.i(TAG, "LE Advertise Started.");
+                    Timber.i("LE Advertise Started: " + settingsInEffect.toString());
                 }
 
                 @Override
                 public void onStartFailure(int errorCode) {
-//                        Log.w(TAG, "LE Advertise Failed: " + errorCode);
+                    Timber.e( "LE Advertise Failed: " + errorCode);
                 }
             }
         );

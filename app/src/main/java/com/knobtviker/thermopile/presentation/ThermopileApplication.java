@@ -62,12 +62,10 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     @Override
     public void showScreensaver() {
         Router.showScreensaver(this);
-        //TODO: Set brighteness to around 24
     }
 
     public void createScreensaver() {
         presenter.createScreensaver();
-        //TODO: set brightness to 255
     }
 
     public void destroyScreensaver() {

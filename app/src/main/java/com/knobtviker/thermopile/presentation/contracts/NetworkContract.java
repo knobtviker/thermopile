@@ -12,6 +12,8 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
+import java.util.List;
+
 /**
  * Created by bojan on 15/07/2017.
  */
@@ -69,9 +71,9 @@ public interface NetworkContract {
 
         void observeBluetoothState();
 
-        void setBluetoothDeviceClass(final int service, final int device);
+        void setBluetoothDeviceClass(final int service, final int device, final int ioCapability);
 
-        void setBluetoothProfile(final int profile);
+        void setBluetoothProfiles(@NonNull final List<Integer> profiles);
 
         void startGattServer(@NonNull final BluetoothGattServerCallback callback);
 
