@@ -203,7 +203,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         textViewIAQ.setText(pair.first);
         arcViewIAQ.setProgressColor(pair.second);
-        arcViewIAQ.setProgress((500.0f - value) / 500.0f);
+        arcViewIAQ.setProgress((Constants.MEASURED_AIR_QUALITY_MAX - value) / Constants.MEASURED_AIR_QUALITY_MAX);
     }
 
     // Calculate pitch, roll, and heading.

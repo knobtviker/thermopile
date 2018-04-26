@@ -55,7 +55,7 @@
         <item name="android:fontFamily">@font/worksans_light</item>
     </style>
 
-    <style name="TextAppearance.Data.Secondary.Unit" parent="TextAppearance.AppCompat.Large">
+    <style name="TextAppearance.Data.Secondary.Unit" parent="TextAppearance.AppCompat.Medium">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">4dp</item>
@@ -65,6 +65,7 @@
     </style>
 
     <style name="TextAppearance.Data.Secondary" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:textSize">32sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">bottom</item>

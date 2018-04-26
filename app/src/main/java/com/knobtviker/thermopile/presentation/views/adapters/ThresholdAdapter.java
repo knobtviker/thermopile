@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -142,10 +141,10 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
             }
         });
 
-        intervalsAll
-            .forEach(pair -> {
-                Log.i(TAG, pair.second.toString() + " --- " + (pair.first == null ? "GAP" : pair.first.toString()));
-            });
+//        intervalsAll
+//            .forEach(pair -> {
+//                Log.i(TAG, pair.second.toString() + " --- " + (pair.first == null ? "GAP" : pair.first.toString()));
+//            });
 
         this.intervals = ImmutableList.copyOf(intervalsAll);
 

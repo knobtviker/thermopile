@@ -148,7 +148,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_thresholds"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:paddingTop="@dimen/margin_xxsmall"
             android:scrollbars="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"

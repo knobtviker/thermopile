@@ -20,7 +20,7 @@ import com.knobtviker.thermopile.R;
 public class ArcView extends View {
 
     private final int START_ANGLE = 135;
-    private final int END_ANGLE = 275;
+    private final int SWEEP_ANGLE_MAX = 275;
 
     private int padding = 0;
     private int width = 0;
@@ -69,7 +69,7 @@ public class ArcView extends View {
 
         //First draw full arc as background.
         paint.setColor(trackColor);
-        canvas.drawArc(arc, START_ANGLE, END_ANGLE, false, paint);
+        canvas.drawArc(arc, START_ANGLE, SWEEP_ANGLE_MAX, false, paint);
 
         //Then draw arc progress with actual value.
         paint.setColor(progressColor);
@@ -95,8 +95,8 @@ public class ArcView extends View {
         setMeasuredDimension(size, size);
     }
 
-    private int calculateProgressSweepAngle() {
-        return Math.round(((END_ANGLE - START_ANGLE) * progress) + START_ANGLE);
+    private float calculateProgressSweepAngle() {
+        return SWEEP_ANGLE_MAX * progress;
     }
 
     public void setProgress(final float progress) {
