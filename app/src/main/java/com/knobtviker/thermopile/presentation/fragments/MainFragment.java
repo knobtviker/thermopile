@@ -24,6 +24,7 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
+import com.knobtviker.thermopile.presentation.utils.controllers.PIDController;
 import com.knobtviker.thermopile.presentation.views.ArcView;
 import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
 import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
@@ -57,6 +58,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private int unitTemperature;
     private int unitPressure;
     private int unitMotion;
+
+    private final PIDController pidController;
 
     @BindView(R.id.textview_date)
     public TextView textViewDate;
@@ -123,6 +126,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         unitMotion = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
 
         presenter = new MainPresenter(this);
+
+        pidController = new PIDController(40, 1000);
     }
 
     @Override
@@ -181,6 +186,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onTemperatureChanged(final float value) {
         arcViewTemperature.setProgress(value / Constants.MEASURED_TEMPERATURE_MAX);
         textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))));
+
+//        pidController.doPID(Math.round(value));
     }
 
     @SuppressLint("SetTextI18n")

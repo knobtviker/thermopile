@@ -92,7 +92,7 @@ dependencies {
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.uphyca:stetho_realm:2.2.2'
     implementation 'com.instabug.library:instabug:5.0.0.4.2-SNAPSHOT'
-    implementation 'com.bugfender.sdk:android:1.0.5'
+    implementation 'com.bugfender.sdk:android:1.0.6'
     implementation 'com.google.firebase:firebase-core:12.0.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
 }

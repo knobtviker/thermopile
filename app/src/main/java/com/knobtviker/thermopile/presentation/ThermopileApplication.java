@@ -197,6 +197,18 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         lsm9ds1SensorDriver.registerMagneticFieldSensor();
     }
 
+//    private void initFram() {
+//        try {
+//            final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
+//            fram.setVerbose(true);
+//            final int rebootCount = fram.readInt(0);
+//            fram.writeInt(0, rebootCount +1);
+//            fram.close();
+//        } catch (IOException e) {
+//            Timber.e(e);
+//        }
+//    }
+
     private boolean isThingsDevice(@NonNull final Context context) {
         return context
             .getPackageManager()
