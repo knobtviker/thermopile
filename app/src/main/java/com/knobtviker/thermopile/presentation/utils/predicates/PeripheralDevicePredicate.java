@@ -22,35 +22,35 @@ public class PeripheralDevicePredicate implements Predicate<PeripheralDevice> {
 
     @Override
     public boolean test(PeripheralDevice peripheralDevice) {
-        final boolean isSensorVendorAndName = sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor()) && sensor.getName().equalsIgnoreCase(peripheralDevice.name());
-        final boolean isConnected = peripheralDevice.connected();
+        final boolean isSensorVendorAndName = sensor.getVendor().equalsIgnoreCase(peripheralDevice.vendor) && sensor.getName().equalsIgnoreCase(peripheralDevice.name);
+        final boolean isConnected = peripheralDevice.connected;
 
         boolean hasAbilityAndEnabled = false;
         switch (sensor.getType()) {
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                hasAbilityAndEnabled = peripheralDevice.hasTemperature() && peripheralDevice.enabledTemperature();
+                hasAbilityAndEnabled = peripheralDevice.hasTemperature && peripheralDevice.enabledTemperature;
                 break;
             case Sensor.TYPE_RELATIVE_HUMIDITY:
-                hasAbilityAndEnabled = peripheralDevice.hasHumidity() && peripheralDevice.enabledHumidity();
+                hasAbilityAndEnabled = peripheralDevice.hasHumidity && peripheralDevice.enabledHumidity;
                 break;
             case Sensor.TYPE_PRESSURE:
-                hasAbilityAndEnabled = peripheralDevice.hasPressure() && peripheralDevice.enabledPressure();
+                hasAbilityAndEnabled = peripheralDevice.hasPressure && peripheralDevice.enabledPressure;
                 break;
             case Sensor.TYPE_LIGHT:
-                hasAbilityAndEnabled = peripheralDevice.hasLuminosity() && peripheralDevice.enabledLuminosity();
+                hasAbilityAndEnabled = peripheralDevice.hasLuminosity && peripheralDevice.enabledLuminosity;
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                hasAbilityAndEnabled = peripheralDevice.hasAcceleration() && peripheralDevice.enabledAcceleration();
+                hasAbilityAndEnabled = peripheralDevice.hasAcceleration && peripheralDevice.enabledAcceleration;
                 break;
             case Sensor.TYPE_GYROSCOPE:
-                hasAbilityAndEnabled = peripheralDevice.hasAngularVelocity() && peripheralDevice.enabledAngularVelocity();
+                hasAbilityAndEnabled = peripheralDevice.hasAngularVelocity && peripheralDevice.enabledAngularVelocity;
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
-                hasAbilityAndEnabled = peripheralDevice.hasMagneticField() && peripheralDevice.enabledMagneticField();
+                hasAbilityAndEnabled = peripheralDevice.hasMagneticField && peripheralDevice.enabledMagneticField;
                 break;
             case Sensor.TYPE_DEVICE_PRIVATE_BASE:
                 if (sensor.getStringType().equals(Bme680.CHIP_SENSOR_TYPE_IAQ)) {
-                    hasAbilityAndEnabled = peripheralDevice.hasAirQuality() && peripheralDevice.enabledAirQuality();
+                    hasAbilityAndEnabled = peripheralDevice.hasAirQuality && peripheralDevice.enabledAirQuality;
                 }
                 break;
         }

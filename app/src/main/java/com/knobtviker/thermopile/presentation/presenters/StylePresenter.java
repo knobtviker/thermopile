@@ -25,23 +25,6 @@ public class StylePresenter extends AbstractPresenter implements StyleContract.P
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-
-    }
-
-    @Override
-    public void removeListeners() {
-
-    }
-
-    @Override
     public void saveTheme(long settingsId, int value) {
         settingsRepository.saveTheme(settingsId, value);
     }

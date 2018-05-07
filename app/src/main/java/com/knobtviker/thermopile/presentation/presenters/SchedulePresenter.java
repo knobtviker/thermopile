@@ -2,17 +2,12 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerThresholdDataComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -25,9 +20,6 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
     private final SettingsRepository settingsRepository;
     private final ThresholdRepository thresholdRepository;
 
-    private RealmResults<Settings> resultsSettings;
-    private RealmResults<Threshold> resultsThresholds;
-
     public SchedulePresenter(@NonNull final ScheduleContract.View view) {
         super(view);
 
@@ -37,75 +29,48 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.addChangeListener(settings -> {
-                if (!settings.isEmpty()) {
-                    final Settings result = settings.first();
-                    if (result != null) {
-                        view.onSettingsChanged(result);
-                    }
-                }
-            });
-        }
-
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            resultsThresholds.addChangeListener(thresholds -> {
-                if (!thresholds.isEmpty()) {
-                    view.onThresholds(thresholds);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void removeListeners() {
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.removeAllChangeListeners();
-        }
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            resultsThresholds.removeAllChangeListeners();
-        }
-    }
-
-    @Override
-    public void settings(@NonNull final Realm realm) {
+    public void settings() {
         started();
 
-        resultsSettings = settingsRepository.load(realm);
-
-        if (!resultsSettings.isEmpty()) {
-            final Settings result = resultsSettings.first();
-            if (result != null) {
-                view.onSettingsChanged(result);
-            }
-        }
-
-        completed();
+        compositeDisposable.add(
+            settingsRepository
+                .load()
+                .subscribe(
+                    settings -> {
+                        view.onSettingsChanged(settings.get(0));
+                    },
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override
-    public void thresholds(@NonNull final Realm realm) {
+    public void thresholds() {
         started();
 
-        resultsThresholds = thresholdRepository.load(realm);
-
-        if (!resultsThresholds.isEmpty()) {
-            view.onThresholds(resultsThresholds);
-        }
-
-        completed();
+        compositeDisposable.add(
+            thresholdRepository
+                .load()
+                .subscribe(
+                    view::onThresholds,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override
     public void removeThresholdById(long id) {
-        thresholdRepository.removeById(id);
+        started();
+
+        compositeDisposable.add(
+            thresholdRepository
+                .removeById(id)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 }

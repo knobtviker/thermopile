@@ -97,9 +97,9 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     }
 
     public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id();
-        this.unitTemperature = settings.unitTemperature();
-        this.unitPressure = settings.unitPressure();
+        this.settingsId = settings.id;
+        this.unitTemperature = settings.unitTemperature;
+        this.unitPressure = settings.unitPressure;
     }
 
     private void setupRadioGroupTemperatureUnit() {

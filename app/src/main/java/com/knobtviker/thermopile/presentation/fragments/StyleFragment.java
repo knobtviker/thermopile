@@ -83,8 +83,8 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     }
 
     public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id();
-        this.theme = settings.theme();
+        this.settingsId = settings.id;
+        this.theme = settings.theme;
     }
 
     private void setupRadioGroupTheme() {

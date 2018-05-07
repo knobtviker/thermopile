@@ -87,9 +87,9 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     }
 
     public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id();
-        this.formatDate = settings.formatDate();
-        this.formatTime = settings.formatTime();
+        this.settingsId = settings.id;
+        this.formatDate = settings.formatDate;
+        this.formatTime = settings.formatTime;
     }
 
     private void setupSpinnerDate() {

@@ -25,23 +25,6 @@ public class FormatsPresenter extends AbstractPresenter implements FormatsContra
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-
-    }
-
-    @Override
-    public void removeListeners() {
-
-    }
-
-    @Override
     public void saveFormatDate(long settingsId, @NonNull String item) {
         settingsRepository.saveFormatDate(settingsId, item);
     }

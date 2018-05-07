@@ -1,10 +1,11 @@
 package com.knobtviker.thermopile.data.models.local.implementation;
 
-import io.realm.RealmModel;
+import io.objectbox.annotation.BaseEntity;
+import io.objectbox.annotation.Id;
 
-public interface BaseModel extends RealmModel {
+@BaseEntity
+public abstract class BaseModel {
 
-    long id();
-
-    void id(final long id);
+    @Id
+    public long id;
 }

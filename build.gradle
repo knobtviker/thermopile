@@ -3,16 +3,15 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local' }
         maven { url "https://jitpack.io" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha11'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha13'
         classpath 'com.novoda:gradle-build-properties-plugin:0.4.1'
-        classpath 'io.realm:realm-gradle-plugin:5.1.0-SNAPSHOT'
-        classpath 'com.google.gms:google-services:3.1.2'
+        classpath 'io.objectbox:objectbox-gradle-plugin:1.5.0'
+        classpath 'com.google.gms:google-services:3.2.1'
         classpath 'io.fabric.tools:gradle:1.25.1'
 
     }
@@ -21,9 +20,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        maven { url 'https://github.com/WickeDev/stetho-realm/raw/master/maven-repo' }
         maven { url  "https://dl.bintray.com/knobtviker/maven" }
-        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://jitpack.io" }
         jcenter()

@@ -30,7 +30,6 @@ import java.util.Optional;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -148,7 +147,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @Override
     public void onResume() {
         if (thresholdId != -1L) {
-            presenter.loadById(realm, thresholdId);
+            presenter.loadById(thresholdId);
         } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
             populate(startMinute, maxWidth);
         } else {
@@ -250,34 +249,28 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     private void save() {
-        final Threshold threshold = new Threshold();
-        if (thresholdId != -1L) { //Existing threshold
-            threshold.id(thresholdId);
-        } else { //New threshold
-            final Number currentId = Realm.getDefaultInstance().where(Threshold.class).max("id");
-            threshold.id(currentId == null ? 1L : currentId.longValue() + 1);
-        }
-        threshold.day(day);
-        threshold.startHour(startTimeHour);
-        threshold.startMinute(startTimeMinute);
-        threshold.endHour(endTimeHour);
-        threshold.endMinute(endTimeMinute);
-        threshold.temperature(seekBarTemperature.getProgress());
-        threshold.color(colorAdapter.getSelectedColor());
+        final Threshold threshold = new Threshold(); //TODO: This probably doesn't work
+        threshold.day = day;
+        threshold.startHour = startTimeHour;
+        threshold.startMinute = startTimeMinute;
+        threshold.endHour = endTimeHour;
+        threshold.endMinute = endTimeMinute;
+        threshold.temperature = seekBarTemperature.getProgress();
+        threshold.color = colorAdapter.getSelectedColor();
 
         presenter.save(threshold);
     }
 
     private void populate(@NonNull final Threshold threshold) {
-        this.day = threshold.day();
-        this.startTimeHour = threshold.startHour();
-        this.startTimeMinute = threshold.startMinute();
-        this.endTimeHour = threshold.endHour();
-        this.endTimeMinute = threshold.endMinute();
+        this.day = threshold.day;
+        this.startTimeHour = threshold.startHour;
+        this.startTimeMinute = threshold.startMinute;
+        this.endTimeHour = threshold.endHour;
+        this.endTimeMinute = threshold.endMinute;
 
-        seekBarTemperature.setProgress(threshold.temperature());
-        gridtimeStart.setStartTime(threshold.startHour(), threshold.startMinute());
-        gridtimeEnd.setStartTime(threshold.endHour(), threshold.endMinute());
+        seekBarTemperature.setProgress(threshold.temperature);
+        gridtimeStart.setStartTime(threshold.startHour, threshold.startMinute);
+        gridtimeEnd.setStartTime(threshold.endHour, threshold.endMinute);
 
         final String startTime = new DateTime()
             .withDayOfWeek(day + 1)
@@ -292,7 +285,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             .toString("HH:mm");
         buttonTimeEnd.setText(endTime);
 
-        colorAdapter.setSelectedColor(threshold.color());
+        colorAdapter.setSelectedColor(threshold.color);
     }
 
     private void populate(final int startMinuteX, final int maxWidth) {

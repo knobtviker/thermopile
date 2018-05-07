@@ -6,20 +6,15 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.bugfender.sdk.Bugfender;
-import com.facebook.stetho.Stetho;
-import com.instabug.library.Instabug;
-import com.instabug.library.InstabugColorTheme;
-import com.instabug.library.invocation.InstabugInvocationEvent;
+import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.BuildConfig;
-import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
+import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.FileLoggingTree;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 
@@ -39,9 +34,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         memoryClass();
         memoryInfo();
         packageName();
-//        initCrashlytics();
-        initBugfender();
-        initInstabug();
+        initCrashlytics();
         initJodaTime();
         initDatabase();
     }
@@ -50,7 +43,11 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public void onLowMemory() {
         super.onLowMemory();
 
-        Database.getDefaultInstance().deleteAll();
+        if (!Database.getInstance().isClosed()) {
+            Database.getInstance().close();
+        }
+
+        Database.getInstance().deleteAllFiles();
     }
 
     private void plantTree() {
@@ -76,37 +73,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         Timber.i("Memory info -> Available: %d Total: %d Threshold: %d Is low: %s", memoryInfo.availMem, memoryInfo.totalMem, memoryInfo.threshold, memoryInfo.lowMemory);
     }
 
-//    private void initCrashlytics() {
-//        if (!TextUtils.isEmpty(BuildConfig.KEY_FABRIC)) {
-//            Fabric.with(this, new Crashlytics());
-//        }
-//    }
-
-    private void initBugfender() {
-        if (!TextUtils.isEmpty(BuildConfig.KEY_BUGFENDER)) {
-            Bugfender.init(this, BuildConfig.KEY_BUGFENDER, BuildConfig.DEBUG);
-            Bugfender.enableLogcatLogging();
-            Bugfender.enableUIEventLogging(this);
-            Bugfender.enableCrashReporting();
-        }
-    }
-
-    private void initInstabug() {
-        if (!TextUtils.isEmpty(BuildConfig.KEY_INSTABUG)) {
-            new Instabug.Builder(this, BuildConfig.KEY_INSTABUG)
-                .setInvocationEvent(InstabugInvocationEvent.NONE)
-                .build();
-
-            Instabug.setEmailFieldRequired(false, 0);
-            Instabug.setCommentFieldRequired(false);
-            Instabug.setAttachmentTypesEnabled(true, true, false, false);
-            Instabug.setIntroMessageEnabled(false);
-            Instabug.setShouldPlayConversationSounds(false);
-            Instabug.setEnableInAppNotificationSound(false);
-            Instabug.setEnableSystemNotificationSound(false);
-            Instabug.setSuccessDialogEnabled(false);
-            Instabug.setTheme(InstabugColorTheme.InstabugColorThemeDark);
-            Instabug.setPrimaryColor(getColor(R.color.colorAccent));
+    private void initCrashlytics() {
+        if (!TextUtils.isEmpty(BuildConfig.KEY_FABRIC)) {
+            Fabric.with(this, new Crashlytics());
         }
     }
 
@@ -116,20 +85,5 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     private void initDatabase() {
         Database.init(this);
-
-        initStetho();
-    }
-
-    private void initStetho() {
-        Stetho.initialize(
-            Stetho.newInitializerBuilder(this)
-                .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                .enableWebKitInspector(
-                    RealmInspectorModulesProvider.builder(this)
-                        .withLimit(1000)
-                        .withDescendingOrder()
-                        .build()
-                )
-                .build());
     }
 }

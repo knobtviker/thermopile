@@ -25,23 +25,6 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-
-    }
-
-    @Override
-    public void removeListeners() {
-
-    }
-
-    @Override
     public void saveTemperatureUnit(long settingsId, int unit) {
         settingsRepository.saveTemperatureUnit(settingsId, unit);
     }

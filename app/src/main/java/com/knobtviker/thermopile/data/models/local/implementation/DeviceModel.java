@@ -1,31 +1,17 @@
 package com.knobtviker.thermopile.data.models.local.implementation;
 
-import io.reactivex.annotations.NonNull;
-import io.realm.RealmModel;
+import io.objectbox.annotation.BaseEntity;
 
-public interface DeviceModel extends RealmModel {
+@BaseEntity
+public abstract class DeviceModel {
 
-    String vendor();
+    public String vendor;
 
-    void vendor(@NonNull final String vendor);
+    public String name;
 
-    String name();
+    public String bus;
 
-    void name(@NonNull final String name);
+    public int address;
 
-    String bus();
-
-    void bus(@NonNull final String bus);
-
-    int address();
-
-    void address(final int address);
-
-//    boolean enabled();
-//
-//    void enabled(final boolean enabled);
-
-    boolean connected();
-
-    void connected(final boolean connected);
+    public boolean connected;
 }

@@ -33,9 +33,10 @@ import com.knobtviker.thermopile.presentation.views.listeners.DayScrollListener;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -272,13 +273,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
-        dateTimeZone = DateTimeZone.forID(settings.timezone());
-        formatClock = settings.formatClock();
-        formatDate = settings.formatDate();
-        formatTime = settings.formatTime();
-        unitTemperature = settings.unitTemperature();
-        unitPressure = settings.unitPressure();
-        unitMotion = settings.unitMotion();
+        dateTimeZone = DateTimeZone.forID(settings.timezone);
+        formatClock = settings.formatClock;
+        formatDate = settings.formatDate;
+        formatTime = settings.formatTime;
+        unitTemperature = settings.unitTemperature;
+        unitPressure = settings.unitPressure;
+        unitMotion = settings.unitMotion;
 
         setFormatClock();
         setTemperatureUnit();
@@ -288,7 +289,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
-    public void onThresholdsChanged(@NonNull RealmResults<Threshold> thresholds) {
+    public void onThresholdsChanged(@NonNull List<Threshold> thresholds) {
         thresholdAdapter.updateData(thresholds);
     }
 
@@ -403,11 +404,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.observeHumidityChanged(getContext());
         presenter.observeAirQualityChanged(getContext());
         presenter.observeAccelerationChanged(getContext());
-        presenter.settings(realm);
+        presenter.settings();
     }
 
     private void thresholds() {
-        presenter.thresholdsForToday(realm, DateTime.now().dayOfWeek().get());
+        presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
     }
 
     //TODO: Move this somewhere else and cleanup strings

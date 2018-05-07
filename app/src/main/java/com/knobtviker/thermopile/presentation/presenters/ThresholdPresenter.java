@@ -8,9 +8,6 @@ import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
-
 /**
  * Created by bojan on 29/10/2017.
  */
@@ -21,8 +18,6 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
 
     private final ThresholdRepository thresholdRepository;
 
-    private RealmResults<Threshold> resultsThresholds;
-
     public ThresholdPresenter(@NonNull final ThresholdContract.View view) {
         super(view);
 
@@ -31,56 +26,34 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            resultsThresholds.addChangeListener(thresholds -> {
-                if (!thresholds.isEmpty()) {
-                    final Threshold result = thresholds.first();
-                    if (result != null) {
-                        view.onThreshold(result);
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public void removeListeners() {
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            resultsThresholds.removeAllChangeListeners();
-        }
-    }
-
-    @Override
-    public void loadById(@NonNull final Realm realm, long thresholdId) {
+    public void loadById(long thresholdId) {
         started();
 
-        resultsThresholds = thresholdRepository.loadById(realm, thresholdId);
-
-        if (!resultsThresholds.isEmpty()) {
-            final Threshold result = resultsThresholds.first();
-            if (result != null) {
-                view.onThreshold(result);
-            }
-        }
-
-        completed();
+        compositeDisposable.add(
+            thresholdRepository
+                .loadById(thresholdId)
+                .subscribe(
+                    view::onThreshold,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override
     public void save(@NonNull Threshold threshold) {
         started();
 
-        thresholdRepository.save(threshold);
-
-        view.onSaved();
-        completed();
+        compositeDisposable.add(
+            thresholdRepository
+                .save(threshold)
+                .subscribe(
+                    resultId-> {
+                        view.onSaved();
+                    },
+                    this::error,
+                    this::completed
+                )
+        );
     }
 }

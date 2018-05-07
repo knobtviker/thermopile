@@ -6,10 +6,13 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.sources.local.ThresholdLocalDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+
 
 /**
  * Created by bojan on 17/07/2017.
@@ -24,23 +27,38 @@ public class ThresholdRepository extends AbstractRepository {
     ThresholdRepository() {
     }
 
-    public RealmResults<Threshold> load(@NonNull final Realm realm) {
-        return thresholdLocalDataSource.load(realm);
+    public Observable<List<Threshold>> load() {
+        return thresholdLocalDataSource
+            .query()
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
     }
 
-    public RealmResults<Threshold> loadByDay(@NonNull final Realm realm, final int day) {
-        return thresholdLocalDataSource.loadByDay(realm, day);
+    public Observable<List<Threshold>> loadByDay(final int day) {
+        return thresholdLocalDataSource
+            .queryByDay(day)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
     }
 
-    public RealmResults<Threshold> loadById(@NonNull final Realm realm, final long thresholdId) {
-        return thresholdLocalDataSource.loadById(realm, thresholdId);
+    public Observable<Threshold> loadById(final long thresholdId) {
+        return thresholdLocalDataSource
+            .queryById(thresholdId)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
     }
 
-    public void save(@NonNull final Threshold item) {
-        thresholdLocalDataSource.save(item);
+    public Observable<Long> save(@NonNull final Threshold item) {
+        return thresholdLocalDataSource
+            .save(item)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
     }
 
-    public void removeById(final long id) {
-        thresholdLocalDataSource.removeById(id);
+    public Completable removeById(final long id) {
+        return thresholdLocalDataSource
+            .removeById(id)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
     }
 }

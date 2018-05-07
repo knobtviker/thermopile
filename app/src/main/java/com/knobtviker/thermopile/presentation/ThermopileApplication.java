@@ -7,25 +7,19 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.google.android.things.device.TimeManager;
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
-import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
 import com.knobtviker.android.things.contrib.community.driver.bme280.BME280SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231;
 import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
-import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.sources.local.implemenatation.Database;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.utils.Router;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -56,7 +50,34 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
     @Override
     public void onSettings(@NonNull Settings settings) {
-        AppCompatDelegate.setDefaultNightMode(settings.theme());
+        AppCompatDelegate.setDefaultNightMode(settings.theme);
+    }
+
+    @Override
+    public void onSensorFound(int address) {
+        Timber.i("Sensor address found %d", address);
+        try {
+            //TODO: Move these hardcoded addresses to some Integrity with default constants class
+            switch (address) {
+                case 0x77:
+                    initBME280();
+                    break;
+                case 0x76:
+                    initBME680();
+                    break;
+                case 0x68:
+                    initDS3231();
+                    break;
+                case 0x39:
+                    initTSL2561();
+                    break;
+                case 0x6B:
+                    initLSM9DS1();
+                    break;
+            }
+        } catch (IOException e) {
+            showError(e);
+        }
     }
 
     @Override
@@ -77,66 +98,11 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
         presenter.createScreensaver();
 
-        presenter.settings(Database.getDefaultInstance());
-
-        initSensors();
-    }
-
-    private void initSensors() {
-        final ImmutableList<I2CDevice> i2CDevices = presenter.i2cDevices();
-
-        if (i2CDevices.isEmpty()) {
-            //TODO: Show in Main that there are no sensors connected
-            return;
-        }
+        presenter.settings();
 
         presenter.observeSensors(this);
 
-        final List<PeripheralDevice> foundSensors = new ArrayList<>(0);
-
-        presenter
-            .defaultSensors(Database.getDefaultInstance())
-            .forEach(
-                defaultSensor -> {
-                    boolean found = i2CDevices
-                        .stream()
-                        .map(I2CDevice::address)
-                        .anyMatch(integer -> integer == defaultSensor.address());
-
-                    if (found) {
-                        foundSensors.add(defaultSensor);
-
-                        try {
-                            //TODO: Move these hardcoded addresses to some Integrity with default constants class
-                            switch (defaultSensor.address()) {
-                                case 0x77:
-                                    initBME280();
-                                    break;
-                                case 0x76:
-                                    initBME680();
-                                    break;
-                                case 0x68:
-                                    initDS3231();
-                                    break;
-                                case 0x39:
-                                    initTSL2561();
-                                    break;
-                                case 0x6B:
-                                    initLSM9DS1();
-                                    break;
-                            }
-                        } catch (IOException e) {
-                            showError(e);
-                        }
-                    }
-                }
-            );
-
-        if (!foundSensors.isEmpty()) {
-            presenter.saveDefaultSensors(foundSensors);
-        }
-
-        presenter.peripherals(Database.getDefaultInstance());
+        presenter.peripherals();
     }
 
     //CHIP_ID_BME280 = 0x60 | DEFAULT_I2C_ADDRESS = 0x77

@@ -20,11 +20,13 @@ import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
+import com.knobtviker.thermopile.data.models.memory.Matrix;
 import com.knobtviker.thermopile.data.sources.local.PeripheralLocalDataSource;
 import com.knobtviker.thermopile.data.sources.raw.PeripheralRawDataSource;
 import com.knobtviker.thermopile.data.sources.raw.rxsensormanager.RxSensorEvent;
 import com.knobtviker.thermopile.data.sources.raw.rxsensormanager.RxSensorManager;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
+import com.knobtviker.thermopile.domain.utils.KalmanFilter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import org.joda.time.DateTimeUtils;
@@ -34,12 +36,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposables;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by bojan on 17/07/2017.
@@ -59,29 +60,45 @@ public class PeripheralsRepository extends AbstractRepository {
     PeripheralsRepository() {
     }
 
-    public List<I2CDevice> probe() {
-        return peripheralRawDataSource.load();
+    public Observable<List<I2CDevice>> probe() {
+        return Observable
+            .just(peripheralRawDataSource.load())
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
-    public RealmResults<PeripheralDevice> load(@NonNull final Realm realm) {
-        return peripheralLocalDataSource.load(realm);
+    public Observable<List<PeripheralDevice>> load() {
+        return peripheralLocalDataSource.query()
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
     @Nullable
-    public PeripheralDevice loadById(@NonNull final Realm realm, @NonNull final String id) {
-        return peripheralLocalDataSource.loadById(realm, id);
+    public Observable<PeripheralDevice> loadById(final long id) {
+        return peripheralLocalDataSource
+            .queryById(id)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
-    public void save(@NonNull final List<PeripheralDevice> foundSensors) {
-        peripheralLocalDataSource.save(foundSensors);
+    public Completable save(@NonNull final List<PeripheralDevice> foundSensors) {
+        return peripheralLocalDataSource.save(foundSensors)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
-    public void saveConnected(@NonNull final List<PeripheralDevice> items, final boolean isConnected) {
-        peripheralLocalDataSource.saveConnected(items, isConnected);
+    public Completable saveConnected(@NonNull final List<PeripheralDevice> items, final boolean isConnected) {
+        return peripheralLocalDataSource
+            .saveConnected(items, isConnected)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
     }
 
-    public void saveEnabled(@NonNull final PeripheralDevice item, final int type, final boolean isEnabled) {
-        peripheralLocalDataSource.saveEnabled(item, type, isEnabled);
+    public Observable<Long> saveEnabled(@NonNull final PeripheralDevice item, final int type, final boolean isEnabled) {
+        return peripheralLocalDataSource
+            .saveEnabled(item, type, isEnabled)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
     public Flowable<SensorEvent> observeSensors(@NonNull final Context context) {
@@ -210,77 +227,136 @@ public class PeripheralsRepository extends AbstractRepository {
     }
 
     private Observable<Float> observeSingleValue(@NonNull final Context context, @NonNull final String action, @NonNull final String key) {
-        return Observable.defer(() ->
-            Observable.create((ObservableEmitter<Float> emitter) -> {
-                final IntentFilter filter = new IntentFilter();
-                filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
+        return Observable.defer(() -> {
+                final KalmanFilter kalman = new KalmanFilter(2, 1);
 
-                final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
+                // measurement [x]
+                final Matrix m = new Matrix(1, 1);
 
-                final BroadcastReceiver receiver = new BroadcastReceiver() {
+                // transitions for x, dx
+                final double[][] tr = {{1, 0}, {0, 1}};
+                kalman.setTransition_matrix(new Matrix(tr));
 
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        if (intent.hasExtra(key)) {
-                            final float value = intent.getFloatExtra(key, 0.0f);
+                // 1s somewhere?
+                kalman.setError_cov_post(kalman.getError_cov_post().identity());
 
-                            emitter.onNext(normalized(value));
-                        } else {
-                            emitter.onError(new NoSuchFieldException());
+                return Observable.create((ObservableEmitter<Float> emitter) -> {
+                    final IntentFilter filter = new IntentFilter();
+                    filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
+
+                    final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
+
+                    final BroadcastReceiver receiver = new BroadcastReceiver() {
+
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            if (intent.hasExtra(key)) {
+                                final float value = intent.getFloatExtra(key, 0.0f);
+
+//                            emitter.onNext(normalized(value));
+
+                                m.set(0, 0, value);
+
+                                // state [x, dx]
+                                final Matrix s = kalman.Predict();
+
+                                // corrected state [x, dx]
+                                final Matrix c = kalman.Correct(m);
+
+                                emitter.onNext(normalized((float) c.get(0, 0)));
+                            } else {
+                                emitter.onError(new NoSuchFieldException());
+                            }
                         }
-                    }
-                };
+                    };
 
-                if (localBroadcastManagerWeakReference.get() != null) {
-                    localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
-                }
-
-                emitter.setDisposable(Disposables.fromRunnable(() -> {
                     if (localBroadcastManagerWeakReference.get() != null) {
-                        localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
+                        localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
                     }
-                }));
-            })
+
+                    emitter.setDisposable(Disposables.fromRunnable(() -> {
+                        if (localBroadcastManagerWeakReference.get() != null) {
+                            localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
+                        }
+                    }));
+                });
+            }
         )
             .startWith(0.0f);
     }
 
     private Observable<float[]> observeCartesianValue(@NonNull final Context context, @NonNull final String action, @NonNull final String key) {
-        return Observable.defer(() ->
-            Observable.create((ObservableEmitter<float[]> emitter) -> {
-                final IntentFilter filter = new IntentFilter();
-                filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
+        return Observable.defer(() -> {
+                final KalmanFilter kalman = new KalmanFilter(6, 3);
 
-                final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
+                // measurement [x, y, z]
+                final Matrix m = new Matrix(3, 1);
 
-                final BroadcastReceiver receiver = new BroadcastReceiver() {
+                // transitions for x, y, z, dx, dy, dz (velocity transitions)
+                final double[][] tr = {{1, 0, 0, 1, 0, 0},
+                    {0, 1, 0, 0, 1, 0},
+                    {0, 0, 1, 0, 0, 1},
+                    {0, 0, 0, 1, 0, 0},
+                    {0, 0, 0, 0, 1, 0},
+                    {0, 0, 0, 0, 0, 1}};
+                kalman.setTransition_matrix(new Matrix(tr));
 
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        if (intent.hasExtra(key)) {
-                            final float[] values = intent.getFloatArrayExtra(key);
+                // 1s somewhere?
+                kalman.setError_cov_post(kalman.getError_cov_post().identity());
 
-                            emitter.onNext(new float[]{
-                                normalizedToScale(values[0]),
-                                normalizedToScale(values[1]),
-                                normalizedToScale(values[2])
-                            });
-                        } else {
-                            emitter.onError(new NoSuchFieldException());
+                final float[] buffer = new float[3];
+
+                return Observable.create((ObservableEmitter<float[]> emitter) -> {
+                    final IntentFilter filter = new IntentFilter();
+                    filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
+
+                    final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
+
+                    final BroadcastReceiver receiver = new BroadcastReceiver() {
+
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            if (intent.hasExtra(key)) {
+                                final float[] values = intent.getFloatArrayExtra(key);
+
+//                            emitter.onNext(new float[]{
+//                                normalizedToScale(values[0]),
+//                                normalizedToScale(values[1]),
+//                                normalizedToScale(values[2])
+//                            });
+
+                                m.set(0, 0, values[0]);
+                                m.set(1, 0, values[1]);
+                                m.set(2, 0, values[2]);
+
+                                // state [x, y, z, dx, dy, dz]
+                                final Matrix s = kalman.Predict();
+
+                                // corrected state [x, y,z, dx, dy, dz, dxyz]
+                                final Matrix c = kalman.Correct(m);
+
+                                buffer[0] = normalizedToScale((float) c.get(0, 0));
+                                buffer[1] = normalizedToScale((float) c.get(1, 0));
+                                buffer[2] = normalizedToScale((float) c.get(2, 0));
+
+                                emitter.onNext(buffer);
+                            } else {
+                                emitter.onError(new NoSuchFieldException());
+                            }
                         }
-                    }
-                };
+                    };
 
-                if (localBroadcastManagerWeakReference.get() != null) {
-                    localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
-                }
-
-                emitter.setDisposable(Disposables.fromRunnable(() -> {
                     if (localBroadcastManagerWeakReference.get() != null) {
-                        localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
+                        localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
                     }
-                }));
-            })
+
+                    emitter.setDisposable(Disposables.fromRunnable(() -> {
+                        if (localBroadcastManagerWeakReference.get() != null) {
+                            localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
+                        }
+                    }));
+                });
+            }
         )
             .startWith(new float[]{0.0f, 0.0f, 0.0f});
     }

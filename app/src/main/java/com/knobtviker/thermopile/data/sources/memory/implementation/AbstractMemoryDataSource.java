@@ -5,8 +5,6 @@ import com.knobtviker.thermopile.data.sources.raw.fram.Mb85rc256v;
 
 import java.io.IOException;
 
-import timber.log.Timber;
-
 public abstract class AbstractMemoryDataSource {
 
     private int ADDRESS_INVALID = -1;
@@ -31,22 +29,16 @@ public abstract class AbstractMemoryDataSource {
     protected int addressY = ADDRESS_INVALID;
     protected int addressZ = ADDRESS_INVALID;
 
-    private Mb85rc256v fram = null;
-
-    public AbstractMemoryDataSource() {
-        try {
-            fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
-        } catch (IOException e) {
-            Timber.e(e);
-        }
-    }
 
     protected void saveInt(final int address, final int value) throws IOException {
         if (address == ADDRESS_INVALID) {
             throw new IOException("No address assigned");
         }
 
+        final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
+        fram.setVerbose(true);
         fram.writeInt(address, value);
+        fram.close();
     }
 
     protected int readInt(final int address) throws IOException {
@@ -54,6 +46,11 @@ public abstract class AbstractMemoryDataSource {
             throw new IOException("No address assigned");
         }
 
-        return fram.readInt(address);
+        final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
+        fram.setVerbose(true);
+        final int result = fram.readInt(address);
+        fram.close();
+
+        return result;
     }
 }

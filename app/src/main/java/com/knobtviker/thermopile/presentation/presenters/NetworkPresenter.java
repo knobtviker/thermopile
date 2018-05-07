@@ -46,23 +46,6 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-
-    }
-
-    @Override
-    public void removeListeners() {
-
-    }
-
-    @Override
     public void observeTemperatureChanged(@NonNull Context context) {
         compositeDisposable.add(
             peripheralsRepository

@@ -156,12 +156,12 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
-        dateTimeZone = DateTimeZone.forID(settings.timezone());
-        formatClock = settings.formatClock();
-        formatDate = settings.formatDate();
-        formatTime = settings.formatTime();
-        unitTemperature = settings.unitTemperature();
-        unitPressure = settings.unitPressure();
+        dateTimeZone = DateTimeZone.forID(settings.timezone);
+        formatClock = settings.formatClock;
+        formatDate = settings.formatDate;
+        formatTime = settings.formatTime;
+        unitTemperature = settings.unitTemperature;
+        unitPressure = settings.unitPressure;
 
         setFormatClock();
         setTemperatureUnit();
@@ -190,7 +190,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         presenter.observeHumidityChanged(getContext());
         presenter.observeAirQualityChanged(getContext());
         presenter.observeAccelerationChanged(getContext());
-        presenter.settings(realm);
+        presenter.settings();
     }
 
     private void setFormatClock() {

@@ -8,8 +8,7 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
+import java.util.List;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -33,7 +32,7 @@ public interface MainContract {
 
         void onSettingsChanged(@NonNull final Settings settings);
 
-        void onThresholdsChanged(@NonNull final RealmResults<Threshold> thresholds);
+        void onThresholdsChanged(@NonNull final List<Threshold> thresholds);
     }
 
     interface Presenter extends BasePresenter {
@@ -50,8 +49,8 @@ public interface MainContract {
 
         void observeDateChanged(@NonNull final Context context);
 
-        void settings(@NonNull final Realm realm);
+        void settings();
 
-        void thresholdsForToday(@NonNull final Realm realm, final int day);
+        void thresholdsForToday(final int day);
     }
 }

@@ -95,9 +95,9 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     }
 
     public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id();
-        this.timezone = settings.timezone();
-        this.clockMode = settings.formatClock();
+        this.settingsId = settings.id;
+        this.timezone = settings.timezone;
+        this.clockMode = settings.formatClock;
     }
 
     private void setupSpinnerTimezone() {

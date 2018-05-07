@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerThresholdDataComponent;
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.PeripheralsRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
@@ -19,8 +19,6 @@ import com.knobtviker.thermopile.presentation.presenters.implementation.Abstract
 
 import io.reactivex.Observable;
 import io.reactivex.android.MainThreadDisposable;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -31,64 +29,28 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     private final MainContract.View view;
 
     private final PeripheralsRepository peripheralsRepository;
+    private final AtmosphereRepository atmosphereRepository;
     private final SettingsRepository settingsRepository;
     private final ThresholdRepository thresholdRepository;
-
-    private RealmResults<Settings> resultsSettings;
-    private RealmResults<Threshold> resultsThresholds;
 
     public MainPresenter(@NonNull final MainContract.View view) {
         super(view);
 
         this.view = view;
         this.peripheralsRepository = DaggerPeripheralsDataComponent.create().repository();
+        this.atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
         this.settingsRepository = DaggerSettingsDataComponent.create().repository();
         this.thresholdRepository = DaggerThresholdDataComponent.create().repository();
-    }
-
-    @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.addChangeListener(settings -> {
-                if (!settings.isEmpty()) {
-                    final Settings result = settings.first();
-                    if (result != null) {
-                        view.onSettingsChanged(result);
-                    }
-                }
-            });
-        }
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            resultsThresholds.addChangeListener(thresholds -> {
-                if (!thresholds.isEmpty()) {
-                    view.onThresholdsChanged(thresholds);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void removeListeners() {
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.removeAllChangeListeners();
-        }
-        if (resultsThresholds != null && resultsThresholds.isValid()) {
-            resultsThresholds.removeAllChangeListeners();
-        }
     }
 
     @Override
     public void observeTemperatureChanged(@NonNull Context context) {
         compositeDisposable.add(
             Observable
-                .defer(() -> peripheralsRepository.observeTemperature(context))
+                .defer(() -> peripheralsRepository
+                    .observeTemperature(context)
+                )
+                .doOnNext(atmosphereRepository::saveTemperatureInMemory)
                 .subscribe(
                     view::onTemperatureChanged,
                     this::error,
@@ -101,7 +63,10 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     public void observePressureChanged(@NonNull Context context) {
         compositeDisposable.add(
             Observable
-                .defer(() -> peripheralsRepository.observePressure(context))
+                .defer(() -> peripheralsRepository
+                    .observePressure(context)
+                )
+                .doOnNext(atmosphereRepository::savePressureInMemory)
                 .subscribe(
                     view::onPressureChanged,
                     this::error,
@@ -114,7 +79,10 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     public void observeHumidityChanged(@NonNull Context context) {
         compositeDisposable.add(
             Observable
-                .defer(() -> peripheralsRepository.observeHumidity(context))
+                .defer(() -> peripheralsRepository
+                    .observeHumidity(context)
+                )
+                .doOnNext(atmosphereRepository::saveHumidityInMemory)
                 .subscribe(
                     view::onHumidityChanged,
                     this::error,
@@ -127,7 +95,10 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     public void observeAirQualityChanged(@NonNull Context context) {
         compositeDisposable.add(
             Observable
-                .defer(() -> peripheralsRepository.observeAirQuality(context))
+                .defer(() -> peripheralsRepository
+                    .observeAirQuality(context)
+                    .doOnNext(atmosphereRepository::saveAirQualityInMemory)
+                )
                 .subscribe(
                     view::onAirQualityChanged,
                     this::error,
@@ -140,7 +111,10 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     public void observeAccelerationChanged(@NonNull Context context) {
         compositeDisposable.add(
             Observable
-                .defer(() -> peripheralsRepository.observeAcceleration(context))
+                .defer(() -> peripheralsRepository
+                    .observeAcceleration(context)
+                    .doOnNext(atmosphereRepository::saveAccelerationInMemory)
+                )
                 .subscribe(
                     view::onAccelerationChanged,
                     this::error,
@@ -186,23 +160,23 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     }
 
     @Override
-    public void settings(@NonNull final Realm realm) {
+    public void settings() {
         started();
 
-        resultsSettings = settingsRepository.load(realm);
-
-        if (!resultsSettings.isEmpty()) {
-            final Settings result = resultsSettings.first();
-            if (result != null) {
-                view.onSettingsChanged(result);
-            }
-        }
-
-        completed();
+        compositeDisposable.add(
+            settingsRepository
+                .load()
+                .subscribe(settings -> {
+                        view.onSettingsChanged(settings.get(0));
+                    },
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override
-    public void thresholdsForToday(@NonNull final Realm realm, int day) {
+    public void thresholdsForToday(int day) {
         started();
 
         //0 = 6
@@ -214,12 +188,14 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         //6 = 5
 //        day = (day == 0 ? 6 : (day - 1));
 
-        resultsThresholds = thresholdRepository.load(realm);
-
-        if (resultsThresholds != null && !resultsThresholds.isEmpty()) {
-            view.onThresholdsChanged(resultsThresholds);
-        }
-
-        completed();
+        compositeDisposable.add(
+            thresholdRepository
+                .load()
+                .subscribe(
+                    view::onThresholdsChanged,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 }

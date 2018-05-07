@@ -30,51 +30,6 @@ import dagger.Provides;
 public class AtmosphereDataModule {
 
     @Provides
-    static TemperatureLocalDataSource provideTemperatureLocalDataSource() {
-        return new TemperatureLocalDataSource();
-    }
-
-    @Provides
-    static HumidityLocalDataSource provideHumidityLocalDataSource() {
-        return new HumidityLocalDataSource();
-    }
-
-    @Provides
-    static PressureLocalDataSource providePressureLocalDataSource() {
-        return new PressureLocalDataSource();
-    }
-
-    @Provides
-    static AltitudeLocalDataSource provideAltitudeLocalDataSource() {
-        return new AltitudeLocalDataSource();
-    }
-
-    @Provides
-    static AirQualityLocalDataSource provideAirQualityLocalDataSource() {
-        return new AirQualityLocalDataSource();
-    }
-
-    @Provides
-    static LuminosityLocalDataSource provideLuminosityLocalDataSource() {
-        return new LuminosityLocalDataSource();
-    }
-
-    @Provides
-    static AccelerationLocalDataSource provideAccelerationLocalDataSource() {
-        return new AccelerationLocalDataSource();
-    }
-
-    @Provides
-    static AngularVelocityLocalDataSource provideAngularVelocityLocalDataSource() {
-        return new AngularVelocityLocalDataSource();
-    }
-
-    @Provides
-    static MagneticFieldLocalDataSource provideMagneticFieldLocalDataSource() {
-        return new MagneticFieldLocalDataSource();
-    }
-
-    @Provides
     static TemperatureMemoryDataSource provideTemperatureMemoryDataSource() {
         return new TemperatureMemoryDataSource();
     }
@@ -117,5 +72,50 @@ public class AtmosphereDataModule {
     @Provides
     static MagneticFieldMemoryDataSource provideMagneticFieldMemoryDataSource() {
         return new MagneticFieldMemoryDataSource();
+    }
+
+    @Provides
+    static TemperatureLocalDataSource provideTemperatureLocalDataSource() {
+        return new TemperatureLocalDataSource();
+    }
+
+    @Provides
+    static HumidityLocalDataSource provideHumidityLocalDataSource() {
+        return new HumidityLocalDataSource();
+    }
+
+    @Provides
+    static PressureLocalDataSource providePressureLocalDataSource() {
+        return new PressureLocalDataSource();
+    }
+
+    @Provides
+    static AltitudeLocalDataSource provideAltitudeLocalDataSource() {
+        return new AltitudeLocalDataSource();
+    }
+
+    @Provides
+    static AirQualityLocalDataSource provideAirQualityLocalDataSource() {
+        return new AirQualityLocalDataSource();
+    }
+
+    @Provides
+    static LuminosityLocalDataSource provideLuminosityLocalDataSource() {
+        return new LuminosityLocalDataSource();
+    }
+
+    @Provides
+    static AccelerationLocalDataSource provideAccelerationLocalDataSource() {
+        return new AccelerationLocalDataSource();
+    }
+
+    @Provides
+    static AngularVelocityLocalDataSource provideAngularVelocityLocalDataSource() {
+        return new AngularVelocityLocalDataSource();
+    }
+
+    @Provides
+    static MagneticFieldLocalDataSource provideMagneticFieldLocalDataSource() {
+        return new MagneticFieldLocalDataSource();
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
-import com.instabug.library.InstabugTrackingDelegate;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
@@ -24,8 +23,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        InstabugTrackingDelegate.notifyActivityGotTouchEvent(event, this);
-
         if (this.getClass().getSimpleName().equalsIgnoreCase(ScreenSaverActivity.class.getSimpleName())) {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 ((ThermopileApplication) getApplication()).createScreensaver();

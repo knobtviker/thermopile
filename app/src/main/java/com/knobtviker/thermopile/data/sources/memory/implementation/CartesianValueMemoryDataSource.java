@@ -2,9 +2,12 @@ package com.knobtviker.thermopile.data.sources.memory.implementation;
 
 import java.io.IOException;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+
 public interface CartesianValueMemoryDataSource {
 
-    void save(final float valueX, final float valueY, final float valueZ) throws IOException;
+    Completable save(final float[] values) throws IOException;
 
-    float[] load() throws IOException;
+    Observable<float[]> load() throws IOException;
 }

@@ -1,78 +1,64 @@
 package com.knobtviker.thermopile.data.sources.local;
 
-import android.support.annotation.NonNull;
-
 import com.knobtviker.thermopile.data.models.local.Threshold;
-import com.knobtviker.thermopile.data.sources.ThresholdDataSource;
+import com.knobtviker.thermopile.data.models.local.Threshold_;
+import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
-import io.realm.Sort;
+import io.reactivex.Observable;
 
 /**
  * Created by bojan on 26/06/2017.
  */
 
-public class ThresholdLocalDataSource implements ThresholdDataSource.Local {
+public class ThresholdLocalDataSource extends AbstractLocalDataSource<Threshold> {
 
     @Inject
     public ThresholdLocalDataSource() {
+        super(Threshold.class);
     }
 
     @Override
-    public RealmResults<Threshold> load(@NonNull final Realm realm) {
-        final String[] fieldNames = {"day", "startHour", "startMinute"};
-        final Sort[] directions = {Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING};
-
-        return realm
-            .where(Threshold.class)
-            .sort(fieldNames, directions)
-            .findAll();
+    public Observable<List<Threshold>> observe() {
+        return super.observe(
+            box.query()
+                .order(Threshold_.day)
+                .order(Threshold_.startHour)
+                .order(Threshold_.startMinute)
+                .build()
+        );
     }
 
     @Override
-    public RealmResults<Threshold> loadByDay(@NonNull final Realm realm, int day) {
-        final String[] fieldNames = {"startHour", "startMinute"};
-        final Sort[] directions = {Sort.ASCENDING, Sort.ASCENDING};
-
-        return realm
-            .where(Threshold.class)
-            .equalTo("day", day)
-            .sort(fieldNames, directions)
-            .findAll();
+    public Observable<List<Threshold>> query() {
+        return super.query(
+            box.query()
+                .order(Threshold_.day)
+                .order(Threshold_.startHour)
+                .order(Threshold_.startMinute)
+                .build()
+        );
     }
 
     @Override
-    public RealmResults<Threshold> loadById(@NonNull final Realm realm, long thresholdId) {
-        return realm
-            .where(Threshold.class)
-            .equalTo("id", thresholdId)
-            .findAll();
+    public Observable<Threshold> queryById(long id) {
+        return super.queryById(
+            box.query()
+                .equal(Threshold_.id, id)
+                .build()
+        );
     }
 
-    @Override
-    public void save(@NonNull Threshold item) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.insertOrUpdate(item);
-        realm.commitTransaction();
-        realm.close();
-    }
-
-    @Override
-    public void removeById(long id) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        final Threshold threshold = realm
-            .where(Threshold.class)
-            .equalTo("id", id)
-            .findFirst();
-        if (threshold != null) {
-            threshold.deleteFromRealm();
-        }
-        realm.commitTransaction();
-        realm.close();
+    public Observable<List<Threshold>> queryByDay(final int day) {
+        return super.query(
+            box.query()
+                .equal(Threshold_.day, day)
+                .order(Threshold_.startHour)
+                .order(Threshold_.startMinute)
+                .build()
+        );
     }
 }

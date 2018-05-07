@@ -2,14 +2,10 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -21,8 +17,6 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
 
     private final SettingsRepository settingsRepository;
 
-    private RealmResults<Settings> resultsSettings;
-
     public SettingsPresenter(@NonNull final SettingsContract.View view) {
         super(view);
 
@@ -31,46 +25,19 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.addChangeListener(settings -> {
-                if (!settings.isEmpty()) {
-                    final Settings result = settings.first();
-                    if (result != null) {
-                        view.onLoad(result);
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public void removeListeners() {
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.removeAllChangeListeners();
-        }
-    }
-
-    @Override
-    public void load(@NonNull final Realm realm) {
+    public void load() {
         started();
 
-        resultsSettings = settingsRepository.load(realm);
-
-        if (!resultsSettings.isEmpty()) {
-            final Settings result = resultsSettings.first();
-            if (result != null) {
-                view.onLoad(result);
-            }
-        }
-
-        completed();
+        compositeDisposable.add(
+            settingsRepository
+                .load()
+                .subscribe(
+                    settings -> {
+                      view.onLoad(settings.get(0));
+                    },
+                    this::error,
+                    this::completed
+                )
+        );
     }
 }

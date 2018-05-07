@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.common.collect.ImmutableList;
-import com.instabug.library.Instabug;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
@@ -89,7 +88,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
 
     @Override
     public void onResume() {
-        presenter.load(realm);
+        presenter.load();
 
         super.onResume();
     }
@@ -129,7 +128,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
                 break;
             case R.id.button_help:
                 Timber.i("Show HelpActivity");
-                Instabug.invoke();
                 break;
             case R.id.button_feedback:
                 Timber.i("Show FeedbackActivity");

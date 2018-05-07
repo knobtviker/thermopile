@@ -25,23 +25,6 @@ public class LocalePresenter extends AbstractPresenter implements LocaleContract
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
-
-        removeListeners();
-    }
-
-    @Override
-    public void addListeners() {
-
-    }
-
-    @Override
-    public void removeListeners() {
-
-    }
-
-    @Override
     public void saveTimezone(long settingsId, @NonNull String timezone) {
         settingsRepository.saveTimezone(settingsId, timezone);
     }

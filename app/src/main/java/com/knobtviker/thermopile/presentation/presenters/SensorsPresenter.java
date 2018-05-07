@@ -2,14 +2,13 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
 import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.PeripheralsRepository;
 import com.knobtviker.thermopile.presentation.contracts.SensorsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
+import io.reactivex.Observable;
+
 
 /**
  * Created by bojan on 15/07/2017.
@@ -21,8 +20,6 @@ public class SensorsPresenter extends AbstractPresenter implements SensorsContra
 
     private final PeripheralsRepository peripheralsRepository;
 
-    private RealmResults<PeripheralDevice> resultsPeripherals;
-
     public SensorsPresenter(@NonNull final SensorsContract.View view) {
         super(view);
 
@@ -31,40 +28,40 @@ public class SensorsPresenter extends AbstractPresenter implements SensorsContra
     }
 
     @Override
-    public void unsubscribe() {
-        super.unsubscribe();
+    public void sensors() {
+        started();
 
-        removeListeners();
+        compositeDisposable.add(
+            peripheralsRepository
+                .load()
+                .subscribe(
+                    view::onSensors,
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override
-    public void addListeners() {
-        if (resultsPeripherals != null && resultsPeripherals.isValid()) {
-            resultsPeripherals.addChangeListener(view::onSensors);
-        }
-    }
+    public void sensorEnabled(final long id, final int type, boolean isEnabled) {
+        started();
 
-    @Override
-    public void removeListeners() {
-        if (resultsPeripherals != null && resultsPeripherals.isValid()) {
-            resultsPeripherals.removeAllChangeListeners();
-        }
-    }
-
-    @Override
-    public void sensors(@NonNull Realm realm) {
-        resultsPeripherals = peripheralsRepository.load(realm);
-
-        if (resultsPeripherals != null && !resultsPeripherals.isEmpty()) {
-            view.onSensors(resultsPeripherals);
-        }
-    }
-
-    @Override
-    public void sensorEnabled(@NonNull Realm realm, @NonNull String primaryKey, final int type, boolean isEnabled) {
-        final PeripheralDevice peripheralDevice = peripheralsRepository.loadById(realm, primaryKey);
-        if (peripheralDevice != null) {
-            peripheralsRepository.saveEnabled(peripheralDevice, type, isEnabled);
-        }
+        compositeDisposable.add(
+            peripheralsRepository
+                .loadById(id)
+                .flatMap(peripheralDevice -> {
+                    if (peripheralDevice == null) {
+                        return Observable.just(0L);
+                    } else {
+                        return peripheralsRepository.saveEnabled(peripheralDevice, type, isEnabled);
+                    }
+                })
+                .subscribe(
+                    resultId -> {
+                    },
+                    this::error,
+                    this::completed
+                )
+        );
     }
 }

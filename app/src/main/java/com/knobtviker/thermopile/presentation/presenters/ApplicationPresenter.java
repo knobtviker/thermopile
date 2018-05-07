@@ -7,12 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
 import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680;
 import com.knobtviker.android.things.contrib.community.driver.bme680.Bme680SensorDriver;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
-import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
@@ -31,10 +29,9 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by bojan on 08/08/2017.
@@ -52,11 +49,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     private final Scheduler scheduler;
 
-    private List<PeripheralDevice> peripherals;
-
-    private RealmResults<Settings> resultsSettings;
-
-    private RealmResults<PeripheralDevice> resultsPeripherals;
+    private List<PeripheralDevice> peripherals = new ArrayList<>(0);
 
     @Nullable
     private Disposable screensaverDisposable;
@@ -72,24 +65,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     }
 
     @Override
-    public void addListeners() {
-
-    }
-
-    @Override
-    public void removeListeners() {
-        if (resultsSettings != null && resultsSettings.isValid()) {
-            resultsSettings.removeAllChangeListeners();
-        }
-        if (resultsPeripherals != null && resultsPeripherals.isValid()) {
-            resultsPeripherals.removeAllChangeListeners();
-        }
-    }
-
-    @Override
     public void observeSensors(@NonNull Context context) {
-        peripherals = new ArrayList<>(0);
-
         final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
         final String packageName = context.getPackageName();
 
@@ -176,56 +152,65 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observeTemperatureBuffered(context))
+                .flatMapCompletable(atmosphereRepository::saveTemperature)
                 .subscribe(
-                    atmosphereRepository::saveTemperature,
+                    this::completed,
                     this::error
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observePressureBuffered(context))
+                .flatMapCompletable(atmosphereRepository::savePressure)
                 .subscribe(
-                    atmosphereRepository::savePressure,
+                    this::completed,
                     this::error
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observeAltitudeBuffered(context))
+                .flatMapCompletable(atmosphereRepository::saveAltitude)
                 .subscribe(
-                    atmosphereRepository::saveAltitude,
+                    this::completed,
                     this::error
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observeHumidityBuffered(context))
+                .flatMapCompletable(atmosphereRepository::saveHumidity)
                 .subscribe(
-                    atmosphereRepository::saveHumidity,
+                    this::completed,
                     this::error
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observeAirQualityBuffered(context))
+                .flatMapCompletable(atmosphereRepository::saveAirQuality)
                 .subscribe(
-                    atmosphereRepository::saveAirQuality,
+                    this::completed,
                     this::error
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observeLuminosityBuffered(context))
+                .flatMapCompletable(atmosphereRepository::saveLuminosity)
                 .subscribe(
-                    atmosphereRepository::saveLuminosity,
+                    this::completed,
                     this::error
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observeAccelerationBuffered(context))
+                .flatMapCompletable(atmosphereRepository::saveAccelerations)
                 .subscribe(
-                    atmosphereRepository::saveAccelerations,
+                    this::completed,
                     this::error
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observeAngularVelocityBuffered(context))
+                .flatMapCompletable(atmosphereRepository::saveAngularVelocities)
                 .subscribe(
-                    atmosphereRepository::saveAngularVelocities,
+                    this::completed,
                     this::error
                 ),
             Observable
                 .defer(() -> peripheralsRepository.observeMagneticFieldBuffered(context))
+                .flatMapCompletable(atmosphereRepository::saveMagneticFields)
                 .subscribe(
-                    atmosphereRepository::saveMagneticFields,
+                    this::completed,
                     this::error
                 )
         );
@@ -252,39 +237,65 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     }
 
     @Override
-    public void settings(@NonNull final Realm realm) {
-        resultsSettings = settingsRepository.load(realm);
+    public void settings() {
+        started();
 
-        if (!resultsSettings.isEmpty()) {
-            final Settings result = resultsSettings.first();
-            if (result != null) {
-                view.onSettings(result);
-            }
-        }
+        compositeDisposable.add(
+            settingsRepository
+                .load()
+                .subscribe(
+                    settings -> {
+                        view.onSettings(settings.get(0));
+                    },
+                    this::error,
+                    this::completed
+                )
+        );
     }
 
     @Override
-    public ImmutableList<I2CDevice> i2cDevices() {
-        return ImmutableList.copyOf(peripheralsRepository.probe());
-    }
+    public void peripherals() {
+        compositeDisposable.add(
+            peripheralsRepository
+                .probe()
+                .flatMap(i2CDevices -> {
+                    if (i2CDevices.isEmpty()) {
+                        return Observable.just(new ArrayList<PeripheralDevice>(0));
+                    } else {
+                        return peripheralsRepository
+                            .load()
+                            .flatMap(defaultSensors ->
+                                Observable.create((ObservableEmitter<List<PeripheralDevice>> emitter) -> {
+                                    if (!emitter.isDisposed()) {
+                                        final List<PeripheralDevice> foundSensors = new ArrayList<>(0);
+                                        defaultSensors.forEach(
+                                            defaultSensor -> {
+                                                boolean found = i2CDevices
+                                                    .stream()
+                                                    .map(I2CDevice::address)
+                                                    .anyMatch(integer -> integer == defaultSensor.address);
 
-    @Override
-    public void peripherals(@NonNull final Realm realm) {
-        resultsPeripherals = peripheralsRepository.load(realm);
-
-        if (resultsPeripherals != null && !resultsPeripherals.isEmpty()) {
-            peripherals = realm.copyFromRealm(resultsPeripherals);
-            resultsPeripherals.addChangeListener(peripheralDevices -> peripherals = realm.copyFromRealm(resultsPeripherals));
-        }
-    }
-
-    @Override
-    public RealmResults<PeripheralDevice> defaultSensors(@NonNull Realm realm) {
-        return peripheralsRepository.load(realm);
-    }
-
-    @Override
-    public void saveDefaultSensors(@NonNull List<PeripheralDevice> foundSensors) {
-        peripheralsRepository.saveConnected(foundSensors, true);
+                                                if (found) {
+                                                    foundSensors.add(defaultSensor);
+                                                    view.onSensorFound(defaultSensor.address);
+                                                }
+                                            }
+                                        );
+                                        emitter.onNext(foundSensors);
+                                        emitter.onComplete();
+                                    }
+                                })
+                            );
+                    }
+                })
+                .flatMapCompletable(foundSensors -> {
+                    peripherals = foundSensors;
+                    return peripheralsRepository.saveConnected(foundSensors, true);
+                })
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 }

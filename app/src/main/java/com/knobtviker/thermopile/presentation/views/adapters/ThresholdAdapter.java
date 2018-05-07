@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import io.realm.RealmResults;
-
 /**
  * Created by bojan on 13/06/2017.
  */
@@ -68,8 +66,8 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         final Interval interval = pair.second;
 
         if (threshold != null) {
-            holder.viewIndicator.setBackgroundColor(Color.parseColor(threshold.color()));
-            holder.textViewTemperature.setText(String.valueOf(threshold.temperature()));
+            holder.viewIndicator.setBackgroundColor(Color.parseColor(threshold.color));
+            holder.textViewTemperature.setText(String.valueOf(threshold.temperature));
         } else {
             holder.viewIndicator.setBackgroundResource(R.drawable.empty_interval_line);
             holder.textViewTemperature.setText("");
@@ -97,31 +95,31 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         return intervals.size();
     }
 
-    public void updateData(@NonNull final RealmResults<Threshold> thresholds) {
+    public void updateData(@NonNull final List<Threshold> thresholds) {
         final List<Pair<Threshold, Interval>> intervalsAll = thresholds
             .stream()
             .map(threshold -> {
                 final DateTime start = new DateTime()
-                    .withDayOfWeek(threshold.day() + 1) //must be in range of 1 to 7
-                    .withHourOfDay(threshold.startHour())
-                    .withMinuteOfHour(threshold.startMinute())
+                    .withDayOfWeek(threshold.day + 1) //must be in range of 1 to 7
+                    .withHourOfDay(threshold.startHour)
+                    .withMinuteOfHour(threshold.startMinute)
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
 
-                if (threshold.endHour() == 23 && threshold.endMinute() == 59) {
+                if (threshold.endHour == 23 && threshold.endMinute == 59) {
                     final DateTime end = new DateTime()
-                        .withDayOfWeek(threshold.day() + 1)
-                        .withHourOfDay(threshold.endHour())
-                        .withMinuteOfHour(threshold.endMinute())
+                        .withDayOfWeek(threshold.day + 1)
+                        .withHourOfDay(threshold.endHour)
+                        .withMinuteOfHour(threshold.endMinute)
                         .withSecondOfMinute(59)
                         .withMillisOfSecond(999);
 
                     return Pair.create(threshold, new Interval(start, end));
                 } else {
                     final DateTime end = new DateTime()
-                        .withDayOfWeek(threshold.day() + 1)
-                        .withHourOfDay(threshold.endHour())
-                        .withMinuteOfHour(threshold.endMinute())
+                        .withDayOfWeek(threshold.day + 1)
+                        .withHourOfDay(threshold.endHour)
+                        .withMinuteOfHour(threshold.endMinute)
                         .withSecondOfMinute(0)
                         .withMillisOfSecond(0)
                         .minusMillis(1);
@@ -208,21 +206,21 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         );
     }
 
-    private void dayMargins(@NonNull final RealmResults<Threshold> thresholds, @NonNull final List<Pair<Threshold, Interval>> intervalsAll, final int day) {
+    private void dayMargins(@NonNull final List<Threshold> thresholds, @NonNull final List<Pair<Threshold, Interval>> intervalsAll, final int day) {
         final List<Threshold> dayThresholds = thresholds.stream()
-            .filter(threshold -> threshold.day() == day)
+            .filter(threshold -> threshold.day == day)
             .sorted((threshold1, threshold2) -> {
                 final DateTime dateTime1 = new DateTime()
-                    .withDayOfWeek(threshold1.day() + 1) //must be in range of 1 to 7
-                    .withHourOfDay(threshold1.startHour())
-                    .withMinuteOfHour(threshold1.startMinute())
+                    .withDayOfWeek(threshold1.day + 1) //must be in range of 1 to 7
+                    .withHourOfDay(threshold1.startHour)
+                    .withMinuteOfHour(threshold1.startMinute)
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
 
                 final DateTime dateTime2 = new DateTime()
-                    .withDayOfWeek(threshold2.day() + 1) //must be in range of 1 to 7
-                    .withHourOfDay(threshold2.startHour())
-                    .withMinuteOfHour(threshold2.startMinute())
+                    .withDayOfWeek(threshold2.day + 1) //must be in range of 1 to 7
+                    .withHourOfDay(threshold2.startHour)
+                    .withMinuteOfHour(threshold2.startMinute)
                     .withSecondOfMinute(0)
                     .withMillisOfSecond(0);
 
@@ -234,20 +232,20 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
             final Threshold first = dayThresholds.get(0);
             final Threshold last = dayThresholds.get(dayThresholds.size() - 1);
 
-            if (first.startHour() != 0 || first.startMinute() != 0) {
+            if (first.startHour != 0 || first.startMinute != 0) {
                 intervalsAll.add(
                     Pair.create(null,
                         new Interval(
                             new DateTime()
-                                .withDayOfWeek(first.day() + 1)
+                                .withDayOfWeek(first.day + 1)
                                 .withHourOfDay(0)
                                 .withMinuteOfHour(0)
                                 .withSecondOfMinute(0)
                                 .withMillisOfSecond(0),
                             new DateTime()
-                                .withDayOfWeek(first.day() + 1)
-                                .withHourOfDay(first.startHour())
-                                .withMinuteOfHour(first.startMinute())
+                                .withDayOfWeek(first.day + 1)
+                                .withHourOfDay(first.startHour)
+                                .withMinuteOfHour(first.startMinute)
                                 .withSecondOfMinute(0)
                                 .withMillisOfSecond(0)
                                 .minusMillis(1)
@@ -255,19 +253,19 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
                     )
                 );
             }
-            if (last.endHour() != 23 || last.endMinute() != 59) {
+            if (last.endHour != 23 || last.endMinute != 59) {
                 intervalsAll.add(
                     Pair.create(null,
                         new Interval(
                             new DateTime()
-                                .withDayOfWeek(first.day() + 1)
-                                .withHourOfDay(last.endHour())
-                                .withMinuteOfHour(last.endMinute())
+                                .withDayOfWeek(first.day + 1)
+                                .withHourOfDay(last.endHour)
+                                .withMinuteOfHour(last.endMinute)
                                 .withSecondOfMinute(0)
                                 .withMillisOfSecond(0)
                                 .minusMillis(1),
                             new DateTime()
-                                .withDayOfWeek(first.day() + 1)
+                                .withDayOfWeek(first.day + 1)
                                 .withHourOfDay(23)
                                 .withMinuteOfHour(59)
                                 .withSecondOfMinute(59)

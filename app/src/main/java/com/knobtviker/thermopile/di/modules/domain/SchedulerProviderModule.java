@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.di.modules.domain;
 
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerComputation;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerIO;
+import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerMemory;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerNetwork;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerScreensaver;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerUI;
@@ -33,6 +34,13 @@ public class SchedulerProviderModule {
     @SchedulerIO
     static Scheduler provideIo() {
         return Schedulers.io();
+    }
+
+    @Provides
+    @Singleton
+    @SchedulerMemory
+    static Scheduler provideMemory() {
+        return Schedulers.newThread();
     }
 
     @Provides

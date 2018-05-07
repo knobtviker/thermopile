@@ -2,9 +2,12 @@ package com.knobtviker.thermopile.data.sources.memory.implementation;
 
 import java.io.IOException;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+
 public interface SingleValueMemoryDataSource {
 
-    void save(final float value) throws IOException;
+    Completable save(final float value) throws IOException;
 
-    float load() throws IOException;
+    Observable<Float> load() throws IOException;
 }

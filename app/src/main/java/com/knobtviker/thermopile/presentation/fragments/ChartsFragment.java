@@ -182,7 +182,7 @@ public class ChartsFragment extends BaseFragment {
                 data.addDataSet(set);
             }
 
-            data.addEntry(new Entry(set.getEntryCount(), stat.value()), 0);
+            data.addEntry(new Entry(set.getEntryCount(), stat.value), 0);
 
             // let the chart know it's data has changed
             data.notifyDataChanged();

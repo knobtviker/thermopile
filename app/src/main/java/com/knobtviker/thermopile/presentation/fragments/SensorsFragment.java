@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindViews;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -68,7 +67,7 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
 
         setupRecyclerViews();
 
-        presenter.sensors(realm);
+        presenter.sensors();
     }
 
     @Override
@@ -82,7 +81,7 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
     }
 
     @Override
-    public void onSensors(@NonNull RealmResults<PeripheralDevice> sensors) {
+    public void onSensors(@NonNull List<PeripheralDevice> sensors) {
         final List<PeripheralDevice> temperatureDevice = new ArrayList<>(0);
         final List<PeripheralDevice> pressureDevice = new ArrayList<>(0);
         final List<PeripheralDevice> humidityDevice = new ArrayList<>(0);
@@ -94,28 +93,28 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
 
         sensors
             .forEach(peripheralDevice -> {
-                if (peripheralDevice.hasTemperature()) {
+                if (peripheralDevice.hasTemperature) {
                     temperatureDevice.add(peripheralDevice);
                 }
-                if (peripheralDevice.hasPressure()) {
+                if (peripheralDevice.hasPressure) {
                     pressureDevice.add(peripheralDevice);
                 }
-                if (peripheralDevice.hasHumidity()) {
+                if (peripheralDevice.hasHumidity) {
                     humidityDevice.add(peripheralDevice);
                 }
-                if (peripheralDevice.hasAirQuality()) {
+                if (peripheralDevice.hasAirQuality) {
                     airQualityDevice.add(peripheralDevice);
                 }
-                if (peripheralDevice.hasLuminosity()) {
+                if (peripheralDevice.hasLuminosity) {
                     luminosityDevice.add(peripheralDevice);
                 }
-                if (peripheralDevice.hasAcceleration()) {
+                if (peripheralDevice.hasAcceleration) {
                     accelerationDevice.add(peripheralDevice);
                 }
-                if (peripheralDevice.hasAngularVelocity()) {
+                if (peripheralDevice.hasAngularVelocity) {
                     angularVelocityDevice.add(peripheralDevice);
                 }
-                if (peripheralDevice.hasMagneticField()) {
+                if (peripheralDevice.hasMagneticField) {
                     magneticFieldDevice.add(peripheralDevice);
                 }
             });
@@ -131,8 +130,8 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
     }
 
     @Override
-    public void onSensorChecked(@NonNull String primaryKey, int type, boolean isChecked) {
-        presenter.sensorEnabled(realm, primaryKey, type, isChecked);
+    public void onSensorChecked(final long id, int type, boolean isChecked) {
+        presenter.sensorEnabled(id, type, isChecked);
     }
 
     private void setupRecyclerViews() {

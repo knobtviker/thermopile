@@ -33,7 +33,6 @@ import java.util.stream.IntStream;
 
 import butterknife.BindViews;
 import butterknife.OnClick;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 import static android.support.constraint.ConstraintSet.BOTTOM;
@@ -86,8 +85,8 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     public void onResume() {
-        presenter.settings(realm);
-        presenter.thresholds(realm);
+        presenter.settings();
+        presenter.thresholds();
         super.onResume();
     }
 
@@ -113,7 +112,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     }
 
     @Override
-    public void onThresholds(@NonNull RealmResults<Threshold> thresholds) {
+    public void onThresholds(@NonNull List<Threshold> thresholds) {
         populate(thresholds);
     }
 
@@ -167,33 +166,33 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                     }));
     }
 
-    private void populate(@NonNull final RealmResults<Threshold> thresholds) {
+    private void populate(@NonNull final List<Threshold> thresholds) {
         weekdayLayouts.forEach(ViewGroup::removeAllViewsInLayout);
 
         final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 
         thresholds
             .forEach(threshold -> {
-                final ConstraintLayout layout = weekdayLayouts.get(threshold.day());
+                final ConstraintLayout layout = weekdayLayouts.get(threshold.day);
 
                 final View thresholdView = layoutInflater.inflate(R.layout.item_threshold, null);
 
                 final ThresholdViewHolder thresholdViewHolder = ThresholdViewHolder.bind(
                     thresholdView,
-                    threshold.color(),
-                    String.format("%s °C", String.valueOf(threshold.temperature())) //TODO: Fix this hardcoded temperature unit. Use Settings.
+                    threshold.color,
+                    String.format("%s °C", String.valueOf(threshold.temperature)) //TODO: Fix this hardcoded temperature unit. Use Settings.
                 );
 
                 thresholdView.setId(View.generateViewId());
 
                 thresholdViewHolder.rootLayout.setOnClickListener(v -> {
                     if (thresholdViewHolder.getState() == ThresholdViewHolder.State.STATE_DEFAULT) {
-                        Router.showThreshold(getContext(), threshold.id());
+                        Router.showThreshold(getContext(), threshold.id);
                     } else {
                         thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_DEFAULT);
                     }
                 });
-                thresholdViewHolder.buttonRemove.setOnClickListener(v -> presenter.removeThresholdById(threshold.id()));
+                thresholdViewHolder.buttonRemove.setOnClickListener(v -> presenter.removeThresholdById(threshold.id));
                 thresholdViewHolder.rootLayout.setOnLongClickListener(v -> {
                     thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_REMOVE);
                     return true;
@@ -210,15 +209,15 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 set.constrainWidth(thresholdView.getId(), Math.round(
                     Minutes.minutesBetween(
                         new DateTime()
-                            .withHourOfDay(threshold.startHour())
-                            .withMinuteOfHour(threshold.startMinute()),
+                            .withHourOfDay(threshold.startHour)
+                            .withMinuteOfHour(threshold.startMinute),
                         new DateTime()
-                            .withHourOfDay(threshold.endHour())
-                            .withMinuteOfHour(threshold.endMinute())
+                            .withHourOfDay(threshold.endHour)
+                            .withMinuteOfHour(threshold.endMinute)
                     ).getMinutes() / 2.0f
                 ));
                 set.constrainHeight(thresholdView.getId(), ConstraintSet.MATCH_CONSTRAINT);
-                set.connect(thresholdView.getId(), START, ConstraintSet.PARENT_ID, START, Math.round((threshold.startHour() * 60 + threshold.startMinute()) / 2.0f));
+                set.connect(thresholdView.getId(), START, ConstraintSet.PARENT_ID, START, Math.round((threshold.startHour * 60 + threshold.startMinute) / 2.0f));
                 set.connect(thresholdView.getId(), TOP, ConstraintSet.PARENT_ID, TOP, 8);
                 set.connect(thresholdView.getId(), BOTTOM, ConstraintSet.PARENT_ID, BOTTOM, 8);
 

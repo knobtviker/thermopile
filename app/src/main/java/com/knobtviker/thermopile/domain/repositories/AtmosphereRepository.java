@@ -35,41 +35,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
+import io.reactivex.Completable;
 
 /**
  * Created by bojan on 17/07/2017.
  */
 
 public class AtmosphereRepository extends AbstractRepository {
-
-    @Inject
-    TemperatureLocalDataSource temperatureLocalDataSource;
-
-    @Inject
-    HumidityLocalDataSource humidityLocalDataSource;
-
-    @Inject
-    PressureLocalDataSource pressureLocalDataSource;
-
-    @Inject
-    AltitudeLocalDataSource altitudeLocalDataSource;
-
-    @Inject
-    AirQualityLocalDataSource airQualityLocalDataSource;
-
-    @Inject
-    LuminosityLocalDataSource luminosityLocalDataSource;
-
-    @Inject
-    AccelerationLocalDataSource accelerationLocalDataSource;
-
-    @Inject
-    AngularVelocityLocalDataSource angularVelocityLocalDataSource;
-
-    @Inject
-    MagneticFieldLocalDataSource magneticFieldLocalDataSource;
 
     @Inject
     TemperatureMemoryDataSource temperatureMemoryDataSource;
@@ -99,62 +71,150 @@ public class AtmosphereRepository extends AbstractRepository {
     MagneticFieldMemoryDataSource magneticFieldMemoryDataSource;
 
     @Inject
+    TemperatureLocalDataSource temperatureLocalDataSource;
+
+    @Inject
+    HumidityLocalDataSource humidityLocalDataSource;
+
+    @Inject
+    PressureLocalDataSource pressureLocalDataSource;
+
+    @Inject
+    AltitudeLocalDataSource altitudeLocalDataSource;
+
+    @Inject
+    AirQualityLocalDataSource airQualityLocalDataSource;
+
+    @Inject
+    LuminosityLocalDataSource luminosityLocalDataSource;
+
+    @Inject
+    AccelerationLocalDataSource accelerationLocalDataSource;
+
+    @Inject
+    AngularVelocityLocalDataSource angularVelocityLocalDataSource;
+
+    @Inject
+    MagneticFieldLocalDataSource magneticFieldLocalDataSource;
+
+    @Inject
     AtmosphereRepository() {
     }
 
-    public RealmResults<Temperature> loadTemperature(@NonNull final Realm realm) {
-        return temperatureLocalDataSource.load(realm);
+    public Completable saveTemperatureInMemory(final float item) {
+        return temperatureMemoryDataSource
+            .save(item)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public RealmResults<Humidity> loadHumidity(@NonNull final Realm realm) {
-        return humidityLocalDataSource.load(realm);
+    public Completable savePressureInMemory(final float item) {
+        return pressureMemoryDataSource
+            .save(item)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public RealmResults<Pressure> loadPressure(@NonNull final Realm realm) {
-        return pressureLocalDataSource.load(realm);
+    public Completable saveHumidityInMemory(final float item) {
+        return humidityMemoryDataSource
+            .save(item)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public RealmResults<Altitude> loadAltitude(@NonNull final Realm realm) {
-        return altitudeLocalDataSource.load(realm);
+    public Completable saveAltitudeInMemory(final float item) {
+        return altitudeMemoryDataSource
+            .save(item)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public RealmResults<AirQuality> loadAirQuality(@NonNull final Realm realm) {
-        return airQualityLocalDataSource.load(realm);
+    public Completable saveAirQualityInMemory(final float item) {
+        return airQualityMemoryDataSource
+            .save(item)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public void saveTemperature(@NonNull final List<Temperature> items) {
-        temperatureLocalDataSource.save(items);
+    public Completable saveLuminosityInMemory(final float item) {
+        return luminosityMemoryDataSource
+            .save(item)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public void savePressure(@NonNull final List<Pressure> items) {
-        pressureLocalDataSource.save(items);
+    public Completable saveAccelerationInMemory(final float[] items) {
+        return accelerationMemoryDataSource
+            .save(items)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public void saveHumidity(@NonNull final List<Humidity> items) {
-        humidityLocalDataSource.save(items);
+    public Completable saveAngularVelocityInMemory(final float[] items) {
+        return angularVelocityMemoryDataSource
+            .save(items)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public void saveAltitude(@NonNull final List<Altitude> items) {
-        altitudeLocalDataSource.save(items);
+    public Completable saveMagneticFieldInMemory(final float[] items) {
+        return magneticFieldMemoryDataSource
+            .save(items)
+            .subscribeOn(schedulerProvider.memory)
+            .observeOn(schedulerProvider.memory);
     }
 
-    public void saveAirQuality(@NonNull final List<AirQuality> items) {
-        airQualityLocalDataSource.save(items);
+    public Completable saveTemperature(@NonNull final List<Temperature> items) {
+        return temperatureLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
-    public void saveLuminosity(@NonNull final List<Luminosity> items) {
-        luminosityLocalDataSource.save(items);
+    public Completable savePressure(@NonNull final List<Pressure> items) {
+        return pressureLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
-    public void saveAccelerations(@NonNull final List<Acceleration> items) {
-        accelerationLocalDataSource.save(items);
+    public Completable saveHumidity(@NonNull final List<Humidity> items) {
+        return humidityLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
-    public void saveAngularVelocities(@NonNull final List<AngularVelocity> items) {
-        angularVelocityLocalDataSource.save(items);
+    public Completable saveAltitude(@NonNull final List<Altitude> items) {
+        return altitudeLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 
-    public void saveMagneticFields(@NonNull final List<MagneticField> items) {
-        magneticFieldLocalDataSource.save(items);
+    public Completable saveAirQuality(@NonNull final List<AirQuality> items) {
+        return airQualityLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
+    }
+
+    public Completable saveLuminosity(@NonNull final List<Luminosity> items) {
+        return luminosityLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
+    }
+
+    public Completable saveAccelerations(@NonNull final List<Acceleration> items) {
+        return accelerationLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
+    }
+
+    public Completable saveAngularVelocities(@NonNull final List<AngularVelocity> items) {
+        return angularVelocityLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
+    }
+
+    public Completable saveMagneticFields(@NonNull final List<MagneticField> items) {
+        return magneticFieldLocalDataSource.save(items)
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io);
     }
 }
