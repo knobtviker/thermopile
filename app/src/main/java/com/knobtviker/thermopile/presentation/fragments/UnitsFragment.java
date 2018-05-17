@@ -79,14 +79,6 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     }
 
     @Override
-    public void onResume() {
-        setUnitTemperature();
-        setUnitPressure();
-
-        super.onResume();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -100,6 +92,9 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         this.settingsId = settings.id;
         this.unitTemperature = settings.unitTemperature;
         this.unitPressure = settings.unitPressure;
+
+        setUnitTemperature();
+        setUnitPressure();
     }
 
     private void setupRadioGroupTemperatureUnit() {

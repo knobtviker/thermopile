@@ -69,14 +69,6 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     }
 
     @Override
-    public void onResume() {
-        setFormatDate();
-        setFormatTime();
-
-        super.onResume();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -90,6 +82,9 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
         this.settingsId = settings.id;
         this.formatDate = settings.formatDate;
         this.formatTime = settings.formatTime;
+
+        setFormatDate();
+        setFormatTime();
     }
 
     private void setupSpinnerDate() {

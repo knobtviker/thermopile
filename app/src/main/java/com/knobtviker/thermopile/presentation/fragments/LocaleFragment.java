@@ -77,14 +77,6 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     }
 
     @Override
-    public void onResume() {
-        setTimezone();
-        setClockMode();
-
-        super.onResume();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -98,6 +90,9 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         this.settingsId = settings.id;
         this.timezone = settings.timezone;
         this.clockMode = settings.formatClock;
+
+        setTimezone();
+        setClockMode();
     }
 
     private void setupSpinnerTimezone() {

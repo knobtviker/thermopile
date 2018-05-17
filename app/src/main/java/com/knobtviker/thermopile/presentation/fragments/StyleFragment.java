@@ -66,13 +66,6 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     }
 
     @Override
-    public void onResume() {
-        setTheme();
-
-        super.onResume();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -85,6 +78,8 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id;
         this.theme = settings.theme;
+
+        setTheme();
     }
 
     private void setupRadioGroupTheme() {

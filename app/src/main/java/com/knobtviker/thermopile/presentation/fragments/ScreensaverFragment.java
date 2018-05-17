@@ -220,6 +220,8 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         setPressureUnit();
         setMotionUnit();
         setDate();
+
+        ((ThermopileApplication)getActivity().getApplication()).refresh();
     }
 
     private void setDate() {
