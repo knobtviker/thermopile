@@ -26,11 +26,25 @@ public class LocalePresenter extends AbstractPresenter implements LocaleContract
 
     @Override
     public void saveTimezone(long settingsId, @NonNull String timezone) {
-        settingsRepository.saveTimezone(settingsId, timezone);
+        compositeDisposable.add(
+            settingsRepository
+                .saveTimezone(settingsId, timezone)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 
     @Override
     public void saveClockMode(long settingsId, int clockMode) {
-        settingsRepository.saveClockMode(settingsId, clockMode);
+        compositeDisposable.add(
+            settingsRepository
+                .saveClockMode(settingsId, clockMode)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 }

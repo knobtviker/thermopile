@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.domain.repositories;
 
+import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Acceleration;
@@ -32,8 +33,6 @@ import com.knobtviker.thermopile.data.sources.memory.TemperatureMemoryDataSource
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
 
 import org.joda.time.DateTimeUtils;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -117,15 +116,15 @@ public class AtmosphereRepository extends AbstractRepository {
             .observeOn(schedulerProvider.memory);
     }
 
-    public Completable saveHumidityInMemory(final float item) {
-        return humidityMemoryDataSource
-            .save(item)
+    public Completable saveAltitudeInMemory(final float item) {
+        return altitudeMemoryDataSource
+            .save(convertPressureToAltitude(item))
             .subscribeOn(schedulerProvider.memory)
             .observeOn(schedulerProvider.memory);
     }
 
-    public Completable saveAltitudeInMemory(final float item) {
-        return altitudeMemoryDataSource
+    public Completable saveHumidityInMemory(final float item) {
+        return humidityMemoryDataSource
             .save(item)
             .subscribeOn(schedulerProvider.memory)
             .observeOn(schedulerProvider.memory);
@@ -166,12 +165,6 @@ public class AtmosphereRepository extends AbstractRepository {
             .observeOn(schedulerProvider.memory);
     }
 
-    public Completable saveAltitude(@NonNull final List<Altitude> items) {
-        return altitudeLocalDataSource.save(items)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
-    }
-
     public Completable saveTemperature(@NonNull final String vendor, @NonNull final String name, final float value) {
         return temperatureLocalDataSource
             .save(new Temperature(DateTimeUtils.currentTimeMillis(), vendor, name, value))
@@ -183,6 +176,14 @@ public class AtmosphereRepository extends AbstractRepository {
     public Completable savePressure(@NonNull final String vendor, @NonNull final String name, final float value) {
         return pressureLocalDataSource
             .save(new Pressure(DateTimeUtils.currentTimeMillis(), vendor, name, value))
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
+    }
+
+    public Completable saveAltitude(@NonNull final String vendor, @NonNull final String name, final float value) {
+        return altitudeLocalDataSource
+            .save(new Altitude(DateTimeUtils.currentTimeMillis(), vendor, name, convertPressureToAltitude(value)))
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.io)
             .ignoreElements();
@@ -234,5 +235,9 @@ public class AtmosphereRepository extends AbstractRepository {
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.io)
             .ignoreElements();
+    }
+
+    private float convertPressureToAltitude(final float value) {
+        return SensorManager.getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE, value);
     }
 }

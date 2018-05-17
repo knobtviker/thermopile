@@ -26,6 +26,13 @@ public class StylePresenter extends AbstractPresenter implements StyleContract.P
 
     @Override
     public void saveTheme(long settingsId, int value) {
-        settingsRepository.saveTheme(settingsId, value);
+        compositeDisposable.add(
+            settingsRepository
+                .saveTheme(settingsId, value)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 }

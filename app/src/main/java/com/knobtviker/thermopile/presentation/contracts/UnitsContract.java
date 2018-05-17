@@ -18,5 +18,7 @@ public interface UnitsContract {
         void saveTemperatureUnit(final long settingsId, final int unit);
 
         void savePressureUnit(final long settingsId, final int unit);
+
+        void saveMotionUnit(final long settingsId, final int unit);
     }
 }

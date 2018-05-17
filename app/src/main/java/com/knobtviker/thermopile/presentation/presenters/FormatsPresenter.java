@@ -26,11 +26,25 @@ public class FormatsPresenter extends AbstractPresenter implements FormatsContra
 
     @Override
     public void saveFormatDate(long settingsId, @NonNull String item) {
-        settingsRepository.saveFormatDate(settingsId, item);
+        compositeDisposable.add(
+            settingsRepository
+                .saveFormatDate(settingsId, item)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 
     @Override
     public void saveFormatTime(long settingsId, @NonNull String item) {
-        settingsRepository.saveFormatTime(settingsId, item);
+        compositeDisposable.add(
+            settingsRepository
+                .saveFormatTime(settingsId, item)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 }

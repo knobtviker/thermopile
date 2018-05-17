@@ -36,7 +36,7 @@ public abstract class AbstractMemoryDataSource {
         }
 
         final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
-        fram.setVerbose(true);
+//        fram.setVerbose(true);
         fram.writeInt(address, value);
         fram.close();
     }
@@ -47,7 +47,7 @@ public abstract class AbstractMemoryDataSource {
         }
 
         final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
-        fram.setVerbose(true);
+//        fram.setVerbose(true);
         final int result = fram.readInt(address);
         fram.close();
 

@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -27,36 +28,88 @@ public class SettingsRepository extends AbstractRepository {
 
     public Observable<List<Settings>> load() {
         return settingsLocalDataSource
-            .query()
+            .observe()
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }
 
-    public void saveTimezone(final long settingsId, @NonNull final String timezone) {
-//        settingsLocalDataSource.saveTimezone(settingsId, timezone);
+    public Completable saveTimezone(final long settingsId, @NonNull final String timezone) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .flatMap(settings -> {
+                settings.timezone = timezone;
+                return settingsLocalDataSource.save(settings);
+            })
+            .ignoreElements();
     }
 
-    public void saveClockMode(final long settingsId, final int clockMode) {
-//        settingsLocalDataSource.saveClockMode(settingsId, clockMode);
+    public Completable saveClockMode(final long settingsId, final int clockMode) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .flatMap(settings -> {
+                settings.formatClock = clockMode;
+                return settingsLocalDataSource.save(settings);
+            })
+            .ignoreElements();
     }
 
-    public void saveFormatDate(final long settingsId, @NonNull final String item) {
-//        settingsLocalDataSource.saveFormatDate(settingsId, item);
+    public Completable saveFormatDate(final long settingsId, @NonNull final String item) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .flatMap(settings -> {
+                settings.formatDate = item;
+                return settingsLocalDataSource.save(settings);
+            })
+            .ignoreElements();
     }
 
-    public void saveFormatTime(final long settingsId, @NonNull final String item) {
-//        settingsLocalDataSource.saveFormatTime(settingsId, item);
+    public Completable saveFormatTime(final long settingsId, @NonNull final String item) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .flatMap(settings -> {
+                settings.formatTime = item;
+                return settingsLocalDataSource.save(settings);
+            })
+            .ignoreElements();
     }
 
-    public void saveTemperatureUnit(final long settingsId, final int unit) {
-//        settingsLocalDataSource.saveTemperatureUnit(settingsId, unit);
+    public Completable saveTemperatureUnit(final long settingsId, final int unit) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .flatMap(settings -> {
+                settings.unitTemperature = unit;
+                return settingsLocalDataSource.save(settings);
+            })
+            .ignoreElements();
     }
 
-    public void savePressureUnit(final long settingsId, final int unit) {
-//        settingsLocalDataSource.savePressureUnit(settingsId, unit);
+    public Completable savePressureUnit(final long settingsId, final int unit) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .flatMap(settings -> {
+                settings.unitPressure = unit;
+                return settingsLocalDataSource.save(settings);
+            })
+            .ignoreElements();
     }
 
-    public void saveTheme(final long settingsId, final int value) {
-//        settingsLocalDataSource.saveTheme(settingsId, value);
+    public Completable saveMotionUnit(final long settingsId, final int unit) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .flatMap(settings -> {
+                settings.unitMotion = unit;
+                return settingsLocalDataSource.save(settings);
+            })
+            .ignoreElements();
+    }
+
+    public Completable saveTheme(final long settingsId, final int value) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .flatMap(settings -> {
+                settings.theme = value;
+                return settingsLocalDataSource.save(settings);
+            })
+            .ignoreElements();
     }
 }

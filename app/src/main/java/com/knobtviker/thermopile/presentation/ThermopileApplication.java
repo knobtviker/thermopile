@@ -42,33 +42,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         AppCompatDelegate.setDefaultNightMode(settings.theme);
     }
 
-//    @Override
-//    public void onSensorFound(int address) {
-//        Timber.i("Sensor address found %d", address);
-//        try {
-//            //TODO: Move these hardcoded addresses to some Integrity with default constants class
-//            switch (address) {
-//                case 0x77:
-//                    initBME280();
-//                    break;
-//                case 0x76:
-//                    initBME680();
-//                    break;
-//                case 0x68:
-//                    initDS3231();
-//                    break;
-//                case 0x39:
-//                    initTSL2561();
-//                    break;
-//                case 0x6B:
-//                    initLSM9DS1();
-//                    break;
-//            }
-//        } catch (IOException e) {
-//            showError(e);
-//        }
-//    }
-
     @Override
     public void showScreensaver() {
         Router.showScreensaver(this);
@@ -128,21 +101,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         presenter.createScreensaver();
 
         presenter.settings();
-
-//        presenter.peripherals();
     }
-
-//    private void initFram() {
-//        try {
-//            final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
-//            fram.setVerbose(true);
-//            final int rebootCount = fram.readInt(0);
-//            fram.writeInt(0, rebootCount +1);
-//            fram.close();
-//        } catch (IOException e) {
-//            Timber.e(e);
-//        }
-//    }
 
     private boolean isThingsDevice(@NonNull final Context context) {
         return context

@@ -26,11 +26,37 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
 
     @Override
     public void saveTemperatureUnit(long settingsId, int unit) {
-        settingsRepository.saveTemperatureUnit(settingsId, unit);
+        compositeDisposable.add(
+            settingsRepository
+                .saveTemperatureUnit(settingsId, unit)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 
     @Override
     public void savePressureUnit(long settingsId, int unit) {
-        settingsRepository.savePressureUnit(settingsId, unit);
+        compositeDisposable.add(
+            settingsRepository
+                .savePressureUnit(settingsId, unit)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void saveMotionUnit(long settingsId, int unit) {
+        compositeDisposable.add(
+            settingsRepository
+                .saveMotionUnit(settingsId, unit)
+                .subscribe(
+                    this::completed,
+                    this::error
+                )
+        );
     }
 }

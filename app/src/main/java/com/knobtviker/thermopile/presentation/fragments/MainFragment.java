@@ -274,6 +274,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
+        Timber.i("Settings: %s %s %s", settings.unitTemperature, settings.unitPressure, settings.unitMotion);
         dateTimeZone = DateTimeZone.forID(settings.timezone);
         formatClock = settings.formatClock;
         formatDate = settings.formatDate;

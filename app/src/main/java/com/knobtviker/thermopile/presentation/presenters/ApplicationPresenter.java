@@ -82,7 +82,9 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         compositeDisposable.add(
             Completable.mergeArrayDelayError(
                 atmosphereRepository.savePressureInMemory(value),
-                atmosphereRepository.savePressure(vendor, name, value)
+                atmosphereRepository.savePressure(vendor, name, value),
+                atmosphereRepository.saveAltitudeInMemory(value),
+                atmosphereRepository.saveAltitude(vendor, name, value)
             )
                 .subscribe(
                     this::completed,

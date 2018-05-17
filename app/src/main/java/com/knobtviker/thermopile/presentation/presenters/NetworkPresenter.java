@@ -11,9 +11,7 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
 import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
-import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.domain.repositories.PeripheralsRepository;
-import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
@@ -32,7 +30,6 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     private final NetworkContract.View view;
 
     private final PeripheralsRepository peripheralsRepository;
-    private final SettingsRepository settingsRepository;
 
     private final RxBluetoothManager rxBluetoothManager;
 
@@ -41,7 +38,6 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
 
         this.view = view;
         this.peripheralsRepository = DaggerPeripheralsDataComponent.create().repository();
-        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
         this.rxBluetoothManager = RxBluetoothManager.getInstance(context);
     }
 
