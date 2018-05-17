@@ -42,8 +42,8 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         AppCompatDelegate.setDefaultNightMode(settings.theme);
     }
 
-    @Override
-    public void onSensorFound(int address) {
+//    @Override
+//    public void onSensorFound(int address) {
 //        Timber.i("Sensor address found %d", address);
 //        try {
 //            //TODO: Move these hardcoded addresses to some Integrity with default constants class
@@ -67,11 +67,51 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 //        } catch (IOException e) {
 //            showError(e);
 //        }
-    }
+//    }
 
     @Override
     public void showScreensaver() {
         Router.showScreensaver(this);
+    }
+
+    @Override
+    public void onNewTemperature(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.saveTemperature(vendor, name, value);
+    }
+
+    @Override
+    public void onNewPressure(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.savePressure(vendor, name, value);
+    }
+
+    @Override
+    public void onNewHumidity(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.saveHumidity(vendor, name, value);
+    }
+
+    @Override
+    public void onNewAirQuality(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.saveAirQuality(vendor, name, value);
+    }
+
+    @Override
+    public void onNewLuminosity(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.saveLuminosity(vendor, name, value);
+    }
+
+    @Override
+    public void onNewAcceleration(@NonNull String vendor, @NonNull String name, float[] values) {
+        presenter.saveAcceleration(vendor, name, values);
+    }
+
+    @Override
+    public void onNewAngularVelocity(@NonNull String vendor, @NonNull String name, float[] values) {
+        presenter.saveAngularVelocity(vendor, name, values);
+    }
+
+    @Override
+    public void onNewMagneticField(@NonNull String vendor, @NonNull String name, float[] values) {
+        presenter.saveMagneticField(vendor, name, values);
     }
 
     public void createScreensaver() {

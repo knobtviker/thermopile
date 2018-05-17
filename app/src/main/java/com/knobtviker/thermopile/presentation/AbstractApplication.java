@@ -23,6 +23,7 @@ import com.knobtviker.thermopile.presentation.presenters.implementation.BasePres
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.FileLoggingTree;
 import com.knobtviker.thermopile.presentation.utils.factories.IntentFactory;
+import com.knobtviker.thermopile.presentation.views.communicators.PersistentCommunicator;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -30,7 +31,7 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 
-public abstract class AbstractApplication<P extends BasePresenter> extends Application implements ServiceConnection {
+public abstract class AbstractApplication<P extends BasePresenter> extends Application implements ServiceConnection, PersistentCommunicator {
 
     @Nullable
     private Messenger serviceMessenger = null;
@@ -95,6 +96,54 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         serviceMessenger = null;
     }
 
+    @Override
+    public void onBindingDied(ComponentName name) {
+        Timber.i("onBindingDied %s", name.flattenToString());
+        serviceMessenger = null;
+
+        services();
+    }
+
+    @Override
+    public void saveTemperature(@NonNull String vendor, @NonNull String name, float value) {
+        onNewTemperature(vendor, name, value);
+    }
+
+    @Override
+    public void savePressure(@NonNull String vendor, @NonNull String name, float value) {
+        onNewPressure(vendor, name, value);
+    }
+
+    @Override
+    public void saveHumidity(@NonNull String vendor, @NonNull String name, float value) {
+        onNewHumidity(vendor, name, value);
+    }
+
+    @Override
+    public void saveAirQuality(@NonNull String vendor, @NonNull String name, float value) {
+        onNewAirQuality(vendor, name, value);
+    }
+
+    @Override
+    public void saveLuminosity(@NonNull String vendor, @NonNull String name, float value) {
+        onNewLuminosity(vendor, name, value);
+    }
+
+    @Override
+    public void saveAcceleration(@NonNull String vendor, @NonNull String name, float[] values) {
+        onNewAcceleration(vendor, name, values);
+    }
+
+    @Override
+    public void saveAngularVelocity(@NonNull String vendor, @NonNull String name, float[] values) {
+        onNewAngularVelocity(vendor, name, values);
+    }
+
+    @Override
+    public void saveMagneticField(@NonNull String vendor, @NonNull String name, float[] values) {
+        onNewMagneticField(vendor, name, values);
+    }
+
     public void refresh() {
         try {
             if (serviceMessenger != null) {
@@ -151,14 +200,37 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         Database.init(this);
     }
 
+    public abstract void onNewTemperature(@NonNull final String vendor, @NonNull final String name, final float value);
+
+    public abstract void onNewPressure(@NonNull final String vendor, @NonNull final String name, final float value);
+
+    public abstract void onNewHumidity(@NonNull final String vendor, @NonNull final String name, final float value);
+
+    public abstract void onNewAirQuality(@NonNull final String vendor, @NonNull final String name, final float value);
+
+    public abstract void onNewLuminosity(@NonNull final String vendor, @NonNull final String name, final float value);
+
+    public abstract void onNewAcceleration(@NonNull final String vendor, @NonNull final String name, final float[] values);
+
+    public abstract void onNewAngularVelocity(@NonNull final String vendor, @NonNull final String name, final float[] values);
+
+    public abstract void onNewMagneticField(@NonNull final String vendor, @NonNull final String name, final float[] values);
+
     public static class IncomingHandler extends Handler {
 
+        @NonNull
         private final LocalBroadcastManager localBroadcastManager;
+
+        @NonNull
         private final String packageName;
 
-        public IncomingHandler(@NonNull final Context context) {
+        @NonNull
+        private final PersistentCommunicator persistentCommunicator;
+
+        IncomingHandler(@NonNull final Context context) {
             localBroadcastManager = LocalBroadcastManager.getInstance(context);
             packageName = context.getPackageName();
+            persistentCommunicator = (PersistentCommunicator) context;
         }
 
         @Override
@@ -173,56 +245,72 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     localBroadcastManager.sendBroadcast(IntentFactory.temperature(packageName, value));
-                    Timber.i("Temperature: %s from %s %s", value, vendor, name);
+                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
+                        persistentCommunicator.saveTemperature(vendor, name, value);
+                    }
                     break;
                 case Constants.MESSAGE_WHAT_PRESSURE:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     localBroadcastManager.sendBroadcast(IntentFactory.pressure(packageName, value));
-                    Timber.i("Pressure: %s from %s %s", value, vendor, name);
+                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
+                        persistentCommunicator.savePressure(vendor, name, value);
+                    }
                     break;
                 case Constants.MESSAGE_WHAT_HUMIDITY:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     localBroadcastManager.sendBroadcast(IntentFactory.humidity(packageName, value));
-                    Timber.i("Humidity: %s from %s %s", value, vendor, name);
+                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
+                        persistentCommunicator.saveHumidity(vendor, name, value);
+                    }
                     break;
                 case Constants.MESSAGE_WHAT_AIR_QUALITY:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     localBroadcastManager.sendBroadcast(IntentFactory.airQuality(packageName, value));
-                    Timber.i("Air quality: %s from %s %s", value, vendor, name);
+                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
+                        persistentCommunicator.saveAirQuality(vendor, name, value);
+                    }
                     break;
                 case Constants.MESSAGE_WHAT_LUMINOSITY:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     localBroadcastManager.sendBroadcast(IntentFactory.luminosity(packageName, value));
-//                    Timber.i("Luminosity: %s from %s %s", value, vendor, name);
+                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
+                        persistentCommunicator.saveLuminosity(vendor, name, value);
+                    }
                     break;
                 case Constants.MESSAGE_WHAT_ACCELERATION:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
                     localBroadcastManager.sendBroadcast(IntentFactory.acceleration(packageName, values));
-                    Timber.i("Acceleration: %s %s %s from %s %s", values[0], values[1], values[2], vendor, name);
+                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
+                        persistentCommunicator.saveAcceleration(vendor, name, values);
+                    }
                     break;
                 case Constants.MESSAGE_WHAT_ANGULAR_VELOCITY:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
                     localBroadcastManager.sendBroadcast(IntentFactory.angularVelocity(packageName, values));
-                    Timber.i("Angular velocity: %s %s %s from %s %s", values[0], values[1], values[2], vendor, name);
+                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
+                        persistentCommunicator.saveAngularVelocity(vendor, name, values);
+                    }
                     break;
                 case Constants.MESSAGE_WHAT_MAGNETIC_FIELD:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
                     localBroadcastManager.sendBroadcast(IntentFactory.magneticField(packageName, values));
-                    Timber.i("Magnetic field: %s %s %s from %s %s", values[0], values[1], values[2], vendor, name);
+                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
+                        persistentCommunicator.saveMagneticField(vendor, name, values);
+                    }
                     break;
                 default:
                     super.handleMessage(message);

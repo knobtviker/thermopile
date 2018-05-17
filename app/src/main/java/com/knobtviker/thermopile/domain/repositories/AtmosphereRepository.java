@@ -31,6 +31,8 @@ import com.knobtviker.thermopile.data.sources.memory.PressureMemoryDataSource;
 import com.knobtviker.thermopile.data.sources.memory.TemperatureMemoryDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
 
+import org.joda.time.DateTimeUtils;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -164,58 +166,73 @@ public class AtmosphereRepository extends AbstractRepository {
             .observeOn(schedulerProvider.memory);
     }
 
-    public Completable saveTemperature(@NonNull final List<Temperature> items) {
-        return temperatureLocalDataSource.save(items)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Completable savePressure(@NonNull final List<Pressure> items) {
-        return pressureLocalDataSource.save(items)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Completable saveHumidity(@NonNull final List<Humidity> items) {
-        return humidityLocalDataSource.save(items)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
-    }
-
     public Completable saveAltitude(@NonNull final List<Altitude> items) {
         return altitudeLocalDataSource.save(items)
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.io);
     }
 
-    public Completable saveAirQuality(@NonNull final List<AirQuality> items) {
-        return airQualityLocalDataSource.save(items)
+    public Completable saveTemperature(@NonNull final String vendor, @NonNull final String name, final float value) {
+        return temperatureLocalDataSource
+            .save(new Temperature(DateTimeUtils.currentTimeMillis(), vendor, name, value))
             .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
     }
 
-    public Completable saveLuminosity(@NonNull final List<Luminosity> items) {
-        return luminosityLocalDataSource.save(items)
+    public Completable savePressure(@NonNull final String vendor, @NonNull final String name, final float value) {
+        return pressureLocalDataSource
+            .save(new Pressure(DateTimeUtils.currentTimeMillis(), vendor, name, value))
             .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
     }
 
-    public Completable saveAccelerations(@NonNull final List<Acceleration> items) {
-        return accelerationLocalDataSource.save(items)
+    public Completable saveHumidity(@NonNull final String vendor, @NonNull final String name, final float value) {
+        return humidityLocalDataSource
+            .save(new Humidity(DateTimeUtils.currentTimeMillis(), vendor, name, value))
             .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
     }
 
-    public Completable saveAngularVelocities(@NonNull final List<AngularVelocity> items) {
-        return angularVelocityLocalDataSource.save(items)
+    public Completable saveAirQuality(@NonNull final String vendor, @NonNull final String name, final float value) {
+        return airQualityLocalDataSource
+            .save(new AirQuality(DateTimeUtils.currentTimeMillis(), vendor, name, value))
             .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
     }
 
-    public Completable saveMagneticFields(@NonNull final List<MagneticField> items) {
-        return magneticFieldLocalDataSource.save(items)
+    public Completable saveLuminosity(@NonNull final String vendor, @NonNull final String name, final float value) {
+        return luminosityLocalDataSource
+            .save(new Luminosity(DateTimeUtils.currentTimeMillis(), vendor, name, value))
             .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
     }
 
+    public Completable saveAcceleration(@NonNull final String vendor, @NonNull final String name, final float[] values) {
+        return accelerationLocalDataSource
+            .save(new Acceleration(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
+    }
+
+    public Completable saveAngularVelocity(@NonNull final String vendor, @NonNull final String name, final float[] values) {
+        return angularVelocityLocalDataSource
+            .save(new AngularVelocity(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
+    }
+
+    public Completable saveMagneticField(@NonNull final String vendor, @NonNull final String name, final float[] values) {
+        return magneticFieldLocalDataSource
+            .save(new MagneticField(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
+    }
 }

@@ -7,4 +7,8 @@ public abstract class SensorModel extends BaseModel {
 
     public long timestamp;
 
+    public String vendor;
+
+    public String name;
+
 }

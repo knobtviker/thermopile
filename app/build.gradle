@@ -54,11 +54,6 @@ dependencies {
     //base
     compileOnly 'com.google.android.things:androidthings:1.0'
     implementation 'com.knobtviker.android.things.contrib.community:boards:1.0.7'
-    implementation 'com.knobtviker.android.things.contrib.community.driver:bme280:1.1.4'
-    implementation 'com.knobtviker.android.things.contrib.community.driver:bme680:1.1.2'
-    implementation 'com.knobtviker.android.things.contrib.community.driver:tsl2561:1.1.2'
-    implementation 'com.knobtviker.android.things.contrib.community.driver:ds3231:1.0.5'
-    implementation 'com.knobtviker.android.things.contrib.community.driver:lsm9ds1:1.0.4'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'net.danlew:android.joda:2.9.9'
