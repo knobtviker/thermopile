@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
+import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerThresholdDataComponent;
-import com.knobtviker.thermopile.domain.repositories.PeripheralsRepository;
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
@@ -26,7 +26,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
     private final MainContract.View view;
 
-    private final PeripheralsRepository peripheralsRepository;
+    private final AtmosphereRepository atmosphereRepository;
     private final SettingsRepository settingsRepository;
     private final ThresholdRepository thresholdRepository;
 
@@ -34,7 +34,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         super(view);
 
         this.view = view;
-        this.peripheralsRepository = DaggerPeripheralsDataComponent.create().repository();
+        this.atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
         this.settingsRepository = DaggerSettingsDataComponent.create().repository();
         this.thresholdRepository = DaggerThresholdDataComponent.create().repository();
     }
@@ -42,7 +42,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeTemperatureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository
+            atmosphereRepository
                 .observeTemperature(context)
                 .subscribe(
                     view::onTemperatureChanged,
@@ -55,7 +55,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observePressureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository
+            atmosphereRepository
                 .observePressure(context)
                 .subscribe(
                     view::onPressureChanged,
@@ -68,7 +68,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeHumidityChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository
+            atmosphereRepository
                 .observeHumidity(context)
                 .subscribe(
                     view::onHumidityChanged,
@@ -81,7 +81,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeAirQualityChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository
+            atmosphereRepository
                 .observeAirQuality(context)
                 .subscribe(
                     view::onAirQualityChanged,
@@ -94,7 +94,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeAccelerationChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository
+            atmosphereRepository
                 .observeAcceleration(context)
                 .subscribe(
                     view::onAccelerationChanged,

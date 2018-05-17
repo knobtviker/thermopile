@@ -36,7 +36,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     private final LocaleFragment localeFragment;
     private final StyleFragment styleFragment;
     private final NetworkFragment networkFragment;
-    private final SensorsFragment sensorsFragment;
 
     @BindView(R.id.tab_layout)
     public TabLayout tabLayout;
@@ -57,7 +56,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         this.unitsFragment = UnitsFragment.newInstance();
         this.styleFragment = StyleFragment.newInstance();
         this.networkFragment = NetworkFragment.newInstance();
-        this.sensorsFragment = SensorsFragment.newInstance();
 
         this.presenter = new SettingsPresenter(this);
     }
@@ -141,8 +139,8 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     private void setupViewPager() {
         viewPager.setAdapter(new SettingsPagerAdapter(
                 getChildFragmentManager(),
-                ImmutableList.of(getString(R.string.label_formats), getString(R.string.label_units), getString(R.string.label_locale), getString(R.string.label_style), getString(R.string.label_network), getString(R.string.label_sensors)),
-                ImmutableList.of(formatsFragment, unitsFragment, localeFragment, styleFragment, networkFragment, sensorsFragment),
+                ImmutableList.of(getString(R.string.label_formats), getString(R.string.label_units), getString(R.string.label_locale), getString(R.string.label_style), getString(R.string.label_network)),
+                ImmutableList.of(formatsFragment, unitsFragment, localeFragment, styleFragment, networkFragment),
                 viewPager.getId()
             )
         );

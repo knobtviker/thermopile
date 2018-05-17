@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.data.DaggerPeripheralsDataComponent;
+import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
 import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
-import com.knobtviker.thermopile.domain.repositories.PeripheralsRepository;
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
@@ -24,21 +24,22 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
 
     private final ScreenSaverContract.View view;
 
-    private final PeripheralsRepository peripheralsRepository;
+    private final AtmosphereRepository atmosphereRepository;
     private final SettingsRepository settingsRepository;
 
     public ScreenSaverPresenter(@NonNull final ScreenSaverContract.View view) {
         super(view);
 
         this.view = view;
-        this.peripheralsRepository = DaggerPeripheralsDataComponent.create().repository();
+        this.atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
         this.settingsRepository = DaggerSettingsDataComponent.create().repository();
     }
 
     @Override
     public void observeTemperatureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository.observeTemperature(context)
+            atmosphereRepository
+                .observeTemperature(context)
                 .subscribe(
                     view::onTemperatureChanged,
                     this::error,
@@ -50,7 +51,8 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
     @Override
     public void observePressureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository.observePressure(context)
+            atmosphereRepository
+                .observePressure(context)
                 .subscribe(
                     view::onPressureChanged,
                     this::error,
@@ -62,7 +64,8 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
     @Override
     public void observeHumidityChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository.observeHumidity(context)
+            atmosphereRepository
+                .observeHumidity(context)
                 .subscribe(
                     view::onHumidityChanged,
                     this::error,
@@ -74,7 +77,8 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
     @Override
     public void observeAirQualityChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository.observeAirQuality(context)
+            atmosphereRepository
+                .observeAirQuality(context)
                 .subscribe(
                     view::onAirQualityChanged,
                     this::error,
@@ -86,7 +90,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
     @Override
     public void observeAccelerationChanged(@NonNull Context context) {
         compositeDisposable.add(
-            peripheralsRepository
+            atmosphereRepository
                 .observeAcceleration(context)
                 .subscribe(
                     view::onAccelerationChanged,

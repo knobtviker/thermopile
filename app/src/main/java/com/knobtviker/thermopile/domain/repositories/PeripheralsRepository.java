@@ -7,19 +7,13 @@ import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
-import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
-import com.knobtviker.thermopile.data.sources.local.PeripheralLocalDataSource;
-import com.knobtviker.thermopile.data.sources.raw.PeripheralRawDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposables;
@@ -30,56 +24,8 @@ import io.reactivex.disposables.Disposables;
 
 public class PeripheralsRepository extends AbstractRepository {
 
-    private static final int BATCH_SIZE = 1000;
-
-    @Inject
-    PeripheralLocalDataSource peripheralLocalDataSource;
-
-    @Inject
-    PeripheralRawDataSource peripheralRawDataSource;
-
     @Inject
     PeripheralsRepository() {
-    }
-
-    public Observable<List<I2CDevice>> probe() {
-        return Observable
-            .just(peripheralRawDataSource.load())
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<PeripheralDevice>> load() {
-        return peripheralLocalDataSource.query()
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<PeripheralDevice> loadById(final long id) {
-        return peripheralLocalDataSource
-            .queryById(id)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Completable save(@NonNull final List<PeripheralDevice> foundSensors) {
-        return peripheralLocalDataSource.save(foundSensors)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Completable saveConnected(@NonNull final List<PeripheralDevice> items, final boolean isConnected) {
-        return peripheralLocalDataSource
-            .saveConnected(items, isConnected)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
-    }
-
-    public Observable<Long> saveEnabled(@NonNull final PeripheralDevice item, final int type, final boolean isEnabled) {
-        return peripheralLocalDataSource
-            .saveEnabled(item, type, isEnabled)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io);
     }
 
     public Observable<Float> observeTemperature(@NonNull final Context context) {
