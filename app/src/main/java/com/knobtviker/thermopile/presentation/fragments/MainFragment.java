@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
@@ -295,7 +296,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onDayChanged() {
-        textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+        //TODO: Fix this line crashing
+//        textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
     }
 
     @OnClick({R.id.floatingactionbutton_down, R.id.floatingactionbutton_up, R.id.button_charts, R.id.button_schedule, R.id.button_settings})
@@ -405,6 +407,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.observeAirQualityChanged(getContext());
         presenter.observeAccelerationChanged(getContext());
         presenter.settings();
+
+        ((ThermopileApplication)getActivity().getApplication()).refresh();
     }
 
     private void thresholds() {

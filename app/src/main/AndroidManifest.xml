@@ -63,7 +63,6 @@
         <activity
             android:name=".presentation.activities.BootAnimationActivity"
             android:screenOrientation="reverseLandscape"/>
-
     </application>
 
 </manifest>

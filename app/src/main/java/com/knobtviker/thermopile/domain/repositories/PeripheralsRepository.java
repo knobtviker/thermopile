@@ -4,32 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.SensorEvent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.knobtviker.android.things.contrib.community.boards.I2CDevice;
-import com.knobtviker.thermopile.data.models.local.Acceleration;
-import com.knobtviker.thermopile.data.models.local.AirQuality;
-import com.knobtviker.thermopile.data.models.local.Altitude;
-import com.knobtviker.thermopile.data.models.local.AngularVelocity;
-import com.knobtviker.thermopile.data.models.local.Humidity;
-import com.knobtviker.thermopile.data.models.local.Luminosity;
-import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
-import com.knobtviker.thermopile.data.models.local.Pressure;
-import com.knobtviker.thermopile.data.models.local.Temperature;
-import com.knobtviker.thermopile.data.models.memory.Matrix;
 import com.knobtviker.thermopile.data.sources.local.PeripheralLocalDataSource;
 import com.knobtviker.thermopile.data.sources.raw.PeripheralRawDataSource;
-import com.knobtviker.thermopile.data.sources.raw.rxsensormanager.RxSensorEvent;
-import com.knobtviker.thermopile.data.sources.raw.rxsensormanager.RxSensorManager;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
-import com.knobtviker.thermopile.domain.utils.KalmanFilter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
-
-import org.joda.time.DateTimeUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -37,7 +20,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposables;
@@ -48,7 +30,7 @@ import io.reactivex.disposables.Disposables;
 
 public class PeripheralsRepository extends AbstractRepository {
 
-    private static final int BATCH_SIZE = 100;
+    private static final int BATCH_SIZE = 1000;
 
     @Inject
     PeripheralLocalDataSource peripheralLocalDataSource;
@@ -73,7 +55,6 @@ public class PeripheralsRepository extends AbstractRepository {
             .observeOn(schedulerProvider.io);
     }
 
-    @Nullable
     public Observable<PeripheralDevice> loadById(final long id) {
         return peripheralLocalDataSource
             .queryById(id)
@@ -101,271 +82,103 @@ public class PeripheralsRepository extends AbstractRepository {
             .observeOn(schedulerProvider.io);
     }
 
-    public Flowable<SensorEvent> observeSensors(@NonNull final Context context) {
-        return RxSensorManager.getInstance(context)
-            .observeSensors()
-            .subscribeOn(schedulerProvider.io)
-            .filter(RxSensorEvent::hasSensorEvent)
-            .map(RxSensorEvent::getSensorEvent)
-            .observeOn(schedulerProvider.io);
-    }
-
     public Observable<Float> observeTemperature(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_TEMPERATURE, Constants.KEY_TEMPERATURE)
             .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<Float> observePressure(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_PRESSURE, Constants.KEY_PRESSURE)
             .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<Float> observeHumidity(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_HUMIDITY, Constants.KEY_HUMIDITY)
             .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<Float> observeAirQuality(@NonNull final Context context) {
         return observeSingleValue(context, Constants.ACTION_NEW_AIR_QUALITY, Constants.KEY_AIR_QUALITY)
             .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
     public Observable<float[]> observeAcceleration(@NonNull final Context context) {
         return observeCartesianValue(context, Constants.ACTION_NEW_ACCELERATION, Constants.KEY_ACCELERATION)
             .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
             .observeOn(schedulerProvider.ui);
     }
 
-    public Observable<List<Temperature>> observeTemperatureBuffered(@NonNull final Context context) {
-        return observeSingleValue(context, Constants.ACTION_NEW_TEMPERATURE, Constants.KEY_TEMPERATURE)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
-            .map(value -> new Temperature(DateTimeUtils.currentTimeMillis(), value))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<Pressure>> observePressureBuffered(@NonNull final Context context) {
-        return observeSingleValue(context, Constants.ACTION_NEW_PRESSURE, Constants.KEY_PRESSURE)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
-            .map(value -> new Pressure(DateTimeUtils.currentTimeMillis(), value))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<Altitude>> observeAltitudeBuffered(@NonNull final Context context) {
-        return observeSingleValue(context, Constants.ACTION_NEW_ALTITUDE, Constants.KEY_ALTITUDE)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
-            .map(value -> new Altitude(DateTimeUtils.currentTimeMillis(), value))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<Humidity>> observeHumidityBuffered(@NonNull final Context context) {
-        return observeSingleValue(context, Constants.ACTION_NEW_HUMIDITY, Constants.KEY_HUMIDITY)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
-            .map(value -> new Humidity(DateTimeUtils.currentTimeMillis(), value))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<AirQuality>> observeAirQualityBuffered(@NonNull final Context context) {
-        return observeSingleValue(context, Constants.ACTION_NEW_AIR_QUALITY, Constants.KEY_AIR_QUALITY)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
-            .map(value -> new AirQuality(DateTimeUtils.currentTimeMillis(), value))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<Luminosity>> observeLuminosityBuffered(@NonNull final Context context) {
-        return observeSingleValue(context, Constants.ACTION_NEW_LUMINOSITY, Constants.KEY_LUMINOSITY)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged()
-            .map(value -> new Luminosity(DateTimeUtils.currentTimeMillis(), value))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<Acceleration>> observeAccelerationBuffered(@NonNull final Context context) {
-        return observeCartesianValue(context, Constants.ACTION_NEW_ACCELERATION, Constants.KEY_ACCELERATION)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged((floatsOld, floatsNew) -> Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2)) == Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2)))
-            .map(values -> new Acceleration(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<AngularVelocity>> observeAngularVelocityBuffered(@NonNull final Context context) {
-        return observeCartesianValue(context, Constants.ACTION_NEW_ANGULAR_VELOCITY, Constants.KEY_ANGULAR_VELOCITY)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged((floatsOld, floatsNew) -> Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2)) == Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2)))
-            .map(values -> new AngularVelocity(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
-    public Observable<List<MagneticField>> observeMagneticFieldBuffered(@NonNull final Context context) {
-        return observeCartesianValue(context, Constants.ACTION_NEW_MAGNETIC_FIELD, Constants.KEY_MAGNETIC_FIELD)
-            .subscribeOn(schedulerProvider.io)
-            .distinctUntilChanged((floatsOld, floatsNew) -> Math.sqrt(Math.pow(floatsOld[0], 2) + Math.pow(floatsOld[1], 2) + Math.pow(floatsOld[2], 2)) == Math.sqrt(Math.pow(floatsNew[0], 2) + Math.pow(floatsNew[1], 2) + Math.pow(floatsNew[2], 2)))
-            .map(values -> new MagneticField(DateTimeUtils.currentTimeMillis(), values[0], values[1], values[2]))
-            .buffer(BATCH_SIZE)
-            .observeOn(schedulerProvider.io);
-    }
-
     private Observable<Float> observeSingleValue(@NonNull final Context context, @NonNull final String action, @NonNull final String key) {
-        return Observable.defer(() -> {
-                final KalmanFilter kalman = new KalmanFilter(2, 1);
+        return Observable.defer(() ->
+            Observable.create((ObservableEmitter<Float> emitter) -> {
+                final IntentFilter filter = new IntentFilter();
+                filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
 
-                // measurement [x]
-                final Matrix m = new Matrix(1, 1);
+                final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
 
-                // transitions for x, dx
-                final double[][] tr = {{1, 0}, {0, 1}};
-                kalman.setTransition_matrix(new Matrix(tr));
+                final BroadcastReceiver receiver = new BroadcastReceiver() {
 
-                // 1s somewhere?
-                kalman.setError_cov_post(kalman.getError_cov_post().identity());
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        if (intent.hasExtra(key)) {
+                            final float value = intent.getFloatExtra(key, 0.0f);
 
-                return Observable.create((ObservableEmitter<Float> emitter) -> {
-                    final IntentFilter filter = new IntentFilter();
-                    filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
-
-                    final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
-
-                    final BroadcastReceiver receiver = new BroadcastReceiver() {
-
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            if (intent.hasExtra(key)) {
-                                final float value = intent.getFloatExtra(key, 0.0f);
-
-//                            emitter.onNext(normalized(value));
-
-                                m.set(0, 0, value);
-
-                                // state [x, dx]
-                                final Matrix s = kalman.Predict();
-
-                                // corrected state [x, dx]
-                                final Matrix c = kalman.Correct(m);
-
-                                emitter.onNext(normalized((float) c.get(0, 0)));
-                            } else {
-                                emitter.onError(new NoSuchFieldException());
-                            }
+                            emitter.onNext(value);
+                        } else {
+                            emitter.onError(new NoSuchFieldException());
                         }
-                    };
-
-                    if (localBroadcastManagerWeakReference.get() != null) {
-                        localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
                     }
+                };
 
-                    emitter.setDisposable(Disposables.fromRunnable(() -> {
-                        if (localBroadcastManagerWeakReference.get() != null) {
-                            localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
-                        }
-                    }));
-                });
-            }
-        )
-            .startWith(0.0f);
+                if (localBroadcastManagerWeakReference.get() != null) {
+                    localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
+                }
+
+                emitter.setDisposable(Disposables.fromRunnable(() -> {
+                    if (localBroadcastManagerWeakReference.get() != null) {
+                        localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
+                    }
+                }));
+            })
+        );
     }
 
     private Observable<float[]> observeCartesianValue(@NonNull final Context context, @NonNull final String action, @NonNull final String key) {
-        return Observable.defer(() -> {
-                final KalmanFilter kalman = new KalmanFilter(6, 3);
+        return Observable.defer(() ->
+            Observable.create((ObservableEmitter<float[]> emitter) -> {
+                final IntentFilter filter = new IntentFilter();
+                filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
 
-                // measurement [x, y, z]
-                final Matrix m = new Matrix(3, 1);
+                final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
 
-                // transitions for x, y, z, dx, dy, dz (velocity transitions)
-                final double[][] tr = {{1, 0, 0, 1, 0, 0},
-                    {0, 1, 0, 0, 1, 0},
-                    {0, 0, 1, 0, 0, 1},
-                    {0, 0, 0, 1, 0, 0},
-                    {0, 0, 0, 0, 1, 0},
-                    {0, 0, 0, 0, 0, 1}};
-                kalman.setTransition_matrix(new Matrix(tr));
+                final BroadcastReceiver receiver = new BroadcastReceiver() {
 
-                // 1s somewhere?
-                kalman.setError_cov_post(kalman.getError_cov_post().identity());
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        if (intent.hasExtra(key)) {
+                            final float[] values = intent.getFloatArrayExtra(key);
 
-                final float[] buffer = new float[3];
-
-                return Observable.create((ObservableEmitter<float[]> emitter) -> {
-                    final IntentFilter filter = new IntentFilter();
-                    filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), action));
-
-                    final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
-
-                    final BroadcastReceiver receiver = new BroadcastReceiver() {
-
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            if (intent.hasExtra(key)) {
-                                final float[] values = intent.getFloatArrayExtra(key);
-
-//                            emitter.onNext(new float[]{
-//                                normalizedToScale(values[0]),
-//                                normalizedToScale(values[1]),
-//                                normalizedToScale(values[2])
-//                            });
-
-                                m.set(0, 0, values[0]);
-                                m.set(1, 0, values[1]);
-                                m.set(2, 0, values[2]);
-
-                                // state [x, y, z, dx, dy, dz]
-                                final Matrix s = kalman.Predict();
-
-                                // corrected state [x, y,z, dx, dy, dz, dxyz]
-                                final Matrix c = kalman.Correct(m);
-
-                                buffer[0] = normalizedToScale((float) c.get(0, 0));
-                                buffer[1] = normalizedToScale((float) c.get(1, 0));
-                                buffer[2] = normalizedToScale((float) c.get(2, 0));
-
-                                emitter.onNext(buffer);
-                            } else {
-                                emitter.onError(new NoSuchFieldException());
-                            }
+                            emitter.onNext(values);
+                        } else {
+                            emitter.onError(new NoSuchFieldException());
                         }
-                    };
-
-                    if (localBroadcastManagerWeakReference.get() != null) {
-                        localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
                     }
+                };
 
-                    emitter.setDisposable(Disposables.fromRunnable(() -> {
-                        if (localBroadcastManagerWeakReference.get() != null) {
-                            localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
-                        }
-                    }));
-                });
-            }
-        )
-            .startWith(new float[]{0.0f, 0.0f, 0.0f});
-    }
+                if (localBroadcastManagerWeakReference.get() != null) {
+                    localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
+                }
 
-    private float normalized(final float input) {
-        return Math.round(input);
-    }
-
-    private float normalizedToScale(final float input) {
-        return Math.round(input * 10) / 10;
+                emitter.setDisposable(Disposables.fromRunnable(() -> {
+                    if (localBroadcastManagerWeakReference.get() != null) {
+                        localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
+                    }
+                }));
+            })
+        );
     }
 }

@@ -46,10 +46,8 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeTemperatureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository
-                    .observeTemperature(context)
-                )
+            peripheralsRepository
+                .observeTemperature(context)
                 .doOnNext(atmosphereRepository::saveTemperatureInMemory)
                 .subscribe(
                     view::onTemperatureChanged,
@@ -62,10 +60,8 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observePressureChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository
-                    .observePressure(context)
-                )
+            peripheralsRepository
+                .observePressure(context)
                 .doOnNext(atmosphereRepository::savePressureInMemory)
                 .subscribe(
                     view::onPressureChanged,
@@ -78,10 +74,8 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeHumidityChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository
-                    .observeHumidity(context)
-                )
+            peripheralsRepository
+                .observeHumidity(context)
                 .doOnNext(atmosphereRepository::saveHumidityInMemory)
                 .subscribe(
                     view::onHumidityChanged,
@@ -94,11 +88,9 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeAirQualityChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository
-                    .observeAirQuality(context)
-                    .doOnNext(atmosphereRepository::saveAirQualityInMemory)
-                )
+            peripheralsRepository
+                .observeAirQuality(context)
+                .doOnNext(atmosphereRepository::saveAirQualityInMemory)
                 .subscribe(
                     view::onAirQualityChanged,
                     this::error,
@@ -110,11 +102,9 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     @Override
     public void observeAccelerationChanged(@NonNull Context context) {
         compositeDisposable.add(
-            Observable
-                .defer(() -> peripheralsRepository
-                    .observeAcceleration(context)
-                    .doOnNext(atmosphereRepository::saveAccelerationInMemory)
-                )
+            peripheralsRepository
+                .observeAcceleration(context)
+                .doOnNext(atmosphereRepository::saveAccelerationInMemory)
                 .subscribe(
                     view::onAccelerationChanged,
                     this::error,

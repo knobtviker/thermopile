@@ -72,4 +72,16 @@ public class Constants {
     public static final int TYPE_ACCELERATION = 5;
     public static final int TYPE_ANGULAR_VELOCITY = 6;
     public static final int TYPE_MAGNETIC_FIELD = 7;
+
+    public static final int MESSAGE_WHAT_REGISTER = 0;
+    public static final int MESSAGE_WHAT_CURRENT = 1;
+
+    public static final int MESSAGE_WHAT_TEMPERATURE = 0;
+    public static final int MESSAGE_WHAT_PRESSURE = 1;
+    public static final int MESSAGE_WHAT_HUMIDITY = 2;
+    public static final int MESSAGE_WHAT_AIR_QUALITY = 3;
+    public static final int MESSAGE_WHAT_LUMINOSITY = 4;
+    public static final int MESSAGE_WHAT_ACCELERATION = 5;
+    public static final int MESSAGE_WHAT_ANGULAR_VELOCITY = 6;
+    public static final int MESSAGE_WHAT_MAGNETIC_FIELD = 7;
 }

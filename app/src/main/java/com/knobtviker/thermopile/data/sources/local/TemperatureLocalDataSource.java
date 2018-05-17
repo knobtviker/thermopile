@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.objectbox.reactive.DataSubscription;
 import io.reactivex.Observable;
 
 /**
@@ -46,6 +47,22 @@ public class TemperatureLocalDataSource extends AbstractLocalDataSource<Temperat
                 .equal(Temperature_.id, id)
                 .build()
         );
+    }
+
+        public Observable<Temperature> observeLast() {
+        return Observable.create(emitter -> {
+            final DataSubscription dataSubscription =  box.query()
+                .order(Temperature_.timestamp)
+                .build()
+                .subscribe()
+                .onError(emitter::onError)
+                .observer(data -> {
+                if (!emitter.isDisposed()) {
+                    emitter.onNext(data.get(0));
+                }
+            });
+            emitter.setCancellable(dataSubscription::cancel);
+        });
     }
 
 //    private Box<Temperature2> box;

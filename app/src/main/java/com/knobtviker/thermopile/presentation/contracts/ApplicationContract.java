@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -24,8 +23,6 @@ public interface ApplicationContract {
     }
 
     interface Presenter extends BasePresenter {
-
-        void observeSensors(@NonNull final Context context);
 
         void peripherals();
 

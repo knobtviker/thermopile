@@ -31,20 +31,20 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:fontFamily">@font/worksans_medium</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
     <style name="TextAppearance.Time" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:fontFamily">@font/worksans_medium</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
     <style name="TextAppearance.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/worksans_medium</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
     <style name="TextAppearance.Data.Primary.Unit" parent="TextAppearance.AppCompat.Display2">
@@ -71,7 +71,7 @@
         <item name="android:gravity">bottom</item>
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:maxLines">1</item>
-        <item name="android:fontFamily">@font/worksans_medium</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
     <style name="TextAppearance.Data.Primary" parent="TextAppearance.AppCompat.Display2">
@@ -80,13 +80,13 @@
         <item name="android:layout_gravity">bottom</item>
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:textSize">96sp</item>
-        <item name="android:fontFamily">@font/worksans_regular</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
     <style name="TextAppearance.Item.Day" parent="TextAppearance.AppCompat.Body1">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:fontFamily">@font/worksans_medium</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
     <style name="TextAppearance.Item.ThresholdTemperature" parent="TextAppearance.AppCompat.Caption">
@@ -95,7 +95,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:fontFamily">@font/worksans_medium</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
     <style name="Widget.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">

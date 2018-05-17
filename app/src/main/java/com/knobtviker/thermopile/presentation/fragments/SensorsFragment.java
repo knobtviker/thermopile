@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.PeripheralDevice;
+import com.knobtviker.thermopile.domain.utils.comparators.PeripheralDeviceComparator;
 import com.knobtviker.thermopile.presentation.contracts.SensorsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SensorsPresenter;
@@ -67,6 +68,13 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
 
         setupRecyclerViews();
 
+//        presenter.sensors();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         presenter.sensors();
     }
 
@@ -82,6 +90,7 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
 
     @Override
     public void onSensors(@NonNull List<PeripheralDevice> sensors) {
+        Timber.i(sensors.size()+"");
         final List<PeripheralDevice> temperatureDevice = new ArrayList<>(0);
         final List<PeripheralDevice> pressureDevice = new ArrayList<>(0);
         final List<PeripheralDevice> humidityDevice = new ArrayList<>(0);
@@ -118,6 +127,16 @@ public class SensorsFragment extends BaseFragment<SensorsContract.Presenter> imp
                     magneticFieldDevice.add(peripheralDevice);
                 }
             });
+
+        final PeripheralDeviceComparator comparator = PeripheralDeviceComparator.create();
+        temperatureDevice.sort(comparator);
+        pressureDevice.sort(comparator);
+        humidityDevice.sort(comparator);
+        airQualityDevice.sort(comparator);
+        luminosityDevice.sort(comparator);
+        accelerationDevice.sort(comparator);
+        angularVelocityDevice.sort(comparator);
+        magneticFieldDevice.sort(comparator);
 
         temperatureAdapter.updateData(temperatureDevice);
         pressureAdapter.updateData(pressureDevice);

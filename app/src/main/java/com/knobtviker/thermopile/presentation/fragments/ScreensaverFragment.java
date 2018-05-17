@@ -1,10 +1,12 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
@@ -40,6 +43,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     private String formatTime;
     private int unitTemperature;
     private int unitPressure;
+    private int unitMotion;
 
     @BindView(R.id.textview_clock)
     public TextClock textViewClock;
@@ -59,11 +63,20 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     @BindView(R.id.textview_pressure)
     public TextView textViewPressure;
 
+    @BindView(R.id.textview_iaq)
+    public TextView textViewAirQuality;
+
+    @BindView(R.id.textview_motion)
+    public TextView textViewMotion;
+
     @BindView(R.id.textview_temperature_unit)
     public TextView textViewTemperatureUnit;
 
     @BindView(R.id.textview_pressure_unit)
     public TextView textViewPressureUnit;
+
+    @BindView(R.id.textview_motion_unit)
+    public TextView textViewMotionUnit;
 
     public static Fragment newInstance() {
         return new ScreensaverFragment();
@@ -141,12 +154,50 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     @Override
     public void onAirQualityChanged(float value) {
+        final Pair<String, Integer> pair = convertIAQValueToLabelAndColor(value);
 
+        textViewAirQuality.setText(pair.first);
     }
 
     @Override
     public void onAccelerationChanged(float[] values) {
+        final double ax = values[0];
+        final double ay = values[2];
+        final double az = values[1]; //možda minus
+//
+//        final double mx = -magneticField[2];
+//        final double my = -magneticField[0];
+//        final double mz = magneticField[1];
+//
+//        double roll = Math.atan2(ay, az);
+//
+//        double pitch = Math.atan2(-ax, Math.sqrt(Math.pow(ay, 2) + Math.pow(az, 2)));
+//
+//        double heading;
+//        if (my == 0) {
+//            heading = (mx < 0) ? Math.PI : 0;
+//        } else {
+//            heading = Math.atan2(mx, my);
+//        }
+//
+//        heading -= Constants.DECLINATION * Math.PI / 180;
+//
+//        if (heading > Math.PI) {
+//            heading -= (2 * Math.PI);
+//        } else if (heading < -Math.PI) {
+//            heading += (2 * Math.PI);
+//        } else if (heading < 0) {
+//            heading += 2 * Math.PI;
+//        }
+//
+//        // Convert everything from radians to degrees:
+//        heading *= 180.0 / Math.PI;
+//        pitch *= 180.0 / Math.PI;
+//        roll *= 180.0 / Math.PI;
 
+        //Peak ground acceleration calculation
+        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az + SensorManager.GRAVITY_EARTH, 2)), 19.61330000);
+        textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));
     }
 
     @Override
@@ -162,10 +213,12 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         formatTime = settings.formatTime;
         unitTemperature = settings.unitTemperature;
         unitPressure = settings.unitPressure;
+        unitMotion = settings.unitMotion;
 
         setFormatClock();
         setTemperatureUnit();
         setPressureUnit();
+        setMotionUnit();
         setDate();
     }
 
@@ -191,6 +244,8 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         presenter.observeAirQualityChanged(getContext());
         presenter.observeAccelerationChanged(getContext());
         presenter.settings();
+
+        ((ThermopileApplication)getActivity().getApplication()).refresh();
     }
 
     private void setFormatClock() {
@@ -235,6 +290,39 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
             default:
                 textViewPressureUnit.setText(getString(R.string.unit_pressure_pascal));
                 break;
+        }
+    }
+
+    private void setMotionUnit() {
+        switch (unitMotion) {
+            case Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2:
+                textViewMotionUnit.setText(getString(R.string.unit_acceleration_ms2));
+                break;
+            case Constants.UNIT_ACCELERATION_G:
+                textViewMotionUnit.setText(getString(R.string.unit_acceleration_g));
+                break;
+            default:
+                textViewMotionUnit.setText(getString(R.string.unit_acceleration_ms2));
+                break;
+        }
+    }
+
+    //TODO: Move this somewhere else and cleanup strings
+    private Pair<String, Integer> convertIAQValueToLabelAndColor(final float value) {
+        if (value >= 401 && value <= 500) {
+            return Pair.create("Very bad", R.color.black);
+        } else if (value >= 301 && value <= 400) {
+            return Pair.create("Worse", R.color.pink_500);
+        } else if (value >= 201 && value <= 300) {
+            return Pair.create("Bad", R.color.red_500);
+        } else if (value >= 101 && value <= 200) {
+            return Pair.create("Little bad", R.color.orange_500);
+        } else if (value >= 51 && value <= 100) {
+            return Pair.create("Average", R.color.yellow_500);
+        } else if (value >= 0 && value <= 50) {
+            return Pair.create("Good", R.color.light_green_500);
+        } else {
+            return Pair.create("Unknown", R.color.light_gray);
         }
     }
 }
