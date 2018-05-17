@@ -66,8 +66,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveTemperature(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            atmosphereRepository
-                .saveTemperature(vendor, name, value)
+            Completable.mergeArrayDelayError(
+                atmosphereRepository.saveTemperatureInMemory(value),
+                atmosphereRepository.saveTemperature(vendor, name, value)
+            )
                 .subscribe(
                     this::completed,
                     this::error
@@ -78,8 +80,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void savePressure(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            atmosphereRepository
-                .savePressure(vendor, name, value)
+            Completable.mergeArrayDelayError(
+                atmosphereRepository.savePressureInMemory(value),
+                atmosphereRepository.savePressure(vendor, name, value)
+            )
                 .subscribe(
                     this::completed,
                     this::error
@@ -90,8 +94,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveHumidity(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            atmosphereRepository
-                .saveHumidity(vendor, name, value)
+            Completable.mergeArrayDelayError(
+                atmosphereRepository.saveHumidityInMemory(value),
+                atmosphereRepository.saveHumidity(vendor, name, value)
+            )
                 .subscribe(
                     this::completed,
                     this::error
@@ -102,8 +108,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveAirQuality(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            atmosphereRepository
-                .saveAirQuality(vendor, name, value)
+            Completable.mergeArrayDelayError(
+                atmosphereRepository.saveAirQualityInMemory(value),
+                atmosphereRepository.saveAirQuality(vendor, name, value)
+            )
                 .subscribe(
                     this::completed,
                     this::error
@@ -114,8 +122,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveLuminosity(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            atmosphereRepository
-                .saveLuminosity(vendor, name, value)
+            Completable.mergeArrayDelayError(
+                atmosphereRepository.saveLuminosityInMemory(value),
+                atmosphereRepository.saveLuminosity(vendor, name, value)
+            )
                 .subscribe(
                     this::completed,
                     this::error
@@ -126,8 +136,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveAcceleration(@NonNull String vendor, @NonNull String name, float[] values) {
         compositeDisposable.add(
-            atmosphereRepository
-                .saveAcceleration(vendor, name, values)
+            Completable.mergeArrayDelayError(
+                atmosphereRepository.saveAccelerationInMemory(values),
+                atmosphereRepository.saveAcceleration(vendor, name, values)
+            )
                 .subscribe(
                     this::completed,
                     this::error
@@ -138,8 +150,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveAngularVelocity(@NonNull String vendor, @NonNull String name, float[] values) {
         compositeDisposable.add(
-            atmosphereRepository
-                .saveAngularVelocity(vendor, name, values)
+            Completable.mergeArrayDelayError(
+                atmosphereRepository.saveAngularVelocityInMemory(values),
+                atmosphereRepository.saveAngularVelocity(vendor, name, values)
+            )
                 .subscribe(
                     this::completed,
                     this::error
@@ -150,8 +164,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveMagneticField(@NonNull String vendor, @NonNull String name, float[] values) {
         compositeDisposable.add(
-            atmosphereRepository
-                .saveMagneticField(vendor, name, values)
+            Completable.mergeArrayDelayError(
+                atmosphereRepository.saveMagneticFieldInMemory(values),
+                atmosphereRepository.saveMagneticField(vendor, name, values)
+            )
                 .subscribe(
                     this::completed,
                     this::error
