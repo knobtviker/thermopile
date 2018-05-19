@@ -51,6 +51,6 @@ public interface MainContract {
 
         void settings();
 
-        void thresholdsForToday(final int day);
+        void thresholds();
     }
 }

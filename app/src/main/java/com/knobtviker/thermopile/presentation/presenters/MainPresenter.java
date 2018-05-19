@@ -157,18 +157,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
     }
 
     @Override
-    public void thresholdsForToday(int day) {
-        started();
-
-        //0 = 6
-        //1 = 0
-        //2 = 1
-        //3 = 2
-        //4 = 3
-        //5 = 4
-        //6 = 5
-//        day = (day == 0 ? 6 : (day - 1));
-
+    public void thresholds() {
         compositeDisposable.add(
             thresholdRepository
                 .load()
@@ -179,4 +168,28 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
                 )
         );
     }
+
+//    @Override
+//    public void thresholdsForToday(int day) {
+//        started();
+//
+//        //0 = 6
+//        //1 = 0
+//        //2 = 1
+//        //3 = 2
+//        //4 = 3
+//        //5 = 4
+//        //6 = 5
+////        day = (day == 0 ? 6 : (day - 1));
+//
+//        compositeDisposable.add(
+//            thresholdRepository
+//                .load()
+//                .subscribe(
+//                    view::onThresholdsChanged,
+//                    this::error,
+//                    this::completed
+//                )
+//        );
+//    }
 }

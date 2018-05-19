@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.novoda.build-properties'
 apply plugin: 'io.fabric'
-
+apply plugin: 'androidx.navigation.safeargs'
 
 buildProperties {
     keys {
@@ -66,12 +66,16 @@ dependencies {
     //data
     debugImplementation 'io.objectbox:objectbox-android-objectbrowser:1.5.0'
     releaseImplementation 'io.objectbox:objectbox-android:1.5.0'
+    compileOnly 'com.google.auto.value:auto-value-annotations:1.6'
+    annotationProcessor 'com.google.auto.value:auto-value:1.6'
     //presentation
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:gridlayout-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha01'
+    implementation 'android.arch.navigation:navigation-ui:1.0.0-alpha01'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.bignerdranch.android:simple-item-decoration:1.0.0'

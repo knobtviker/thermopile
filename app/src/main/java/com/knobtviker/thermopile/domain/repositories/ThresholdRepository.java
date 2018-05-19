@@ -29,7 +29,7 @@ public class ThresholdRepository extends AbstractRepository {
 
     public Observable<List<Threshold>> load() {
         return thresholdLocalDataSource
-            .query()
+            .observe()
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }

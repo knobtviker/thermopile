@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,8 +22,8 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
-import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
+import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -35,23 +34,11 @@ import butterknife.OnClick;
 public class ChartsFragment extends BaseFragment {
     public static final String TAG = ChartsFragment.class.getSimpleName();
 
-    @Nullable
-    private MainCommunicator mainCommunicator;
-
     @BindView(R.id.chart)
     public LineChart lineChart;
 
     public static Fragment newInstance() {
         return new ChartsFragment();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof MainCommunicator) {
-            mainCommunicator = (MainCommunicator) context;
-        }
     }
 
     @Nullable
@@ -78,20 +65,11 @@ public class ChartsFragment extends BaseFragment {
         super.onResume();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        mainCommunicator = null;
-    }
-
     @OnClick({R.id.button_back})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-                if (mainCommunicator != null) {
-                    mainCommunicator.showMain();
-                }
+                NavHostFragment.findNavController(this).navigate(R.id.action_chartsFragment_to_mainFragment);
                 break;
         }
     }

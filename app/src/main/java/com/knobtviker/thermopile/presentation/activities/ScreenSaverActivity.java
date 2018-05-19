@@ -6,9 +6,6 @@ import android.view.WindowManager;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
-import com.knobtviker.thermopile.presentation.fragments.ScreensaverFragment;
-
-import timber.log.Timber;
 
 /**
  * Created by bojan on 11/06/2017.
@@ -20,12 +17,9 @@ public class ScreenSaverActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        brightnessMin();
+        setContentView(R.layout.activity_screensaver);
 
-        getSupportFragmentManager()
-            .beginTransaction()
-            .add(R.id.fragment_container, ScreensaverFragment.newInstance())
-            .commitNowAllowingStateLoss();
+        brightnessMin();
     }
 
     @Override
@@ -47,6 +41,5 @@ public class ScreenSaverActivity extends BaseActivity {
         final WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.screenBrightness = value;
         getWindow().setAttributes(layoutParams);
-        Timber.i("brightness set to %s", value);
     }
 }

@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,7 +27,6 @@ import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.utils.controllers.PIDController;
 import com.knobtviker.thermopile.presentation.views.ArcView;
 import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
-import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 import com.knobtviker.thermopile.presentation.views.listeners.DayScrollListener;
 
 import org.joda.time.DateTime;
@@ -36,6 +34,7 @@ import org.joda.time.DateTimeZone;
 
 import java.util.List;
 
+import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -46,8 +45,6 @@ import timber.log.Timber;
 
 public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View, DayScrollListener.Listener {
     public static final String TAG = MainFragment.class.getSimpleName();
-
-    private MainCommunicator mainCommunicator;
 
     private ThresholdAdapter thresholdAdapter;
 
@@ -132,14 +129,14 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         pidController = new PIDController(40, 1000);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof MainCommunicator) {
-            mainCommunicator = (MainCommunicator) context;
-        }
-    }
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//
+//        if (context instanceof MainCommunicator) {
+//            mainCommunicator = (MainCommunicator) context;
+//        }
+//    }
 
     @Nullable
     @Override
@@ -166,13 +163,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         super.onResume();
     }
 
-    @Override
-    public void onDetach() {
-
-        mainCommunicator = null;
-
-        super.onDetach();
-    }
+//    @Override
+//    public void onDetach() {
+//
+//        mainCommunicator = null;
+//
+//        super.onDetach();
+//    }
 
     @Override
     public void showLoading(boolean isLoading) {
@@ -293,17 +290,21 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onThresholdsChanged(@NonNull List<Threshold> thresholds) {
-        thresholdAdapter.updateData(thresholds);
+        Timber.i("%s", thresholds.size());
+        thresholdAdapter.setData(thresholds);
     }
 
     @Override
     public void onDayChanged() {
-        //TODO: Fix this line crashing
-//        textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+        if (thresholdAdapter.getItemCount() > 0) {
+            textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+        } else {
+            //TODO: What else?
+        }
     }
 
     @OnClick({R.id.floatingactionbutton_down, R.id.floatingactionbutton_up, R.id.button_charts, R.id.button_schedule, R.id.button_settings})
-    public void onActionDownClicked(@NonNull final View view) {
+    public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.floatingactionbutton_down:
 //                RelayRawDataSource.getInstance()
@@ -316,14 +317,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //                    .subscribe();
                 break;
             case R.id.button_charts:
-                mainCommunicator.showCharts();
-//                Router.bootAnimation(getContext());
+                NavHostFragment.findNavController(this).navigate(R.id.action_mainFragment_to_chartsFragment);
                 break;
             case R.id.button_schedule:
-                mainCommunicator.showSchedule();
+                NavHostFragment.findNavController(this).navigate(R.id.action_mainFragment_to_scheduleFragment);
                 break;
             case R.id.button_settings:
-                mainCommunicator.showSettings();
+                NavHostFragment.findNavController(this).navigate(R.id.action_mainFragment_to_settingsFragment);
                 break;
         }
     }
@@ -414,7 +414,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void thresholds() {
-        presenter.thresholdsForToday(DateTime.now().dayOfWeek().get());
+        presenter.thresholds();
     }
 
     //TODO: Move this somewhere else and cleanup strings

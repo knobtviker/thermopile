@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,8 +17,8 @@ import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
 import com.knobtviker.thermopile.presentation.views.adapters.SettingsPagerAdapter;
-import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 
+import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -43,9 +42,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     @BindView(R.id.view_pager)
     public ViewPager viewPager;
 
-    @Nullable
-    private MainCommunicator mainCommunicator;
-
     public static Fragment newInstance() {
         return new SettingsFragment();
     }
@@ -58,15 +54,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         this.networkFragment = NetworkFragment.newInstance();
 
         this.presenter = new SettingsPresenter(this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof MainCommunicator) {
-            mainCommunicator = (MainCommunicator) context;
-        }
     }
 
     @Nullable
@@ -92,13 +79,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-
-        mainCommunicator = null;
-    }
-
-    @Override
     public void onLoad(@NonNull Settings settings) {
         localeFragment.onLoad(settings);
         formatsFragment.onLoad(settings);
@@ -120,9 +100,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-                if (mainCommunicator != null) {
-                    mainCommunicator.showMain();
-                }
+                NavHostFragment.findNavController(this).navigate(R.id.action_settingsFragment_to_mainFragment);
                 break;
             case R.id.button_help:
                 Timber.i("Show HelpActivity");

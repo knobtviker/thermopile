@@ -60,9 +60,6 @@
         <activity
             android:name=".presentation.activities.ThresholdActivity"
             android:screenOrientation="reverseLandscape"/>
-        <activity
-            android:name=".presentation.activities.BootAnimationActivity"
-            android:screenOrientation="reverseLandscape"/>
     </application>
 
 </manifest>

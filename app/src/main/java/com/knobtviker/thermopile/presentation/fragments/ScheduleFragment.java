@@ -2,7 +2,6 @@ package com.knobtviker.thermopile.presentation.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +21,6 @@ import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.utils.Router;
-import com.knobtviker.thermopile.presentation.views.communicators.MainCommunicator;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import org.joda.time.DateTime;
@@ -31,6 +29,7 @@ import org.joda.time.Minutes;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindViews;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -49,7 +48,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday, R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
     public List<ConstraintLayout> weekdayLayouts;
 
-    private MainCommunicator mainCommunicator;
+//    private MainCommunicator mainCommunicator;
 
     public static Fragment newInstance() {
         return new ScheduleFragment();
@@ -57,15 +56,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     public ScheduleFragment() {
         presenter = new SchedulePresenter(this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof MainCommunicator) {
-            mainCommunicator = (MainCommunicator) context;
-        }
     }
 
     @Nullable
@@ -91,13 +81,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     }
 
     @Override
-    public void onDetach() {
-        mainCommunicator = null;
-
-        super.onDetach();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -120,9 +103,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-                if (mainCommunicator != null) {
-                    mainCommunicator.showMain();
-                }
+                NavHostFragment.findNavController(this).navigate(R.id.action_scheduleFragment_to_mainFragment);
                 break;
             case R.id.button_add:
                 add();

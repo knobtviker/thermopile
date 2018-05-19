@@ -19,6 +19,8 @@ public class ThresholdActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_threshold);
+
         int day = -1;
         int startMinute = -1;
         int maxWidth = -1;
