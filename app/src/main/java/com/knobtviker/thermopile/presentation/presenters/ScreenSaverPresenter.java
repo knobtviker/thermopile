@@ -142,7 +142,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
 
         compositeDisposable.add(
             settingsRepository
-                .load()
+                .observe()
                 .subscribe(
                     settings -> {
                         view.onSettingsChanged(settings.get(0));

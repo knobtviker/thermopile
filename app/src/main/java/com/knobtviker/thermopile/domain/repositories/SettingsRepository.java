@@ -26,9 +26,16 @@ public class SettingsRepository extends AbstractRepository {
     SettingsRepository() {
     }
 
-    public Observable<List<Settings>> load() {
+    public Observable<List<Settings>> observe() {
         return settingsLocalDataSource
             .observe()
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
+    }
+
+    public Observable<List<Settings>> load() {
+        return settingsLocalDataSource
+            .query()
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }

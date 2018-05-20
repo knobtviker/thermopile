@@ -34,7 +34,7 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
 
         compositeDisposable.add(
             settingsRepository
-                .load()
+                .observe()
                 .subscribe(
                     settings -> {
                         view.onSettingsChanged(settings.get(0));

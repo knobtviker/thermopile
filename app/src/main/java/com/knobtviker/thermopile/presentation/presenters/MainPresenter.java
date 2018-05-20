@@ -146,7 +146,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
         compositeDisposable.add(
             settingsRepository
-                .load()
+                .observe()
                 .subscribe(settings -> {
                         view.onSettingsChanged(settings.get(0));
                     },
@@ -184,7 +184,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 //
 //        compositeDisposable.add(
 //            thresholdRepository
-//                .load()
+//                .observe()
 //                .subscribe(
 //                    view::onThresholdsChanged,
 //                    this::error,

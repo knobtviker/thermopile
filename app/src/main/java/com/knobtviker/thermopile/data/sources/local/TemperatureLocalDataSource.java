@@ -87,7 +87,7 @@ public class TemperatureLocalDataSource extends AbstractLocalDataSource<Temperat
 //        });
 //    }
 //
-//    public Observable<List<Temperature2>> load() {
+//    public Observable<List<Temperature2>> observe() {
 //        return Observable.create(emitter -> {
 //            final DataSubscription dataSubscription =  box.query()
 //                .order(Temperature_.timestamp)

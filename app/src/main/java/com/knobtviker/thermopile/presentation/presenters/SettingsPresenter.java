@@ -30,7 +30,7 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
 
         compositeDisposable.add(
             settingsRepository
-                .load()
+                .observe()
                 .subscribe(
                     settings -> {
                       view.onLoad(settings.get(0));

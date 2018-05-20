@@ -46,10 +46,11 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     @Override
     public void createScreensaver() {
-        screensaverDisposable = settingsRepository
-            .load()
-            .flatMap(settings -> Observable.just(settings.get(0).screensaverDelay))
-            .flatMapCompletable(delay -> Completable.timer(delay, TimeUnit.SECONDS, scheduler))
+//        screensaverDisposable = settingsRepository
+//            .load()
+//            .flatMap(settings -> Observable.just(settings.get(0).screensaverDelay))
+//            .flatMapCompletable(delay -> Completable.timer(delay, TimeUnit.SECONDS, scheduler))
+        screensaverDisposable = Completable.timer(60, TimeUnit.SECONDS, scheduler)
             .observeOn(scheduler)
             .subscribe(
                 view::showScreensaver,
@@ -185,7 +186,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
         compositeDisposable.add(
             settingsRepository
-                .load()
+                .observe()
                 .subscribe(
                     settings -> {
                         view.onSettings(settings.get(0));
