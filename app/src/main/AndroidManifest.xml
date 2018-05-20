@@ -57,9 +57,6 @@
         <activity
             android:name=".presentation.activities.ScreenSaverActivity"
             android:screenOrientation="reverseLandscape"/>
-        <activity
-            android:name=".presentation.activities.ThresholdActivity"
-            android:screenOrientation="reverseLandscape"/>
     </application>
 
 </manifest>

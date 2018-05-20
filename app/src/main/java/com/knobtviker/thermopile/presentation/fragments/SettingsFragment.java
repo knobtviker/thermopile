@@ -42,10 +42,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     @BindView(R.id.view_pager)
     public ViewPager viewPager;
 
-    public static Fragment newInstance() {
-        return new SettingsFragment();
-    }
-
     public SettingsFragment() {
         this.localeFragment = LocaleFragment.newInstance();
         this.formatsFragment = FormatsFragment.newInstance();

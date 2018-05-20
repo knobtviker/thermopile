@@ -21,11 +21,11 @@
         android:layout_height="?attr/actionBarSize">
 
         <ImageButton
-            android:id="@+id/button_back"
+            android:id="@+id/button_discard"
             style="@style/Widget.AppCompat.Light.ActionButton"
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
-            android:src="?attr/homeAsUpIndicator"
+            android:src="@drawable/ic_discard"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"

@@ -111,10 +111,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @BindView(R.id.recyclerview_thresholds)
     public RecyclerView recyclerViewThresholds;
 
-    public static Fragment newInstance() {
-        return new MainFragment();
-    }
-
     public MainFragment() {
         dateTimeZone = DateTimeZone.forID(Constants.DEFAULT_TIMEZONE);
         formatClock = Constants.CLOCK_MODE_24H;
@@ -128,15 +124,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         pidController = new PIDController(40, 1000);
     }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//
-//        if (context instanceof MainCommunicator) {
-//            mainCommunicator = (MainCommunicator) context;
-//        }
-//    }
 
     @Nullable
     @Override
@@ -162,14 +149,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         super.onResume();
     }
-
-//    @Override
-//    public void onDetach() {
-//
-//        mainCommunicator = null;
-//
-//        super.onDetach();
-//    }
 
     @Override
     public void showLoading(boolean isLoading) {

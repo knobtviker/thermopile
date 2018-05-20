@@ -20,7 +20,6 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
-import com.knobtviker.thermopile.presentation.utils.Router;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import org.joda.time.DateTime;
@@ -47,12 +46,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday, R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
     public List<ConstraintLayout> weekdayLayouts;
-
-//    private MainCommunicator mainCommunicator;
-
-    public static Fragment newInstance() {
-        return new ScheduleFragment();
-    }
 
     public ScheduleFragment() {
         presenter = new SchedulePresenter(this);
@@ -139,7 +132,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
 
                                 if (Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)) <= touchSlop) {
-                                    Router.showThreshold(getContext(), index, startX, weekdayLayouts.get(0).getWidth());
+                                    navigateToThreshold(index, startX, weekdayLayouts.get(0).getWidth());
                                 }
                             }
                             return true;
@@ -168,7 +161,13 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
                 thresholdViewHolder.rootLayout.setOnClickListener(v -> {
                     if (thresholdViewHolder.getState() == ThresholdViewHolder.State.STATE_DEFAULT) {
-                        Router.showThreshold(getContext(), threshold.id);
+                        NavHostFragment
+                            .findNavController(this)
+                            .navigate(
+                                ScheduleFragmentDirections
+                                    .showThresholdByIdAction()
+                                    .setThresholdId((int) threshold.id)
+                            );
                     } else {
                         thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_DEFAULT);
                     }
@@ -214,10 +213,22 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
             .setCancelable(true)
             .setSingleChoiceItems(days, -1, (dialogInterface, index) -> {
                 dialogInterface.dismiss();
-                Router.showThreshold(getContext(), index, 0, weekdayLayouts.get(0).getWidth());
+                navigateToThreshold(index, 0, weekdayLayouts.get(0).getWidth());
             })
             .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
             .create()
             .show();
+    }
+
+    private void navigateToThreshold(int day, int startX, int width) {
+        NavHostFragment
+            .findNavController(this)
+            .navigate(
+                ScheduleFragmentDirections
+                    .showThresholdByIdAction()
+                    .setDay(day)
+                    .setStartMinute(startX)
+                    .setMaxWidth(width)
+            );
     }
 }

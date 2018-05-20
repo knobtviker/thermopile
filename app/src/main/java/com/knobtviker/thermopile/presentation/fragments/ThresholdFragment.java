@@ -28,6 +28,7 @@ import org.joda.time.DateTime;
 
 import java.util.Optional;
 
+import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -73,34 +74,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @BindView(R.id.recyclerview_colors)
     public RecyclerView recyclerViewColors;
 
-    public static Fragment newInstance(final int day, final int startMinute, final int maxWidth) {
-        final ThresholdFragment fragment = new ThresholdFragment();
-
-        final Bundle arguments = new Bundle();
-        arguments.putInt(Constants.KEY_DAY, day);
-        arguments.putInt(Constants.KEY_START_MINUTE, startMinute);
-        arguments.putInt(Constants.KEY_MAX_WIDTH, maxWidth);
-        arguments.putLong(Constants.KEY_THRESHOLD_ID, -1L);
-
-        fragment.setArguments(arguments);
-
-        return fragment;
-    }
-
-    public static Fragment newInstance(final long thresholdId) {
-        final ThresholdFragment fragment = new ThresholdFragment();
-
-        final Bundle arguments = new Bundle();
-        arguments.putInt(Constants.KEY_DAY, -1);
-        arguments.putInt(Constants.KEY_START_MINUTE, -1);
-        arguments.putInt(Constants.KEY_MAX_WIDTH, -1);
-        arguments.putLong(Constants.KEY_THRESHOLD_ID, thresholdId);
-
-        fragment.setArguments(arguments);
-
-        return fragment;
-    }
-
     public ThresholdFragment() {
         presenter = new ThresholdPresenter(this);
     }
@@ -113,18 +86,11 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
         final Optional<Bundle> argumentsOptional = Optional.ofNullable(getArguments());
         argumentsOptional.ifPresent(bundle -> {
-            if (bundle.containsKey(Constants.KEY_DAY)) {
-                day = bundle.getInt(Constants.KEY_DAY, -1);
-            }
-            if (bundle.containsKey(Constants.KEY_START_MINUTE)) {
-                startMinute = bundle.getInt(Constants.KEY_START_MINUTE, -1);
-            }
-            if (bundle.containsKey(Constants.KEY_MAX_WIDTH)) {
-                maxWidth = bundle.getInt(Constants.KEY_MAX_WIDTH, -1);
-            }
-            if (bundle.containsKey(Constants.KEY_THRESHOLD_ID)) {
-                thresholdId = bundle.getLong(Constants.KEY_THRESHOLD_ID, -1L);
-            }
+            final ThresholdFragmentArgs arguments = ThresholdFragmentArgs.fromBundle(bundle);
+            day = arguments.getDay();
+            startMinute = arguments.getStartMinute();
+            maxWidth = arguments.getMaxWidth();
+            thresholdId = (long)arguments.getThresholdId();
         });
     }
 
@@ -173,14 +139,14 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     @Override
     public void onSaved() {
-        getActivity().finish();
+        back();
     }
 
-    @OnClick({R.id.button_back, R.id.button_save, R.id.button_time_start, R.id.button_time_end})
+    @OnClick({R.id.button_discard, R.id.button_save, R.id.button_time_start, R.id.button_time_end})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
-            case R.id.button_back:
-                getActivity().finish();
+            case R.id.button_discard:
+                back();
                 break;
             case R.id.button_save:
                 save();
@@ -315,5 +281,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private void showEndTimePicker() {
         gridtimeEnd.show(getActivity().getSupportFragmentManager(), "GridTimePickerDialogEnd");
+    }
+
+    private void back() {
+        NavHostFragment.findNavController(this).navigate(R.id.action_thresholdFragment_to_scheduleFragment);
     }
 }

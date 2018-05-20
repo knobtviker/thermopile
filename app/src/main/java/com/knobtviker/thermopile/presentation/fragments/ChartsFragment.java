@@ -37,10 +37,6 @@ public class ChartsFragment extends BaseFragment {
     @BindView(R.id.chart)
     public LineChart lineChart;
 
-    public static Fragment newInstance() {
-        return new ChartsFragment();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

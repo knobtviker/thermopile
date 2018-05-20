@@ -14,6 +14,7 @@ import com.knobtviker.thermopile.presentation.presenters.implementation.Abstract
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 
@@ -45,9 +46,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     @Override
     public void createScreensaver() {
-//        //TODO: Timer delay for screensaver should be loaded from Settings.
-        screensaverDisposable = Completable
-            .timer(60, TimeUnit.SECONDS, scheduler)
+        screensaverDisposable = settingsRepository
+            .load()
+            .flatMap(settings -> Observable.just(settings.get(0).screensaverDelay))
+            .flatMapCompletable(delay -> Completable.timer(delay, TimeUnit.SECONDS, scheduler))
             .observeOn(scheduler)
             .subscribe(
                 view::showScreensaver,
