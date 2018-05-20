@@ -345,7 +345,6 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentTemperature) {
             currentTemperature = normalizedValue;
             incomingHandler.currentTemperature = currentTemperature;
-            //Timber.i("sendTemperature: %s", currentTemperature);
             sendMessageToForeground(buildSingleValueMessage(event, MESSAGE_WHAT_TEMPERATURE, currentTemperature));
         }
     }
@@ -356,7 +355,6 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentPressure) {
             currentPressure = normalizedValue;
             incomingHandler.currentPressure = currentPressure;
-            //Timber.i("sendPressure: %s", currentPressure);
             sendMessageToForeground(buildSingleValueMessage(event, MESSAGE_WHAT_PRESSURE, currentPressure));
         }
     }
@@ -367,7 +365,6 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentHumidity) {
             currentHumidity = normalizedValue;
             incomingHandler.currentHumidity = currentHumidity;
-            //Timber.i("sendHumidity: %s", currentHumidity);
             sendMessageToForeground(buildSingleValueMessage(event, MESSAGE_WHAT_HUMIDITY, currentHumidity));
         }
     }
@@ -378,7 +375,6 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentAirQuality) {
             currentAirQuality = normalizedValue;
             incomingHandler.currentAirQuality = currentAirQuality;
-            //Timber.i("sendAirQuality: %s", currentAirQuality);
             sendMessageToForeground(buildSingleValueMessage(event, MESSAGE_WHAT_AIR_QUALITY, currentAirQuality));
         }
     }
@@ -389,7 +385,6 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentLuminosity) {
             currentLuminosity = normalizedValue;
             incomingHandler.currentLuminosity = currentLuminosity;
-            //Timber.i("sendLuminosity: %s", currentLuminosity);
             sendMessageToForeground(buildSingleValueMessage(event, MESSAGE_WHAT_LUMINOSITY, currentLuminosity));
         }
     }
