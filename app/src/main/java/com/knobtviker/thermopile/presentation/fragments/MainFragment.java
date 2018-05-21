@@ -5,7 +5,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
@@ -33,8 +31,6 @@ import com.knobtviker.thermopile.presentation.views.listeners.DayScrollListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
-import java.util.List;
 
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
