@@ -15,9 +15,11 @@ import android.view.ViewGroup;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
@@ -268,9 +270,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
-    public void onThresholdsChanged(@NonNull List<Threshold> thresholds) {
-        Timber.i("%s", thresholds.size());
-        thresholdAdapter.setData(thresholds);
+    public void onThresholdsChanged(@NonNull ImmutableList<ThresholdInterval> thresholdIntervals) {
+        thresholdAdapter.setData(thresholdIntervals);
     }
 
     @Override

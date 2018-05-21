@@ -11,4 +11,5 @@ public interface BaseView {
     void showLoading(final boolean isLoading);
 
     void showError(@NonNull final Throwable throwable);
+
 }

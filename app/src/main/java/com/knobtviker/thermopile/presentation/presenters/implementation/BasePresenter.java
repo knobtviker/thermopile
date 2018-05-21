@@ -6,7 +6,9 @@ package com.knobtviker.thermopile.presentation.presenters.implementation;
 
 import android.support.annotation.NonNull;
 
-public interface BasePresenter {
+import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
+
+public interface BasePresenter<V extends BaseView> {
 
     void subscribe();
 

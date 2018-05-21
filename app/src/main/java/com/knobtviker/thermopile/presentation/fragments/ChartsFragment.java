@@ -61,6 +61,16 @@ public class ChartsFragment extends BaseFragment {
         super.onResume();
     }
 
+    @Override
+    public void showLoading(boolean isLoading) {
+
+    }
+
+    @Override
+    public void showError(@NonNull Throwable throwable) {
+
+    }
+
     @OnClick({R.id.button_back})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
@@ -169,5 +179,4 @@ public class ChartsFragment extends BaseFragment {
             lineChart.moveViewToX(data.getEntryCount());
         }
     }
-
 }

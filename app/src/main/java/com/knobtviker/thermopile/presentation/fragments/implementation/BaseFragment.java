@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
+import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -17,7 +18,7 @@ import butterknife.Unbinder;
  * Created by bojan on 15/06/2017.
  */
 
-public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
+public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements BaseView {
 
     protected P presenter;
 
@@ -40,12 +41,12 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
 
     @Override
     public void onDestroyView() {
-        if (!unbinder.equals(Unbinder.EMPTY)) {
-            unbinder.unbind();
-        }
-
         if (presenter != null) {
             presenter.unsubscribe();
+        }
+
+        if (!unbinder.equals(Unbinder.EMPTY)) {
+            unbinder.unbind();
         }
 
         super.onDestroyView();
