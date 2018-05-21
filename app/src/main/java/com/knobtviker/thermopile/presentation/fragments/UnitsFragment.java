@@ -29,6 +29,7 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     private long settingsId = -1L;
     private int unitTemperature = Constants.UNIT_TEMPERATURE_CELSIUS;
     private int unitPressure = Constants.UNIT_PRESSURE_PASCAL;
+    private int unitAcceleration = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
 
     @BindView(R.id.radiogroup_temperature_unit)
     public RadioGroup radioGroupTemperatureUnit;
@@ -54,6 +55,15 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     @BindView(R.id.unit_psi)
     public RadioButton radioButtonUnitPsi;
 
+    @BindView(R.id.radiogroup_acceleration_unit)
+    public RadioGroup radioGroupAccelerationUnit;
+
+    @BindView(R.id.unit_ms2)
+    public RadioButton radioButtonUnitMs2;
+
+    @BindView(R.id.unit_g)
+    public RadioButton radioButtonUnitG;
+
     public static UnitsFragment newInstance() {
         return new UnitsFragment();
     }
@@ -76,6 +86,7 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
 
         setupRadioGroupTemperatureUnit();
         setupRadioGroupPressureUnit();
+        setupRadioGroupAccelerationUnit();
     }
 
     @Override
@@ -92,9 +103,11 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         this.settingsId = settings.id;
         this.unitTemperature = settings.unitTemperature;
         this.unitPressure = settings.unitPressure;
+        this.unitAcceleration = settings.unitMotion;
 
         setUnitTemperature();
         setUnitPressure();
+        setUnitAcceleration();
     }
 
     private void setupRadioGroupTemperatureUnit() {
@@ -147,6 +160,28 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         });
     }
 
+    private void setupRadioGroupAccelerationUnit() {
+        radioGroupAccelerationUnit.setEnabled(false);
+        radioGroupAccelerationUnit.setOnCheckedChangeListener((radioGroup, checkedId) -> {
+            int value;
+            switch (checkedId) {
+                case R.id.unit_ms2:
+                    value = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
+                    break;
+                case R.id.unit_g:
+                    value = Constants.UNIT_ACCELERATION_G;
+                    break;
+                default:
+                    value = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
+                    break;
+            }
+            if (radioGroupAccelerationUnit.isEnabled()) {
+                this.unitAcceleration = value;
+                presenter.saveMotionUnit(settingsId, value);
+            }
+        });
+    }
+
     private void setUnitTemperature() {
         switch (unitTemperature) {
             case Constants.UNIT_TEMPERATURE_CELSIUS:
@@ -177,5 +212,18 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         }
 
         radioGroupPressureUnit.setEnabled(true);
+    }
+
+    private void setUnitAcceleration() {
+        switch (unitAcceleration) {
+            case Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2:
+                radioButtonUnitMs2.setChecked(true);
+                break;
+            case Constants.UNIT_ACCELERATION_G:
+                radioButtonUnitG.setChecked(true);
+                break;
+        }
+
+        radioGroupAccelerationUnit.setEnabled(true);
     }
 }

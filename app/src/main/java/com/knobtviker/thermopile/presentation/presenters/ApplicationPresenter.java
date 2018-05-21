@@ -46,9 +46,10 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     @Override
     public void createScreensaver() {
+        // TODO: Check why this makes OOMs
 //        screensaverDisposable = settingsRepository
 //            .load()
-//            .flatMap(settings -> Observable.just(settings.get(0).screensaverDelay))
+//            .map(settings -> settings.isEmpty() ? 60 : settings.get(0).screensaverDelay)
 //            .flatMapCompletable(delay -> Completable.timer(delay, TimeUnit.SECONDS, scheduler))
         screensaverDisposable = Completable.timer(60, TimeUnit.SECONDS, scheduler)
             .observeOn(scheduler)

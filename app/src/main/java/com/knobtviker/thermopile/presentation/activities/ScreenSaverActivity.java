@@ -29,11 +29,11 @@ public class ScreenSaverActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    public void finish() {
-        overridePendingTransition(R.anim.no_anim, R.anim.exit_bottom_to_top);
-        super.finish();
-    }
+//    @Override
+//    public void finish() {
+//        overridePendingTransition(R.anim.no_anim, R.anim.exit_bottom_to_top);
+//        super.finish();
+//    }
 
     private void brightnessMin() {
         brightness(0.1f);

@@ -51,7 +51,7 @@
         </RadioGroup>
 
         <View
-            android:id="@+id/divider_units"
+            android:id="@+id/divider_units_pressure"
             style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_units"/>
+            app:layout_constraintTop_toBottomOf="@id/divider_units_pressure"/>
 
         <RadioGroup
             android:id="@+id/radiogroup_pressure_unit"
@@ -83,25 +83,68 @@
             <RadioButton
                 android:id="@+id/unit_pascal"
                 style="@style/Widget.RadioButton.Left"
-                android:text="hPa"/>
+                android:text="@string/unit_pressure_pascal"/>
 
             <RadioButton
                 android:id="@+id/unit_bar"
-                android:text="mbar"
+                android:text="@string/unit_pressure_bar"
                 style="@style/Widget.RadioButton.Middle"/>
 
             <RadioButton
                 android:id="@+id/unit_psi"
                 style="@style/Widget.RadioButton.Right"
-                android:text="psi"/>
+                android:text="@string/unit_pressure_psi"/>
+
+        </RadioGroup>
+
+        <View
+            android:id="@+id/divider_units_acceleration"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radiogroup_pressure_unit"
+            style="@style/Widget.Divider.Settings"/>
+
+        <TextView
+            android:id="@+id/textview_title_unit_acceleration"
+            style="@style/TextAppearance.Section"
+            android:text="Motion"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_units_acceleration"/>
+
+        <RadioGroup
+            android:id="@+id/radiogroup_acceleration_unit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_unit_acceleration">
+
+            <RadioButton
+                android:id="@+id/unit_ms2"
+                style="@style/Widget.RadioButton.Left"
+                android:text="@string/unit_acceleration_ms2"/>
+
+            <RadioButton
+                android:id="@+id/unit_g"
+                android:text="@string/unit_acceleration_g"
+                style="@style/Widget.RadioButton.Right"/>
 
         </RadioGroup>
 
         <View
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radiogroup_pressure_unit"
+            app:layout_constraintTop_toBottomOf="@id/radiogroup_acceleration_unit"
             style="@style/Widget.Divider.Settings"/>
+
 
     </android.support.constraint.ConstraintLayout>
 

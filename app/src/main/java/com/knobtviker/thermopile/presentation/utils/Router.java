@@ -20,7 +20,7 @@ public class Router {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         context.startActivity(intent);
-        ((AppCompatActivity)context).overridePendingTransition(R.anim.enter_top_to_bottom, R.anim.no_anim);
+//        ((AppCompatActivity)context).overridePendingTransition(R.anim.enter_top_to_bottom, R.anim.no_anim);
     }
 
     public static void restart(@NonNull final Context context) {
