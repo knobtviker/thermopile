@@ -98,10 +98,10 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     @Override
     public void onBindingDied(ComponentName name) {
-        Timber.i("onBindingDied %s", name.flattenToString());
-        serviceMessenger = null;
-
-        services();
+//        Timber.i("onBindingDied %s", name.flattenToString());
+//        serviceMessenger = null;
+//
+//        services();
     }
 
     @Override

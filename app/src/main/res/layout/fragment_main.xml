@@ -131,30 +131,34 @@
         <TextView
             android:id="@+id/textview_day"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:ellipsize="end"
-            android:gravity="center"
+            android:gravity="center_horizontal|top"
             android:maxLines="1"
-            android:paddingTop="@dimen/margin_xxsmall"
+            android:paddingTop="@dimen/margin_xxxsmall"
             android:singleLine="true"
             android:textAllCaps="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            app:layout_constraintVertical_bias="0.0"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textColor="?android:textColorTertiary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bottom_toolbar_divider"
             tools:text="Četvrtak"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_thresholds"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:paddingTop="@dimen/margin_xxsmall"
+            android:layout_height="0dp"
             android:scrollbars="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_day"/>
+            app:layout_constraintTop_toBottomOf="@id/bottom_toolbar_divider"/>
 
     </android.support.constraint.ConstraintLayout>
 
