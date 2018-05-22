@@ -51,14 +51,4 @@ public class ThresholdLocalDataSource extends AbstractLocalDataSource<Threshold>
                 .build()
         );
     }
-
-    public Observable<List<Threshold>> queryByDay(final int day) {
-        return super.query(
-            box.query()
-                .equal(Threshold_.day, day)
-                .order(Threshold_.startHour)
-                .order(Threshold_.startMinute)
-                .build()
-        );
-    }
 }

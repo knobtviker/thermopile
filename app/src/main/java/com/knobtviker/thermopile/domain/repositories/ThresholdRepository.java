@@ -37,7 +37,7 @@ public class ThresholdRepository extends AbstractRepository {
 
     public Observable<List<Threshold>> load() {
         return thresholdLocalDataSource
-            .observe()
+            .query()
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }
@@ -62,13 +62,6 @@ public class ThresholdRepository extends AbstractRepository {
                     return ImmutableList.copyOf(intervalsAll);
                 }
             })
-            .observeOn(schedulerProvider.ui);
-    }
-
-    public Observable<List<Threshold>> loadByDay(final int day) {
-        return thresholdLocalDataSource
-            .queryByDay(day)
-            .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }
 
