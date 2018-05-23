@@ -77,4 +77,37 @@
         <attr name="discrete_rtl" format="boolean"/> <!--right to left, default: false-->
     </declare-styleable>
 
+    <!--Spark-->
+    <attr name="spark_SparkViewStyle" format="reference" />
+
+    <declare-styleable name="SparkView">
+        <attr name="spark_lineColor" format="color|reference" />
+        <attr name="spark_lineWidth" format="dimension|reference" />
+        <attr name="spark_cornerRadius" format="dimension|reference" />
+        <attr name="spark_fillColor" format="color|reference" />
+        <attr name="spark_fillType" format="enum">
+            <!-- must match values in SparkView.FillType -->
+            <enum name="none" value="0" />
+            <enum name="up" value="1" />
+            <enum name="down" value="2" />
+            <enum name="towardZero" value="3" />
+        </attr>
+
+        <attr name="spark_baseLineColor" format="color|reference" />
+        <attr name="spark_baseLineWidth" format="dimension|reference" />
+
+        <attr name="spark_scrubLineColor" format="color|reference" />
+        <attr name="spark_scrubLineWidth" format="dimension|reference" />
+
+        <attr name="spark_scrubEnabled" format="boolean|reference" />
+
+        <attr name="spark_animateChanges" format="boolean|reference" />
+
+        <attr name="spark_fadeLengthLeft" format="dimension|reference" />
+        <attr name="spark_fadeLengthRight" format="dimension|reference" />
+
+        <attr name="spark_lineUnderColor" format="color|reference" />
+        <attr name="spark_clipAmount" format="float|reference"/>
+    </declare-styleable>
+
 </resources>

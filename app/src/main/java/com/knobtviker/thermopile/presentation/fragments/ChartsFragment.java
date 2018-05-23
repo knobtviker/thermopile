@@ -1,41 +1,60 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.local.Acceleration;
+import com.knobtviker.thermopile.data.models.local.AirQuality;
+import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Temperature;
+import com.knobtviker.thermopile.data.models.local.implementation.SingleModel;
+import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
+import com.knobtviker.thermopile.presentation.presenters.ChartsPresenter;
+import com.knobtviker.thermopile.presentation.views.adapters.ChartAdapter;
+import com.knobtviker.thermopile.presentation.views.spark.SparkView;
+import com.knobtviker.thermopile.presentation.views.spark.animation.MorphSparkAnimator;
+
+import java.util.List;
 
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
  */
 
-public class ChartsFragment extends BaseFragment {
+public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> implements ChartsContract.View, AdapterView.OnItemSelectedListener {
     public static final String TAG = ChartsFragment.class.getSimpleName();
 
-    @BindView(R.id.chart)
-    public LineChart lineChart;
+    private int type = 0;
+    private int interval = 0;
+
+    private ChartAdapter<SingleModel> sparkAdapter;
+
+    @BindView(R.id.spinner_type)
+    public Spinner spinnerType;
+
+    @BindView(R.id.sparkview)
+    public SparkView sparkView;
+
+
+    public ChartsFragment() {
+        presenter = new ChartsPresenter(this);
+    }
 
     @Nullable
     @Override
@@ -49,16 +68,15 @@ public class ChartsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupChart();
-        setupAxes();
-        setupData();
-        setLegend();
+        setupSpinnerType();
+        setupSparkView();
     }
 
     @Override
     public void onResume() {
-
         super.onResume();
+
+        data();
     }
 
     @Override
@@ -80,103 +98,110 @@ public class ChartsFragment extends BaseFragment {
         }
     }
 
-    private void setupChart() {
-        // disable description text
-        lineChart.getDescription().setEnabled(false);
-        // enable touch gestures
-        lineChart.setTouchEnabled(true);
-        // if disabled, scaling can be done on x- and y-axis separately
-        lineChart.setPinchZoom(true);
-        // enable scaling
-        lineChart.setScaleEnabled(true);
-        lineChart.setDrawGridBackground(false);
-        // set an alternative background color
-        lineChart.setBackgroundColor(Color.DKGRAY);
+    @Override
+    public void onTemperature(@NonNull List<Temperature> data) {
+        sparkView.setLineColor(getResources().getColor(R.color.red_500, null));
+        sparkView.setFillColor(getResources().getColor(R.color.red_500_50, null));
+        sparkAdapter.setData(data);
+        sparkAdapter.setBaseline(5.0f);
     }
 
-    private void setupAxes() {
-        XAxis xl = lineChart.getXAxis();
-        xl.setTextColor(Color.WHITE);
-        xl.setDrawGridLines(false);
-        xl.setAvoidFirstLastClipping(true);
-        xl.setEnabled(true);
-
-        YAxis leftAxis = lineChart.getAxisLeft();
-        leftAxis.setTextColor(Color.WHITE);
-        leftAxis.setAxisMaximum(16.0f); //TOTAL_MEMORY
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setDrawGridLines(true);
-
-        YAxis rightAxis = lineChart.getAxisRight();
-        rightAxis.setEnabled(false);
-
-        // Add a limit line
-        LimitLine ll = new LimitLine(12.0f, "Upper Limit"); //LIMIT_MAX_MEMORY
-        ll.setLineWidth(2f);
-        ll.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll.setTextSize(10f);
-        ll.setTextColor(Color.WHITE);
-        // reset all limit lines to avoid overlapping lines
-        leftAxis.removeAllLimitLines();
-        leftAxis.addLimitLine(ll);
-        // limit lines are drawn behind data (and not on top)
-        leftAxis.setDrawLimitLinesBehindData(true);
+    @Override
+    public void onHumidity(@NonNull List<Humidity> data) {
+        sparkView.setLineColor(getResources().getColor(R.color.blue_500, null));
+        sparkView.setFillColor(getResources().getColor(R.color.blue_500_50, null));
+        sparkAdapter.setData(data);
+        sparkAdapter.setBaseline(0.0f);
     }
 
-    private void setupData() {
-        LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
-
-        // add empty data
-        lineChart.setData(data);
+    @Override
+    public void onPressure(@NonNull List<Pressure> data) {
+        sparkView.setLineColor(getResources().getColor(R.color.amber_500, null));
+        sparkView.setFillColor(getResources().getColor(R.color.amber_500_50, null));
+        sparkAdapter.setData(data);
+        sparkAdapter.setBaseline(900.0f);
     }
 
-    private void setLegend() {
-        // get the legend (only possible after setting data)
-        Legend l = lineChart.getLegend();
-
-        // modify the legend ...
-        l.setForm(Legend.LegendForm.CIRCLE);
-        l.setTextColor(Color.WHITE);
+    @Override
+    public void onAirQuality(@NonNull List<AirQuality> data) {
+        sparkView.setLineColor(getResources().getColor(R.color.light_green_500, null));
+        sparkView.setFillColor(getResources().getColor(R.color.light_green_500_50, null));
+        sparkAdapter.setData(data);
+        sparkAdapter.setBaseline(0.0f);
     }
 
-    private LineDataSet createSet() {
-        LineDataSet set = new LineDataSet(null, "Memory Data");
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setColors(ColorTemplate.VORDIPLOM_COLORS[0]);
-        set.setCircleColor(Color.WHITE);
-        set.setLineWidth(2f);
-        set.setCircleRadius(4f);
-        set.setValueTextColor(Color.WHITE);
-        set.setValueTextSize(10f);
-        // To show values of each point
-        set.setDrawValues(true);
-
-        return set;
+    @Override
+    public void onMotion(@NonNull List<Acceleration> data) {
+        sparkView.setLineColor(getResources().getColor(R.color.brown_500, null));
+        sparkView.setFillColor(getResources().getColor(R.color.brown_500_50, null));
+        sparkAdapter.setData(data);
+        sparkAdapter.setBaseline(0.0f);
     }
 
-    private void addEntry(Temperature stat) {
-        LineData data = lineChart.getData();
-
-        if (data != null) {
-            ILineDataSet set = data.getDataSetByIndex(0);
-
-            if (set == null) {
-                set = createSet();
-                data.addDataSet(set);
-            }
-
-            data.addEntry(new Entry(set.getEntryCount(), stat.value), 0);
-
-            // let the chart know it's data has changed
-            data.notifyDataChanged();
-            lineChart.notifyDataSetChanged();
-
-            // limit the number of visible entries
-            lineChart.setVisibleXRangeMaximum(15);
-
-            // move to the latest entry
-            lineChart.moveViewToX(data.getEntryCount());
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (parent.getId()) {
+            case R.id.spinner_type:
+                setType((String) parent.getItemAtPosition(position));
+                break;
+            case R.id.spinner_interval:
+                setInterval((String) parent.getItemAtPosition(position));
+                break;
         }
+
+        data();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    private void setupSpinnerType() {
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.chart_types, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerType.setAdapter(adapter);
+        spinnerType.setOnItemSelectedListener(this);
+    }
+
+    private void setupSparkView() {
+        sparkAdapter = new ChartAdapter<>();
+        sparkView.setAdapter(sparkAdapter);
+
+        final Paint baseLinePaint = sparkView.getBaseLinePaint();
+        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{16, 16}, 0);
+        baseLinePaint.setPathEffect(dashPathEffect);
+
+        sparkView.setSparkAnimator(new MorphSparkAnimator());
+    }
+
+
+    private void setType(@NonNull final String typeItem) {
+        switch (typeItem) {
+            case "Temperature":
+                this.type = 0;
+                break;
+            case "Humidity":
+                this.type = 1;
+                break;
+            case "Pressure":
+                this.type = 2;
+                break;
+            case "Air quality":
+                this.type = 3;
+                break;
+            case "Motion":
+                this.type = 4;
+                break;
+        }
+    }
+
+    private void setInterval(@NonNull final String intervalItem) {
+        this.interval = 0;
+    }
+
+    private void data() {
+        presenter.data(type, interval);
     }
 }

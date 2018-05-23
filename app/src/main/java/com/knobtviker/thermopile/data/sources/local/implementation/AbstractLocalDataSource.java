@@ -90,6 +90,7 @@ public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<
                 } else {
                     emitter.onError(new Throwable("Item Id cannot be 0"));
                 }
+                emitter.onComplete();
             }
         });
     }

@@ -36,11 +36,14 @@ import com.knobtviker.thermopile.data.sources.memory.MagneticFieldMemoryDataSour
 import com.knobtviker.thermopile.data.sources.memory.PressureMemoryDataSource;
 import com.knobtviker.thermopile.data.sources.memory.TemperatureMemoryDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
+import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
 import org.joda.time.DateTimeUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -350,5 +353,40 @@ public class AtmosphereRepository extends AbstractRepository {
 
     private float convertPressureToAltitude(final float value) {
         return SensorManager.getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE, value);
+    }
+
+    public Observable<List<Temperature>> loadTemperature() {
+        return temperatureLocalDataSource
+            .query()
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
+    }
+
+    public Observable<List<Humidity>> loadHumidity() {
+        return humidityLocalDataSource
+            .query()
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
+    }
+
+    public Observable<List<Pressure>> loadPressure() {
+        return pressureLocalDataSource
+            .query()
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
+    }
+
+    public Observable<List<AirQuality>> loadAirQuality() {
+        return airQualityLocalDataSource
+            .query()
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
+    }
+
+    public Observable<List<Acceleration>> loadAcceleration() {
+        return accelerationLocalDataSource
+            .query()
+            .subscribeOn(schedulerProvider.io)
+            .observeOn(schedulerProvider.ui);
     }
 }

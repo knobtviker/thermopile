@@ -54,14 +54,64 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+    
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_spinners"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="112dp"
+        app:layout_constraintGuide_end="112dp"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow"
+        android:layout_height="0dp"/>
+
+    <Spinner
+        android:id="@+id/spinner_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/spinner_interval"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_spinners"
+        android:layout_width="0dp"
+        android:spinnerMode="dropdown"
+        android:popupElevation="4dp"
+        android:layout_height="?attr/listPreferredItemHeightSmall" />
+
+    <Spinner
+        android:id="@+id/spinner_interval"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/spinner_type"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_spinners"
+        android:layout_width="0dp"
+        android:spinnerMode="dropdown"
+        android:layout_height="?attr/listPreferredItemHeightSmall" />
+    
+    <TextView
+        android:id="@+id/textview_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow"/>
+        android:gravity="center"
+        android:text="30 C at 31.05.2016 10:30"
+        android:layout_width="0dp"
+        android:paddingTop="@dimen/margin_default"
+        android:paddingBottom="@dimen/margin_default"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:fontFamily="@font/googlesans_regular"
+        android:layout_height="wrap_content"/>
+
+    <com.knobtviker.thermopile.presentation.views.spark.SparkView
+        android:id="@+id/sparkview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:spark_scrubEnabled="true"
+        app:spark_fillType="down"
+        app:spark_animateChanges="true"
+        app:spark_lineWidth="1dp"
+        app:spark_cornerRadius="4dp"
+        android:layout_marginLeft="72dp"
+        app:layout_constraintBottom_toTopOf="@id/textview_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_spinners"/>
 
 </android.support.constraint.ConstraintLayout>

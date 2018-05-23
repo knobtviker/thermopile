@@ -35,10 +35,10 @@ public abstract class AbstractMemoryDataSource {
             throw new IOException("No address assigned");
         }
 
-        final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
+//        final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
 //        fram.setVerbose(true);
-        fram.writeInt(address, value);
-        fram.close();
+//        fram.writeInt(address, value);
+//        fram.close();
     }
 
     protected int readInt(final int address) throws IOException {
@@ -46,11 +46,12 @@ public abstract class AbstractMemoryDataSource {
             throw new IOException("No address assigned");
         }
 
-        final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
+//        final Mb85rc256v fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
 //        fram.setVerbose(true);
-        final int result = fram.readInt(address);
-        fram.close();
+//        final int result = fram.readInt(address);
+//        fram.close();
 
-        return result;
+//        return result;
+        return 0;
     }
 }

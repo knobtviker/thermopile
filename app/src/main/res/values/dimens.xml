@@ -22,5 +22,10 @@
     <dimen name="height_threshold">40dp</dimen>
 
     <dimen name="guideline_schedule">80dp</dimen>
-    
+
+    <!--Spark-->
+    <dimen name="spark_line_width">2dp</dimen>
+    <dimen name="spark_corner_radius">3dp</dimen>
+    <dimen name="spark_base_line_width">1dp</dimen>
+    <dimen name="spark_scrub_line_width">2dp</dimen>
 </resources>

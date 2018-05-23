@@ -44,4 +44,12 @@
         <item>@string/day_sunday</item>
     </string-array>
 
+    <string-array name="chart_types">
+        <item>Temperature</item>
+        <item>Humidity</item>
+        <item>Pressure</item>
+        <item>Air quality</item>
+        <item>Motion</item>
+    </string-array>
+
 </resources>

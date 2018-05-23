@@ -85,6 +85,12 @@
         <item>@color/black</item>
     </array>
 
+    <color name="red_500_50">#77F44336</color>
+    <color name="amber_500_50">#77FFC107</color>
+    <color name="blue_500_50">#772196F3</color>
+    <color name="light_green_500_50">#778BC34A</color>
+    <color name="brown_500_50">#77795548</color>
+
     <color name="background_appbar">#f5f5f5</color>
     <color name="background">#fafafa</color>
 
@@ -98,4 +104,10 @@
     <color name="textcolor_radiobutton_default">#1D1D1D</color>
     <color name="textcolor_radiobutton_checked">#ffffff</color>
 
+    <!--Spark-->
+    <color name="spark_line_color">#000000</color>
+    <color name="spark_fill_color">#a0000000</color>
+    <color name="spark_base_line_color">#757577</color>
+    <color name="spark_scrub_line_color">#757577</color>
+    <color name="spark_line_under_color">#757577</color>
 </resources>
