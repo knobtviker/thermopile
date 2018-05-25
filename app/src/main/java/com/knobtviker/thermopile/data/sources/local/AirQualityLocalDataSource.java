@@ -47,4 +47,14 @@ public class AirQualityLocalDataSource extends AbstractLocalDataSource<AirQualit
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<AirQuality>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
+                .order(AirQuality_.timestamp)
+                .between(AirQuality_.timestamp, start, end)
+                .build()
+        );
+    }
 }

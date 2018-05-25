@@ -51,4 +51,9 @@ public class ThresholdLocalDataSource extends AbstractLocalDataSource<Threshold>
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<Threshold>> queryBetween(long start, long end) {
+        return Observable.empty();
+    }
 }

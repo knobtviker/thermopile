@@ -47,4 +47,14 @@ public class MagneticFieldLocalDataSource extends AbstractLocalDataSource<Magnet
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<MagneticField>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
+                .order(MagneticField_.timestamp)
+                .between(MagneticField_.timestamp, start, end)
+                .build()
+        );
+    }
 }

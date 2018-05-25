@@ -47,4 +47,14 @@ public class PressureLocalDataSource extends AbstractLocalDataSource<Pressure> {
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<Pressure>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
+                .order(Pressure_.timestamp)
+                .between(Pressure_.timestamp, start, end)
+                .build()
+        );
+    }
 }

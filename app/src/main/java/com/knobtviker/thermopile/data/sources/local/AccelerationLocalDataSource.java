@@ -2,6 +2,8 @@ package com.knobtviker.thermopile.data.sources.local;
 
 import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.Acceleration_;
+import com.knobtviker.thermopile.data.models.local.Temperature;
+import com.knobtviker.thermopile.data.models.local.Temperature_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
 
 import java.util.List;
@@ -44,6 +46,16 @@ public class AccelerationLocalDataSource extends AbstractLocalDataSource<Acceler
         return super.queryById(
             box.query()
                 .equal(Acceleration_.id, id)
+                .build()
+        );
+    }
+
+    @Override
+    public Observable<List<Acceleration>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
+                .order(Acceleration_.timestamp)
+                .between(Acceleration_.timestamp, start, end)
                 .build()
         );
     }

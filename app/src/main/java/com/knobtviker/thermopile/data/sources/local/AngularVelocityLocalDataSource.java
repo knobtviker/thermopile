@@ -47,4 +47,14 @@ public class AngularVelocityLocalDataSource extends AbstractLocalDataSource<Angu
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<AngularVelocity>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
+                .order(AngularVelocity_.timestamp)
+                .between(AngularVelocity_.timestamp, start, end)
+                .build()
+        );
+    }
 }

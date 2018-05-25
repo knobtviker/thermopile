@@ -47,4 +47,14 @@ public class LuminosityLocalDataSource extends AbstractLocalDataSource<Luminosit
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<Luminosity>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
+                .order(Luminosity_.timestamp)
+                .between(Luminosity_.timestamp, start, end)
+                .build()
+        );
+    }
 }

@@ -47,4 +47,9 @@ public class SettingsLocalDataSource extends AbstractLocalDataSource<Settings> {
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<Settings>> queryBetween(long start, long end) {
+        return Observable.empty();
+    }
 }

@@ -47,4 +47,14 @@ public class HumidityLocalDataSource extends AbstractLocalDataSource<Humidity> {
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<Humidity>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
+                .order(Humidity_.timestamp)
+                .between(Humidity_.timestamp, start, end)
+                .build()
+        );
+    }
 }

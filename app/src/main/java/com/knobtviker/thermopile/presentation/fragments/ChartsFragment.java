@@ -31,7 +31,6 @@ import java.util.List;
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -47,6 +46,9 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
     @BindView(R.id.spinner_type)
     public Spinner spinnerType;
+
+    @BindView(R.id.spinner_interval)
+    public Spinner spinnerInterval;
 
     @BindView(R.id.sparkview)
     public SparkView sparkView;
@@ -69,6 +71,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         super.onViewCreated(view, savedInstanceState);
 
         setupSpinnerType();
+        setupSpinnerInterval();
         setupSparkView();
     }
 
@@ -142,10 +145,10 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.spinner_type:
-                setType((String) parent.getItemAtPosition(position));
+                setType(position);
                 break;
             case R.id.spinner_interval:
-                setInterval((String) parent.getItemAtPosition(position));
+                setInterval(position);
                 break;
         }
 
@@ -165,6 +168,14 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         spinnerType.setOnItemSelectedListener(this);
     }
 
+    private void setupSpinnerInterval() {
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.chart_intervals, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerInterval.setAdapter(adapter);
+        spinnerInterval.setOnItemSelectedListener(this);
+    }
+
     private void setupSparkView() {
         sparkAdapter = new ChartAdapter<>();
         sparkView.setAdapter(sparkAdapter);
@@ -177,28 +188,12 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     }
 
 
-    private void setType(@NonNull final String typeItem) {
-        switch (typeItem) {
-            case "Temperature":
-                this.type = 0;
-                break;
-            case "Humidity":
-                this.type = 1;
-                break;
-            case "Pressure":
-                this.type = 2;
-                break;
-            case "Air quality":
-                this.type = 3;
-                break;
-            case "Motion":
-                this.type = 4;
-                break;
-        }
+    private void setType(@NonNull final int typeItemPosition) {
+        this.type = typeItemPosition;
     }
 
-    private void setInterval(@NonNull final String intervalItem) {
-        this.interval = 0;
+    private void setInterval(@NonNull final int intervalItemPosition) {
+        this.interval = intervalItemPosition;
     }
 
     private void data() {

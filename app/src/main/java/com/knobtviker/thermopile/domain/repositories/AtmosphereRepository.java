@@ -355,37 +355,37 @@ public class AtmosphereRepository extends AbstractRepository {
         return SensorManager.getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE, value);
     }
 
-    public Observable<List<Temperature>> loadTemperature() {
+    public Observable<List<Temperature>> loadTemperatureBetween(final long start, final long end) {
         return temperatureLocalDataSource
-            .query()
+            .queryBetween(start, end)
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }
 
-    public Observable<List<Humidity>> loadHumidity() {
+    public Observable<List<Humidity>> loadHumidityBetween(final long start, final long end) {
         return humidityLocalDataSource
-            .query()
+            .queryBetween(start, end)
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }
 
-    public Observable<List<Pressure>> loadPressure() {
+    public Observable<List<Pressure>> loadPressureBetween(final long start, final long end) {
         return pressureLocalDataSource
-            .query()
+            .queryBetween(start, end)
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }
 
-    public Observable<List<AirQuality>> loadAirQuality() {
+    public Observable<List<AirQuality>> loadAirQualityBetween(final long start, final long end) {
         return airQualityLocalDataSource
-            .query()
+            .queryBetween(start, end)
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }
 
-    public Observable<List<Acceleration>> loadAcceleration() {
+    public Observable<List<Acceleration>> loadAccelerationBetween(final long start, final long end) {
         return accelerationLocalDataSource
-            .query()
+            .queryBetween(start, end)
             .subscribeOn(schedulerProvider.io)
             .observeOn(schedulerProvider.ui);
     }

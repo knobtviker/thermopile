@@ -49,98 +49,13 @@ public class TemperatureLocalDataSource extends AbstractLocalDataSource<Temperat
         );
     }
 
-        public Observable<Temperature> observeLast() {
-        return Observable.create(emitter -> {
-            final DataSubscription dataSubscription =  box.query()
+    @Override
+    public Observable<List<Temperature>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
                 .order(Temperature_.timestamp)
+                .between(Temperature_.timestamp, start, end)
                 .build()
-                .subscribe()
-                .onError(emitter::onError)
-                .observer(data -> {
-                if (!emitter.isDisposed()) {
-                    emitter.onNext(data.get(0));
-                }
-            });
-            emitter.setCancellable(dataSubscription::cancel);
-        });
+        );
     }
-
-//    private Box<Temperature2> box;
-
-//    public Temperature2LocalDataSource() {
-//        box = DatabaseBox.getInstance().boxFor(Temperature2.class);
-//    }
-
-//    public Observable<List<Temperature2>> observe() {
-//        return Observable.create(emitter -> {
-//            final DataSubscription dataSubscription =  box.query()
-//                .order(Temperature_.timestamp)
-//                .build()
-//                .subscribe()
-//                .onError(emitter::onError)
-//                .observer(data -> {
-//                if (!emitter.isDisposed()) {
-//                    emitter.onNext(data);
-//                }
-//            });
-//            emitter.setCancellable(dataSubscription::cancel);
-//        });
-//    }
-//
-//    public Observable<List<Temperature2>> observe() {
-//        return Observable.create(emitter -> {
-//            final DataSubscription dataSubscription =  box.query()
-//                .order(Temperature_.timestamp)
-//                .build()
-//                .subscribe()
-//                .onError(emitter::onError)
-//                .observer(data -> {
-//                    if (!emitter.isDisposed()) {
-//                        emitter.onNext(data);
-//                        emitter.onComplete();
-//                    }
-//                });
-//            emitter.setCancellable(dataSubscription::cancel);
-//        });
-//    }
-//
-//    public Observable<Temperature2> loadById(final long id) {
-//        return Observable.create(emitter -> {
-//            if (!emitter.isDisposed()) {
-//                final Temperature2 item = box.query()
-//                    .equal(Temperature_.id, id)
-//                    .build()
-//                    .findFirst();
-//
-//                if (item != null) {
-//                    emitter.onNext(item);
-//                }else {
-//                    emitter.onError(new Throwable(String.format("Item with Id %d not found", id)));
-//                }
-//                emitter.onComplete();
-//            }
-//        });
-//    }
-//
-//    public Completable save(@NonNull final List<Temperature2> items) {
-//        return Completable.create(emitter -> {
-//            if (!emitter.isDisposed()) {
-//                box.put(items);
-//                emitter.onComplete();
-//            }
-//        });
-//    }
-//
-//    public Observable<Long> save(@NonNull final Temperature2 item) {
-//        return Observable.create(emitter -> {
-//            if (!emitter.isDisposed()) {
-//                final long id = box.put(item);
-//                if (id > 0) {
-//                    emitter.onNext(id);
-//                } else {
-//                    emitter.onError(new Throwable("Item Id cannot be 0"));
-//                }
-//            }
-//        });
-//    }
 }

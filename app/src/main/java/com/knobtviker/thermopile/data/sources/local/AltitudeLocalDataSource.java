@@ -47,4 +47,14 @@ public class AltitudeLocalDataSource extends AbstractLocalDataSource<Altitude> {
                 .build()
         );
     }
+
+    @Override
+    public Observable<List<Altitude>> queryBetween(long start, long end) {
+        return super.query(
+            box.query()
+                .order(Altitude_.timestamp)
+                .between(Altitude_.timestamp, start, end)
+                .build()
+        );
+    }
 }

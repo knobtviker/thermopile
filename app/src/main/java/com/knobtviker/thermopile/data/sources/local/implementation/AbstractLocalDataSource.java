@@ -110,4 +110,6 @@ public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<
     public abstract Observable<List<T>> query();
 
     public abstract Observable<T> queryById(final long id);
+
+    public abstract Observable<List<T>> queryBetween(final long start, final long end);
 }
