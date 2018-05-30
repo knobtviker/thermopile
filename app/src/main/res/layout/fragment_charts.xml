@@ -86,18 +86,30 @@
         android:layout_height="?attr/listPreferredItemHeightSmall" />
     
     <TextView
-        android:id="@+id/textview_description"
+        android:id="@+id/textview_scrubbed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:gravity="center"
-        android:text="30 C at 31.05.2016 10:30"
+        tools:text="30°C 31.05.2016 10:30"
         android:layout_width="0dp"
         android:paddingTop="@dimen/margin_default"
         android:paddingBottom="@dimen/margin_default"
         style="@style/TextAppearance.AppCompat.Medium"
         android:fontFamily="@font/googlesans_regular"
         android:layout_height="wrap_content"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_split"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="64dp"
+        app:layout_constraintGuide_end="64dp"
+        app:layout_constraintBottom_toTopOf="@id/textview_scrubbed"
+        app:layout_constraintTop_toBottomOf="@id/guideline_spinners"
+        android:layout_height="0dp"/>
 
     <com.knobtviker.thermopile.presentation.views.spark.SparkView
         android:id="@+id/sparkview"
@@ -108,10 +120,9 @@
         app:spark_animateChanges="true"
         app:spark_lineWidth="1dp"
         app:spark_cornerRadius="4dp"
-        android:layout_marginLeft="72dp"
-        app:layout_constraintBottom_toTopOf="@id/textview_description"
+        app:layout_constraintBottom_toTopOf="@id/textview_scrubbed"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline_split"
         app:layout_constraintTop_toBottomOf="@id/guideline_spinners"/>
 
 </android.support.constraint.ConstraintLayout>

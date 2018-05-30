@@ -6,6 +6,7 @@ import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Pressure;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
@@ -20,6 +21,8 @@ public interface ChartsContract {
 
     interface View extends BaseView {
 
+        void onSettingsChanged(@NonNull final Settings settings);
+
         void onTemperature(@NonNull final List<Temperature> data);
 
         void onHumidity(@NonNull final List<Humidity> data);
@@ -33,6 +36,8 @@ public interface ChartsContract {
 
     interface Presenter extends BasePresenter {
 
-        void data(int type, int interval); //TODO: type and interval params
+        void settings();
+
+        void data(final int type, final long startTimestamp, final long endTimestamp);
     }
 }

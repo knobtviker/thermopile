@@ -992,7 +992,7 @@ public class SparkView extends View implements ScrubGestureDetector.ScrubListene
     /**
      * returns the nearest index (into {@link #adapter}'s data) for the given x coordinate.
      */
-    static int getNearestIndex(List<Float> points, float x) {
+    static int getNearestIndex(@NonNull final List<Float> points, final float x) {
         int index = Collections.binarySearch(points, x);
 
         // if binary search returns positive, we had an exact match, return that index
@@ -1023,16 +1023,16 @@ public class SparkView extends View implements ScrubGestureDetector.ScrubListene
         if (adapter == null || adapter.getCount() == 0) return;
         if (scrubListener != null) {
             getParent().requestDisallowInterceptTouchEvent(true);
-            int index = getNearestIndex(xPoints, x);
+            final int index = getNearestIndex(xPoints, x + getPaddingEnd());
             if (scrubListener != null) {
                 scrubListener.onScrubbed(adapter.getItem(index));
             }
         }
 
-        setScrubLine(x);
+        setScrubLine(x + getPaddingEnd());
 
         if (clipOnScrub) {
-            setClipAmount(x / contentRect.right);
+            setClipAmount((x - getPaddingEnd()) / contentRect.right);
         }
     }
 
@@ -1046,12 +1046,12 @@ public class SparkView extends View implements ScrubGestureDetector.ScrubListene
     /**
      * Listener for a user scrubbing (dragging their finger along) the graph.
      */
-    public interface OnScrubListener<M> {
+    public interface OnScrubListener {
         /**
          * Indicates the user is currently scrubbing over the given value. A null value indicates
          * that the user has stopped scrubbing.
          */
-        void onScrubbed(@Nullable M value);
+        void onScrubbed(@Nullable Object value);
     }
 
     private final DataSetObserver dataSetObserver = new DataSetObserver() {

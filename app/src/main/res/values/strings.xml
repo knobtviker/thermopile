@@ -53,11 +53,6 @@
     </string-array>
 
     <string-array name="chart_intervals">
-        <item>Last 60 minutes</item>
-        <item>Last 24 hours</item>
-        <item>Last 7 days</item>
-        <item>Last 30 days</item>
-        <item>Last 90 days</item>
         <item>Today</item>
         <item>Yesterday</item>
         <item>This week</item>
