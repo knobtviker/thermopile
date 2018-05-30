@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.content.Context;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.Humidity;
+import com.knobtviker.thermopile.data.models.local.Motion;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
@@ -27,20 +29,21 @@ import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ChartsPresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.adapters.ChartAdapter;
 import com.knobtviker.thermopile.presentation.views.spark.SparkView;
 import com.knobtviker.thermopile.presentation.views.spark.animation.MorphSparkAnimator;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -73,8 +76,14 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     @BindView(R.id.sparkview)
     public SparkView sparkView;
 
-    @BindView(R.id.textview_scrubbed)
-    public TextView textViewScrubbed;
+    @BindView(R.id.textview_scrubbed_value)
+    public TextView textViewScrubbedValue;
+
+    @BindView(R.id.textview_scrubbed_unit)
+    public TextView textViewScrubbedUnit;
+
+    @BindView(R.id.textview_scrubbed_datetime)
+    public TextView textViewScrubbedDateTime;
 
     private String textViewTemperatureUnit;
     private String textViewPressureUnit;
@@ -157,8 +166,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
     @Override
     public void onTemperature(@NonNull List<Temperature> data) {
-        maybeAdjustRightPadding(data.get(0).timestamp, data.get(data.size() - 1).timestamp);
-
         sparkView.setLineColor(getResources().getColor(R.color.red_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.red_500_50, null));
         sparkAdapter.setData(data);
@@ -167,8 +174,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
     @Override
     public void onHumidity(@NonNull List<Humidity> data) {
-        maybeAdjustRightPadding(data.get(0).timestamp, data.get(data.size() - 1).timestamp);
-
         sparkView.setLineColor(getResources().getColor(R.color.blue_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.blue_500_50, null));
         sparkAdapter.setData(data);
@@ -177,8 +182,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
     @Override
     public void onPressure(@NonNull List<Pressure> data) {
-        maybeAdjustRightPadding(data.get(0).timestamp, data.get(data.size() - 1).timestamp);
-
         sparkView.setLineColor(getResources().getColor(R.color.amber_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.amber_500_50, null));
         sparkAdapter.setData(data);
@@ -187,21 +190,33 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
     @Override
     public void onAirQuality(@NonNull List<AirQuality> data) {
-        maybeAdjustRightPadding(data.get(0).timestamp, data.get(data.size() - 1).timestamp);
-
         sparkView.setLineColor(getResources().getColor(R.color.light_green_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.light_green_500_50, null));
+
+        data.forEach(item -> item.value = ((Constants.MEASURED_AIR_QUALITY_MAX - item.value) / Constants.MEASURED_AIR_QUALITY_MAX));
+
         sparkAdapter.setData(data);
         sparkAdapter.setBaseline(0.0f);
     }
 
     @Override
     public void onMotion(@NonNull List<Acceleration> data) {
-        maybeAdjustRightPadding(data.get(0).timestamp, data.get(data.size() - 1).timestamp);
-
         sparkView.setLineColor(getResources().getColor(R.color.brown_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.brown_500_50, null));
-        sparkAdapter.setData(data);
+
+        sparkAdapter.setData(
+            data
+                .stream()
+                .map(item ->
+                    Motion.create(
+                        item.id,
+                        item.vendor,
+                        item.name,
+                        ((float) Math.min(Math.sqrt(Math.pow(item.valueX, 2) + Math.pow(item.valueY, 2) + Math.pow(item.valueZ + SensorManager.GRAVITY_EARTH, 2)), 19.61330000)), //TODO: This hardcoded value must be set according to selected unit value for acceleration in Settings
+                        item.timestamp
+                    ))
+                .collect(Collectors.toList())
+        );
         sparkAdapter.setBaseline(0.0f);
     }
 
@@ -271,21 +286,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         presenter.data(type, interval.getStartMillis(), interval.getEndMillis());
     }
 
-    private void maybeAdjustRightPadding(final long firstTimestamp, final long lastTimestamp) {
-        final int chartWidth = getResources().getDisplayMetrics().widthPixels - Math.round(guidelineSplit.getX());
-
-        final long fullIntervalMillis = interval.toDurationMillis();
-        final long leftGapMillis = firstTimestamp - interval.getStartMillis();
-        final long rightGapMillis = interval.getEndMillis() - lastTimestamp;
-
-        final float ratioLeft = (float) leftGapMillis / fullIntervalMillis;
-        final float ratioRight = (float) rightGapMillis / fullIntervalMillis;
-        final int paddingLeft = chartWidth - Math.round(chartWidth * ratioLeft);
-        final int paddingRight = chartWidth - Math.round(chartWidth * ratioRight);
-
-        sparkView.setPadding(paddingLeft, sparkView.getPaddingTop(), paddingRight, sparkView.getPaddingBottom());
-    }
-
     private Interval intervalForType(final int interval) {
         final DateTime now = DateTime.now();
         final DateTime other;
@@ -326,37 +326,52 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
     @Override
     public void onScrubbed(@Nullable Object value) {
-        if (value == null)  {
+        if (value == null) {
             noScrubbedValue();
         } else {
+            final SingleModel object = (SingleModel) value;
             switch (type) {
                 case 0:
-                    hasScrubbedTemperature((Temperature) value);
+                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, object.value))), textViewTemperatureUnit, object.timestamp);
                     break;
-//                case 1:
-//                    (Humidity) value;
-//                    break;
-//                case 2:
-//                    (Pressure) value;
-//                    break;
-//                case 3:
-//                    (AirQuality) value;
-//                    break;
-//            case 0:
-//                ((Acceleration) value)
-//                break;
+                case 1:
+                    hasScrubbedValue(String.valueOf(MathKit.round(object.value)), getString(R.string.unit_humidity_percent), object.timestamp);
+                    break;
+                case 2:
+                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, object.value))), textViewPressureUnit, object.timestamp);
+                    break;
+                case 3:
+                    hasScrubbedValueWithoutUnit(convertIAQValueToLabel((Constants.MEASURED_AIR_QUALITY_MAX - object.value) / Constants.MEASURED_AIR_QUALITY_MAX), object.timestamp);
+                    break;
+                case 4:
+                    hasScrubbedValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, object.value))), textViewMotionUnit, object.timestamp);
+                    break;
             }
         }
     }
 
-    private void hasScrubbedTemperature(@NonNull final Temperature value) {
-        textViewScrubbed.setText(String.format("%.1f%s %s", value.value, textViewTemperatureUnit, new DateTime(value.timestamp).toString(String.format("%s %s", formatDate, formatTime))));
-        textViewScrubbed.setVisibility(View.VISIBLE);
+    private void hasScrubbedValue(@NonNull final String value, @Nullable final String unit, final long timestamp) {
+        textViewScrubbedValue.setText(value);
+        textViewScrubbedUnit.setText(unit);
+        textViewScrubbedDateTime.setText(new DateTime(timestamp).toString(String.format("%s %s", formatDate, formatTime)));
+
+        textViewScrubbedValue.setVisibility(View.VISIBLE);
+        textViewScrubbedUnit.setVisibility(View.VISIBLE);
+        textViewScrubbedDateTime.setVisibility(View.VISIBLE);
+    }
+
+    private void hasScrubbedValueWithoutUnit(@NonNull final String value, final long timestamp) {
+        hasScrubbedValue(value, null, timestamp);
     }
 
     private void noScrubbedValue() {
-        textViewScrubbed.setVisibility(View.INVISIBLE);
-        textViewScrubbed.setText(null);
+        textViewScrubbedValue.setVisibility(View.INVISIBLE);
+        textViewScrubbedUnit.setVisibility(View.INVISIBLE);
+        textViewScrubbedDateTime.setVisibility(View.INVISIBLE);
+
+        textViewScrubbedValue.setText(null);
+        textViewScrubbedUnit.setText(null);
+        textViewScrubbedDateTime.setText(null);
     }
 
     private void setTemperatureUnit() {
@@ -404,6 +419,25 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
             default:
                 textViewMotionUnit = getString(R.string.unit_acceleration_ms2);
                 break;
+        }
+    }
+
+    //TODO: Move this somewhere else and cleanup strings
+    private String convertIAQValueToLabel(final float value) {
+        if (value >= 401 && value <= 500) {
+            return "Very bad";
+        } else if (value >= 301 && value <= 400) {
+            return "Worse";
+        } else if (value >= 201 && value <= 300) {
+            return "Bad";
+        } else if (value >= 101 && value <= 200) {
+            return "Little bad";
+        } else if (value >= 51 && value <= 100) {
+            return "Average";
+        } else if (value >= 0 && value <= 50) {
+            return "Good";
+        } else {
+            return "Unknown";
         }
     }
 }
