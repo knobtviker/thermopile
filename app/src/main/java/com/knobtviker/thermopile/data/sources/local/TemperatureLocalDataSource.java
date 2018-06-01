@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.data.sources.local;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.Temperature_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class TemperatureLocalDataSource extends AbstractLocalDataSource<Temperat
             box.query()
                 .order(Temperature_.timestamp)
                 .between(Temperature_.timestamp, start, end)
+                .between(Temperature_.value, Constants.MEASURED_TEMPERATURE_MIN, Constants.MEASURED_TEMPERATURE_MAX)
                 .build()
         );
     }

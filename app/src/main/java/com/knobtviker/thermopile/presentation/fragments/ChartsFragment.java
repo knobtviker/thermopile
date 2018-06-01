@@ -37,13 +37,16 @@ import com.knobtviker.thermopile.presentation.views.spark.animation.MorphSparkAn
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/06/2017.
@@ -75,6 +78,18 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
     @BindView(R.id.sparkview)
     public SparkView sparkView;
+
+    @BindView(R.id.textview_max_value)
+    public TextView textViewMaxValue;
+
+    @BindView(R.id.textview_min_value)
+    public TextView textViewMinValue;
+
+    @BindView(R.id.textview_max_unit)
+    public TextView textViewMaxUnit;
+
+    @BindView(R.id.textview_min_unit)
+    public TextView textViewMinUnit;
 
     @BindView(R.id.textview_scrubbed_value)
     public TextView textViewScrubbedValue;
@@ -162,30 +177,83 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         setTemperatureUnit();
         setPressureUnit();
         setMotionUnit();
+
+        switch (type) {
+            case 0:
+                setMinMaxUnit(textViewTemperatureUnit);
+                setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, Constants.MEASURED_TEMPERATURE_MAX))), String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, Constants.MEASURED_TEMPERATURE_MIN))));
+                break;
+            case 1:
+                setMinMaxUnit(getString(R.string.unit_humidity_percent));
+                setMinMaxValue(String.valueOf(MathKit.round(Constants.MEASURED_HUMIDITY_MAX)), String.valueOf(MathKit.round(Constants.MEASURED_HUMIDITY_MIN)));
+                break;
+            case 2:
+                setMinMaxUnit(textViewPressureUnit);
+                setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, Constants.MEASURED_PRESSURE_MAX))), String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, Constants.MEASURED_PRESSURE_MIN))));
+                break;
+            case 3:
+                setMinMaxUnit("");
+                setMinMaxValue("Good", "Very bad");
+                break;
+            case 4:
+                setMinMaxUnit(textViewMotionUnit);
+                setMinMaxValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, Constants.MEASURED_MOTION_MAX))), String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, Constants.MEASURED_MOTION_MIN))));
+                break;
+        }
     }
 
     @Override
     public void onTemperature(@NonNull List<Temperature> data) {
         sparkView.setLineColor(getResources().getColor(R.color.red_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.red_500_50, null));
+
+        setMinMaxUnit(textViewTemperatureUnit);
+        setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, Constants.MEASURED_TEMPERATURE_MAX))), String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, Constants.MEASURED_TEMPERATURE_MIN))));
+
+        final Optional<Temperature> optional = data
+            .stream()
+            .filter(item -> item.value <= Constants.MEASURED_TEMPERATURE_MAX)
+            .max((item, other) -> Float.compare(item.value, other.value));
+
+        applyTopPadding(optional.map(item -> item.value).orElse(Constants.MEASURED_TEMPERATURE_MAX), Constants.MEASURED_TEMPERATURE_MAX);
+
         sparkAdapter.setData(data);
-        sparkAdapter.setBaseline(5.0f);
     }
 
     @Override
     public void onHumidity(@NonNull List<Humidity> data) {
         sparkView.setLineColor(getResources().getColor(R.color.blue_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.blue_500_50, null));
+
+        setMinMaxUnit(getString(R.string.unit_humidity_percent));
+        setMinMaxValue(String.valueOf(MathKit.round(Constants.MEASURED_HUMIDITY_MAX)), String.valueOf(MathKit.round(Constants.MEASURED_HUMIDITY_MIN)));
+
+        final Optional<Humidity> optional = data
+            .stream()
+            .filter(item -> item.value <= Constants.MEASURED_HUMIDITY_MAX)
+            .max((item, other) -> Float.compare(item.value, other.value));
+
+        applyTopPadding(optional.map(item -> item.value).orElse(Constants.MEASURED_HUMIDITY_MAX), Constants.MEASURED_HUMIDITY_MAX);
+
         sparkAdapter.setData(data);
-        sparkAdapter.setBaseline(0.0f);
     }
 
     @Override
     public void onPressure(@NonNull List<Pressure> data) {
         sparkView.setLineColor(getResources().getColor(R.color.amber_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.amber_500_50, null));
+
+        setMinMaxUnit(textViewPressureUnit);
+        setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, Constants.MEASURED_PRESSURE_MAX))), String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, Constants.MEASURED_PRESSURE_MIN))));
+
+        final Optional<Pressure> optional = data
+            .stream()
+            .filter(item -> item.value <= Constants.MEASURED_PRESSURE_MAX)
+            .max((item, other) -> Float.compare(item.value, other.value));
+
+        applyTopPadding(optional.map(item -> item.value).orElse(Constants.MEASURED_PRESSURE_MAX), Constants.MEASURED_PRESSURE_MAX);
+
         sparkAdapter.setData(data);
-        sparkAdapter.setBaseline(900.0f);
     }
 
     @Override
@@ -195,8 +263,18 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
         data.forEach(item -> item.value = ((Constants.MEASURED_AIR_QUALITY_MAX - item.value) / Constants.MEASURED_AIR_QUALITY_MAX));
 
+
+        setMinMaxUnit("");
+        setMinMaxValue("Good", "Very bad");
+
+        final Optional<AirQuality> optional = data
+            .stream()
+            .filter(item -> item.value <= Constants.MEASURED_AIR_QUALITY_MAX)
+            .max((item, other) -> Float.compare(item.value, other.value));
+
+        applyTopPadding(optional.map(item -> (Constants.MEASURED_AIR_QUALITY_MAX - item.value)).orElse(Constants.MEASURED_AIR_QUALITY_MAX), Constants.MEASURED_AIR_QUALITY_MAX);
+
         sparkAdapter.setData(data);
-        sparkAdapter.setBaseline(0.0f);
     }
 
     @Override
@@ -204,20 +282,31 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         sparkView.setLineColor(getResources().getColor(R.color.brown_500, null));
         sparkView.setFillColor(getResources().getColor(R.color.brown_500_50, null));
 
-        sparkAdapter.setData(
-            data
-                .stream()
-                .map(item ->
-                    Motion.create(
-                        item.id,
-                        item.vendor,
-                        item.name,
-                        ((float) Math.min(Math.sqrt(Math.pow(item.valueX, 2) + Math.pow(item.valueY, 2) + Math.pow(item.valueZ + SensorManager.GRAVITY_EARTH, 2)), 19.61330000)), //TODO: This hardcoded value must be set according to selected unit value for acceleration in Settings
-                        item.timestamp
-                    ))
-                .collect(Collectors.toList())
-        );
-        sparkAdapter.setBaseline(0.0f);
+        final List<Motion> motionData = data
+            .stream()
+            .map(item ->
+                Motion.create(
+                    item.id,
+                    item.vendor,
+                    item.name,
+                    ((float) Math.min(Math.sqrt(Math.pow(item.valueX, 2) + Math.pow(item.valueY, 2) + Math.pow(item.valueZ + SensorManager.GRAVITY_EARTH, 2)), 19.61330000)), //TODO: This hardcoded value must be set according to selected unit value for acceleration in Settings
+                    item.timestamp
+                ))
+            .filter(item -> (item.value >= Constants.MEASURED_MOTION_MIN && item.value <= Constants.MEASURED_MOTION_MAX))
+            .collect(Collectors.toList());
+
+
+        setMinMaxUnit(textViewMotionUnit);
+        setMinMaxValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, Constants.MEASURED_MOTION_MAX))), String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, Constants.MEASURED_MOTION_MIN))));
+
+        final Optional<Motion> optional = motionData
+            .stream()
+            .filter(item -> item.value <= Constants.MEASURED_MOTION_MAX)
+            .max((item, other) -> Float.compare(item.value, other.value));
+
+        applyTopPadding(optional.map(item -> item.value).orElse(Constants.MEASURED_MOTION_MAX), Constants.MEASURED_MOTION_MAX);
+
+        sparkAdapter.setData(motionData);
     }
 
     @Override
@@ -242,8 +331,8 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     private void setupSpinnerType() {
         setType(0);
 
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.chart_types, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.chart_types, R.layout.item_spinner);
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
 
         spinnerType.setAdapter(adapter);
         spinnerType.setOnItemSelectedListener(this);
@@ -253,8 +342,8 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     private void setupSpinnerInterval() {
         setInterval(0);
 
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.chart_intervals, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.chart_intervals, R.layout.item_spinner);
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
 
         spinnerInterval.setAdapter(adapter);
         spinnerInterval.setOnItemSelectedListener(this);
@@ -341,7 +430,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
                     hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, object.value))), textViewPressureUnit, object.timestamp);
                     break;
                 case 3:
-                    hasScrubbedValueWithoutUnit(convertIAQValueToLabel((Constants.MEASURED_AIR_QUALITY_MAX - object.value) / Constants.MEASURED_AIR_QUALITY_MAX), object.timestamp);
+                    hasScrubbedValueWithoutUnit(convertIAQValueToLabel(object.value), object.timestamp);
                     break;
                 case 4:
                     hasScrubbedValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, object.value))), textViewMotionUnit, object.timestamp);
@@ -439,5 +528,25 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         } else {
             return "Unknown";
         }
+    }
+
+    private void setMinMaxUnit(@NonNull final String unit) {
+        textViewMaxUnit.setText(unit);
+        textViewMinUnit.setText(unit);
+    }
+
+    private void setMinMaxValue(@NonNull final String maxValue, @NonNull final String minValue) {
+        textViewMaxValue.setText(maxValue);
+        textViewMinValue.setText(minValue);
+    }
+
+    private void applyTopPadding(final float maxDataValue, final float maxValue) {
+        Timber.i("applyTopPadding -> maxDataValue: %f - maxValue: %f - sparkView.getHeight(): %d - paddingTop: %d", maxDataValue, maxValue, sparkView.getHeight(), Math.round(sparkView.getHeight() - (sparkView.getHeight() * (maxDataValue / maxValue))));
+        sparkView.setPadding(
+            sparkView.getPaddingLeft(),
+            maxDataValue == maxValue ? 0 : Math.round(sparkView.getHeight() - (sparkView.getHeight() * (maxDataValue / maxValue))),
+            sparkView.getPaddingRight(),
+            sparkView.getPaddingBottom()
+        );
     }
 }

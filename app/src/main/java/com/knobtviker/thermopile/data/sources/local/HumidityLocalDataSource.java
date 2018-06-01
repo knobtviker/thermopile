@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.data.sources.local;
 import com.knobtviker.thermopile.data.models.local.Humidity;
 import com.knobtviker.thermopile.data.models.local.Humidity_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class HumidityLocalDataSource extends AbstractLocalDataSource<Humidity> {
             box.query()
                 .order(Humidity_.timestamp)
                 .between(Humidity_.timestamp, start, end)
+                .between(Humidity_.value, Constants.MEASURED_HUMIDITY_MIN, Constants.MEASURED_HUMIDITY_MAX)
                 .build()
         );
     }

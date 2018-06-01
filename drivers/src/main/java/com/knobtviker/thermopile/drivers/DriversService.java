@@ -475,6 +475,7 @@ public class DriversService extends Service implements SensorEventListener {
             }
         } catch (RemoteException e) {
             Timber.e(e);
+            System.exit(0);
         }
     }
 

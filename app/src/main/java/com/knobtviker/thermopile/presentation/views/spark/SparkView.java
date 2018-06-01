@@ -421,7 +421,7 @@ public class SparkView extends View implements ScrubGestureDetector.ScrubListene
     private void setScrubLine(float x) {
         x = resolveBoundedScrubLine(x);
         scrubLinePath.reset();
-        scrubLinePath.moveTo(x, getPaddingTop());
+        scrubLinePath.moveTo(x, 0);
         scrubLinePath.lineTo(x, getHeight() - getPaddingBottom());
         invalidate();
     }
@@ -1023,16 +1023,16 @@ public class SparkView extends View implements ScrubGestureDetector.ScrubListene
         if (adapter == null || adapter.getCount() == 0) return;
         if (scrubListener != null) {
             getParent().requestDisallowInterceptTouchEvent(true);
-            final int index = getNearestIndex(xPoints, x + getPaddingEnd());
+            final int index = getNearestIndex(xPoints, x);
             if (scrubListener != null) {
                 scrubListener.onScrubbed(adapter.getItem(index));
             }
         }
 
-        setScrubLine(x + getPaddingEnd());
+        setScrubLine(x);
 
         if (clipOnScrub) {
-            setClipAmount((x - getPaddingEnd()) / contentRect.right);
+            setClipAmount(x / contentRect.right);
         }
     }
 

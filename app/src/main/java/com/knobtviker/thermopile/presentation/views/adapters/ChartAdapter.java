@@ -44,10 +44,10 @@ public class ChartAdapter<M extends SingleModel> extends SparkAdapter {
         return data.get(index).value;
     }
 
-    @Override
-    public float getX(int index) {
-        return data.get(index).timestamp;
-    }
+//    @Override
+//    public float getX(int index) {
+//        return data.get(index).timestamp;
+//    }
 
     @Override
     public boolean hasBaseLine() {

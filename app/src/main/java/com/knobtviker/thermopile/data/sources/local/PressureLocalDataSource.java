@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.data.sources.local;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Pressure_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
+import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class PressureLocalDataSource extends AbstractLocalDataSource<Pressure> {
             box.query()
                 .order(Pressure_.timestamp)
                 .between(Pressure_.timestamp, start, end)
+                .between(Pressure_.value, Constants.MEASURED_PRESSURE_MIN, Constants.MEASURED_PRESSURE_MAX)
                 .build()
         );
     }
