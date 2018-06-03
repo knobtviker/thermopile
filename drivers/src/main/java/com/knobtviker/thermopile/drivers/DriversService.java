@@ -343,7 +343,7 @@ public class DriversService extends Service implements SensorEventListener {
 
     private void sendTemperature(@NonNull final SensorEvent event) {
         final float normalizedValue = lowPassFilterTemperature(normalizedToScale(event.values[0]));
-        Timber.i("%s %s %f", event.sensor.getVendor(), event.sensor.getName(), event.values[0]);
+
         if (normalizedValue != currentTemperature) {
             currentTemperature = normalizedValue;
             incomingHandler.currentTemperature = currentTemperature;
