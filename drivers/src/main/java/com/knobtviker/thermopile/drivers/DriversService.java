@@ -289,6 +289,7 @@ public class DriversService extends Service implements SensorEventListener {
         bme680SensorDriver.registerPressureSensor();
         bme680SensorDriver.registerHumiditySensor();
         bme680SensorDriver.registerGasSensor();
+        bme680SensorDriver.setTemperatureOffset(-1);
 
         return bme680SensorDriver;
     }
@@ -342,7 +343,7 @@ public class DriversService extends Service implements SensorEventListener {
 
     private void sendTemperature(@NonNull final SensorEvent event) {
         final float normalizedValue = lowPassFilterTemperature(normalizedToScale(event.values[0]));
-
+        Timber.i("%s %s %f", event.sensor.getVendor(), event.sensor.getName(), event.values[0]);
         if (normalizedValue != currentTemperature) {
             currentTemperature = normalizedValue;
             incomingHandler.currentTemperature = currentTemperature;
