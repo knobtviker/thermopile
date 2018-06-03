@@ -11,7 +11,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 /**
  * Created by bojan on 01/11/2017.
@@ -19,13 +19,13 @@ import com.google.common.collect.ImmutableList;
 
 public class SettingsPagerAdapter extends PagerAdapter {
 
-    private final ImmutableList<String> titles;
+    private final List<String> titles;
     private final FragmentManager fragmentManager;
-    private final ImmutableList<Fragment> fragments;
+    private final List<Fragment> fragments;
 
     private FragmentTransaction currentTransaction;
 
-    public SettingsPagerAdapter(@NonNull final FragmentManager fragmentManager, @NonNull final ImmutableList<String> titles, @NonNull final ImmutableList<Fragment> fragments, final int containerId) {
+    public SettingsPagerAdapter(@NonNull final FragmentManager fragmentManager, @NonNull final List<String> titles, @NonNull final List<Fragment> fragments, final int containerId) {
         if (containerId == View.NO_ID) {
             throw new IllegalStateException("ViewPager with adapter " + this + " requires a view id");
         }

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
@@ -20,6 +19,10 @@ import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdLineVie
 
 import org.joda.time.Interval;
 import org.joda.time.Minutes;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by bojan on 13/06/2017.
@@ -31,13 +34,13 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     private String timeFormat = "HH:mm";
 
     private final LayoutInflater layoutInflater;
-    private final ImmutableList<String> days;
+    private final List<String> days;
 
-    private ImmutableList<ThresholdInterval> intervals = ImmutableList.of();
+    private List<ThresholdInterval> intervals = new ArrayList<>(0);
 
     public ThresholdAdapter(@NonNull final Context context) {
         this.layoutInflater = LayoutInflater.from(context);
-        this.days = ImmutableList.copyOf(context.getResources().getStringArray(R.array.weekdays));
+        this.days = Arrays.asList(context.getResources().getStringArray(R.array.weekdays));
 
         setEmptyDays();
     }
@@ -89,7 +92,7 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         return intervals.size();
     }
 
-    public void setData(ImmutableList<ThresholdInterval> thresholdIntervals) {
+    public void setData(@NonNull final List<ThresholdInterval> thresholdIntervals) {
         this.intervals = thresholdIntervals;
 
         notifyDataSetChanged();

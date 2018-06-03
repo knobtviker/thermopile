@@ -2,7 +2,6 @@ package com.knobtviker.thermopile.domain.repositories;
 
 import android.support.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.data.sources.local.ThresholdLocalDataSource;
@@ -42,13 +41,13 @@ public class ThresholdRepository extends AbstractRepository {
             .observeOn(schedulerProvider.ui);
     }
 
-    public Observable<ImmutableList<ThresholdInterval>> loadInline() {
+    public Observable<List<ThresholdInterval>> loadInline() {
         return thresholdLocalDataSource
             .observe()
             .subscribeOn(schedulerProvider.io)
             .map(thresholds -> {
                 if (thresholds.isEmpty()) {
-                    return ImmutableList.copyOf(ThresholdIntervalFactory.emptyDays());
+                    return ThresholdIntervalFactory.emptyDays();
                 } else {
                     final List<ThresholdInterval> intervalsAll = thresholds
                         .stream()
@@ -59,7 +58,7 @@ public class ThresholdRepository extends AbstractRepository {
 
                     intervalsAll.sort(ThresholdIntervalFactory.sorter());
 
-                    return ImmutableList.copyOf(intervalsAll);
+                    return intervalsAll;
                 }
             })
             .observeOn(schedulerProvider.ui);

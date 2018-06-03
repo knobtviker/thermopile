@@ -4,19 +4,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
 import com.knobtviker.thermopile.presentation.views.adapters.SettingsPagerAdapter;
+
+import java.util.Arrays;
+import java.util.List;
 
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
@@ -113,8 +114,8 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     private void setupViewPager() {
         viewPager.setAdapter(new SettingsPagerAdapter(
                 getChildFragmentManager(),
-                ImmutableList.of(getString(R.string.label_formats), getString(R.string.label_units), getString(R.string.label_locale), getString(R.string.label_style), getString(R.string.label_network)),
-                ImmutableList.of(formatsFragment, unitsFragment, localeFragment, styleFragment, networkFragment),
+                Arrays.asList(getString(R.string.label_formats), getString(R.string.label_units), getString(R.string.label_locale), getString(R.string.label_style), getString(R.string.label_network)),
+                Arrays.asList(formatsFragment, unitsFragment, localeFragment, styleFragment, networkFragment),
                 viewPager.getId()
             )
         );

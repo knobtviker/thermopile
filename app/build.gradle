@@ -53,14 +53,9 @@ android {
 dependencies {
     //base
     compileOnly 'com.google.android.things:androidthings:1.0'
-    implementation 'com.knobtviker.android.things.contrib.community:boards:1.0.7'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.14'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'net.danlew:android.joda:2.9.9'
-    implementation 'com.google.guava:guava-base:r03'
-    implementation 'com.google.guava:guava-primitives:r03'
-    implementation 'com.google.guava:guava-annotations:r03'
-    implementation 'com.google.guava:guava-collections:r03'
     implementation 'com.google.dagger:dagger:2.11'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
     //data

@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
@@ -31,6 +30,8 @@ import com.knobtviker.thermopile.presentation.views.listeners.DayScrollListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+
+import java.util.List;
 
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
@@ -266,7 +267,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
-    public void onThresholdsChanged(@NonNull ImmutableList<ThresholdInterval> thresholdIntervals) {
+    public void onThresholdsChanged(@NonNull List<ThresholdInterval> thresholdIntervals) {
         thresholdAdapter.setData(thresholdIntervals);
     }
 

@@ -1,10 +1,10 @@
 package com.knobtviker.thermopile.data.sources.memory.implementation;
 
-import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
 import com.knobtviker.thermopile.data.sources.raw.fram.Mb85rc256v;
 
 import java.io.IOException;
 
+//TODO: Kill this and make it into a service provided with FRAM package.
 public abstract class AbstractMemoryDataSource {
 
     private int ADDRESS_INVALID = -1;

@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.utils.ColorKit;
 import com.knobtviker.thermopile.presentation.views.viewholders.ColorViewHolder;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by bojan on 13/06/2017.
@@ -22,7 +24,7 @@ import com.knobtviker.thermopile.presentation.views.viewholders.ColorViewHolder;
 
 public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
-    private final ImmutableList<String> colors;
+    private final List<String> colors;
 
     private final LayoutInflater layoutInflater;
 
@@ -41,7 +43,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
         }
         colors500TypedArray.recycle();
 
-        this.colors = ImmutableList.copyOf(colors500);
+        this.colors = Arrays.asList(colors500);
         this.selectedColor = colors.get(0);
     }
 

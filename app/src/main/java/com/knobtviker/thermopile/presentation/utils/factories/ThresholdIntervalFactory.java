@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.utils.factories;
 
-import com.google.common.collect.ImmutableList;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.presentation.utils.comparators.ThresholdInDayComparator;
@@ -12,15 +11,15 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ThresholdIntervalFactory {
 
-    public static ImmutableList<ThresholdInterval> emptyDays() {
-        return ImmutableList.copyOf(
-            IntStream.range(1, 8)
+    public static List<ThresholdInterval> emptyDays() {
+        return IntStream.range(1, 8)
                 .mapToObj(day ->
                     ThresholdInterval.builder()
                         .interval(
@@ -41,7 +40,7 @@ public class ThresholdIntervalFactory {
                         )
                         .build()
                 )
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()
         );
     }
 
