@@ -3,9 +3,9 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
-import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
-import com.knobtviker.thermopile.di.components.domain.DaggerSchedulerProviderComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
+import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
@@ -14,7 +14,6 @@ import com.knobtviker.thermopile.presentation.presenters.implementation.Abstract
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 
@@ -39,8 +38,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         super(view);
 
         this.view = view;
-        this.atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
-        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.create().repository();
+        this.settingsRepository = DaggerSettingsRepositoryComponent.create().repository();
         this.scheduler = DaggerSchedulerProviderComponent.create().scheduler().screensaver;
     }
 

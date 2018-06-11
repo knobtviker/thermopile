@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
-import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
@@ -31,8 +31,8 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
         super(view);
 
         this.view = view;
-        this.atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
-        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.create().repository();
+        this.settingsRepository = DaggerSettingsRepositoryComponent.create().repository();
     }
 
     @Override

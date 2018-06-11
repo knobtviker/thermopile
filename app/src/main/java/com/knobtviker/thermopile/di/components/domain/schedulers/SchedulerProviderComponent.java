@@ -1,6 +1,6 @@
-package com.knobtviker.thermopile.di.components.domain;
+package com.knobtviker.thermopile.di.components.domain.schedulers;
 
-import com.knobtviker.thermopile.di.modules.domain.SchedulerProviderModule;
+import com.knobtviker.thermopile.di.modules.domain.schedulers.SchedulerProviderModule;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 
 import javax.inject.Singleton;

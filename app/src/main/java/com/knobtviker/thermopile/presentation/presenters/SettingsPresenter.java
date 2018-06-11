@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
@@ -21,7 +21,7 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
         super(view);
 
         this.view = view;
-        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
+        this.settingsRepository = DaggerSettingsRepositoryComponent.create().repository();
     }
 
     @Override

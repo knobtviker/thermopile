@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.di.modules.data;
+package com.knobtviker.thermopile.di.modules.domain.repositories;
 
 import com.knobtviker.thermopile.data.sources.local.AccelerationLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.AirQualityLocalDataSource;
@@ -27,7 +27,7 @@ import dagger.Provides;
  */
 
 @Module
-public class AtmosphereDataModule {
+public class AtmosphereRepositoryModule {
 
     @Provides
     static TemperatureMemoryDataSource provideTemperatureMemoryDataSource() {

@@ -1,6 +1,6 @@
 package com.knobtviker.thermopile.domain.repositories.implementation;
 
-import com.knobtviker.thermopile.di.components.domain.DaggerSchedulerProviderComponent;
+import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 
 /**

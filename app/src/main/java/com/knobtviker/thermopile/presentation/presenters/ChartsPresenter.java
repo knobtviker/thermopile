@@ -3,8 +3,8 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.knobtviker.thermopile.di.components.data.DaggerAtmosphereDataComponent;
-import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
@@ -28,8 +28,8 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
         super(view);
 
         this.view = view;
-        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
-        this.atmosphereRepository = DaggerAtmosphereDataComponent.create().repository();
+        this.settingsRepository = DaggerSettingsRepositoryComponent.create().repository();
+        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.create().repository();
     }
 
     @Override

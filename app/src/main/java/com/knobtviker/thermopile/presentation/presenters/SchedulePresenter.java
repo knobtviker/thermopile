@@ -2,8 +2,8 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.data.DaggerSettingsDataComponent;
-import com.knobtviker.thermopile.di.components.data.DaggerThresholdDataComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerThresholdRepositoryComponent;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
@@ -24,8 +24,8 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
         super(view);
 
         this.view = view;
-        this.settingsRepository = DaggerSettingsDataComponent.create().repository();
-        this.thresholdRepository = DaggerThresholdDataComponent.create().repository();
+        this.settingsRepository = DaggerSettingsRepositoryComponent.create().repository();
+        this.thresholdRepository = DaggerThresholdRepositoryComponent.create().repository();
     }
 
     @Override

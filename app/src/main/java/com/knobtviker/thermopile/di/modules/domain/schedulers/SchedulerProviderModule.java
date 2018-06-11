@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.di.modules.domain;
+package com.knobtviker.thermopile.di.modules.domain.schedulers;
 
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerComputation;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerIO;
