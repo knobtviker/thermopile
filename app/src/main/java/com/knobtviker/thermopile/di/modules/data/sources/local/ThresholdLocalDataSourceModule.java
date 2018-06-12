@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.di.modules.domain.repositories;
+package com.knobtviker.thermopile.di.modules.data.sources.local;
 
 import com.knobtviker.thermopile.data.sources.local.ThresholdLocalDataSource;
 
@@ -10,7 +10,7 @@ import dagger.Provides;
  */
 
 @Module
-public class ThresholdRepositoryModule {
+public class ThresholdLocalDataSourceModule {
 
     @Provides
     static ThresholdLocalDataSource provideLocalDataSource() {

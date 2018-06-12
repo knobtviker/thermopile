@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerThresholdRepositoryComponent;
+import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
@@ -22,7 +23,10 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
         super(view);
 
         this.view = view;
-        this.thresholdRepository = DaggerThresholdRepositoryComponent.create().repository();
+        this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
+            .localDataSource(new ThresholdLocalDataSourceModule())
+            .build()
+            .repository();
     }
 
     @Override

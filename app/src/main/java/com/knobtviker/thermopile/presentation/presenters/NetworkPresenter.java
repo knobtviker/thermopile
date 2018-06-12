@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
+import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
+import com.knobtviker.thermopile.di.modules.data.sources.memory.AtmosphereMemoryDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
@@ -37,7 +39,11 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
         super(view);
 
         this.view = view;
-        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.create().repository();
+        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
+            .memoryDataSource(new AtmosphereMemoryDataSourceModule())
+            .localDataSource(new AtmosphereLocalDataSourceModule())
+            .build()
+            .repository();
         this.rxBluetoothManager = RxBluetoothManager.getInstance(context);
     }
 

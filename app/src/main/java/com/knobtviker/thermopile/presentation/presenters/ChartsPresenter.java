@@ -1,17 +1,16 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
+import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
+import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
+import com.knobtviker.thermopile.di.modules.data.sources.memory.AtmosphereMemoryDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
-
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -28,8 +27,15 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
         super(view);
 
         this.view = view;
-        this.settingsRepository = DaggerSettingsRepositoryComponent.create().repository();
-        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.create().repository();
+        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
+            .localDataSource(new SettingsLocalDataSourceModule())
+            .build()
+            .repository();
+        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
+            .memoryDataSource(new AtmosphereMemoryDataSourceModule())
+            .localDataSource(new AtmosphereLocalDataSourceModule())
+            .build()
+            .repository();
     }
 
     @Override

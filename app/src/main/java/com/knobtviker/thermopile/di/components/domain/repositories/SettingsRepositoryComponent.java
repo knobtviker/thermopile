@@ -1,6 +1,8 @@
 package com.knobtviker.thermopile.di.components.domain.repositories;
 
-import com.knobtviker.thermopile.di.modules.domain.repositories.SettingsRepositoryModule;
+import android.support.annotation.NonNull;
+
+import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 
 import dagger.Component;
@@ -9,8 +11,16 @@ import dagger.Component;
  * Created by bojan on 12/12/2017.
  */
 
-@Component(modules = SettingsRepositoryModule.class)
+@Component(modules = SettingsLocalDataSourceModule.class)
 public interface SettingsRepositoryComponent {
 
     SettingsRepository repository();
+
+    @Component.Builder
+    interface Builder {
+
+        Builder localDataSource(@NonNull final SettingsLocalDataSourceModule localDataSourceModule);
+
+        SettingsRepositoryComponent build();
+    }
 }

@@ -9,6 +9,10 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerThresholdRepositoryComponent;
+import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
+import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
+import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
+import com.knobtviker.thermopile.di.modules.data.sources.memory.AtmosphereMemoryDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
@@ -34,9 +38,19 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         super(view);
 
         this.view = view;
-        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.create().repository();
-        this.settingsRepository = DaggerSettingsRepositoryComponent.create().repository();
-        this.thresholdRepository = DaggerThresholdRepositoryComponent.create().repository();
+        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
+            .memoryDataSource(new AtmosphereMemoryDataSourceModule())
+            .localDataSource(new AtmosphereLocalDataSourceModule())
+            .build()
+            .repository();
+        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
+            .localDataSource(new SettingsLocalDataSourceModule())
+            .build()
+            .repository();
+        this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
+            .localDataSource(new ThresholdLocalDataSourceModule())
+            .build()
+            .repository();
     }
 
     @Override

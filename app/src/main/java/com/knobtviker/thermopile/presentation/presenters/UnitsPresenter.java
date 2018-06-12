@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
+import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
@@ -21,7 +22,10 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
         super(view);
 
         this.view = view;
-        this.settingsRepository = DaggerSettingsRepositoryComponent.create().repository();
+        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
+            .localDataSource(new SettingsLocalDataSourceModule())
+            .build()
+            .repository();
     }
 
     @Override
