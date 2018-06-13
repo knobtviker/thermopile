@@ -117,12 +117,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textview_title_temperature"/>
 
-        <View
+        <com.knobtviker.thermopile.presentation.views.TemperatureGradientView
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="@dimen/margin_large"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
+            android:layout_marginStart="@dimen/margin_default"
             android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_default"
             android:background="@drawable/background_discrete_seekbar_decoration"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
