@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.views.adapters;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.implementation.SingleModel;
 import com.knobtviker.thermopile.presentation.views.spark.SparkAdapter;
 
@@ -12,7 +13,7 @@ public class ChartAdapter<M extends SingleModel> extends SparkAdapter {
 
     private float baseline;
 
-    private List<M> data;
+    private List<? extends SingleModel> data;
 
     public ChartAdapter() {
         this.data = new ArrayList<>(0);
@@ -34,8 +35,9 @@ public class ChartAdapter<M extends SingleModel> extends SparkAdapter {
         return data.size();
     }
 
+    @NonNull
     @Override
-    public M getItem(int index) {
+    public Object getItem(int index) {
         return data.get(index);
     }
 
@@ -43,11 +45,6 @@ public class ChartAdapter<M extends SingleModel> extends SparkAdapter {
     public float getY(int index) {
         return data.get(index).value;
     }
-
-//    @Override
-//    public float getX(int index) {
-//        return data.get(index).timestamp;
-//    }
 
     @Override
     public boolean hasBaseLine() {
@@ -65,7 +62,7 @@ public class ChartAdapter<M extends SingleModel> extends SparkAdapter {
         notifyDataSetChanged();
     }
 
-    public void setData(@NonNull final List data) {
+    public void setData(@NonNull final List<? extends SingleModel> data) {
         this.data = data;
 
         notifyDataSetChanged();
