@@ -3,7 +3,6 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.dgreenhalgh.android.simpleitemdecoration.grid.GridDividerItemDecoration;
 import com.knobtviker.thermopile.R;
@@ -19,7 +18,6 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 import com.philliphsu.bottomsheetpickers.time.grid.GridTimePickerDialog;
@@ -62,11 +60,11 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private ColorAdapter colorAdapter;
 
-    @BindView(R.id.button_time_start)
-    public Button buttonTimeStart;
+    @BindView(R.id.textview_time_start)
+    public TextView textViewTimeStart;
 
-    @BindView(R.id.button_time_end)
-    public Button buttonTimeEnd;
+    @BindView(R.id.textview_time_end)
+    public TextView textViewTimeEnd;
 
     @BindView(R.id.seekbar_temperature)
     public DiscreteSeekBar seekBarTemperature;
@@ -142,7 +140,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         back();
     }
 
-    @OnClick({R.id.button_discard, R.id.button_save, R.id.button_time_start, R.id.button_time_end})
+    @OnClick({R.id.button_discard, R.id.button_save, R.id.layout_start_time, R.id.layout_end_time})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_discard:
@@ -151,10 +149,10 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             case R.id.button_save:
                 save();
                 break;
-            case R.id.button_time_start:
+            case R.id.layout_start_time:
                 showStartTimePicker();
                 break;
-            case R.id.button_time_end:
+            case R.id.layout_end_time:
                 showEndTimePicker();
                 break;
         }
@@ -167,8 +165,8 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     private void setupTimePickers() {
         final DateTime now = DateTime.now();
 
-        buttonTimeStart.setText(now.toString("HH:mm"));
-        buttonTimeEnd.setText(now.toString("HH:mm"));
+        textViewTimeStart.setText(now.toString("HH:mm"));
+        textViewTimeEnd.setText(now.toString("HH:mm"));
 
         gridtimeStart = new GridTimePickerDialog.Builder(
             (viewGroup, hourOfDay, minute) -> {
@@ -179,7 +177,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                     .withHourOfDay(startTimeHour)
                     .withMinuteOfHour(startTimeMinute)
                     .toString("HH:mm");
-                buttonTimeStart.setText(startTime);
+                textViewTimeStart.setText(startTime);
             },
             now.hourOfDay().get(),
             now.minuteOfHour().get(),
@@ -196,7 +194,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                     .withHourOfDay(endTimeHour)
                     .withMinuteOfHour(endTimeMinute)
                     .toString("HH:mm");
-                buttonTimeEnd.setText(endTime);
+                textViewTimeEnd.setText(endTime);
             },
             now.hourOfDay().get(),
             now.minuteOfHour().get(),
@@ -243,13 +241,13 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             .withHourOfDay(startTimeHour)
             .withMinuteOfHour(startTimeMinute)
             .toString("HH:mm");
-        buttonTimeStart.setText(startTime);
+        textViewTimeStart.setText(startTime);
         final String endTime = new DateTime()
             .withDayOfWeek(day + 1)
             .withHourOfDay(endTimeHour)
             .withMinuteOfHour(endTimeMinute)
             .toString("HH:mm");
-        buttonTimeEnd.setText(endTime);
+        textViewTimeEnd.setText(endTime);
 
         colorAdapter.setSelectedColor(threshold.color);
     }
@@ -266,13 +264,13 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             .withHourOfDay(startHour)
             .withMinuteOfHour(startMinute)
             .toString("HH:mm");
-        buttonTimeStart.setText(startTime);
+        textViewTimeStart.setText(startTime);
         final String endTime = new DateTime()
             .withDayOfWeek(day + 1)
             .withHourOfDay(startHour)
             .withMinuteOfHour(startMinute)
             .toString("HH:mm");
-        buttonTimeEnd.setText(endTime);
+        textViewTimeEnd.setText(endTime);
     }
 
     private void showStartTimePicker() {

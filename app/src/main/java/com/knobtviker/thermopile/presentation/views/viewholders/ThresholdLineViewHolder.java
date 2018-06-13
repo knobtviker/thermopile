@@ -22,10 +22,10 @@ public class ThresholdLineViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.view_indicator)
     public View viewIndicator;
 
-    @BindView(R.id.textview_time_start)
+    @BindView(R.id.textview_time_start_label)
     public TextView textViewTimeStart;
 
-    @BindView(R.id.textview_time_end)
+    @BindView(R.id.textview_time_end_label)
     public TextView textViewTimeEnd;
 
     @BindView(R.id.textview_temperature)

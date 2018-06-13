@@ -36,7 +36,7 @@
         tools:text="30"/>
 
     <TextView
-        android:id="@+id/textview_time_start"
+        android:id="@+id/textview_time_start_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/googlesans_regular"
@@ -53,7 +53,7 @@
         tools:text="12:00"/>
 
     <TextView
-        android:id="@+id/textview_time_end"
+        android:id="@+id/textview_time_end_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/googlesans_regular"
