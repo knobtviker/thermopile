@@ -1,18 +1,16 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.dgreenhalgh.android.simpleitemdecoration.grid.GridDividerItemDecoration;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
@@ -20,7 +18,6 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
 import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
-import com.philliphsu.bottomsheetpickers.time.grid.GridTimePickerDialog;
 
 import org.joda.time.DateTime;
 
@@ -54,9 +51,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private int endTimeMinute = -1;
 
-    private GridTimePickerDialog gridtimeStart;
+    private TimePickerDialog timePickerDialogStart;
 
-    private GridTimePickerDialog gridtimeEnd;
+    private TimePickerDialog timePickerDialogEnd;
 
     private ColorAdapter colorAdapter;
 
@@ -88,7 +85,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             day = arguments.getDay();
             startMinute = arguments.getStartMinute();
             maxWidth = arguments.getMaxWidth();
-            thresholdId = (long)arguments.getThresholdId();
+            thresholdId = (long) arguments.getThresholdId();
         });
     }
 
@@ -162,14 +159,16 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         //TODO: Use newBuilder() to apply Settings, min, max and section count constants
     }
 
+    //TODO: Use and apply Settings fro 12/24 hour format
     private void setupTimePickers() {
         final DateTime now = DateTime.now();
 
         textViewTimeStart.setText(now.toString("HH:mm"));
         textViewTimeEnd.setText(now.toString("HH:mm"));
 
-        gridtimeStart = new GridTimePickerDialog.Builder(
-            (viewGroup, hourOfDay, minute) -> {
+        timePickerDialogStart = new TimePickerDialog(
+            getContext(),
+            (view, hourOfDay, minute) -> {
                 startTimeHour = hourOfDay;
                 startTimeMinute = minute;
                 final String startTime = new DateTime()
@@ -177,16 +176,17 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                     .withHourOfDay(startTimeHour)
                     .withMinuteOfHour(startTimeMinute)
                     .toString("HH:mm");
+
                 textViewTimeStart.setText(startTime);
             },
-            now.hourOfDay().get(),
-            now.minuteOfHour().get(),
-            DateFormat.is24HourFormat(getContext())
-        )
-            .build();
+            now.getHourOfDay(),
+            now.getMinuteOfHour(),
+            true
+        );
 
-        gridtimeEnd = new GridTimePickerDialog.Builder(
-            (viewGroup, hourOfDay, minute) -> {
+        timePickerDialogEnd = new TimePickerDialog(
+            getContext(),
+            (view, hourOfDay, minute) -> {
                 endTimeHour = hourOfDay;
                 endTimeMinute = minute;
                 final String endTime = new DateTime()
@@ -194,13 +194,13 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                     .withHourOfDay(endTimeHour)
                     .withMinuteOfHour(endTimeMinute)
                     .toString("HH:mm");
+
                 textViewTimeEnd.setText(endTime);
             },
-            now.hourOfDay().get(),
-            now.minuteOfHour().get(),
-            DateFormat.is24HourFormat(getContext())
-        )
-            .build();
+            now.getHourOfDay(),
+            now.getMinuteOfHour(),
+            true
+        );
     }
 
     private void setupRecyclerView() {
@@ -209,7 +209,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         recyclerViewColors.setHasFixedSize(true);
         recyclerViewColors.setLayoutManager(new GridLayoutManager(getContext(), 7));
         recyclerViewColors.setAdapter(colorAdapter);
-        recyclerViewColors.addItemDecoration(new GridDividerItemDecoration(ContextCompat.getDrawable(getContext(), R.drawable.divider_horizontal_colors), ContextCompat.getDrawable(getContext(), R.drawable.divider_horizontal_colors), 7));
     }
 
     private void save() {
@@ -233,20 +232,23 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         this.endTimeMinute = threshold.endMinute;
 
         seekBarTemperature.setProgress(threshold.temperature);
-        gridtimeStart.setStartTime(threshold.startHour, threshold.startMinute);
-        gridtimeEnd.setStartTime(threshold.endHour, threshold.endMinute);
+        timePickerDialogStart.updateTime(threshold.startHour, threshold.startMinute);
+        timePickerDialogEnd.updateTime(threshold.endHour, threshold.endMinute);
 
         final String startTime = new DateTime()
             .withDayOfWeek(day + 1)
             .withHourOfDay(startTimeHour)
             .withMinuteOfHour(startTimeMinute)
             .toString("HH:mm");
+
         textViewTimeStart.setText(startTime);
+
         final String endTime = new DateTime()
             .withDayOfWeek(day + 1)
             .withHourOfDay(endTimeHour)
             .withMinuteOfHour(endTimeMinute)
             .toString("HH:mm");
+
         textViewTimeEnd.setText(endTime);
 
         colorAdapter.setSelectedColor(threshold.color);
@@ -258,27 +260,31 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         final int startHour = startMinuteInADay / 60;
         final int startMinute = startMinuteInADay - startHour * 60;
 
-        gridtimeStart.setStartTime(startHour, startMinute);
+        timePickerDialogStart.updateTime(startHour, startMinute);
+
         final String startTime = new DateTime()
             .withDayOfWeek(day + 1)
             .withHourOfDay(startHour)
             .withMinuteOfHour(startMinute)
             .toString("HH:mm");
+
         textViewTimeStart.setText(startTime);
+
         final String endTime = new DateTime()
             .withDayOfWeek(day + 1)
             .withHourOfDay(startHour)
             .withMinuteOfHour(startMinute)
             .toString("HH:mm");
+
         textViewTimeEnd.setText(endTime);
     }
 
     private void showStartTimePicker() {
-        gridtimeStart.show(getActivity().getSupportFragmentManager(), "GridTimePickerDialogStart");
+        timePickerDialogStart.show();
     }
 
     private void showEndTimePicker() {
-        gridtimeEnd.show(getActivity().getSupportFragmentManager(), "GridTimePickerDialogEnd");
+        timePickerDialogEnd.show();
     }
 
     private void back() {
