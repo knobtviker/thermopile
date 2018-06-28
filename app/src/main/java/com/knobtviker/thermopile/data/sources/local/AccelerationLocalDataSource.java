@@ -2,14 +2,13 @@ package com.knobtviker.thermopile.data.sources.local;
 
 import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.Acceleration_;
-import com.knobtviker.thermopile.data.models.local.Temperature;
-import com.knobtviker.thermopile.data.models.local.Temperature_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -24,7 +23,7 @@ public class AccelerationLocalDataSource extends AbstractLocalDataSource<Acceler
     }
 
     @Override
-    public Observable<List<Acceleration>> observe() {
+    public Flowable<List<Acceleration>> observe() {
         return super.observe(
             box.query()
                 .order(Acceleration_.timestamp)

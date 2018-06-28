@@ -4,12 +4,13 @@ import java.util.List;
 
 import io.objectbox.query.Query;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 
 public interface BaseLocalDataSource<T> {
 
-    Observable<List<T>> observe(@NonNull final Query<T> query);
+    Flowable<List<T>> observe(@NonNull final Query<T> query);
 
     Observable<List<T>> query(@NonNull final Query<T> query);
 

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -22,7 +23,7 @@ public class MagneticFieldLocalDataSource extends AbstractLocalDataSource<Magnet
     }
 
     @Override
-    public Observable<List<MagneticField>> observe() {
+    public Flowable<List<MagneticField>> observe() {
         return super.observe(
             box.query()
                 .order(MagneticField_.timestamp)

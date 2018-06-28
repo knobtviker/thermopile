@@ -18,6 +18,7 @@ import java.util.stream.IntStream;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 
@@ -41,7 +42,7 @@ public class ThresholdRepository extends AbstractRepository {
             .observeOn(schedulerProvider.ui);
     }
 
-    public Observable<List<ThresholdInterval>> loadInline() {
+    public Flowable<List<ThresholdInterval>> loadInline() {
         return thresholdLocalDataSource
             .observe()
             .subscribeOn(schedulerProvider.io)

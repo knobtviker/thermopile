@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -22,7 +23,7 @@ public class ThresholdLocalDataSource extends AbstractLocalDataSource<Threshold>
     }
 
     @Override
-    public Observable<List<Threshold>> observe() {
+    public Flowable<List<Threshold>> observe() {
         return super.observe(
             box.query()
                 .order(Threshold_.day)

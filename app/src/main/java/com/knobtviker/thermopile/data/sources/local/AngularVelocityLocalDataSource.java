@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -22,7 +23,7 @@ public class AngularVelocityLocalDataSource extends AbstractLocalDataSource<Angu
     }
 
     @Override
-    public Observable<List<AngularVelocity>> observe() {
+    public Flowable<List<AngularVelocity>> observe() {
         return super.observe(
             box.query()
                 .order(AngularVelocity_.timestamp)

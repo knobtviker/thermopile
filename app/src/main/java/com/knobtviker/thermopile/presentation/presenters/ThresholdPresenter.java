@@ -9,6 +9,11 @@ import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
+import io.reactivex.Completable;
+
 /**
  * Created by bojan on 29/10/2017.
  */
@@ -49,12 +54,39 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
         started();
 
         compositeDisposable.add(
-            thresholdRepository
-                .save(threshold)
+            Completable.create(emitter -> {
+                if (!emitter.isDisposed()) {
+                    final DateTime startDateTime = new DateTime()
+                        .withDayOfWeek(threshold.day)
+                        .withHourOfDay(threshold.startHour)
+                        .withMinuteOfHour(threshold.startMinute)
+                        .withSecondOfMinute(0)
+                        .withMillisOfSecond(0);
+
+                    final DateTime endDateTime = new DateTime()
+                        .withDayOfWeek(threshold.day)
+                        .withHourOfDay(threshold.endHour)
+                        .withMinuteOfHour(threshold.endMinute)
+                        .withSecondOfMinute(0)
+                        .withMillisOfSecond(0);
+
+                    if (startDateTime.isAfter(endDateTime)) {
+                        emitter.onError(new Throwable("Start time cannot be after end time"));
+                    } else if (startDateTime.isEqual(endDateTime)) {
+                        emitter.onError(new Throwable("Start time cannot be equal and exact as end time"));
+                    } else {
+                        final Interval interval = new Interval(startDateTime, endDateTime);
+                        if (interval.toDuration().toStandardHours().getHours() >= 1) {
+                            emitter.onComplete();
+                        } else {
+                            emitter.onError(new Throwable("Duration between start and end time is less than one hour"));
+                        }
+                    }
+                }
+            })
+                .andThen(thresholdRepository.save(threshold))
                 .subscribe(
-                    resultId-> {
-                        view.onSaved();
-                    },
+                    resultId -> view.onSaved(),
                     this::error,
                     this::completed
                 )

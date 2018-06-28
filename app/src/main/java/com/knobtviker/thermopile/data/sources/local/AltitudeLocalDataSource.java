@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -22,7 +23,7 @@ public class AltitudeLocalDataSource extends AbstractLocalDataSource<Altitude> {
     }
 
     @Override
-    public Observable<List<Altitude>> observe() {
+    public Flowable<List<Altitude>> observe() {
         return super.observe(
             box.query()
                 .order(Altitude_.timestamp)

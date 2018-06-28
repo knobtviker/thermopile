@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -23,7 +24,7 @@ public class PressureLocalDataSource extends AbstractLocalDataSource<Pressure> {
     }
 
     @Override
-    public Observable<List<Pressure>> observe() {
+    public Flowable<List<Pressure>> observe() {
         return super.observe(
             box.query()
                 .order(Pressure_.timestamp)

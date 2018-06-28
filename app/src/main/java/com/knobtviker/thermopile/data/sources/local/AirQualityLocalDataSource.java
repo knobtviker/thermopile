@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -23,7 +24,7 @@ public class AirQualityLocalDataSource extends AbstractLocalDataSource<AirQualit
     }
 
     @Override
-    public Observable<List<AirQuality>> observe() {
+    public Flowable<List<AirQuality>> observe() {
         return super.observe(
             box.query()
                 .order(AirQuality_.timestamp)

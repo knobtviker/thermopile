@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.objectbox.reactive.DataSubscription;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -24,7 +24,7 @@ public class TemperatureLocalDataSource extends AbstractLocalDataSource<Temperat
     }
 
     @Override
-    public Observable<List<Temperature>> observe() {
+    public Flowable<List<Temperature>> observe() {
         return super.observe(
             box.query()
                 .order(Temperature_.timestamp)

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -22,7 +23,7 @@ public class SettingsLocalDataSource extends AbstractLocalDataSource<Settings> {
     }
 
     @Override
-    public Observable<List<Settings>> observe() {
+    public Flowable<List<Settings>> observe() {
         return super.observe(
             box.query()
                 .order(Settings_.id)

@@ -8,7 +8,9 @@ import io.objectbox.Box;
 import io.objectbox.exception.DbException;
 import io.objectbox.query.Query;
 import io.objectbox.reactive.DataSubscription;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<T> {
@@ -19,19 +21,35 @@ public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<
         box = Database.getInstance().boxFor(clazz);
     }
 
+//    @Override
+//    public Observable<List<T>> observe(@NonNull final Query<T> query) {
+//        return Observable.create(emitter -> {
+//            final DataSubscription dataSubscription = query
+//                .subscribe()
+//                .onError(emitter::onError)
+//                .observer(data -> {
+//                    if (!emitter.isDisposed()) {
+//                        emitter.onNext(data);
+//                    }
+//                });
+//            emitter.setCancellable(dataSubscription::cancel);
+//        });
+//    }
+
     @Override
-    public Observable<List<T>> observe(@NonNull final Query<T> query) {
-        return Observable.create(emitter -> {
-            final DataSubscription dataSubscription = query
-                .subscribe()
-                .onError(emitter::onError)
-                .observer(data -> {
-                    if (!emitter.isDisposed()) {
-                        emitter.onNext(data);
-                    }
-                });
-            emitter.setCancellable(dataSubscription::cancel);
-        });
+    public Flowable<List<T>> observe(@NonNull final Query<T> query) {
+        return Flowable.create(emitter -> {
+                final DataSubscription dataSubscription = query
+                    .subscribe()
+                    .onError(emitter::onError)
+                    .observer(data -> {
+                        if (!emitter.isCancelled()) {
+                            emitter.onNext(data);
+                        }
+                    });
+                emitter.setCancellable(dataSubscription::cancel);
+            },
+            BackpressureStrategy.BUFFER);
     }
 
     @Override
@@ -105,7 +123,7 @@ public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<
         });
     }
 
-    public abstract Observable<List<T>> observe();
+    public abstract Flowable<List<T>> observe();
 
     public abstract Observable<List<T>> query();
 

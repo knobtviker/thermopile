@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -22,7 +23,7 @@ public class LuminosityLocalDataSource extends AbstractLocalDataSource<Luminosit
     }
 
     @Override
-    public Observable<List<Luminosity>> observe() {
+    public Flowable<List<Luminosity>> observe() {
         return super.observe(
             box.query()
                 .order(Luminosity_.timestamp)

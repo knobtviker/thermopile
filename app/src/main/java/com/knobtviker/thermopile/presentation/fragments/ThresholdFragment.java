@@ -4,6 +4,7 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -125,6 +126,8 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @Override
     public void showError(@NonNull Throwable throwable) {
         Timber.e(throwable);
+
+        Snackbar.make(getView(), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -171,17 +174,12 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             (view, hourOfDay, minute) -> {
                 startTimeHour = hourOfDay;
                 startTimeMinute = minute;
-                final String startTime = new DateTime()
-                    .withDayOfWeek(day + 1)
-                    .withHourOfDay(startTimeHour)
-                    .withMinuteOfHour(startTimeMinute)
-                    .toString("HH:mm");
 
-                textViewTimeStart.setText(startTime);
+                setStartTime(day + 1, startTimeHour, startTimeMinute);
             },
             now.getHourOfDay(),
             now.getMinuteOfHour(),
-            true
+            true //TODO: Also needs to be init from th Settings
         );
 
         timePickerDialogEnd = new TimePickerDialog(
@@ -189,17 +187,12 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             (view, hourOfDay, minute) -> {
                 endTimeHour = hourOfDay;
                 endTimeMinute = minute;
-                final String endTime = new DateTime()
-                    .withDayOfWeek(day + 1)
-                    .withHourOfDay(endTimeHour)
-                    .withMinuteOfHour(endTimeMinute)
-                    .toString("HH:mm");
 
-                textViewTimeEnd.setText(endTime);
+                setEndTime(day + 1, endTimeHour, endTimeMinute);
             },
             now.getHourOfDay(),
             now.getMinuteOfHour(),
-            true
+            true //TODO: Also needs to be init from th Settings
         );
     }
 
@@ -212,7 +205,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     private void save() {
-        final Threshold threshold = new Threshold(); //TODO: This probably doesn't work
+        final Threshold threshold = new Threshold();
         threshold.day = day;
         threshold.startHour = startTimeHour;
         threshold.startMinute = startTimeMinute;
@@ -235,21 +228,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         timePickerDialogStart.updateTime(threshold.startHour, threshold.startMinute);
         timePickerDialogEnd.updateTime(threshold.endHour, threshold.endMinute);
 
-        final String startTime = new DateTime()
-            .withDayOfWeek(day + 1)
-            .withHourOfDay(startTimeHour)
-            .withMinuteOfHour(startTimeMinute)
-            .toString("HH:mm");
+        setStartTime(day + 1, startTimeHour, startTimeMinute);
 
-        textViewTimeStart.setText(startTime);
-
-        final String endTime = new DateTime()
-            .withDayOfWeek(day + 1)
-            .withHourOfDay(endTimeHour)
-            .withMinuteOfHour(endTimeMinute)
-            .toString("HH:mm");
-
-        textViewTimeEnd.setText(endTime);
+        setEndTime(day + 1, endTimeHour, endTimeMinute);
 
         colorAdapter.setSelectedColor(threshold.color);
     }
@@ -262,21 +243,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
         timePickerDialogStart.updateTime(startHour, startMinute);
 
-        final String startTime = new DateTime()
-            .withDayOfWeek(day + 1)
-            .withHourOfDay(startHour)
-            .withMinuteOfHour(startMinute)
-            .toString("HH:mm");
+        setStartTime(day + 1, startHour, startMinute);
 
-        textViewTimeStart.setText(startTime);
-
-        final String endTime = new DateTime()
-            .withDayOfWeek(day + 1)
-            .withHourOfDay(startHour)
-            .withMinuteOfHour(startMinute)
-            .toString("HH:mm");
-
-        textViewTimeEnd.setText(endTime);
+        setEndTime(day + 1, startHour, startMinute);
     }
 
     private void showStartTimePicker() {
@@ -289,5 +258,25 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private void back() {
         NavHostFragment.findNavController(this).navigate(R.id.action_thresholdFragment_to_scheduleFragment);
+    }
+
+    private void setStartTime(final int day, final int hour, final int minute) {
+        textViewTimeStart.setText(
+            new DateTime()
+                .withDayOfWeek(day)
+                .withHourOfDay(hour)
+                .withMinuteOfHour(minute)
+                .toString("HH:mm")
+        );
+    }
+
+    private void setEndTime(final int day, final int hour, final int minute) {
+        textViewTimeEnd.setText(
+            new DateTime()
+                .withDayOfWeek(day)
+                .withHourOfDay(hour)
+                .withMinuteOfHour(minute)
+                .toString("HH:mm")
+        );
     }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -26,7 +27,7 @@ public class SettingsRepository extends AbstractRepository {
     SettingsRepository() {
     }
 
-    public Observable<List<Settings>> observe() {
+    public Flowable<List<Settings>> observe() {
         return settingsLocalDataSource
             .observe()
             .subscribeOn(schedulerProvider.io)
