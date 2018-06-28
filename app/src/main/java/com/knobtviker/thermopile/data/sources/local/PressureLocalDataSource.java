@@ -24,7 +24,7 @@ public class PressureLocalDataSource extends AbstractLocalDataSource<Pressure> {
     }
 
     @Override
-    public Flowable<List<Pressure>> observe() {
+    public Flowable<Pressure> observe() {
         return super.observe(
             box.query()
                 .order(Pressure_.timestamp)

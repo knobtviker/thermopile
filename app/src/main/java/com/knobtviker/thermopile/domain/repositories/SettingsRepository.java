@@ -27,7 +27,7 @@ public class SettingsRepository extends AbstractRepository {
     SettingsRepository() {
     }
 
-    public Flowable<List<Settings>> observe() {
+    public Flowable<Settings> observe() {
         return settingsLocalDataSource
             .observe()
             .subscribeOn(schedulerProvider.io)

@@ -10,7 +10,7 @@ import io.reactivex.annotations.NonNull;
 
 public interface BaseLocalDataSource<T> {
 
-    Flowable<List<T>> observe(@NonNull final Query<T> query);
+    Flowable<T> observe(@NonNull final Query<T> query);
 
     Observable<List<T>> query(@NonNull final Query<T> query);
 

@@ -13,7 +13,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
@@ -22,7 +21,6 @@ import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.FileLoggingTree;
-import com.knobtviker.thermopile.presentation.utils.factories.IntentFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.PersistentCommunicator;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -219,17 +217,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public static class IncomingHandler extends Handler {
 
         @NonNull
-        private final LocalBroadcastManager localBroadcastManager;
-
-        @NonNull
-        private final String packageName;
-
-        @NonNull
         private final PersistentCommunicator persistentCommunicator;
 
         IncomingHandler(@NonNull final Context context) {
-            localBroadcastManager = LocalBroadcastManager.getInstance(context);
-            packageName = context.getPackageName();
             persistentCommunicator = (PersistentCommunicator) context;
         }
 
@@ -244,7 +234,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
-                    localBroadcastManager.sendBroadcast(IntentFactory.temperature(packageName, value));
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.saveTemperature(vendor, name, value);
                     }
@@ -253,7 +242,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
-                    localBroadcastManager.sendBroadcast(IntentFactory.pressure(packageName, value));
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.savePressure(vendor, name, value);
                     }
@@ -262,7 +250,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
-                    localBroadcastManager.sendBroadcast(IntentFactory.humidity(packageName, value));
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.saveHumidity(vendor, name, value);
                     }
@@ -271,7 +258,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
-                    localBroadcastManager.sendBroadcast(IntentFactory.airQuality(packageName, value));
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.saveAirQuality(vendor, name, value);
                     }
@@ -280,7 +266,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
-                    localBroadcastManager.sendBroadcast(IntentFactory.luminosity(packageName, value));
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.saveLuminosity(vendor, name, value);
                     }
@@ -289,7 +274,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
-                    localBroadcastManager.sendBroadcast(IntentFactory.acceleration(packageName, values));
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.saveAcceleration(vendor, name, values);
                     }
@@ -298,7 +282,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
-                    localBroadcastManager.sendBroadcast(IntentFactory.angularVelocity(packageName, values));
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.saveAngularVelocity(vendor, name, values);
                     }
@@ -307,7 +290,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
-                    localBroadcastManager.sendBroadcast(IntentFactory.magneticField(packageName, values));
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.saveMagneticField(vendor, name, values);
                     }

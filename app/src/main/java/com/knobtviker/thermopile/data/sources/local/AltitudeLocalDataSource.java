@@ -23,7 +23,7 @@ public class AltitudeLocalDataSource extends AbstractLocalDataSource<Altitude> {
     }
 
     @Override
-    public Flowable<List<Altitude>> observe() {
+    public Flowable<Altitude> observe() {
         return super.observe(
             box.query()
                 .order(Altitude_.timestamp)

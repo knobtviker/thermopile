@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
@@ -49,15 +48,15 @@ public interface NetworkContract {
 
     interface Presenter extends BasePresenter {
 
-        void observeTemperatureChanged(@NonNull final Context context);
+        void observeTemperature();
 
-        void observePressureChanged(@NonNull final Context context);
+        void observePressure();
 
-        void observeHumidityChanged(@NonNull final Context context);
+        void observeHumidity();
 
-        void observeAirQualityChanged(@NonNull final Context context);
+        void observeAirQuality();
 
-        void observeAccelerationChanged(@NonNull final Context context);
+        void observeAcceleration();
 
         void hasBluetooth();
 

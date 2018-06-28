@@ -198,9 +198,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             settingsRepository
                 .observe()
                 .subscribe(
-                    settings -> {
-                        view.onSettings(settings.get(0));
-                    },
+                    view::onSettingsChanged,
                     this::error,
                     this::completed
                 )

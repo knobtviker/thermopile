@@ -23,7 +23,7 @@ public class AccelerationLocalDataSource extends AbstractLocalDataSource<Acceler
     }
 
     @Override
-    public Flowable<List<Acceleration>> observe() {
+    public Flowable<Acceleration> observe() {
         return super.observe(
             box.query()
                 .order(Acceleration_.timestamp)

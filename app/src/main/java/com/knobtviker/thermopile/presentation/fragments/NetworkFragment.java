@@ -125,11 +125,11 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
     @Override
     public void onResume() {
-        presenter.observeTemperatureChanged(getContext());
-        presenter.observePressureChanged(getContext());
-        presenter.observeHumidityChanged(getContext());
-        presenter.observeAirQualityChanged(getContext());
-        presenter.observeAccelerationChanged(getContext());
+        presenter.observeTemperature();
+        presenter.observePressure();
+        presenter.observeHumidity();
+        presenter.observeAirQuality();
+        presenter.observeAcceleration();
         presenter.hasBluetooth();
 
         setupWifi(hasWiFi);

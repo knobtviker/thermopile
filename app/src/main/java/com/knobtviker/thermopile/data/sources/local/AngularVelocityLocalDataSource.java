@@ -23,7 +23,7 @@ public class AngularVelocityLocalDataSource extends AbstractLocalDataSource<Angu
     }
 
     @Override
-    public Flowable<List<AngularVelocity>> observe() {
+    public Flowable<AngularVelocity> observe() {
         return super.observe(
             box.query()
                 .order(AngularVelocity_.timestamp)

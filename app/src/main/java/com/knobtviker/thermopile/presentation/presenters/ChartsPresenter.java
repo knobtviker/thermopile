@@ -45,9 +45,8 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
         compositeDisposable.add(
             settingsRepository
                 .observe()
-                .subscribe(settings -> {
-                        view.onSettingsChanged(settings.get(0));
-                    },
+                .subscribe(
+                    view::onSettingsChanged,
                     this::error,
                     this::completed
                 )

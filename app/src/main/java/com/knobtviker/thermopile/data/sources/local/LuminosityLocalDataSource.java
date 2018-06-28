@@ -23,7 +23,7 @@ public class LuminosityLocalDataSource extends AbstractLocalDataSource<Luminosit
     }
 
     @Override
-    public Flowable<List<Luminosity>> observe() {
+    public Flowable<Luminosity> observe() {
         return super.observe(
             box.query()
                 .order(Luminosity_.timestamp)

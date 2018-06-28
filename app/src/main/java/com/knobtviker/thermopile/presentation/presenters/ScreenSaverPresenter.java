@@ -46,71 +46,6 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
     }
 
     @Override
-    public void observeTemperatureChanged(@NonNull Context context) {
-        compositeDisposable.add(
-            atmosphereRepository
-                .observeTemperature(context)
-                .subscribe(
-                    view::onTemperatureChanged,
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    @Override
-    public void observePressureChanged(@NonNull Context context) {
-        compositeDisposable.add(
-            atmosphereRepository
-                .observePressure(context)
-                .subscribe(
-                    view::onPressureChanged,
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    @Override
-    public void observeHumidityChanged(@NonNull Context context) {
-        compositeDisposable.add(
-            atmosphereRepository
-                .observeHumidity(context)
-                .subscribe(
-                    view::onHumidityChanged,
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    @Override
-    public void observeAirQualityChanged(@NonNull Context context) {
-        compositeDisposable.add(
-            atmosphereRepository
-                .observeAirQuality(context)
-                .subscribe(
-                    view::onAirQualityChanged,
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    @Override
-    public void observeAccelerationChanged(@NonNull Context context) {
-        compositeDisposable.add(
-            atmosphereRepository
-                .observeAcceleration(context)
-                .subscribe(
-                    view::onAccelerationChanged,
-                    this::error,
-                    this::completed
-                )
-        );
-    }
-
-    @Override
     public void observeDateChanged(@NonNull Context context) {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_DATE_CHANGED);
@@ -147,6 +82,71 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
     }
 
     @Override
+    public void observeTemperature() {
+        compositeDisposable.add(
+            atmosphereRepository
+                .observeTemperature()
+                .subscribe(
+                    view::onTemperatureChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observePressure() {
+        compositeDisposable.add(
+            atmosphereRepository
+                .observePressure()
+                .subscribe(
+                    view::onPressureChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observeHumidity() {
+        compositeDisposable.add(
+            atmosphereRepository
+                .observeHumidity()
+                .subscribe(
+                    view::onHumidityChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observeAirQuality() {
+        compositeDisposable.add(
+            atmosphereRepository
+                .observeAirQuality()
+                .subscribe(
+                    view::onAirQualityChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
+    public void observeAcceleration() {
+        compositeDisposable.add(
+            atmosphereRepository
+                .observeAcceleration()
+                .subscribe(
+                    view::onAccelerationChanged,
+                    this::error,
+                    this::completed
+                )
+        );
+    }
+
+    @Override
     public void settings() {
         started();
 
@@ -154,9 +154,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
             settingsRepository
                 .observe()
                 .subscribe(
-                    settings -> {
-                        view.onSettingsChanged(settings.get(0));
-                    },
+                    view::onSettingsChanged,
                     this::error,
                     this::completed
                 )

@@ -23,7 +23,7 @@ public class ThresholdLocalDataSource extends AbstractLocalDataSource<Threshold>
     }
 
     @Override
-    public Flowable<List<Threshold>> observe() {
+    public Flowable<Threshold> observe() {
         return super.observe(
             box.query()
                 .order(Threshold_.day)

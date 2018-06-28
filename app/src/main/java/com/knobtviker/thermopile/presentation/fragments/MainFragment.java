@@ -139,11 +139,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         setupRecyclerView();
 
         presenter.observeDateChanged(view.getContext());
+        data();
     }
 
+    //TODO: Return a Flowable<List<T>>
     @Override
     public void onResume() {
-        data();
         thresholds();
 
         super.onResume();
@@ -263,7 +264,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         setMotionUnit();
         setDate();
 
-        ((ThermopileApplication)getActivity().getApplication()).refresh();
+//        ((ThermopileApplication)getActivity().getApplication()).refresh();
     }
 
     @Override
@@ -380,11 +381,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void data() {
-        presenter.observeTemperatureChanged(getContext());
-        presenter.observePressureChanged(getContext());
-        presenter.observeHumidityChanged(getContext());
-        presenter.observeAirQualityChanged(getContext());
-        presenter.observeAccelerationChanged(getContext());
+        presenter.observeTemperature();
+        presenter.observePressure();
+        presenter.observeHumidity();
+        presenter.observeAirQuality();
+        presenter.observeAcceleration();
         presenter.settings();
 
         ((ThermopileApplication)getActivity().getApplication()).refresh();

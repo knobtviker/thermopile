@@ -23,7 +23,7 @@ public class MagneticFieldLocalDataSource extends AbstractLocalDataSource<Magnet
     }
 
     @Override
-    public Flowable<List<MagneticField>> observe() {
+    public Flowable<MagneticField> observe() {
         return super.observe(
             box.query()
                 .order(MagneticField_.timestamp)

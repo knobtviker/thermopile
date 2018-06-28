@@ -15,7 +15,7 @@ public interface ApplicationContract {
 
     interface View extends BaseView {
 
-        void onSettings(@NonNull final Settings settings);
+        void onSettingsChanged(@NonNull final Settings settings);
 
         void showScreensaver();
     }

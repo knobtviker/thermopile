@@ -24,7 +24,7 @@ public class HumidityLocalDataSource extends AbstractLocalDataSource<Humidity> {
     }
 
     @Override
-    public Flowable<List<Humidity>> observe() {
+    public Flowable<Humidity> observe() {
         return super.observe(
             box.query()
                 .order(Humidity_.timestamp)

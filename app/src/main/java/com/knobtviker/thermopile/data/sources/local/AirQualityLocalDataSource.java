@@ -24,7 +24,7 @@ public class AirQualityLocalDataSource extends AbstractLocalDataSource<AirQualit
     }
 
     @Override
-    public Flowable<List<AirQuality>> observe() {
+    public Flowable<AirQuality> observe() {
         return super.observe(
             box.query()
                 .order(AirQuality_.timestamp)

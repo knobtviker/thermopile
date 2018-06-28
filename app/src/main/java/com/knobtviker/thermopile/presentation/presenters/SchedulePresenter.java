@@ -44,9 +44,7 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
             settingsRepository
                 .observe()
                 .subscribe(
-                    settings -> {
-                        view.onSettingsChanged(settings.get(0));
-                    },
+                    view::onSettingsChanged,
                     this::error,
                     this::completed
                 )

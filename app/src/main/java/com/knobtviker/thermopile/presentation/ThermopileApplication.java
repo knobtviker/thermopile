@@ -38,7 +38,7 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     }
 
     @Override
-    public void onSettings(@NonNull Settings settings) {
+    public void onSettingsChanged(@NonNull Settings settings) {
         AppCompatDelegate.setDefaultNightMode(settings.theme);
     }
 

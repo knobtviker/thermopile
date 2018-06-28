@@ -11,6 +11,7 @@ import io.objectbox.reactive.DataSubscription;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
 import io.reactivex.Observable;
 
 public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<T> {
@@ -21,35 +22,20 @@ public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<
         box = Database.getInstance().boxFor(clazz);
     }
 
-//    @Override
-//    public Observable<List<T>> observe(@NonNull final Query<T> query) {
-//        return Observable.create(emitter -> {
-//            final DataSubscription dataSubscription = query
-//                .subscribe()
-//                .onError(emitter::onError)
-//                .observer(data -> {
-//                    if (!emitter.isDisposed()) {
-//                        emitter.onNext(data);
-//                    }
-//                });
-//            emitter.setCancellable(dataSubscription::cancel);
-//        });
-//    }
-
     @Override
-    public Flowable<List<T>> observe(@NonNull final Query<T> query) {
-        return Flowable.create(emitter -> {
+    public Flowable<T> observe(@NonNull final Query<T> query) {
+        return Flowable.create((FlowableEmitter<T> emitter) -> {
                 final DataSubscription dataSubscription = query
                     .subscribe()
                     .onError(emitter::onError)
                     .observer(data -> {
-                        if (!emitter.isCancelled()) {
-                            emitter.onNext(data);
+                        if (!emitter.isCancelled() && !data.isEmpty()) {
+                            emitter.onNext(data.get(data.size()-1));
                         }
                     });
                 emitter.setCancellable(dataSubscription::cancel);
             },
-            BackpressureStrategy.BUFFER);
+            BackpressureStrategy.LATEST);
     }
 
     @Override
@@ -123,7 +109,7 @@ public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<
         });
     }
 
-    public abstract Flowable<List<T>> observe();
+    public abstract Flowable<T> observe();
 
     public abstract Observable<List<T>> query();
 

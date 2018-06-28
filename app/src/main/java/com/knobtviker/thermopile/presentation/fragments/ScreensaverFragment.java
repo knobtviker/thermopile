@@ -106,12 +106,11 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         super.onViewCreated(view, savedInstanceState);
 
         presenter.observeDateChanged(view.getContext());
+        data();
     }
 
     @Override
     public void onResume() {
-        data();
-
         Objects.requireNonNull(getView()).setKeepScreenOn(true);
 
         super.onResume();
@@ -240,14 +239,14 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     private void data() {
-        presenter.observeTemperatureChanged(getContext());
-        presenter.observePressureChanged(getContext());
-        presenter.observeHumidityChanged(getContext());
-        presenter.observeAirQualityChanged(getContext());
-        presenter.observeAccelerationChanged(getContext());
+        presenter.observeTemperature();
+        presenter.observePressure();
+        presenter.observeHumidity();
+        presenter.observeAirQuality();
+        presenter.observeAcceleration();
         presenter.settings();
 
-        ((ThermopileApplication)getActivity().getApplication()).refresh();
+//        ((ThermopileApplication)getActivity().getApplication()).refresh();
     }
 
     private void setFormatClock() {

@@ -48,10 +48,10 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void observeTemperatureChanged(@NonNull Context context) {
+    public void observeTemperature() {
         compositeDisposable.add(
             atmosphereRepository
-                .observeTemperature(context)
+                .observeTemperature()
                 .subscribe(
                     view::onTemperatureChanged,
                     this::error,
@@ -61,10 +61,10 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void observePressureChanged(@NonNull Context context) {
+    public void observePressure() {
         compositeDisposable.add(
             atmosphereRepository
-                .observePressure(context)
+                .observePressure()
                 .subscribe(
                     view::onPressureChanged,
                     this::error,
@@ -74,10 +74,10 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void observeHumidityChanged(@NonNull Context context) {
+    public void observeHumidity() {
         compositeDisposable.add(
             atmosphereRepository
-                .observeHumidity(context)
+                .observeHumidity()
                 .subscribe(
                     view::onHumidityChanged,
                     this::error,
@@ -87,10 +87,10 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void observeAirQualityChanged(@NonNull Context context) {
+    public void observeAirQuality() {
         compositeDisposable.add(
             atmosphereRepository
-                .observeAirQuality(context)
+                .observeAirQuality()
                 .subscribe(
                     view::onAirQualityChanged,
                     this::error,
@@ -100,10 +100,10 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void observeAccelerationChanged(@NonNull Context context) {
+    public void observeAcceleration() {
         compositeDisposable.add(
             atmosphereRepository
-                .observeAcceleration(context)
+                .observeAcceleration()
                 .subscribe(
                     view::onAccelerationChanged,
                     this::error,

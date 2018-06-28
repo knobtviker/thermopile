@@ -37,17 +37,17 @@ public interface MainContract {
 
     interface Presenter extends BasePresenter {
 
-        void observeTemperatureChanged(@NonNull final Context context);
-
-        void observePressureChanged(@NonNull final Context context);
-
-        void observeHumidityChanged(@NonNull final Context context);
-
-        void observeAirQualityChanged(@NonNull final Context context);
-
-        void observeAccelerationChanged(@NonNull final Context context);
-
         void observeDateChanged(@NonNull final Context context);
+
+        void observeTemperature();
+
+        void observePressure();
+
+        void observeHumidity();
+
+        void observeAirQuality();
+
+        void observeAcceleration();
 
         void settings();
 

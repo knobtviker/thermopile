@@ -23,7 +23,7 @@ public class SettingsLocalDataSource extends AbstractLocalDataSource<Settings> {
     }
 
     @Override
-    public Flowable<List<Settings>> observe() {
+    public Flowable<Settings> observe() {
         return super.observe(
             box.query()
                 .order(Settings_.id)
