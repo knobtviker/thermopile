@@ -27,7 +27,7 @@ public class AirQualityLocalDataSource extends AbstractLocalDataSource<AirQualit
     public Flowable<AirQuality> observe() {
         return super.observe(
             box.query()
-                .order(AirQuality_.timestamp)
+                .orderDesc(AirQuality_.timestamp)
                 .build()
         );
     }

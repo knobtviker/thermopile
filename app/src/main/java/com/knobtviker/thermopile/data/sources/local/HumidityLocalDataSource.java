@@ -27,7 +27,7 @@ public class HumidityLocalDataSource extends AbstractLocalDataSource<Humidity> {
     public Flowable<Humidity> observe() {
         return super.observe(
             box.query()
-                .order(Humidity_.timestamp)
+                .orderDesc(Humidity_.timestamp)
                 .build()
         );
     }

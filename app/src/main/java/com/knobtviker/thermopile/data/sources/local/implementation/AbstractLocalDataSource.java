@@ -30,7 +30,7 @@ public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<
                     .onError(emitter::onError)
                     .observer(data -> {
                         if (!emitter.isCancelled() && !data.isEmpty()) {
-                            emitter.onNext(data.get(data.size()-1));
+                            emitter.onNext(data.get(0));
                         }
                     });
                 emitter.setCancellable(dataSubscription::cancel);

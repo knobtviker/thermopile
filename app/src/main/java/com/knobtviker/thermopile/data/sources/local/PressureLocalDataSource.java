@@ -27,7 +27,7 @@ public class PressureLocalDataSource extends AbstractLocalDataSource<Pressure> {
     public Flowable<Pressure> observe() {
         return super.observe(
             box.query()
-                .order(Pressure_.timestamp)
+                .orderDesc(Pressure_.timestamp)
                 .build()
         );
     }

@@ -264,7 +264,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         setMotionUnit();
         setDate();
 
-//        ((ThermopileApplication)getActivity().getApplication()).refresh();
+        ((ThermopileApplication)getActivity().getApplication()).refresh();
     }
 
     @Override

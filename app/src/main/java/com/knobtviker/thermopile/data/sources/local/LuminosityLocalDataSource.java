@@ -26,7 +26,7 @@ public class LuminosityLocalDataSource extends AbstractLocalDataSource<Luminosit
     public Flowable<Luminosity> observe() {
         return super.observe(
             box.query()
-                .order(Luminosity_.timestamp)
+                .orderDesc(Luminosity_.timestamp)
                 .build()
         );
     }

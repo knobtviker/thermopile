@@ -26,7 +26,7 @@ public class MagneticFieldLocalDataSource extends AbstractLocalDataSource<Magnet
     public Flowable<MagneticField> observe() {
         return super.observe(
             box.query()
-                .order(MagneticField_.timestamp)
+                .orderDesc(MagneticField_.timestamp)
                 .build()
         );
     }

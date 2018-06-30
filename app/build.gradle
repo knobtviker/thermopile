@@ -33,6 +33,7 @@ android {
         }
         release {
             minifyEnabled false
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -56,11 +57,11 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'net.danlew:android.joda:2.9.9'
-    implementation 'com.google.dagger:dagger:2.11'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    implementation 'com.google.dagger:dagger:2.16'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.16'
     //data
-    debugImplementation 'io.objectbox:objectbox-android-objectbrowser:1.5.0'
-    releaseImplementation 'io.objectbox:objectbox-android:1.5.0'
+    debugImplementation 'io.objectbox:objectbox-android-objectbrowser:2.0.0-beta'
+    releaseImplementation 'io.objectbox:objectbox-android:2.0.0-beta'
     compileOnly 'com.google.auto.value:auto-value-annotations:1.6'
     annotationProcessor 'com.google.auto.value:auto-value:1.6'
     //presentation
@@ -75,7 +76,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     //other
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    implementation 'com.google.firebase:firebase-core:12.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true
     }

@@ -26,7 +26,7 @@ public class SettingsLocalDataSource extends AbstractLocalDataSource<Settings> {
     public Flowable<Settings> observe() {
         return super.observe(
             box.query()
-                .order(Settings_.id)
+                .orderDesc(Settings_.id)
                 .build()
         );
     }

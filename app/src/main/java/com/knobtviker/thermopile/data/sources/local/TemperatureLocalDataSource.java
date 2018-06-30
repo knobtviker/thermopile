@@ -27,7 +27,7 @@ public class TemperatureLocalDataSource extends AbstractLocalDataSource<Temperat
     public Flowable<Temperature> observe() {
         return super.observe(
             box.query()
-                .order(Temperature_.timestamp)
+                .orderDesc(Temperature_.timestamp)
                 .build()
         );
     }

@@ -26,7 +26,7 @@ public class AccelerationLocalDataSource extends AbstractLocalDataSource<Acceler
     public Flowable<Acceleration> observe() {
         return super.observe(
             box.query()
-                .order(Acceleration_.timestamp)
+                .orderDesc(Acceleration_.timestamp)
                 .build()
         );
     }

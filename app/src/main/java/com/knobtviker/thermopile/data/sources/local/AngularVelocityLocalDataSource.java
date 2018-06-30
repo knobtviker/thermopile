@@ -26,7 +26,7 @@ public class AngularVelocityLocalDataSource extends AbstractLocalDataSource<Angu
     public Flowable<AngularVelocity> observe() {
         return super.observe(
             box.query()
-                .order(AngularVelocity_.timestamp)
+                .orderDesc(AngularVelocity_.timestamp)
                 .build()
         );
     }

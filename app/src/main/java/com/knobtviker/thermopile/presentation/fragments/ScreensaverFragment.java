@@ -246,7 +246,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         presenter.observeAcceleration();
         presenter.settings();
 
-//        ((ThermopileApplication)getActivity().getApplication()).refresh();
+        ((ThermopileApplication)getActivity().getApplication()).refresh();
     }
 
     private void setFormatClock() {
