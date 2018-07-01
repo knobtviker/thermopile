@@ -19,10 +19,19 @@ android {
         versionCode 1
         versionName "1.0.0"
 
+        buildConfigField "boolean", 'DEBUG_LOCAL', "false"
+        buildConfigField "boolean", 'DEBUG_REMOTE', "true"
+
         buildConfigField "String", 'DATABASE_NAME', '"thermopile.objectbox"'
 
         manifestPlaceholders = [fabricApiKey: buildProperties.keys['fabric_manifest'].or("").string]
         buildConfigField "String", 'KEY_FABRIC', buildProperties.keys['fabric'].or("").string
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ 'objectbox.debug' : 'true' ]
+            }
+        }
     }
     buildTypes {
         debug {

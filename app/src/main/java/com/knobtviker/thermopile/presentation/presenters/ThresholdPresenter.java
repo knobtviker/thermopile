@@ -57,14 +57,14 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
             Completable.create(emitter -> {
                 if (!emitter.isDisposed()) {
                     final DateTime startDateTime = new DateTime()
-                        .withDayOfWeek(threshold.day)
+                        .withDayOfWeek(threshold.day + 1)
                         .withHourOfDay(threshold.startHour)
                         .withMinuteOfHour(threshold.startMinute)
                         .withSecondOfMinute(0)
                         .withMillisOfSecond(0);
 
                     final DateTime endDateTime = new DateTime()
-                        .withDayOfWeek(threshold.day)
+                        .withDayOfWeek(threshold.day + 1)
                         .withHourOfDay(threshold.endHour)
                         .withMinuteOfHour(threshold.endMinute)
                         .withSecondOfMinute(0)

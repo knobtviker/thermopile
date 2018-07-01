@@ -10,6 +10,8 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.utils.Constants;
 
 import io.objectbox.BoxStore;
+import io.objectbox.BoxStoreBuilder;
+import io.objectbox.DebugFlags;
 import io.objectbox.android.AndroidObjectBrowser;
 
 public class Database {
@@ -17,12 +19,21 @@ public class Database {
     private static BoxStore INSTANCE = null;
 
     public static void init(@NonNull Context context) {
-        INSTANCE = MyObjectBox.builder()
+        final BoxStoreBuilder builder = MyObjectBox.builder()
             .androidContext(context)
-            .name(BuildConfig.DATABASE_NAME)
-            .build();
+            .name(BuildConfig.DATABASE_NAME);
+        
+        if (BuildConfig.DEBUG_LOCAL) {
+            builder
+                .debugFlags(DebugFlags.LOG_TRANSACTIONS_READ | DebugFlags.LOG_TRANSACTIONS_WRITE)
+                .debugRelations();
+        }
 
-        final boolean started = new AndroidObjectBrowser(INSTANCE).start(context);
+        INSTANCE = builder.build();
+
+        if (BuildConfig.DEBUG && BuildConfig.DEBUG_LOCAL) {
+            final boolean started = new AndroidObjectBrowser(INSTANCE).start(context);
+        }
 
         if (INSTANCE.boxFor(Settings.class).count() == 0) {
             INSTANCE.boxFor(Settings.class).put(defaultSettings());
