@@ -25,7 +25,7 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

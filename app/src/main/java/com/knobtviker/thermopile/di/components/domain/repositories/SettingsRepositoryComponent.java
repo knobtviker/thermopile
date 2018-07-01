@@ -2,8 +2,11 @@ package com.knobtviker.thermopile.di.components.domain.repositories;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.di.components.domain.repositories.implementation.BaseComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+
+import javax.inject.Singleton;
 
 import dagger.Component;
 
@@ -12,9 +15,11 @@ import dagger.Component;
  */
 
 @Component(modules = SettingsLocalDataSourceModule.class)
-public interface SettingsRepositoryComponent {
+@Singleton
+public interface SettingsRepositoryComponent extends BaseComponent<SettingsRepository> {
 
-    SettingsRepository repository();
+    @Override
+    SettingsRepository inject();
 
     @Component.Builder
     interface Builder {

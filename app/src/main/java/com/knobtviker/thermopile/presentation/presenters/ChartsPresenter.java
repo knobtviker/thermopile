@@ -29,11 +29,11 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
             .localDataSource(new AtmosphereLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

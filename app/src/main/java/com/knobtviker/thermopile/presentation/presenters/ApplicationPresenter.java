@@ -43,12 +43,12 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
             .localDataSource(new AtmosphereLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
-        this.scheduler = DaggerSchedulerProviderComponent.create().scheduler().screensaver;
+            .inject();
+        this.scheduler = DaggerSchedulerProviderComponent.create().inject().screensaver;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 //        screensaverDisposable = settingsRepository
 //            .load()
 //            .map(settings -> settings.isEmpty() ? 60 : settings.get(0).screensaverDelay)
-//            .flatMapCompletable(delay -> Completable.timer(delay, TimeUnit.SECONDS, scheduler))
+//            .flatMapCompletable(delay -> Completable.timer(delay, TimeUnit.SECONDS, inject))
         screensaverDisposable = Completable.timer(60, TimeUnit.SECONDS, scheduler)
             .observeOn(scheduler)
             .subscribe(

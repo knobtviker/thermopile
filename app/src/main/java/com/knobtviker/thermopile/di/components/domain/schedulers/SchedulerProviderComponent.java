@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.di.components.domain.schedulers;
 
+import com.knobtviker.thermopile.di.components.domain.repositories.implementation.BaseComponent;
 import com.knobtviker.thermopile.di.modules.domain.schedulers.SchedulerProviderModule;
 import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 
@@ -13,7 +14,8 @@ import dagger.Component;
 
 @Component(modules = SchedulerProviderModule.class)
 @Singleton
-public interface SchedulerProviderComponent {
+public interface SchedulerProviderComponent extends BaseComponent<SchedulerProvider> {
 
-    SchedulerProvider scheduler();
+    @Override
+    SchedulerProvider inject();
 }

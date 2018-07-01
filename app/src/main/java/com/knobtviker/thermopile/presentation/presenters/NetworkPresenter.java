@@ -41,7 +41,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
             .localDataSource(new AtmosphereLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
         this.rxBluetoothManager = RxBluetoothManager.getInstance(context);
     }
 

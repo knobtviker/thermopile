@@ -2,8 +2,11 @@ package com.knobtviker.thermopile.di.components.domain.repositories;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.di.components.domain.repositories.implementation.BaseComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
+
+import javax.inject.Singleton;
 
 import dagger.Component;
 
@@ -12,9 +15,11 @@ import dagger.Component;
  */
 
 @Component(modules = {AtmosphereLocalDataSourceModule.class})
-public interface AtmosphereRepositoryComponent {
+@Singleton
+public interface AtmosphereRepositoryComponent extends BaseComponent<AtmosphereRepository> {
 
-    AtmosphereRepository repository();
+    @Override
+    AtmosphereRepository inject();
 
     @Component.Builder
     interface Builder {

@@ -25,7 +25,7 @@ public class FormatsPresenter extends AbstractPresenter implements FormatsContra
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

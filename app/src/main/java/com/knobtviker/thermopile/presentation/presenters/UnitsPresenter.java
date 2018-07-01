@@ -25,7 +25,7 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

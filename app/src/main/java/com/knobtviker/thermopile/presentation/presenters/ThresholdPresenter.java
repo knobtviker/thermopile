@@ -31,7 +31,7 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
         this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
             .localDataSource(new ThresholdLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

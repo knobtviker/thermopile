@@ -29,11 +29,11 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
         this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
             .localDataSource(new ThresholdLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

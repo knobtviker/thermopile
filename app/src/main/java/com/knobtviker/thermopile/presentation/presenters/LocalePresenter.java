@@ -25,7 +25,7 @@ public class LocalePresenter extends AbstractPresenter implements LocaleContract
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

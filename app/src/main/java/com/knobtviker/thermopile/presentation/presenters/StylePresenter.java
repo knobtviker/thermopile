@@ -25,7 +25,7 @@ public class StylePresenter extends AbstractPresenter implements StyleContract.P
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

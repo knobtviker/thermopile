@@ -36,11 +36,11 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
             .localDataSource(new AtmosphereLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

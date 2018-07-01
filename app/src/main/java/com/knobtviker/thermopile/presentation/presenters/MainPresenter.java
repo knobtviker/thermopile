@@ -40,15 +40,15 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
             .localDataSource(new AtmosphereLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
         this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
         this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
             .localDataSource(new ThresholdLocalDataSourceModule())
             .build()
-            .repository();
+            .inject();
     }
 
     @Override

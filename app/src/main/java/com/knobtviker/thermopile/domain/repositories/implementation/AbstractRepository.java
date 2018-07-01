@@ -12,6 +12,6 @@ public abstract class AbstractRepository {
     protected final SchedulerProvider schedulerProvider;
 
     protected AbstractRepository() {
-        this.schedulerProvider = DaggerSchedulerProviderComponent.create().scheduler();
+        this.schedulerProvider = DaggerSchedulerProviderComponent.create().inject();
     }
 }

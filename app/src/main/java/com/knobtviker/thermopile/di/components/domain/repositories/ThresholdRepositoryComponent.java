@@ -2,8 +2,11 @@ package com.knobtviker.thermopile.di.components.domain.repositories;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.di.components.domain.repositories.implementation.BaseComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
+
+import javax.inject.Singleton;
 
 import dagger.Component;
 
@@ -12,9 +15,11 @@ import dagger.Component;
  */
 
 @Component(modules = ThresholdLocalDataSourceModule.class)
-public interface ThresholdRepositoryComponent {
+@Singleton
+public interface ThresholdRepositoryComponent extends BaseComponent<ThresholdRepository> {
 
-    ThresholdRepository repository();
+    @Override
+    ThresholdRepository inject();
 
     @Component.Builder
     interface Builder {
