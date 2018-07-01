@@ -9,15 +9,6 @@ import com.knobtviker.thermopile.data.sources.local.LuminosityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
-import com.knobtviker.thermopile.data.sources.memory.AccelerationMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.AirQualityMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.AltitudeMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.AngularVelocityMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.HumidityMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.LuminosityMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.MagneticFieldMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.PressureMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.TemperatureMemoryDataSource;
 
 import dagger.Module;
 import dagger.Provides;

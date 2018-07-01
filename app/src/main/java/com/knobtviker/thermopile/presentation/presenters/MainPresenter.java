@@ -12,7 +12,6 @@ import com.knobtviker.thermopile.di.components.domain.repositories.DaggerThresho
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
 import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.memory.AtmosphereMemoryDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
@@ -39,7 +38,6 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
         this.view = view;
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
-            .memoryDataSource(new AtmosphereMemoryDataSourceModule())
             .localDataSource(new AtmosphereLocalDataSourceModule())
             .build()
             .repository();

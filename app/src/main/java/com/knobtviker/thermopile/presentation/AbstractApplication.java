@@ -41,14 +41,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     @NonNull
     protected P presenter;
 
-    @NonNull
-    protected String packageName;
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-        packageName();
 
         plantTree();
 
@@ -152,10 +147,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         } catch (RemoteException e) {
             Timber.e(e);
         }
-    }
-
-    private void packageName() {
-        this.packageName = getPackageName();
     }
 
     private void plantTree() {

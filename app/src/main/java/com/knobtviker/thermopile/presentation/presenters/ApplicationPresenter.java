@@ -8,7 +8,6 @@ import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSetting
 import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulerProviderComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
 import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.memory.AtmosphereMemoryDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
@@ -42,7 +41,6 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
         this.view = view;
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
-            .memoryDataSource(new AtmosphereMemoryDataSourceModule())
             .localDataSource(new AtmosphereLocalDataSourceModule())
             .build()
             .repository();
@@ -79,10 +77,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveTemperature(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            Completable.mergeArrayDelayError(
-                atmosphereRepository.saveTemperatureInMemory(value),
-                atmosphereRepository.saveTemperature(vendor, name, value)
-            )
+            atmosphereRepository
+                .saveTemperature(vendor, name, value)
                 .subscribe(
                     this::completed,
                     this::error
@@ -94,9 +90,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     public void savePressure(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
             Completable.mergeArrayDelayError(
-                atmosphereRepository.savePressureInMemory(value),
                 atmosphereRepository.savePressure(vendor, name, value),
-                atmosphereRepository.saveAltitudeInMemory(value),
                 atmosphereRepository.saveAltitude(vendor, name, value)
             )
                 .subscribe(
@@ -109,10 +103,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveHumidity(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            Completable.mergeArrayDelayError(
-                atmosphereRepository.saveHumidityInMemory(value),
-                atmosphereRepository.saveHumidity(vendor, name, value)
-            )
+            atmosphereRepository
+                .saveHumidity(vendor, name, value)
                 .subscribe(
                     this::completed,
                     this::error
@@ -123,10 +115,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveAirQuality(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            Completable.mergeArrayDelayError(
-                atmosphereRepository.saveAirQualityInMemory(value),
-                atmosphereRepository.saveAirQuality(vendor, name, value)
-            )
+            atmosphereRepository
+                .saveAirQuality(vendor, name, value)
                 .subscribe(
                     this::completed,
                     this::error
@@ -137,10 +127,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveLuminosity(@NonNull String vendor, @NonNull String name, float value) {
         compositeDisposable.add(
-            Completable.mergeArrayDelayError(
-                atmosphereRepository.saveLuminosityInMemory(value),
-                atmosphereRepository.saveLuminosity(vendor, name, value)
-            )
+            atmosphereRepository
+                .saveLuminosity(vendor, name, value)
                 .subscribe(
                     this::completed,
                     this::error
@@ -151,10 +139,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveAcceleration(@NonNull String vendor, @NonNull String name, float[] values) {
         compositeDisposable.add(
-            Completable.mergeArrayDelayError(
-                atmosphereRepository.saveAccelerationInMemory(values),
-                atmosphereRepository.saveAcceleration(vendor, name, values)
-            )
+            atmosphereRepository
+                .saveAcceleration(vendor, name, values)
                 .subscribe(
                     this::completed,
                     this::error
@@ -165,10 +151,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveAngularVelocity(@NonNull String vendor, @NonNull String name, float[] values) {
         compositeDisposable.add(
-            Completable.mergeArrayDelayError(
-                atmosphereRepository.saveAngularVelocityInMemory(values),
-                atmosphereRepository.saveAngularVelocity(vendor, name, values)
-            )
+            atmosphereRepository
+                .saveAngularVelocity(vendor, name, values)
                 .subscribe(
                     this::completed,
                     this::error
@@ -179,10 +163,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
     @Override
     public void saveMagneticField(@NonNull String vendor, @NonNull String name, float[] values) {
         compositeDisposable.add(
-            Completable.mergeArrayDelayError(
-                atmosphereRepository.saveMagneticFieldInMemory(values),
-                atmosphereRepository.saveMagneticField(vendor, name, values)
-            )
+            atmosphereRepository
+                .saveMagneticField(vendor, name, values)
                 .subscribe(
                     this::completed,
                     this::error

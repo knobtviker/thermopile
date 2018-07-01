@@ -6,7 +6,6 @@ import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosph
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
 import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.memory.AtmosphereMemoryDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
@@ -32,7 +31,6 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
             .build()
             .repository();
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
-            .memoryDataSource(new AtmosphereMemoryDataSourceModule())
             .localDataSource(new AtmosphereLocalDataSourceModule())
             .build()
             .repository();

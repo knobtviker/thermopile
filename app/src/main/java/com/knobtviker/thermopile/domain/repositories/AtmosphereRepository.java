@@ -21,15 +21,6 @@ import com.knobtviker.thermopile.data.sources.local.LuminosityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
-import com.knobtviker.thermopile.data.sources.memory.AccelerationMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.AirQualityMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.AltitudeMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.AngularVelocityMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.HumidityMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.LuminosityMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.MagneticFieldMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.PressureMemoryDataSource;
-import com.knobtviker.thermopile.data.sources.memory.TemperatureMemoryDataSource;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
 
 import org.joda.time.DateTimeUtils;
@@ -47,33 +38,6 @@ import io.reactivex.Observable;
  */
 
 public class AtmosphereRepository extends AbstractRepository {
-
-    @Inject
-    TemperatureMemoryDataSource temperatureMemoryDataSource;
-
-    @Inject
-    HumidityMemoryDataSource humidityMemoryDataSource;
-
-    @Inject
-    PressureMemoryDataSource pressureMemoryDataSource;
-
-    @Inject
-    AltitudeMemoryDataSource altitudeMemoryDataSource;
-
-    @Inject
-    AirQualityMemoryDataSource airQualityMemoryDataSource;
-
-    @Inject
-    LuminosityMemoryDataSource luminosityMemoryDataSource;
-
-    @Inject
-    AccelerationMemoryDataSource accelerationMemoryDataSource;
-
-    @Inject
-    AngularVelocityMemoryDataSource angularVelocityMemoryDataSource;
-
-    @Inject
-    MagneticFieldMemoryDataSource magneticFieldMemoryDataSource;
 
     @Inject
     TemperatureLocalDataSource temperatureLocalDataSource;
@@ -104,69 +68,6 @@ public class AtmosphereRepository extends AbstractRepository {
 
     @Inject
     AtmosphereRepository() {
-    }
-
-    public Completable saveTemperatureInMemory(final float item) {
-        return temperatureMemoryDataSource
-            .save(item)
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
-    }
-
-    public Completable savePressureInMemory(final float item) {
-        return pressureMemoryDataSource
-            .save(item)
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
-    }
-
-    public Completable saveAltitudeInMemory(final float item) {
-        return altitudeMemoryDataSource
-            .save(convertPressureToAltitude(item))
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
-    }
-
-    public Completable saveHumidityInMemory(final float item) {
-        return humidityMemoryDataSource
-            .save(item)
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
-    }
-
-    public Completable saveAirQualityInMemory(final float item) {
-        return airQualityMemoryDataSource
-            .save(item)
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
-    }
-
-    public Completable saveLuminosityInMemory(final float item) {
-        return luminosityMemoryDataSource
-            .save(item)
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
-    }
-
-    public Completable saveAccelerationInMemory(final float[] items) {
-        return accelerationMemoryDataSource
-            .save(items)
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
-    }
-
-    public Completable saveAngularVelocityInMemory(final float[] items) {
-        return angularVelocityMemoryDataSource
-            .save(items)
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
-    }
-
-    public Completable saveMagneticFieldInMemory(final float[] items) {
-        return magneticFieldMemoryDataSource
-            .save(items)
-            .subscribeOn(schedulerProvider.memory)
-            .observeOn(schedulerProvider.memory);
     }
 
     public Completable saveTemperature(@NonNull final String vendor, @NonNull final String name, final float value) {

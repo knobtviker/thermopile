@@ -2,7 +2,6 @@ package com.knobtviker.thermopile.data.sources.local.implementation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDelegate;
 
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.models.local.MyObjectBox;
@@ -60,7 +59,7 @@ public class Database {
             UnitPressure.PASCAL,
             UnitAcceleration.METERS_PER_SECOND_2,
             Default.SCREENSAVER_DELAY,
-            AppCompatDelegate.MODE_NIGHT_AUTO
+            Default.THEME
         );
     }
 }

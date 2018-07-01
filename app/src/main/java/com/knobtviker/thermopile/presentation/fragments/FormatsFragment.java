@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnItemSelected;
 import timber.log.Timber;
 
 /**
@@ -83,6 +84,26 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
         Timber.e(throwable);
     }
 
+    @OnItemSelected(value = {R.id.spinner_date_format, R.id.spinner_time_format}, callback = OnItemSelected.Callback.ITEM_SELECTED)
+    public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view, final int position, final long id) {
+        switch (adapterView.getId()) {
+            case R.id.spinner_date_format:
+                if (spinnerFormatDate.isEnabled() && spinnerAdapterDate != null && !TextUtils.isEmpty(spinnerAdapterDate.getItem(position))) {
+                    formatDate = spinnerAdapterDate.getItem(position);
+                    if (!TextUtils.isEmpty(formatDate)) {
+                        presenter.saveFormatDate(settingsId, formatDate);
+                    }
+                }
+                break;
+            case R.id.spinner_time_format:
+                if (spinnerFormatTime.isEnabled() && spinnerAdapterTime != null && !TextUtils.isEmpty(spinnerAdapterTime.getItem(position))) {
+                    formatTime = spinnerAdapterTime.getItem(position);
+                    presenter.saveFormatTime(settingsId, formatTime);
+                }
+                break;
+        }
+    }
+
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id;
         this.formatDate = settings.formatDate;
@@ -95,33 +116,16 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     private void setupSpinnerDate() {
         spinnerFormatDate.setEnabled(false);
         spinnerFormatDate.setPrompt("Date format");
-        spinnerFormatDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerFormatDate.isEnabled() && spinnerAdapterDate != null && !TextUtils.isEmpty(spinnerAdapterDate.getItem(i))) {
-                    formatDate = spinnerAdapterDate.getItem(i);
-                    if (!TextUtils.isEmpty(formatDate)) {
-                        presenter.saveFormatDate(settingsId, formatDate);
-                    }
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        //TODO: Move this somewhere that is easy to maintain and not hardcoded
         final List<String> formats = Arrays.asList(
-            "EEEE dd.MM.yyyy.",
-            "EE dd.MM.yyyy.",
-            "dd.MM.yyyy.",
-            "EEEE MM/dd/yyyy",
-            "EE MM/dd/yyyy",
-            "MM/dd/yyyy"
+            FormatDate.EEEE_DD_MM_YYYY,
+            FormatDate.EE_DD_MM_YYYY,
+            FormatDate.DD_MM_YYYY,
+            FormatDate.EEEE_MM_DD_YYYY,
+            FormatDate.EE_MM_DD_YYYY,
+            FormatDate.MM_DD_YYYY
         );
-        spinnerAdapterDate = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, formats);
+        spinnerAdapterDate = new ArrayAdapter<>(spinnerFormatDate.getContext(), android.R.layout.simple_spinner_item, formats);
         spinnerAdapterDate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerFormatDate.setAdapter(spinnerAdapterDate);
@@ -130,23 +134,14 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     private void setupSpinnerTime() {
         spinnerFormatTime.setEnabled(false);
         spinnerFormatTime.setPrompt("Time format");
-        spinnerFormatTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerFormatTime.isEnabled() && spinnerAdapterTime != null && !TextUtils.isEmpty(spinnerAdapterTime.getItem(i))) {
-                    formatTime = spinnerAdapterTime.getItem(i);
-                    presenter.saveFormatTime(settingsId, spinnerAdapterTime.getItem(i));
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        final List<String> formats = Arrays.asList(FormatTime.HH_MM, FormatTime.H_M);
-        spinnerAdapterTime = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, formats);
+        final List<String> formats = Arrays.asList(
+            FormatTime.HH_MM,
+            FormatTime.H_M,
+            FormatTime.KK_MM_A,
+            FormatTime.K_M_A
+        );
+        spinnerAdapterTime = new ArrayAdapter<>(spinnerFormatTime.getContext(), android.R.layout.simple_spinner_item, formats);
         spinnerAdapterTime.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerFormatTime.setAdapter(spinnerAdapterTime);

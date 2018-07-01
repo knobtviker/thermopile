@@ -26,6 +26,7 @@ import org.joda.time.DateTimeZone;
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import butterknife.OnItemSelected;
 import timber.log.Timber;
 
 /**
@@ -89,6 +90,18 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         Timber.e(throwable);
     }
 
+    @OnItemSelected(value = {R.id.spinner_timezone}, callback = OnItemSelected.Callback.ITEM_SELECTED)
+    public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view, final int position, final long id) {
+        switch (adapterView.getId()) {
+            case R.id.spinner_timezone:
+                if (spinnerTimezone.isEnabled() && spinnerAdapter != null && !TextUtils.isEmpty(spinnerAdapter.getItem(position))) {
+                    timezone = spinnerAdapter.getItem(position);
+                    presenter.saveTimezone(settingsId, timezone);
+                }
+                break;
+        }
+    }
+
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id;
         this.timezone = settings.timezone;
@@ -101,22 +114,8 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     private void setupSpinnerTimezone() {
         spinnerTimezone.setEnabled(false);
         spinnerTimezone.setPrompt("Timezone");
-        spinnerTimezone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerTimezone.isEnabled() && spinnerAdapter != null && !TextUtils.isEmpty(spinnerAdapter.getItem(i))) {
-                    timezone = spinnerAdapter.getItem(i);
-                    presenter.saveTimezone(settingsId, spinnerAdapter.getItem(i));
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerAdapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, new ArrayList<>(DateTimeZone.getAvailableIDs()));
+        spinnerAdapter = new ArrayAdapter<>(spinnerTimezone.getContext(), android.R.layout.simple_spinner_item, new ArrayList<>(DateTimeZone.getAvailableIDs()));
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerTimezone.setAdapter(spinnerAdapter);

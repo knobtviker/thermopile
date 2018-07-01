@@ -16,6 +16,7 @@ import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.utils.Router;
+import com.knobtviker.thermopile.presentation.utils.constants.Default;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -28,7 +29,8 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     public static final String TAG = StyleFragment.class.getSimpleName();
 
     private long settingsId = -1L;
-    private int theme = AppCompatDelegate.MODE_NIGHT_AUTO;
+
+    private int theme = Default.THEME;
 
     @BindView(R.id.radiogroup_theme)
     public RadioGroup radioGroupTheme;
