@@ -16,7 +16,8 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.FormatsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.FormatsPresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,8 +36,12 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     private ArrayAdapter<String> spinnerAdapterTime;
 
     private long settingsId = -1L;
-    private String formatDate = Constants.DEFAULT_FORMAT_DATE;
-    private String formatTime = Constants.FORMAT_TIME_LONG_24H;
+
+    @FormatDate
+    private String formatDate = FormatDate.EEEE_DD_MM_YYYY;
+
+    @FormatTime
+    private String formatTime = FormatTime.HH_MM;
 
     @BindView(R.id.spinner_date_format)
     public Spinner spinnerFormatDate;
@@ -140,7 +145,7 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
             }
         });
 
-        final List<String> formats = Arrays.asList(Constants.FORMAT_TIME_LONG_24H, Constants.FORMAT_TIME_SHORT_24H);
+        final List<String> formats = Arrays.asList(FormatTime.HH_MM, FormatTime.H_M);
         spinnerAdapterTime = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, formats);
         spinnerAdapterTime.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

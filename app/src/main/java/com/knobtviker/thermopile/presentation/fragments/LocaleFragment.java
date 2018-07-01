@@ -18,7 +18,8 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
+import com.knobtviker.thermopile.presentation.utils.constants.Default;
 
 import org.joda.time.DateTimeZone;
 
@@ -35,8 +36,10 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public static final String TAG = LocaleFragment.class.getSimpleName();
 
     private long settingsId = -1L;
-    private String timezone = Constants.DEFAULT_TIMEZONE;
-    private int clockMode  = Constants.CLOCK_MODE_24H;
+    private String timezone = Default.TIMEZONE;
+
+    @ClockMode
+    private int clockMode  = ClockMode._24H;
 
     private ArrayAdapter<String> spinnerAdapter;
 
@@ -125,13 +128,13 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
             int value;
             switch (checkedId) {
                 case R.id.mode_12h:
-                    value = Constants.CLOCK_MODE_12H;
+                    value = ClockMode._12H;
                     break;
                 case R.id.mode_24h:
-                    value = Constants.CLOCK_MODE_24H;
+                    value = ClockMode._24H;
                     break;
                 default:
-                    value = Constants.CLOCK_MODE_24H;
+                    value = ClockMode._24H;
                     break;
             }
             if (radioGroupClockMode.isEnabled()) {
@@ -154,10 +157,10 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
     private void setClockMode() {
         switch (clockMode) {
-            case Constants.CLOCK_MODE_12H:
+            case ClockMode._12H:
                 radioButton12h.setChecked(true);
                 break;
-            case Constants.CLOCK_MODE_24H:
+            case ClockMode._24H:
                 radioButton24h.setChecked(true);
                 break;
         }

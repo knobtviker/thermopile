@@ -19,8 +19,9 @@ import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.FileLoggingTree;
+import com.knobtviker.thermopile.presentation.utils.constants.MessageWhatData;
+import com.knobtviker.thermopile.presentation.utils.constants.MessageWhatUser;
 import com.knobtviker.thermopile.presentation.views.communicators.PersistentCommunicator;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -78,7 +79,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         Timber.i("onServiceConnected %s", name.flattenToString());
         serviceMessenger = new Messenger(service);
 
-        final Message messageToService = Message.obtain(null, Constants.MESSAGE_WHAT_REGISTER);
+        final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
         messageToService.replyTo = foregroundMessenger;
         try {
             serviceMessenger.send(messageToService);
@@ -145,7 +146,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public void refresh() {
         try {
             if (serviceMessenger != null) {
-                final Message messageToService = Message.obtain(null, Constants.MESSAGE_WHAT_CURRENT);
+                final Message messageToService = Message.obtain(null, MessageWhatData.CURRENT);
                 serviceMessenger.send(messageToService);
             }
         } catch (RemoteException e) {
@@ -230,7 +231,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
             float value = 0.0f;
             float[] values = {0.0f, 0.0f, 0.0f};
             switch (message.what) {
-                case Constants.MESSAGE_WHAT_TEMPERATURE:
+                case MessageWhatData.TEMPERATURE:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
@@ -238,7 +239,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                         persistentCommunicator.saveTemperature(vendor, name, value);
                     }
                     break;
-                case Constants.MESSAGE_WHAT_PRESSURE:
+                case MessageWhatData.PRESSURE:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
@@ -246,7 +247,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                         persistentCommunicator.savePressure(vendor, name, value);
                     }
                     break;
-                case Constants.MESSAGE_WHAT_HUMIDITY:
+                case MessageWhatData.HUMIDITY:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
@@ -254,7 +255,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                         persistentCommunicator.saveHumidity(vendor, name, value);
                     }
                     break;
-                case Constants.MESSAGE_WHAT_AIR_QUALITY:
+                case MessageWhatData.AIR_QUALITY:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
@@ -262,7 +263,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                         persistentCommunicator.saveAirQuality(vendor, name, value);
                     }
                     break;
-                case Constants.MESSAGE_WHAT_LUMINOSITY:
+                case MessageWhatData.LUMINOSITY:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
@@ -270,7 +271,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                         persistentCommunicator.saveLuminosity(vendor, name, value);
                     }
                     break;
-                case Constants.MESSAGE_WHAT_ACCELERATION:
+                case MessageWhatData.ACCELERATION:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
@@ -278,7 +279,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                         persistentCommunicator.saveAcceleration(vendor, name, values);
                     }
                     break;
-                case Constants.MESSAGE_WHAT_ANGULAR_VELOCITY:
+                case MessageWhatData.ANGULAR_VELOCITY:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
@@ -286,7 +287,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                         persistentCommunicator.saveAngularVelocity(vendor, name, values);
                     }
                     break;
-                case Constants.MESSAGE_WHAT_MAGNETIC_FIELD:
+                case MessageWhatData.MAGNETIC_FIELD:
                     vendor = message.getData().getString("vendor");
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");

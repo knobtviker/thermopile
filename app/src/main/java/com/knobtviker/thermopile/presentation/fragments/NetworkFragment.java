@@ -34,7 +34,7 @@ import com.knobtviker.thermopile.data.sources.raw.TimeProfile;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.utils.constants.RequestCode;
 import com.knobtviker.thermopile.presentation.views.listeners.GattServerListener;
 
 import java.math.BigInteger;
@@ -243,7 +243,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
         if (isOn) {
             presenter.name(getString(R.string.app_name));
-            presenter.discoverable(getActivity(), Constants.REQUEST_CODE_BLUETOOTH_DISCOVERABILITY, RxBluetoothManager.MAX_DISCOVERABILITY_PERIOD_SECONDS);
+            presenter.discoverable(getActivity(), RequestCode.BLUETOOTH_DISCOVERABILITY, RxBluetoothManager.MAX_DISCOVERABILITY_PERIOD_SECONDS);
         }
     }
 

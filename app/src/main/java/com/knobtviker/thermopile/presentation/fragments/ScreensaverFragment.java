@@ -19,8 +19,15 @@ import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
+import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
+import com.knobtviker.thermopile.presentation.utils.constants.Default;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatDay;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -38,11 +45,23 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public static final String TAG = ScreensaverFragment.class.getSimpleName();
 
     private DateTimeZone dateTimeZone;
+
+    @ClockMode
     private int formatClock;
+
+    @FormatDate
     private String formatDate;
+
+    @FormatTime
     private String formatTime;
+
+    @UnitTemperature
     private int unitTemperature;
+
+    @UnitPressure
     private int unitPressure;
+
+    @UnitAcceleration
     private int unitMotion;
 
     @BindView(R.id.textview_clock)
@@ -83,12 +102,12 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     public ScreensaverFragment() {
-        dateTimeZone = DateTimeZone.forID(Constants.DEFAULT_TIMEZONE);
-        formatClock = Constants.CLOCK_MODE_24H;
-        formatDate = Constants.DEFAULT_FORMAT_DATE;
-        formatTime = Constants.FORMAT_TIME_LONG_24H;
-        unitTemperature = Constants.UNIT_TEMPERATURE_CELSIUS;
-        unitPressure = Constants.UNIT_PRESSURE_PASCAL;
+        dateTimeZone = DateTimeZone.forID(Default.TIMEZONE);
+        formatClock = ClockMode._24H;
+        formatDate = FormatDate.EEEE_DD_MM_YYYY;
+        formatTime = FormatTime.HH_MM;
+        unitTemperature = UnitTemperature.CELSIUS;
+        unitPressure = UnitPressure.PASCAL;
 
         presenter = new ScreenSaverPresenter(this);
     }
@@ -226,12 +245,12 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     private void setDate() {
         final DateTime dateTime = new DateTime(dateTimeZone);
 
-        if (formatDate.contains(Constants.FORMAT_DAY_LONG)) {
-            textViewDate.setText(dateTime.toString(formatDate.replace(Constants.FORMAT_DAY_LONG, "").trim()));
-            textViewDay.setText(dateTime.toString(Constants.FORMAT_DAY_LONG));
-        } else if (formatDate.contains(Constants.FORMAT_DAY_SHORT)) {
-            textViewDate.setText(dateTime.toString(formatDate.replace(Constants.FORMAT_DAY_SHORT, "").trim()));
-            textViewDay.setText(dateTime.toString(Constants.FORMAT_DAY_SHORT));
+        if (formatDate.contains(FormatDay.EEEE)) {
+            textViewDate.setText(dateTime.toString(formatDate.replace(FormatDay.EEEE, "").trim()));
+            textViewDay.setText(dateTime.toString(FormatDay.EEEE));
+        } else if (formatDate.contains(FormatDay.EE)) {
+            textViewDate.setText(dateTime.toString(formatDate.replace(FormatDay.EE, "").trim()));
+            textViewDay.setText(dateTime.toString(FormatDay.EE));
         } else {
             textViewDate.setText(dateTime.toString(formatDate));
             textViewDay.setVisibility(View.INVISIBLE);
@@ -251,7 +270,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     private void setFormatClock() {
         textViewClock.setTimeZone(dateTimeZone.toString());
-        if (formatClock == Constants.CLOCK_MODE_12H) {
+        if (formatClock == ClockMode._12H) {
             textViewClock.setFormat12Hour(formatTime);
             textViewClock.setFormat24Hour(null);
         } else {
@@ -262,13 +281,13 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     private void setTemperatureUnit() {
         switch (unitTemperature) {
-            case Constants.UNIT_TEMPERATURE_CELSIUS:
+            case UnitTemperature.CELSIUS:
                 textViewTemperatureUnit.setText(getString(R.string.unit_temperature_celsius));
                 break;
-            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
+            case UnitTemperature.FAHRENHEIT:
                 textViewTemperatureUnit.setText(getString(R.string.unit_temperature_fahrenheit));
                 break;
-            case Constants.UNIT_TEMPERATURE_KELVIN:
+            case UnitTemperature.KELVIN:
                 textViewTemperatureUnit.setText(getString(R.string.unit_temperature_kelvin));
                 break;
             default:
@@ -279,13 +298,13 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     private void setPressureUnit() {
         switch (unitPressure) {
-            case Constants.UNIT_PRESSURE_PASCAL:
+            case UnitPressure.PASCAL:
                 textViewPressureUnit.setText(getString(R.string.unit_pressure_pascal));
                 break;
-            case Constants.UNIT_PRESSURE_BAR:
+            case UnitPressure.BAR:
                 textViewPressureUnit.setText(getString(R.string.unit_pressure_bar));
                 break;
-            case Constants.UNIT_PRESSURE_PSI:
+            case UnitPressure.PSI:
                 textViewPressureUnit.setText(getString(R.string.unit_pressure_psi));
                 break;
             default:
@@ -296,10 +315,10 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     private void setMotionUnit() {
         switch (unitMotion) {
-            case Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2:
+            case UnitAcceleration.METERS_PER_SECOND_2:
                 textViewMotionUnit.setText(getString(R.string.unit_acceleration_ms2));
                 break;
-            case Constants.UNIT_ACCELERATION_G:
+            case UnitAcceleration.G:
                 textViewMotionUnit.setText(getString(R.string.unit_acceleration_g));
                 break;
             default:

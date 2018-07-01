@@ -21,8 +21,18 @@ import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
+import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
+import com.knobtviker.thermopile.presentation.utils.constants.Default;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.MeasuredAirQuality;
+import com.knobtviker.thermopile.presentation.utils.constants.MeasuredHumidity;
+import com.knobtviker.thermopile.presentation.utils.constants.MeasuredPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.MeasuredTemperature;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 import com.knobtviker.thermopile.presentation.utils.controllers.PIDController;
 import com.knobtviker.thermopile.presentation.views.ArcView;
 import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
@@ -50,11 +60,23 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private LinearLayoutManager linearLayoutManager;
 
     private DateTimeZone dateTimeZone;
+
+    @ClockMode
     private int formatClock;
+
+    @FormatDate
     private String formatDate;
+
+    @FormatTime
     private String formatTime;
+
+    @UnitTemperature
     private int unitTemperature;
+
+    @UnitPressure
     private int unitPressure;
+
+    @UnitAcceleration
     private int unitMotion;
 
     private final PIDController pidController;
@@ -111,13 +133,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public RecyclerView recyclerViewThresholds;
 
     public MainFragment() {
-        dateTimeZone = DateTimeZone.forID(Constants.DEFAULT_TIMEZONE);
-        formatClock = Constants.CLOCK_MODE_24H;
-        formatDate = Constants.DEFAULT_FORMAT_DATE;
-        formatTime = Constants.FORMAT_TIME_LONG_24H;
-        unitTemperature = Constants.UNIT_TEMPERATURE_CELSIUS;
-        unitPressure = Constants.UNIT_PRESSURE_PASCAL;
-        unitMotion = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
+        dateTimeZone = DateTimeZone.forID(Default.TIMEZONE);
+        formatClock = ClockMode._24H;
+        formatDate = FormatDate.EEEE_DD_MM_YYYY;
+        formatTime = FormatTime.HH_MM;
+        unitTemperature = UnitTemperature.CELSIUS;
+        unitPressure = UnitPressure.PASCAL;
+        unitMotion = UnitAcceleration.METERS_PER_SECOND_2;
 
         presenter = new MainPresenter(this);
 
@@ -162,7 +184,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @SuppressLint("SetTextI18n")
     @Override
     public void onTemperatureChanged(final float value) {
-        arcViewTemperature.setProgress(value / Constants.MEASURED_TEMPERATURE_MAX);
+        arcViewTemperature.setProgress(value / MeasuredTemperature.MAXIMUM);
         textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))));
 
 //        pidController.doPID(Math.round(value));
@@ -171,14 +193,14 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @SuppressLint("SetTextI18n")
     @Override
     public void onHumidityChanged(final float value) {
-        arcViewHumidity.setProgress(value / Constants.MEASURED_HUMIDITY_MAX);
+        arcViewHumidity.setProgress(value / MeasuredHumidity.MAXIMUM);
         textViewHumidity.setText(String.valueOf(MathKit.round(value)));
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onPressureChanged(final float value) {
-        arcViewPressure.setProgress(value / Constants.MEASURED_PRESSURE_MAX);
+        arcViewPressure.setProgress(value / MeasuredPressure.MAXIMUM);
         textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, value))));
     }
 
@@ -188,7 +210,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         textViewIAQ.setText(pair.first);
         arcViewIAQ.setProgressColor(pair.second);
-        arcViewIAQ.setProgress((Constants.MEASURED_AIR_QUALITY_MAX - value) / Constants.MEASURED_AIR_QUALITY_MAX);
+        arcViewIAQ.setProgress((MeasuredAirQuality.MAXIMUM - value) / MeasuredAirQuality.MAXIMUM);
     }
 
     // Calculate pitch, roll, and heading.
@@ -318,7 +340,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private void setFormatClock() {
         textViewClock.setTimeZone(dateTimeZone.toString());
-        if (formatClock == Constants.CLOCK_MODE_12H) {
+        if (formatClock == ClockMode._12H) {
             textViewClock.setFormat12Hour(formatTime);
             textViewClock.setFormat24Hour(null);
         } else {
@@ -329,13 +351,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private void setTemperatureUnit() {
         switch (unitTemperature) {
-            case Constants.UNIT_TEMPERATURE_CELSIUS:
+            case UnitTemperature.CELSIUS:
                 textViewTemperatureUnit.setText(getString(R.string.unit_temperature_celsius));
                 break;
-            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
+            case UnitTemperature.FAHRENHEIT:
                 textViewTemperatureUnit.setText(getString(R.string.unit_temperature_fahrenheit));
                 break;
-            case Constants.UNIT_TEMPERATURE_KELVIN:
+            case UnitTemperature.KELVIN:
                 textViewTemperatureUnit.setText(getString(R.string.unit_temperature_kelvin));
                 break;
             default:
@@ -346,13 +368,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private void setPressureUnit() {
         switch (unitPressure) {
-            case Constants.UNIT_PRESSURE_PASCAL:
+            case UnitPressure.PASCAL:
                 textViewPressureUnit.setText(getString(R.string.unit_pressure_pascal));
                 break;
-            case Constants.UNIT_PRESSURE_BAR:
+            case UnitPressure.BAR:
                 textViewPressureUnit.setText(getString(R.string.unit_pressure_bar));
                 break;
-            case Constants.UNIT_PRESSURE_PSI:
+            case UnitPressure.PSI:
                 textViewPressureUnit.setText(getString(R.string.unit_pressure_psi));
                 break;
             default:
@@ -363,10 +385,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private void setMotionUnit() {
         switch (unitMotion) {
-            case Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2:
+            case UnitAcceleration.METERS_PER_SECOND_2:
                 textViewMotionUnit.setText(getString(R.string.unit_acceleration_ms2));
                 break;
-            case Constants.UNIT_ACCELERATION_G:
+            case UnitAcceleration.G:
                 textViewMotionUnit.setText(getString(R.string.unit_acceleration_g));
                 break;
             default:
@@ -396,7 +418,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     //TODO: Move this somewhere else and cleanup strings
-    private Pair<String, Integer> convertIAQValueToLabelAndColor(final float value) {
+    private Pair<String, Integer> convertIAQValueToLabelAndColor(@MeasuredAirQuality final float value) {
         if (value >= 401 && value <= 500) {
             return Pair.create("Very bad", R.color.black);
         } else if (value >= 301 && value <= 400) {

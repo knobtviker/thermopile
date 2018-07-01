@@ -14,7 +14,9 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.UnitsPresenter;
-import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -27,9 +29,15 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     public static final String TAG = UnitsFragment.class.getSimpleName();
 
     private long settingsId = -1L;
-    private int unitTemperature = Constants.UNIT_TEMPERATURE_CELSIUS;
-    private int unitPressure = Constants.UNIT_PRESSURE_PASCAL;
-    private int unitAcceleration = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
+
+    @UnitTemperature
+    private int unitTemperature = UnitTemperature.CELSIUS;
+
+    @UnitPressure
+    private int unitPressure = UnitPressure.PASCAL;
+
+    @UnitAcceleration
+    private int unitAcceleration = UnitAcceleration.METERS_PER_SECOND_2;
 
     @BindView(R.id.radiogroup_temperature_unit)
     public RadioGroup radioGroupTemperatureUnit;
@@ -116,16 +124,16 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
             int value;
             switch (checkedId) {
                 case R.id.unit_celsius:
-                    value = Constants.UNIT_TEMPERATURE_CELSIUS;
+                    value = UnitTemperature.CELSIUS;
                     break;
                 case R.id.unit_farenheit:
-                    value = Constants.UNIT_TEMPERATURE_FAHRENHEIT;
+                    value = UnitTemperature.FAHRENHEIT;
                     break;
                 case R.id.unit_kelvin:
-                    value = Constants.UNIT_TEMPERATURE_KELVIN;
+                    value = UnitTemperature.KELVIN;
                     break;
                 default:
-                    value = Constants.UNIT_TEMPERATURE_CELSIUS;
+                    value = UnitTemperature.CELSIUS;
                     break;
             }
             if (radioGroupTemperatureUnit.isEnabled()) {
@@ -141,16 +149,16 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
             int value;
             switch (checkedId) {
                 case R.id.unit_pascal:
-                    value = Constants.UNIT_PRESSURE_PASCAL;
+                    value = UnitPressure.PASCAL;
                     break;
                 case R.id.unit_bar:
-                    value = Constants.UNIT_PRESSURE_BAR;
+                    value = UnitPressure.BAR;
                     break;
                 case R.id.unit_psi:
-                    value = Constants.UNIT_PRESSURE_PSI;
+                    value = UnitPressure.PSI;
                     break;
                 default:
-                    value = Constants.UNIT_PRESSURE_PASCAL;
+                    value = UnitPressure.PASCAL;
                     break;
             }
             if (radioGroupPressureUnit.isEnabled()) {
@@ -166,13 +174,13 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
             int value;
             switch (checkedId) {
                 case R.id.unit_ms2:
-                    value = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
+                    value = UnitAcceleration.METERS_PER_SECOND_2;
                     break;
                 case R.id.unit_g:
-                    value = Constants.UNIT_ACCELERATION_G;
+                    value = UnitAcceleration.G;
                     break;
                 default:
-                    value = Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2;
+                    value = UnitAcceleration.METERS_PER_SECOND_2;
                     break;
             }
             if (radioGroupAccelerationUnit.isEnabled()) {
@@ -184,13 +192,13 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
 
     private void setUnitTemperature() {
         switch (unitTemperature) {
-            case Constants.UNIT_TEMPERATURE_CELSIUS:
+            case UnitTemperature.CELSIUS:
                 radioButtonUnitCelsius.setChecked(true);
                 break;
-            case Constants.UNIT_TEMPERATURE_FAHRENHEIT:
+            case UnitTemperature.FAHRENHEIT:
                 radioButtonUnitFarenheit.setChecked(true);
                 break;
-            case Constants.UNIT_TEMPERATURE_KELVIN:
+            case UnitTemperature.KELVIN:
                 radioButtonUnitKelvin.setChecked(true);
                 break;
         }
@@ -200,13 +208,13 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
 
     private void setUnitPressure() {
         switch (unitPressure) {
-            case Constants.UNIT_PRESSURE_PASCAL:
+            case UnitPressure.PASCAL:
                 radioButtonUnitPascal.setChecked(true);
                 break;
-            case Constants.UNIT_PRESSURE_BAR:
+            case UnitPressure.BAR:
                 radioButtonUnitBar.setChecked(true);
                 break;
-            case Constants.UNIT_PRESSURE_PSI:
+            case UnitPressure.PSI:
                 radioButtonUnitPsi.setChecked(true);
                 break;
         }
@@ -216,10 +224,10 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
 
     private void setUnitAcceleration() {
         switch (unitAcceleration) {
-            case Constants.UNIT_ACCELERATION_METERS_PER_SECOND_2:
+            case UnitAcceleration.METERS_PER_SECOND_2:
                 radioButtonUnitMs2.setChecked(true);
                 break;
-            case Constants.UNIT_ACCELERATION_G:
+            case UnitAcceleration.G:
                 radioButtonUnitG.setChecked(true);
                 break;
         }

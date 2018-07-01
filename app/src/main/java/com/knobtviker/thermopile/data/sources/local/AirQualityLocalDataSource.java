@@ -3,7 +3,7 @@ package com.knobtviker.thermopile.data.sources.local;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.AirQuality_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
-import com.knobtviker.thermopile.presentation.utils.Constants;
+import com.knobtviker.thermopile.presentation.utils.constants.MeasuredAirQuality;
 
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class AirQualityLocalDataSource extends AbstractLocalDataSource<AirQualit
             box.query()
                 .order(AirQuality_.timestamp)
                 .between(AirQuality_.timestamp, start, end)
-                .between(AirQuality_.value, Constants.MEASURED_AIR_QUALITY_MIN, Constants.MEASURED_AIR_QUALITY_MAX)
+                .between(AirQuality_.value, MeasuredAirQuality.MINIMUM, MeasuredAirQuality.MAXIMUM)
                 .build()
         );
     }
