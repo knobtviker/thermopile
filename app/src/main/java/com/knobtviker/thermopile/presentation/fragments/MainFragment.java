@@ -286,7 +286,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         setMotionUnit();
         setDate();
 
-        ((ThermopileApplication)getActivity().getApplication()).refresh();
+        if (thresholdAdapter != null) {
+            thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime);
+        }
+
+        ((ThermopileApplication) getActivity().getApplication()).refresh();
     }
 
     @Override
@@ -329,9 +333,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setupRecyclerView() {
-        thresholdAdapter = new ThresholdAdapter(getContext());
+        thresholdAdapter = new ThresholdAdapter(recyclerViewThresholds.getContext(), unitTemperature, formatTime);
 
-        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        linearLayoutManager = new LinearLayoutManager(recyclerViewThresholds.getContext(), LinearLayoutManager.HORIZONTAL, false);
 
         recyclerViewThresholds.setLayoutManager(linearLayoutManager);
         recyclerViewThresholds.setAdapter(thresholdAdapter);
@@ -410,7 +414,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.observeAcceleration();
         presenter.settings();
 
-        ((ThermopileApplication)getActivity().getApplication()).refresh();
+        ((ThermopileApplication) getActivity().getApplication()).refresh();
     }
 
     private void thresholds() {

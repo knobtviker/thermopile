@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
+import com.knobtviker.thermopile.presentation.utils.MathKit;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 import com.knobtviker.thermopile.presentation.utils.factories.ThresholdIntervalFactory;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdLineViewHolder;
 
@@ -31,16 +34,20 @@ import java.util.List;
 public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHolder> {
     private final static String TAG = ThresholdAdapter.class.getSimpleName();
 
-    private String timeFormat = "HH:mm";
 
     private final LayoutInflater layoutInflater;
     private final List<String> days;
 
+    private int unitTemperature = UnitTemperature.CELSIUS;
+    private String formatTime = FormatTime.HH_MM;
+
     private List<ThresholdInterval> intervals = new ArrayList<>(0);
 
-    public ThresholdAdapter(@NonNull final Context context) {
+    public ThresholdAdapter(@NonNull final Context context, @UnitTemperature final int unitTemperature, @FormatTime @NonNull final String formatTime) {
         this.layoutInflater = LayoutInflater.from(context);
         this.days = Arrays.asList(context.getResources().getStringArray(R.array.weekdays));
+        this.unitTemperature = unitTemperature;
+        this.formatTime = formatTime;
 
         setEmptyDays();
     }
@@ -62,10 +69,10 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         holder.textViewTimeEnd.setVisibility(threshold != null ? View.VISIBLE : View.GONE);
         if (threshold != null) {
             holder.viewIndicator.setBackgroundColor(Color.parseColor(threshold.color));
-            holder.textViewTemperature.setText(String.valueOf(threshold.temperature));
+            holder.textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, threshold.temperature))));
 
-            buildTime(holder.textViewTimeStart, interval.getStart().toString(timeFormat));
-            buildTime(holder.textViewTimeEnd, interval.getEnd().toString(timeFormat));
+            buildTime(holder.textViewTimeStart, interval.getStart().toString(formatTime));
+            buildTime(holder.textViewTimeEnd, interval.getEnd().toString(formatTime));
         } else {
             holder.viewIndicator.setBackgroundResource(R.drawable.empty_interval_line);
             holder.textViewTemperature.setText("");
@@ -102,11 +109,6 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         return days.get(intervals.get(firstVisibleItemPosition).interval().getStart().getDayOfWeek() - 1);
     }
 
-    public void setTimeFormat(@NonNull final String timeFormat) {
-        this.timeFormat = timeFormat;
-        notifyDataSetChanged();
-    }
-
     private int calculateWidth(@NonNull final Interval interval) {
         return Minutes.minutesBetween(interval.getStart(), interval.getEnd()).getMinutes();
     }
@@ -121,6 +123,13 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
 
     private void setEmptyDays() {
         this.intervals = ThresholdIntervalFactory.emptyDays();
+
+        notifyDataSetChanged();
+    }
+
+    public void setUnitAndFormat(@UnitTemperature final int unitTemperature, @FormatTime @NonNull final String formatTime) {
+        this.unitTemperature = unitTemperature;
+        this.formatTime = formatTime;
 
         notifyDataSetChanged();
     }
