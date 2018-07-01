@@ -300,10 +300,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onDayChanged() {
+        //TODO: This needs to obey day format Settings
         if (thresholdAdapter.getItemCount() > 0) {
             textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
-        } else {
-            //TODO: What else?
         }
     }
 

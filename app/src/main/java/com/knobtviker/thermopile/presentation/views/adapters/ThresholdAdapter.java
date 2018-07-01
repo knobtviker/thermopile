@@ -38,8 +38,8 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     private final LayoutInflater layoutInflater;
     private final List<String> days;
 
-    private int unitTemperature = UnitTemperature.CELSIUS;
-    private String formatTime = FormatTime.HH_MM;
+    private int unitTemperature;
+    private String formatTime;
 
     private List<ThresholdInterval> intervals = new ArrayList<>(0);
 
