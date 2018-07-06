@@ -11,6 +11,8 @@ import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
+import io.reactivex.internal.functions.Functions;
+
 /**
  * Created by bojan on 15/07/2017.
  */
@@ -38,43 +40,39 @@ public class SchedulePresenter extends AbstractPresenter implements ScheduleCont
 
     @Override
     public void settings() {
-        started();
-
         compositeDisposable.add(
             settingsRepository
                 .observe()
                 .subscribe(
                     view::onSettingsChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
 
     @Override
     public void thresholds() {
-        started();
-
         compositeDisposable.add(
             thresholdRepository
                 .load()
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
                     view::onThresholds,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
 
     @Override
     public void removeThresholdById(long id) {
-        started();
-
         compositeDisposable.add(
             thresholdRepository
                 .removeById(id)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );

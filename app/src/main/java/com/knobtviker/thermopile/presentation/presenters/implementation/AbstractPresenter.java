@@ -15,6 +15,7 @@ public abstract class AbstractPresenter implements BasePresenter {
     @NonNull
     private final BaseView view;
 
+    @NonNull
     protected final CompositeDisposable compositeDisposable;
 
     protected AbstractPresenter(@NonNull final BaseView view) {
@@ -23,12 +24,7 @@ public abstract class AbstractPresenter implements BasePresenter {
     }
 
     @Override
-    public void subscribe() {
-
-    }
-
-    @Override
-    public void unsubscribe() {
+    public void dispose() {
         if (!compositeDisposable.isDisposed()) {
             compositeDisposable.dispose();
         }
@@ -36,18 +32,16 @@ public abstract class AbstractPresenter implements BasePresenter {
 
     @Override
     public void error(@NonNull Throwable throwable) {
-        completed();
-
         view.showError(throwable);
     }
 
     @Override
-    public void started() {
+    public void subscribed() {
         view.showLoading(true);
     }
 
     @Override
-    public void completed() {
+    public void terminated() {
         view.showLoading(false);
     }
 }

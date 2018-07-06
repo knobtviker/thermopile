@@ -10,14 +10,12 @@ import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
 public interface BasePresenter<V extends BaseView> {
 
-    void subscribe();
-
-    void unsubscribe();
+    void dispose();
 
     void error(@NonNull final Throwable throwable);
 
-    void started();
+    void subscribed();
 
-    void completed();
+    void terminated();
 }
 

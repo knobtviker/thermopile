@@ -22,7 +22,7 @@ public class DayScrollListener extends RecyclerView.OnScrollListener {
     }
 
     @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
         if (listener != null) {

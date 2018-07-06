@@ -20,12 +20,14 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.internal.functions.Functions;
 import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by bojan on 15/07/2017.
  */
 
+//TODO: This class needs careful and meaningful refactoring.
 public class NetworkPresenter extends AbstractPresenter implements NetworkContract.Presenter {
 
     private final NetworkContract.View view;
@@ -52,8 +54,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeTemperature()
                 .subscribe(
                     view::onTemperatureChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -65,8 +66,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observePressure()
                 .subscribe(
                     view::onPressureChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -78,8 +78,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeHumidity()
                 .subscribe(
                     view::onHumidityChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -91,8 +90,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeAirQuality()
                 .subscribe(
                     view::onAirQualityChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -104,8 +102,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeAcceleration()
                 .subscribe(
                     view::onAccelerationChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -123,8 +120,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     view::onHasBluetooth,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -136,7 +132,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    this::completed,
+                    this::terminated,
                     this::error
                 )
         );
@@ -151,8 +147,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     view::onBluetoothEnabled,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -165,7 +160,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -197,7 +192,8 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                                 view.onBluetoothStateIndeterminate();
                                 break;
                         }
-                    }
+                    },
+                    this::error
                 )
         );
     }
@@ -210,7 +206,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -224,7 +220,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -239,8 +235,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     view::onGattServerStarted,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -253,7 +248,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -268,8 +263,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     view::onCheckGattServer,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -282,7 +276,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -296,7 +290,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -311,8 +305,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     view::onCheckBluetoothAdvertising,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }

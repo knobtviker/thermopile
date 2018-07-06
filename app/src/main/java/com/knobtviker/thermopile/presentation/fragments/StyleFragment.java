@@ -107,7 +107,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
                 presenter.saveTheme(settingsId, value);
 
                 //TODO: This is highly aggessive. Find a better way of switching themes.
-                Router.restart(getContext());
+                Router.restart(requireContext());
             }
         });
     }

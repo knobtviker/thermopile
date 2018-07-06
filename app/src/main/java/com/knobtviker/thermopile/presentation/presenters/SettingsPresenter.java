@@ -30,17 +30,14 @@ public class SettingsPresenter extends AbstractPresenter implements SettingsCont
 
     @Override
     public void load() {
-        started();
-
         compositeDisposable.add(
             settingsRepository
                 .load()
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    settings -> {
-                        view.onLoad(settings.get(0));
-                    },
-                    this::error,
-                    this::completed
+                    view::onLoad,
+                    this::error
                 )
         );
     }

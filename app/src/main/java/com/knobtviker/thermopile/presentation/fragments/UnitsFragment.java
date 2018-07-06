@@ -185,7 +185,7 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
             }
             if (radioGroupAccelerationUnit.isEnabled()) {
                 this.unitAcceleration = value;
-                presenter.saveMotionUnit(settingsId, value);
+                presenter.saveAccelerationUnit(settingsId, value);
             }
         });
     }

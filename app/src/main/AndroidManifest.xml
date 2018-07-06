@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.knobtviker.thermopile">
 
     <uses-permission android:name="com.google.android.things.permission.USE_PERIPHERAL_IO"/>
@@ -22,7 +21,7 @@
         android:extractNativeLibs="false"
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup">
+        android:allowBackup="false">
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -32,6 +31,7 @@
 
         <activity
             android:name=".presentation.activities.MainActivity"
+            android:theme="@style/AppTheme"
             android:screenOrientation="reverseLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -48,6 +48,7 @@
 
         <activity
             android:name=".presentation.activities.ScreenSaverActivity"
+            android:theme="@style/AppTheme"
             android:screenOrientation="reverseLandscape"/>
     </application>
 

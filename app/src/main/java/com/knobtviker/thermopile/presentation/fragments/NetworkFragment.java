@@ -243,7 +243,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
         if (isOn) {
             presenter.name(getString(R.string.app_name));
-            presenter.discoverable(getActivity(), RequestCode.BLUETOOTH_DISCOVERABILITY, RxBluetoothManager.MAX_DISCOVERABILITY_PERIOD_SECONDS);
+            presenter.discoverable(requireActivity(), RequestCode.BLUETOOTH_DISCOVERABILITY, RxBluetoothManager.MAX_DISCOVERABILITY_PERIOD_SECONDS);
         }
     }
 
@@ -275,7 +275,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
     @Override
     public void onGattConnectionStateChange(@NonNull BluetoothDevice device, int status, int newState) {
-        Timber.i(String.format("onGattConnectionStateChange: %s status: %d newState: %d", device.toString(), status, newState));
+        Timber.i("onGattConnectionStateChange: %s status: %d newState: %d", device.toString(), status, newState);
     }
 
     @Override
@@ -370,12 +370,12 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
             new AdvertiseCallback() {
                 @Override
                 public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                    Timber.i("LE Advertise Started: " + settingsInEffect.toString());
+                    Timber.i("LE Advertise Started: %s", settingsInEffect.toString());
                 }
 
                 @Override
                 public void onStartFailure(int errorCode) {
-                    Timber.e( "LE Advertise Failed: " + errorCode);
+                    Timber.e( "LE Advertise Failed: %s", errorCode);
                 }
             }
         );

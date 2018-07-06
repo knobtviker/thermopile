@@ -38,32 +38,28 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
 
     @Override
     public void settings() {
-        started();
-
         compositeDisposable.add(
             settingsRepository
                 .observe()
                 .subscribe(
                     view::onSettingsChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
 
     @Override
     public void data(int type, long startTimestamp, long endTimestamp) {
-        started();
-
         switch (type) {
             case 0:
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadTemperatureBetween(startTimestamp, endTimestamp)
+                        .doOnSubscribe(consumer -> subscribed())
+                        .doOnTerminate(this::terminated)
                         .subscribe(
                             view::onTemperature,
-                            this::error,
-                            this::completed
+                            this::error
                         )
                 );
                 break;
@@ -71,10 +67,11 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadHumidityBetween(startTimestamp, endTimestamp)
+                        .doOnSubscribe(consumer -> subscribed())
+                        .doOnTerminate(this::terminated)
                         .subscribe(
                             view::onHumidity,
-                            this::error,
-                            this::completed
+                            this::error
                         )
                 );
                 break;
@@ -82,10 +79,11 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadPressureBetween(startTimestamp, endTimestamp)
+                        .doOnSubscribe(consumer -> subscribed())
+                        .doOnTerminate(this::terminated)
                         .subscribe(
                             view::onPressure,
-                            this::error,
-                            this::completed
+                            this::error
                         )
                 );
                 break;
@@ -93,10 +91,11 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadAirQualityBetween(startTimestamp, endTimestamp)
+                        .doOnSubscribe(consumer -> subscribed())
+                        .doOnTerminate(this::terminated)
                         .subscribe(
                             view::onAirQuality,
-                            this::error,
-                            this::completed
+                            this::error
                         )
                 );
                 break;
@@ -104,10 +103,11 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadAccelerationBetween(startTimestamp, endTimestamp)
+                        .doOnSubscribe(consumer -> subscribed())
+                        .doOnTerminate(this::terminated)
                         .subscribe(
                             view::onMotion,
-                            this::error,
-                            this::completed
+                            this::error
                         )
                 );
                 break;

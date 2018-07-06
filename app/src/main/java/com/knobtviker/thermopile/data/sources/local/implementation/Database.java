@@ -49,7 +49,8 @@ public class Database {
         return INSTANCE;
     }
 
-    private static Settings defaultSettings() {
+    //TODO: Move this to some default integrity class
+    public static Settings defaultSettings() {
         return new Settings(
             Default.TIMEZONE,
             ClockMode._24H,

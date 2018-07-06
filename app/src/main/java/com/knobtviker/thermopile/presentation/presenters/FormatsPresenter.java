@@ -8,6 +8,8 @@ import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.FormatsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
+import io.reactivex.internal.functions.Functions;
+
 /**
  * Created by bojan on 15/07/2017.
  */
@@ -33,8 +35,10 @@ public class FormatsPresenter extends AbstractPresenter implements FormatsContra
         compositeDisposable.add(
             settingsRepository
                 .saveFormatDate(settingsId, item)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -45,8 +49,10 @@ public class FormatsPresenter extends AbstractPresenter implements FormatsContra
         compositeDisposable.add(
             settingsRepository
                 .saveFormatTime(settingsId, item)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );

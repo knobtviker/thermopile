@@ -8,6 +8,8 @@ import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
+import io.reactivex.internal.functions.Functions;
+
 /**
  * Created by bojan on 15/07/2017.
  */
@@ -33,8 +35,10 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
         compositeDisposable.add(
             settingsRepository
                 .saveTemperatureUnit(settingsId, unit)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -45,20 +49,24 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
         compositeDisposable.add(
             settingsRepository
                 .savePressureUnit(settingsId, unit)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
     }
 
     @Override
-    public void saveMotionUnit(long settingsId, int unit) {
+    public void saveAccelerationUnit(long settingsId, int unit) {
         compositeDisposable.add(
             settingsRepository
-                .saveMotionUnit(settingsId, unit)
+                .saveAccelerationUnit(settingsId, unit)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );

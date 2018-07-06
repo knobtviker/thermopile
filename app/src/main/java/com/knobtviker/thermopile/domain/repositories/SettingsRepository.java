@@ -4,9 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.local.SettingsLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,10 +33,11 @@ public class SettingsRepository extends AbstractRepository {
             .observeOn(schedulerProvider.ui);
     }
 
-    public Observable<List<Settings>> load() {
+    public Observable<Settings> load() {
         return settingsLocalDataSource
             .query()
             .subscribeOn(schedulerProvider.io)
+            .map(items -> items.isEmpty() ? Database.defaultSettings() : items.get(0))
             .observeOn(schedulerProvider.io);
     }
 
@@ -111,7 +111,7 @@ public class SettingsRepository extends AbstractRepository {
             .ignoreElements();
     }
 
-    public Completable saveMotionUnit(final long settingsId, final int unit) {
+    public Completable saveAccelerationUnit(final long settingsId, final int unit) {
         return settingsLocalDataSource
             .queryById(settingsId)
             .subscribeOn(schedulerProvider.io)

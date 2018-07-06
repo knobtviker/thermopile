@@ -8,6 +8,8 @@ import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
+import io.reactivex.internal.functions.Functions;
+
 /**
  * Created by bojan on 15/07/2017.
  */
@@ -33,8 +35,10 @@ public class LocalePresenter extends AbstractPresenter implements LocaleContract
         compositeDisposable.add(
             settingsRepository
                 .saveTimezone(settingsId, timezone)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -45,8 +49,10 @@ public class LocalePresenter extends AbstractPresenter implements LocaleContract
         compositeDisposable.add(
             settingsRepository
                 .saveClockMode(settingsId, clockMode)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );

@@ -53,9 +53,6 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
 
     @Override
     public void observeDateChanged(@NonNull Context context) {
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_DATE_CHANGED);
-
         compositeDisposable.add(
             Observable.defer(() ->
                 Observable.create(emitter -> {
@@ -66,6 +63,9 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
                             emitter.onNext(true);
                         }
                     };
+
+                    final IntentFilter filter = new IntentFilter();
+                    filter.addAction(Intent.ACTION_DATE_CHANGED);
 
                     context.registerReceiver(receiver, filter);
 
@@ -81,8 +81,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
             )
                 .subscribe(
                     item -> view.onDateChanged(),
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -94,8 +93,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
                 .observeTemperature()
                 .subscribe(
                     view::onTemperatureChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -107,8 +105,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
                 .observePressure()
                 .subscribe(
                     view::onPressureChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -120,8 +117,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
                 .observeHumidity()
                 .subscribe(
                     view::onHumidityChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -133,8 +129,7 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
                 .observeAirQuality()
                 .subscribe(
                     view::onAirQualityChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -146,23 +141,19 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
                 .observeAcceleration()
                 .subscribe(
                     view::onAccelerationChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
 
     @Override
     public void settings() {
-        started();
-
         compositeDisposable.add(
             settingsRepository
                 .observe()
                 .subscribe(
                     view::onSettingsChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -172,10 +163,11 @@ public class MainPresenter extends AbstractPresenter implements MainContract.Pre
         compositeDisposable.add(
             thresholdRepository
                 .loadInline()
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
                     view::onThresholdsChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }

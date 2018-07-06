@@ -8,6 +8,8 @@ import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
 
+import io.reactivex.internal.functions.Functions;
+
 /**
  * Created by bojan on 15/07/2017.
  */
@@ -33,8 +35,10 @@ public class StylePresenter extends AbstractPresenter implements StyleContract.P
         compositeDisposable.add(
             settingsRepository
                 .saveTheme(settingsId, value)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );

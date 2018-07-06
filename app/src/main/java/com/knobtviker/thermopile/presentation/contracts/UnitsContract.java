@@ -1,6 +1,9 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
 /**
@@ -15,10 +18,10 @@ public interface UnitsContract {
 
     interface Presenter extends BasePresenter {
 
-        void saveTemperatureUnit(final long settingsId, final int unit);
+        void saveTemperatureUnit(final long settingsId, @UnitTemperature final int unit);
 
-        void savePressureUnit(final long settingsId, final int unit);
+        void savePressureUnit(final long settingsId, @UnitPressure final int unit);
 
-        void saveMotionUnit(final long settingsId, final int unit);
+        void saveAccelerationUnit(final long settingsId, @UnitAcceleration final int unit);
     }
 }

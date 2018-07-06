@@ -206,7 +206,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onAirQualityChanged(final float value) {
-        final Pair<String, Integer> pair = convertIAQValueToLabelAndColor(value);
+        final Pair<String, Integer> pair = MathKit.convertIAQValueToLabelAndColor(value);
 
         textViewIAQ.setText(pair.first);
         arcViewIAQ.setProgressColor(pair.second);
@@ -290,7 +290,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
             thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime);
         }
 
-        ((ThermopileApplication) getActivity().getApplication()).refresh();
+        ((ThermopileApplication) requireActivity().getApplication()).refresh();
     }
 
     @Override
@@ -418,24 +418,5 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     private void thresholds() {
         presenter.thresholds();
-    }
-
-    //TODO: Move this somewhere else and cleanup strings
-    private Pair<String, Integer> convertIAQValueToLabelAndColor(@MeasuredAirQuality final float value) {
-        if (value >= 401 && value <= 500) {
-            return Pair.create("Very bad", R.color.black);
-        } else if (value >= 301 && value <= 400) {
-            return Pair.create("Worse", R.color.pink_500);
-        } else if (value >= 201 && value <= 300) {
-            return Pair.create("Bad", R.color.red_500);
-        } else if (value >= 101 && value <= 200) {
-            return Pair.create("Little bad", R.color.orange_500);
-        } else if (value >= 51 && value <= 100) {
-            return Pair.create("Average", R.color.yellow_500);
-        } else if (value >= 0 && value <= 50) {
-            return Pair.create("Good", R.color.light_green_500);
-        } else {
-            return Pair.create("Unknown", R.color.light_gray);
-        }
     }
 }

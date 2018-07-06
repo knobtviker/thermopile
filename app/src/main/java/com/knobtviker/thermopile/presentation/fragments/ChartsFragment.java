@@ -345,7 +345,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     private void setupSpinnerType() {
         setType(0);
 
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.chart_types, R.layout.item_spinner);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.chart_types, R.layout.item_spinner);
         adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
 
         spinnerType.setAdapter(adapter);
@@ -356,7 +356,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     private void setupSpinnerInterval() {
         setInterval(0);
 
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.chart_intervals, R.layout.item_spinner);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.chart_intervals, R.layout.item_spinner);
         adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
 
         spinnerInterval.setAdapter(adapter);
@@ -443,7 +443,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
                     hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, object.value))), textViewPressureUnit, object.timestamp);
                     break;
                 case 3:
-                    hasScrubbedValueWithoutUnit(convertIAQValueToLabel(object.value), object.timestamp);
+                    hasScrubbedValueWithoutUnit(MathKit.convertIAQValueToLabel(object.value), object.timestamp);
                     break;
                 case 4:
                     hasScrubbedValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, object.value))), textViewMotionUnit, object.timestamp);
@@ -521,25 +521,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
             default:
                 textViewMotionUnit = getString(R.string.unit_acceleration_ms2);
                 break;
-        }
-    }
-
-    //TODO: Move this somewhere else and cleanup strings
-    private String convertIAQValueToLabel(final float value) {
-        if (value >= 401 && value <= 500) {
-            return "Very bad";
-        } else if (value >= 301 && value <= 400) {
-            return "Worse";
-        } else if (value >= 201 && value <= 300) {
-            return "Bad";
-        } else if (value >= 101 && value <= 200) {
-            return "Little bad";
-        } else if (value >= 51 && value <= 100) {
-            return "Average";
-        } else if (value >= 0 && value <= 50) {
-            return "Good";
-        } else {
-            return "Unknown";
         }
     }
 

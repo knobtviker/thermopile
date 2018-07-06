@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Completable;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.functions.Functions;
 
 /**
  * Created by bojan on 08/08/2017.
@@ -80,7 +81,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             atmosphereRepository
                 .saveTemperature(vendor, name, value)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -94,7 +95,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                 atmosphereRepository.saveAltitude(vendor, name, value)
             )
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -106,7 +107,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             atmosphereRepository
                 .saveHumidity(vendor, name, value)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -118,7 +119,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             atmosphereRepository
                 .saveAirQuality(vendor, name, value)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -130,7 +131,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             atmosphereRepository
                 .saveLuminosity(vendor, name, value)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -142,7 +143,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             atmosphereRepository
                 .saveAcceleration(vendor, name, values)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -154,7 +155,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             atmosphereRepository
                 .saveAngularVelocity(vendor, name, values)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -166,7 +167,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             atmosphereRepository
                 .saveMagneticField(vendor, name, values)
                 .subscribe(
-                    this::completed,
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );
@@ -174,15 +175,12 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
 
     @Override
     public void settings() {
-        started();
-
         compositeDisposable.add(
             settingsRepository
                 .observe()
                 .subscribe(
                     view::onSettingsChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }

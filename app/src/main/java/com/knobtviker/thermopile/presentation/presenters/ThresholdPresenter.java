@@ -36,23 +36,20 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
 
     @Override
     public void loadById(long thresholdId) {
-        started();
-
         compositeDisposable.add(
             thresholdRepository
                 .loadById(thresholdId)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .subscribe(
                     view::onThreshold,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
 
     @Override
     public void save(@NonNull Threshold threshold) {
-        started();
-
         compositeDisposable.add(
             Completable.create(emitter -> {
                 if (!emitter.isDisposed()) {
@@ -84,11 +81,13 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
                     }
                 }
             })
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
                 .andThen(thresholdRepository.save(threshold))
+                .ignoreElements()
                 .subscribe(
-                    resultId -> view.onSaved(),
-                    this::error,
-                    this::completed
+                    view::onSaved,
+                    this::error
                 )
         );
     }

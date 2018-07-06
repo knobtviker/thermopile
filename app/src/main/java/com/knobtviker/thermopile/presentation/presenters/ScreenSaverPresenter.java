@@ -45,9 +45,6 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
 
     @Override
     public void observeDateChanged(@NonNull Context context) {
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_DATE_CHANGED);
-
         compositeDisposable.add(
             Observable.defer(() ->
                 Observable.create(emitter -> {
@@ -58,6 +55,9 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
                             emitter.onNext(true);
                         }
                     };
+
+                    final IntentFilter filter = new IntentFilter();
+                    filter.addAction(Intent.ACTION_DATE_CHANGED);
 
                     context.registerReceiver(receiver, filter);
 
@@ -73,8 +73,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
             )
                 .subscribe(
                     item -> view.onDateChanged(),
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -86,8 +85,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
                 .observeTemperature()
                 .subscribe(
                     view::onTemperatureChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -99,8 +97,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
                 .observePressure()
                 .subscribe(
                     view::onPressureChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -112,8 +109,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
                 .observeHumidity()
                 .subscribe(
                     view::onHumidityChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -125,8 +121,7 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
                 .observeAirQuality()
                 .subscribe(
                     view::onAirQualityChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
@@ -138,23 +133,19 @@ public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSav
                 .observeAcceleration()
                 .subscribe(
                     view::onAccelerationChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }
 
     @Override
     public void settings() {
-        started();
-
         compositeDisposable.add(
             settingsRepository
                 .observe()
                 .subscribe(
                     view::onSettingsChanged,
-                    this::error,
-                    this::completed
+                    this::error
                 )
         );
     }

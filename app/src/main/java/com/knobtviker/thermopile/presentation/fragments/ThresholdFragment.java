@@ -197,7 +197,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     private void setupRecyclerView() {
-        colorAdapter = new ColorAdapter(getContext());
+        colorAdapter = new ColorAdapter(requireContext());
 
         recyclerViewColors.setHasFixedSize(true);
         recyclerViewColors.setLayoutManager(new GridLayoutManager(getContext(), 7));

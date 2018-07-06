@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.1'
 
     defaultConfig {
         applicationId "com.knobtviker.thermopile.drivers"
         minSdkVersion 27
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0.0"
     }
@@ -32,12 +32,12 @@ android {
 
 dependencies {
     compileOnly 'com.google.android.things:androidthings:1.0'
-    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:support-annotations:28.0.0-alpha3'
     implementation 'com.knobtviker.android.things.contrib.community:boards:1.0.7'
     implementation 'com.knobtviker.android.things.contrib.community.driver:bme280:1.1.5'
     implementation 'com.knobtviker.android.things.contrib.community.driver:bme680:1.1.4'
     implementation 'com.knobtviker.android.things.contrib.community.driver:tsl2561:1.1.2'
     implementation 'com.knobtviker.android.things.contrib.community.driver:ds3231:1.0.5'
     implementation 'com.knobtviker.android.things.contrib.community.driver:lsm9ds1:1.0.4'
-    implementation 'com.jakewharton.timber:timber:4.7.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
