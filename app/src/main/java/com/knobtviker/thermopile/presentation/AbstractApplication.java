@@ -19,7 +19,6 @@ import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
-import com.knobtviker.thermopile.presentation.utils.FileLoggingTree;
 import com.knobtviker.thermopile.presentation.utils.constants.MessageWhatData;
 import com.knobtviker.thermopile.presentation.utils.constants.MessageWhatUser;
 import com.knobtviker.thermopile.presentation.views.communicators.PersistentCommunicator;
@@ -78,7 +77,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         messageToService.replyTo = foregroundMessenger;
         try {
             serviceMessenger.send(messageToService);
-        } catch (RemoteException e) {
+        } catch (RemoteException e) { //DeadObjectException
             Timber.e(e);
         }
     }
@@ -150,7 +149,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     }
 
     private void plantTree() {
-        Timber.plant(new FileLoggingTree(this));
+        Timber.plant(new Timber.DebugTree());
     }
 
     private void services() {

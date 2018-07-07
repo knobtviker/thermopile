@@ -29,7 +29,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [ 'objectbox.debug' : 'true' ]
+                arguments = ['objectbox.debug': 'true']
             }
         }
     }
@@ -75,12 +75,16 @@ dependencies {
     annotationProcessor 'com.google.auto.value:auto-value:1.6'
     //presentation
     implementation 'com.android.support:appcompat-v7:28.0.0-alpha3'
-    implementation 'com.android.support:design:28.0.0-alpha3'
+//    implementation 'com.android.support:design-tabs:28.0.0-alpha1'
+//    implementation 'com.android.support:design-floatingactionbutton:28.0.0-alpha1'
+    implementation 'com.android.support:design-widget:28.0.0-alpha1'
     implementation 'com.android.support:recyclerview-v7:28.0.0-alpha3'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha02'
-    implementation 'android.arch.navigation:navigation-ui:1.0.0-alpha02'
+    implementation('android.arch.navigation:navigation-ui:1.0.0-alpha02') {
+        exclude group: 'com.android.support', module: 'design'
+    }
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     //other

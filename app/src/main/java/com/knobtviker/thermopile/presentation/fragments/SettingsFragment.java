@@ -11,14 +11,12 @@ import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.di.components.presentation.presenters.DaggerSettingsPresenterComponent;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
 import com.knobtviker.thermopile.presentation.views.adapters.SettingsPagerAdapter;
 
 import java.util.Arrays;
-import java.util.List;
 
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
