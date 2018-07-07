@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -16,6 +18,10 @@ import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.utils.constants.Default;
+import com.knobtviker.thermopile.presentation.utils.constants.ScreensaverTimeout;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -27,9 +33,14 @@ import timber.log.Timber;
 public class StyleFragment extends BaseFragment<StyleContract.Presenter> implements StyleContract.View {
     public static final String TAG = StyleFragment.class.getSimpleName();
 
+    private ArrayAdapter<String> spinnerAdapterTimeout;
+
     private long settingsId = -1L;
 
     private int theme = Default.THEME;
+
+    @ScreensaverTimeout
+    private int screenSaverTimeout = ScreensaverTimeout._1MIN;
 
     @BindView(R.id.radiogroup_theme)
     public RadioGroup radioGroupTheme;
@@ -43,6 +54,9 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     @BindView(R.id.automatic)
     public RadioButton radioButtonAutomatic;
 
+    @BindView(R.id.spinner_timeout)
+    public Spinner spinnerTimeout;
+
     public static StyleFragment newInstance() {
         return new StyleFragment();
     }
@@ -54,8 +68,6 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
         return inflater.inflate(R.layout.fragment_style, container, false);
     }
 
@@ -64,6 +76,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         super.onViewCreated(view, savedInstanceState);
 
         setupRadioGroupTheme();
+        setupSpinnerTimeout();
     }
 
     @Override
@@ -79,8 +92,10 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id;
         this.theme = settings.theme;
+        this.screenSaverTimeout = settings.screensaverDelay;
 
         setTheme();
+        setScreenSaverTimeout();
     }
 
     private void setupRadioGroupTheme() {
@@ -111,6 +126,24 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         });
     }
 
+    private void setupSpinnerTimeout() {
+        spinnerTimeout.setEnabled(false);
+        spinnerTimeout.setPrompt("Screensaver Timeout");
+
+        final List<String> formats = Arrays.asList(
+            String.valueOf(ScreensaverTimeout._15S),
+            String.valueOf(ScreensaverTimeout._30S),
+            String.valueOf(ScreensaverTimeout._1MIN),
+            String.valueOf(ScreensaverTimeout._2MIN),
+            String.valueOf(ScreensaverTimeout._5MIN),
+            String.valueOf( ScreensaverTimeout._10MIN)
+        );
+        spinnerAdapterTimeout = new ArrayAdapter<>(spinnerTimeout.getContext(), android.R.layout.simple_spinner_item, formats);
+        spinnerAdapterTimeout.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerTimeout.setAdapter(spinnerAdapterTimeout);
+    }
+
     private void setTheme() {
         switch (theme) {
             case AppCompatDelegate.MODE_NIGHT_NO:
@@ -125,5 +158,16 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         }
 
         radioGroupTheme.setEnabled(true);
+    }
+
+    private void setScreenSaverTimeout() {
+//        for (int i = 0; i < spinnerAdapterTimeout.getCount(); i++) {
+//            if (spinnerAdapterTimeout.getItem(i) == screenSaverTimeout) {
+//                spinnerTimeout.setSelection(i);
+//                break;
+//            }
+//        }
+
+        spinnerTimeout.setEnabled(true);
     }
 }

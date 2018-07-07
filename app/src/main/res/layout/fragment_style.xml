@@ -57,6 +57,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radiogroup_theme"/>
 
+        <TextView
+            android:id="@+id/textview_title_timeout"
+            style="@style/TextAppearance.Section"
+            android:text="Screensaver timeout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_theme"/>
+
+        <Spinner
+            android:id="@+id/spinner_timeout"
+            android:layout_width="0dp"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:spinnerMode="dialog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_title_timeout"/>
+
+        <View
+            style="@style/Widget.Divider.Settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_timeout"/>
+
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v4.widget.NestedScrollView>

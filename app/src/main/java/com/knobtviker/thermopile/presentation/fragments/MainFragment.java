@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.annotation.SuppressLint;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -149,8 +148,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
@@ -181,7 +178,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         Timber.e(throwable);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onTemperatureChanged(final float value) {
         arcViewTemperature.setProgress(value / MeasuredTemperature.MAXIMUM);
@@ -190,14 +186,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //        pidController.doPID(Math.round(value));
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onHumidityChanged(final float value) {
         arcViewHumidity.setProgress(value / MeasuredHumidity.MAXIMUM);
         textViewHumidity.setText(String.valueOf(MathKit.round(value)));
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onPressureChanged(final float value) {
         arcViewPressure.setProgress(value / MeasuredPressure.MAXIMUM);

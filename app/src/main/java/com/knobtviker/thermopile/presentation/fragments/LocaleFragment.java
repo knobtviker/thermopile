@@ -67,8 +67,6 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
         return inflater.inflate(R.layout.fragment_locale, container, false);
     }
 

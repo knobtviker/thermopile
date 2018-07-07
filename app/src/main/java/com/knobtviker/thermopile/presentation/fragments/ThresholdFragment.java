@@ -92,8 +92,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
         return inflater.inflate(R.layout.fragment_threshold, container, false);
     }
 

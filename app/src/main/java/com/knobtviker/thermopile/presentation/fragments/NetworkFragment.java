@@ -118,8 +118,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
         return inflater.inflate(R.layout.fragment_network, container, false);
     }
 

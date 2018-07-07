@@ -6,13 +6,7 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.models.local.MyObjectBox;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
 import com.knobtviker.thermopile.presentation.utils.constants.Default;
-import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
-import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 
 import io.objectbox.BoxStore;
 import io.objectbox.BoxStoreBuilder;
@@ -49,16 +43,15 @@ public class Database {
         return INSTANCE;
     }
 
-    //TODO: Move this to some default integrity class
     public static Settings defaultSettings() {
         return new Settings(
             Default.TIMEZONE,
-            ClockMode._24H,
-            FormatDate.EEEE_DD_MM_YYYY,
-            FormatTime.HH_MM,
-            UnitTemperature.CELSIUS,
-            UnitPressure.PASCAL,
-            UnitAcceleration.METERS_PER_SECOND_2,
+            Default.CLOCK_MODE,
+            Default.FORMAT_DATE,
+            Default.FORMAT_TIME,
+            Default.UNIT_TEMPERATURE,
+            Default.UNIT_PRESSURE,
+            Default.UNIT_ACCELERATION,
             Default.SCREENSAVER_DELAY,
             Default.THEME
         );

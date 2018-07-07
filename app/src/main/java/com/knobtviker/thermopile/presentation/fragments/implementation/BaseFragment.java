@@ -24,7 +24,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override
@@ -38,9 +38,5 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         }
 
         super.onDestroyView();
-    }
-
-    protected void bind(@NonNull final Fragment fragment, @NonNull final View view) {
-        unbinder = ButterKnife.bind(fragment, view);
     }
 }
