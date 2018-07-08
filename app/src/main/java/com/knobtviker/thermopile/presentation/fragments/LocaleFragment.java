@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -20,6 +19,7 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
 import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
 import com.knobtviker.thermopile.presentation.utils.constants.Default;
+import com.knobtviker.thermopile.presentation.views.adapters.TimezoneAdapter;
 
 import org.joda.time.DateTimeZone;
 
@@ -37,12 +37,13 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public static final String TAG = LocaleFragment.class.getSimpleName();
 
     private long settingsId = -1L;
+
     private String timezone = Default.TIMEZONE;
 
     @ClockMode
-    private int clockMode  = ClockMode._24H;
+    private int clockMode = ClockMode._24H;
 
-    private ArrayAdapter<String> spinnerAdapter;
+    private TimezoneAdapter spinnerAdapter;
 
     @BindView(R.id.spinner_timezone)
     public Spinner spinnerTimezone;
@@ -113,9 +114,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         spinnerTimezone.setEnabled(false);
         spinnerTimezone.setPrompt("Timezone");
 
-        spinnerAdapter = new ArrayAdapter<>(spinnerTimezone.getContext(), android.R.layout.simple_spinner_item, new ArrayList<>(DateTimeZone.getAvailableIDs()));
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
+        spinnerAdapter = new TimezoneAdapter(requireContext(), new ArrayList<>(DateTimeZone.getAvailableIDs()));
         spinnerTimezone.setAdapter(spinnerAdapter);
     }
 
