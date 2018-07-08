@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
@@ -18,6 +17,7 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.FormatsPresenter;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.views.adapters.FormatAdapter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,8 +33,8 @@ import timber.log.Timber;
 public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> implements FormatsContract.View {
     public static final String TAG = FormatsFragment.class.getSimpleName();
 
-    private ArrayAdapter<String> spinnerAdapterDate;
-    private ArrayAdapter<String> spinnerAdapterTime;
+    private FormatAdapter spinnerAdapterDate;
+    private FormatAdapter spinnerAdapterTime;
 
     private long settingsId = -1L;
 
@@ -123,9 +123,7 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
             FormatDate.EE_MM_DD_YYYY,
             FormatDate.MM_DD_YYYY
         );
-        spinnerAdapterDate = new ArrayAdapter<>(spinnerFormatDate.getContext(), android.R.layout.simple_spinner_item, formats);
-        spinnerAdapterDate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
+        spinnerAdapterDate = new FormatAdapter(spinnerFormatDate.getContext(), formats);
         spinnerFormatDate.setAdapter(spinnerAdapterDate);
     }
 
@@ -139,9 +137,8 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
             FormatTime.KK_MM_A,
             FormatTime.K_M_A
         );
-        spinnerAdapterTime = new ArrayAdapter<>(spinnerFormatTime.getContext(), android.R.layout.simple_spinner_item, formats);
-        spinnerAdapterTime.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        spinnerAdapterTime = new FormatAdapter(requireContext(), formats);
         spinnerFormatTime.setAdapter(spinnerAdapterTime);
     }
 

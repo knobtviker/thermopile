@@ -344,7 +344,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         setType(0);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.chart_types, R.layout.item_spinner);
-        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+        adapter.setDropDownViewResource(R.layout.item_spinner);
 
         spinnerType.setAdapter(adapter);
         spinnerType.setOnItemSelectedListener(this);
@@ -355,7 +355,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         setInterval(0);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.chart_intervals, R.layout.item_spinner);
-        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+        adapter.setDropDownViewResource(R.layout.item_spinner);
 
         spinnerInterval.setAdapter(adapter);
         spinnerInterval.setOnItemSelectedListener(this);
