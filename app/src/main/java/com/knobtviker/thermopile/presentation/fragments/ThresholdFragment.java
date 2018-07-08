@@ -13,15 +13,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
+import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
 import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 
 import org.joda.time.DateTime;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import androidx.navigation.fragment.NavHostFragment;
@@ -35,6 +39,13 @@ import timber.log.Timber;
 
 public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter> implements ThresholdContract.View {
     public static String TAG = ThresholdFragment.class.getSimpleName();
+
+    @ClockMode
+    private int formatClock;
+
+    @FormatTime
+    private String formatTime;
+
 
     private int day = -1;
 
@@ -71,6 +82,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     public RecyclerView recyclerViewColors;
 
     public ThresholdFragment() {
+        formatClock = ClockMode._24H;
+        formatTime = FormatTime.HH_MM;
+
         presenter = new ThresholdPresenter(this);
     }
 
@@ -102,19 +116,28 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         setupSeekBar();
         setupTimePickers();
         setupRecyclerView();
-    }
 
-    @Override
-    public void onResume() {
+        presenter.settings();
+
         if (thresholdId != -1L) {
             presenter.loadById(thresholdId);
         } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
             populate(startMinute, maxWidth);
-        } else {
-            //TODO: Show some impossible error
         }
-        super.onResume();
     }
+
+//    @Override
+//    public void onResume() {
+//        presenter.settings();
+//
+//        if (thresholdId != -1L) {
+//            presenter.loadById(thresholdId);
+//        } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
+//            populate(startMinute, maxWidth);
+//        }
+//
+//        super.onResume();
+//    }
 
     @Override
     public void showLoading(boolean isLoading) {
@@ -125,7 +148,15 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     public void showError(@NonNull Throwable throwable) {
         Timber.e(throwable);
 
-        Snackbar.make(getView(), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSettingsChanged(@NonNull Settings settings) {
+        this.formatClock = settings.formatClock;
+        this.formatTime = settings.formatTime;
+
+        setupTimePickers();
     }
 
     @Override
@@ -160,12 +191,11 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         //TODO: Use newBuilder() to apply Settings, min, max and section count constants
     }
 
-    //TODO: Use and apply Settings fro 12/24 hour format
     private void setupTimePickers() {
         final DateTime now = DateTime.now();
 
-        textViewTimeStart.setText(now.toString("HH:mm"));
-        textViewTimeEnd.setText(now.toString("HH:mm"));
+        textViewTimeStart.setText(now.toString(formatTime));
+        textViewTimeEnd.setText(now.toString(formatTime));
 
         timePickerDialogStart = new TimePickerDialog(
             getContext(),
@@ -177,7 +207,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             },
             now.getHourOfDay(),
             now.getMinuteOfHour(),
-            true //TODO: Also needs to be init from th Settings
+            formatClock == ClockMode._24H
         );
 
         timePickerDialogEnd = new TimePickerDialog(
@@ -190,7 +220,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             },
             now.getHourOfDay(),
             now.getMinuteOfHour(),
-            true //TODO: Also needs to be init from th Settings
+            formatClock == ClockMode._24H
         );
     }
 
@@ -264,7 +294,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                 .withDayOfWeek(day)
                 .withHourOfDay(hour)
                 .withMinuteOfHour(minute)
-                .toString("HH:mm")
+                .toString(formatTime)
         );
     }
 
@@ -274,7 +304,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                 .withDayOfWeek(day)
                 .withHourOfDay(hour)
                 .withMinuteOfHour(minute)
-                .toString("HH:mm")
+                .toString(formatTime)
         );
     }
 }

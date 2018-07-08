@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -19,11 +20,16 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
+import com.knobtviker.thermopile.presentation.utils.MathKit;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -43,10 +49,24 @@ import static android.support.constraint.ConstraintSet.TOP;
 public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
     public static final String TAG = ScheduleFragment.class.getSimpleName();
 
+    @FormatDate
+    private String formatDate;
+
+    @UnitTemperature
+    private int unitTemperature;
+
+    private List<Threshold> thresholds = new ArrayList<>(0);
+
     @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday, R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
     public List<ConstraintLayout> weekdayLayouts;
 
+    @BindViews({R.id.textview_day_monday, R.id.textview_day_tuesday, R.id.textview_day_wednesday, R.id.textview_day_thursday, R.id.textview_day_friday, R.id.textview_day_saturday, R.id.textview_day_sunday})
+    public List<TextView> weekdayTextViews;
+
     public ScheduleFragment() {
+        formatDate = FormatDate.EEEE_DD_MM_YYYY;
+        unitTemperature = UnitTemperature.CELSIUS;
+
         presenter = new SchedulePresenter(this);
     }
 
@@ -82,10 +102,17 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
+        formatDate = settings.formatDate;
+        unitTemperature = settings.unitTemperature;
+
+        setWeekdayNames(formatDate);
+        repopulate();
     }
 
     @Override
     public void onThresholds(@NonNull List<Threshold> thresholds) {
+        this.thresholds = thresholds;
+
         populate(thresholds);
     }
 
@@ -151,7 +178,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 final ThresholdViewHolder thresholdViewHolder = ThresholdViewHolder.bind(
                     thresholdView,
                     threshold.color,
-                    String.format("%s °C", String.valueOf(threshold.temperature)) //TODO: Fix this hardcoded temperature unit. Use Settings.
+                    buildThresholdTemperature(threshold.temperature)
                 );
 
                 thresholdView.setId(View.generateViewId());
@@ -202,6 +229,86 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
             });
     }
 
+    private void repopulate() {
+        if (!thresholds.isEmpty()) {
+            populate(thresholds);
+        }
+    }
+
+    private void setWeekdayNames(@FormatDate @NonNull final String formatDate) {
+        final List<String> days = Arrays.asList(getResources().getStringArray(R.array.weekdays));
+        final List<String> daysShort = Arrays.asList(getResources().getStringArray(R.array.weekdays_short));
+
+        weekdayTextViews
+            .forEach(textView -> {
+                switch (textView.getId()) {
+                    case R.id.textview_day_monday:
+                        if (formatDate.contains("EEEE")) {
+                            textView.setText(days.get(0));
+                        } else if (formatDate.contains("EE")) {
+                            textView.setText(daysShort.get(0));
+                        } else {
+                            textView.setText(days.get(0));
+                        }
+                        break;
+                    case R.id.textview_day_tuesday:
+                        if (formatDate.contains("EEEE")) {
+                            textView.setText(days.get(1));
+                        } else if (formatDate.contains("EE")) {
+                            textView.setText(daysShort.get(1));
+                        } else {
+                            textView.setText(days.get(1));
+                        }
+                        break;
+                    case R.id.textview_day_wednesday:
+                        if (formatDate.contains("EEEE")) {
+                            textView.setText(days.get(2));
+                        } else if (formatDate.contains("EE")) {
+                            textView.setText(daysShort.get(2));
+                        } else {
+                            textView.setText(days.get(2));
+                        }
+                        break;
+                    case R.id.textview_day_thursday:
+                        if (formatDate.contains("EEEE")) {
+                            textView.setText(days.get(3));
+                        } else if (formatDate.contains("EE")) {
+                            textView.setText(daysShort.get(3));
+                        } else {
+                            textView.setText(days.get(3));
+                        }
+                        break;
+                    case R.id.textview_day_friday:
+                        if (formatDate.contains("EEEE")) {
+                            textView.setText(days.get(4));
+                        } else if (formatDate.contains("EE")) {
+                            textView.setText(daysShort.get(4));
+                        } else {
+                            textView.setText(days.get(4));
+                        }
+                        break;
+                    case R.id.textview_day_saturday:
+                        if (formatDate.contains("EEEE")) {
+                            textView.setText(days.get(5));
+                        } else if (formatDate.contains("EE")) {
+                            textView.setText(daysShort.get(5));
+                        } else {
+                            textView.setText(days.get(5));
+                        }
+                        break;
+                    case R.id.textview_day_sunday:
+                        if (formatDate.contains("EEEE")) {
+                            textView.setText(days.get(6));
+                        } else if (formatDate.contains("EE")) {
+                            textView.setText(daysShort.get(6));
+                        } else {
+                            textView.setText(days.get(6));
+                        }
+                        break;
+                }
+            });
+    }
+
     private void add() {
         final CharSequence[] days = getResources().getStringArray(R.array.weekdays);
 
@@ -215,6 +322,26 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
             .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
             .create()
             .show();
+    }
+
+    private String buildThresholdTemperature(final int value) {
+        String unit;
+        switch (unitTemperature) {
+            case UnitTemperature.CELSIUS:
+                unit = getString(R.string.unit_temperature_celsius);
+                break;
+            case UnitTemperature.FAHRENHEIT:
+                unit = getString(R.string.unit_temperature_fahrenheit);
+                break;
+            case UnitTemperature.KELVIN:
+                unit = getString(R.string.unit_temperature_kelvin);
+                break;
+            default:
+                unit = getString(R.string.unit_temperature_celsius);
+                break;
+        }
+
+        return String.format("%s %s", String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))), unit);
     }
 
     private void navigateToThreshold(int day, int startX, int width) {

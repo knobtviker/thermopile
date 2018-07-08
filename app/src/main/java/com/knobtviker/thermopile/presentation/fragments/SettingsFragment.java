@@ -82,7 +82,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
 
     @Override
     public void showLoading(boolean isLoading) {
-        //TODO: Show loading progress indicator
+        //NO-OP
     }
 
     @Override

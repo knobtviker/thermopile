@@ -15,6 +15,7 @@ import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
+import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
 import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 import com.knobtviker.thermopile.presentation.utils.factories.ThresholdIntervalFactory;
@@ -37,17 +38,21 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
 
     private final LayoutInflater layoutInflater;
     private final List<String> days;
+    private final List<String> daysShort;
 
     private int unitTemperature;
     private String formatTime;
+    private String formatDate;
 
     private List<ThresholdInterval> intervals = new ArrayList<>(0);
 
-    public ThresholdAdapter(@NonNull final Context context, @UnitTemperature final int unitTemperature, @FormatTime @NonNull final String formatTime) {
+    public ThresholdAdapter(@NonNull final Context context, @UnitTemperature final int unitTemperature, @FormatTime @NonNull final String formatTime, @FormatDate @NonNull final String formatDate) {
         this.layoutInflater = LayoutInflater.from(context);
         this.days = Arrays.asList(context.getResources().getStringArray(R.array.weekdays));
+        this.daysShort = Arrays.asList(context.getResources().getStringArray(R.array.weekdays_short));
         this.unitTemperature = unitTemperature;
         this.formatTime = formatTime;
+        this.formatDate = formatDate;
 
         setEmptyDays();
     }
@@ -106,7 +111,13 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     }
 
     public String getItemDay(final int firstVisibleItemPosition) {
-        return days.get(intervals.get(firstVisibleItemPosition).interval().getStart().getDayOfWeek() - 1);
+        if (formatDate.contains("EEEE")) {
+            return days.get(intervals.get(firstVisibleItemPosition).interval().getStart().getDayOfWeek() - 1);
+        } else if (formatDate.contains("EE")) {
+            return daysShort.get(intervals.get(firstVisibleItemPosition).interval().getStart().getDayOfWeek() - 1);
+        } else {
+            return days.get(intervals.get(firstVisibleItemPosition).interval().getStart().getDayOfWeek() - 1);
+        }
     }
 
     private int calculateWidth(@NonNull final Interval interval) {
@@ -127,9 +138,10 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         notifyDataSetChanged();
     }
 
-    public void setUnitAndFormat(@UnitTemperature final int unitTemperature, @FormatTime @NonNull final String formatTime) {
+    public void setUnitAndFormat(@UnitTemperature final int unitTemperature, @FormatTime @NonNull final String formatTime, @FormatDate @NonNull final String formatDate) {
         this.unitTemperature = unitTemperature;
         this.formatTime = formatTime;
+        this.formatDate = formatDate;
 
         notifyDataSetChanged();
     }

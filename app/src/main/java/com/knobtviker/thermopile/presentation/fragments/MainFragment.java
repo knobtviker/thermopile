@@ -161,7 +161,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         data();
     }
 
-    //TODO: Return a Flowable<List<T>>
     @Override
     public void onResume() {
         thresholds();
@@ -281,7 +280,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         setDate();
 
         if (thresholdAdapter != null) {
-            thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime);
+            thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
         }
 
         ((ThermopileApplication) requireActivity().getApplication()).refresh();
@@ -294,7 +293,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onDayChanged() {
-        //TODO: This needs to obey day format Settings
         if (thresholdAdapter.getItemCount() > 0) {
             textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
         }
@@ -326,7 +324,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setupRecyclerView() {
-        thresholdAdapter = new ThresholdAdapter(recyclerViewThresholds.getContext(), unitTemperature, formatTime);
+        thresholdAdapter = new ThresholdAdapter(recyclerViewThresholds.getContext(), unitTemperature, formatTime, formatDate);
 
         linearLayoutManager = new LinearLayoutManager(recyclerViewThresholds.getContext(), LinearLayoutManager.HORIZONTAL, false);
 

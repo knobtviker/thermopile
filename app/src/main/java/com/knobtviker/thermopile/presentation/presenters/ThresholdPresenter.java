@@ -3,8 +3,11 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerThresholdRepositoryComponent;
+import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
+import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
@@ -22,16 +25,34 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
 
     private final ThresholdContract.View view;
 
+
+    private final SettingsRepository settingsRepository;
     private final ThresholdRepository thresholdRepository;
 
     public ThresholdPresenter(@NonNull final ThresholdContract.View view) {
         super(view);
 
         this.view = view;
+        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
+            .localDataSource(new SettingsLocalDataSourceModule())
+            .build()
+            .inject();
         this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
             .localDataSource(new ThresholdLocalDataSourceModule())
             .build()
             .inject();
+    }
+
+    @Override
+    public void settings() {
+        compositeDisposable.add(
+            settingsRepository
+                .observe()
+                .subscribe(
+                    view::onSettingsChanged,
+                    this::error
+                )
+        );
     }
 
     @Override
