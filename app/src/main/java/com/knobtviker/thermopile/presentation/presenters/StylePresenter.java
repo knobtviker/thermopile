@@ -43,4 +43,18 @@ public class StylePresenter extends AbstractPresenter implements StyleContract.P
                 )
         );
     }
+
+    @Override
+    public void saveScreensaverTimeout(long settingsId, int value) {
+        compositeDisposable.add(
+            settingsRepository
+                .saveScreensaverTimeout(settingsId, value)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
 }

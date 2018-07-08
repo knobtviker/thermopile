@@ -134,4 +134,16 @@ public class SettingsRepository extends AbstractRepository {
             .observeOn(schedulerProvider.io)
             .ignoreElements();
     }
+
+    public Completable saveScreensaverTimeout(long settingsId, int value) {
+        return settingsLocalDataSource
+            .queryById(settingsId)
+            .subscribeOn(schedulerProvider.io)
+            .flatMap(settings -> {
+                settings.screensaverDelay = value;
+                return settingsLocalDataSource.save(settings);
+            })
+            .observeOn(schedulerProvider.io)
+            .ignoreElements();
+    }
 }

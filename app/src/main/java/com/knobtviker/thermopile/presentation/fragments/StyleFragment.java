@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -19,11 +19,13 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.utils.constants.Default;
 import com.knobtviker.thermopile.presentation.utils.constants.ScreensaverTimeout;
+import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnItemSelected;
 import timber.log.Timber;
 
 /**
@@ -33,7 +35,7 @@ import timber.log.Timber;
 public class StyleFragment extends BaseFragment<StyleContract.Presenter> implements StyleContract.View {
     public static final String TAG = StyleFragment.class.getSimpleName();
 
-    private ArrayAdapter<String> spinnerAdapterTimeout;
+    private TimeoutAdapter spinnerAdapterTimeout;
 
     private long settingsId = -1L;
 
@@ -89,6 +91,20 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         Timber.e(throwable);
     }
 
+    @OnItemSelected(value = {R.id.spinner_timeout}, callback = OnItemSelected.Callback.ITEM_SELECTED)
+    public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view, final int position, final long id) {
+        switch (adapterView.getId()) {
+            case R.id.spinner_timeout:
+                if (spinnerTimeout.isEnabled() && spinnerAdapterTimeout != null && spinnerAdapterTimeout.getItem(position) > 0) {
+                    screenSaverTimeout = spinnerAdapterTimeout.getItem(position);
+                    if (screenSaverTimeout > 0) {
+                        presenter.saveScreensaverTimeout(settingsId, screenSaverTimeout);
+                    }
+                }
+                break;
+        }
+    }
+
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id;
         this.theme = settings.theme;
@@ -130,17 +146,15 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         spinnerTimeout.setEnabled(false);
         spinnerTimeout.setPrompt("Screensaver Timeout");
 
-        final List<String> formats = Arrays.asList(
-            String.valueOf(ScreensaverTimeout._15S),
-            String.valueOf(ScreensaverTimeout._30S),
-            String.valueOf(ScreensaverTimeout._1MIN),
-            String.valueOf(ScreensaverTimeout._2MIN),
-            String.valueOf(ScreensaverTimeout._5MIN),
-            String.valueOf( ScreensaverTimeout._10MIN)
+        final List<Integer> timeouts = Arrays.asList(
+            ScreensaverTimeout._15S,
+            ScreensaverTimeout._30S,
+            ScreensaverTimeout._1MIN,
+            ScreensaverTimeout._2MIN,
+            ScreensaverTimeout._5MIN,
+            ScreensaverTimeout._10MIN
         );
-        spinnerAdapterTimeout = new ArrayAdapter<>(spinnerTimeout.getContext(), android.R.layout.simple_spinner_item, formats);
-        spinnerAdapterTimeout.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
+        spinnerAdapterTimeout = new TimeoutAdapter(requireContext(), timeouts);
         spinnerTimeout.setAdapter(spinnerAdapterTimeout);
     }
 
@@ -161,12 +175,12 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     }
 
     private void setScreenSaverTimeout() {
-//        for (int i = 0; i < spinnerAdapterTimeout.getCount(); i++) {
-//            if (spinnerAdapterTimeout.getItem(i) == screenSaverTimeout) {
-//                spinnerTimeout.setSelection(i);
-//                break;
-//            }
-//        }
+        for (int i = 0; i < spinnerAdapterTimeout.getCount(); i++) {
+            if (spinnerAdapterTimeout.getItem(i) == screenSaverTimeout) {
+                spinnerTimeout.setSelection(i);
+                break;
+            }
+        }
 
         spinnerTimeout.setEnabled(true);
     }

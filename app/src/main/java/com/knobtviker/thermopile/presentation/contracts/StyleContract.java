@@ -16,5 +16,7 @@ public interface StyleContract {
     interface Presenter extends BasePresenter {
 
         void saveTheme(final long settingsId, final int value);
+
+        void saveScreensaverTimeout(final long settingsId, final int value);
     }
 }
