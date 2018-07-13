@@ -125,7 +125,8 @@ public class DiscreteSeekBar extends View {
     private float dx;
 
     private BubbleView bubbleView;
-    private int bubbleRadius;
+    private int bubbleHeight;
+    private int bubbleArrowHeight;
     private float bubbleCenterRawSolidX;
     private float bubbleCenterRawSolidY;
     private float bubbleCenterRawX;
@@ -186,7 +187,9 @@ public class DiscreteSeekBar extends View {
         thumbTextSize = typedArray.getDimensionPixelSize(R.styleable.DiscreteSeekBar_discrete_thumb_text_size, sp2px(14));
         thumbTextColor = typedArray.getColor(R.styleable.DiscreteSeekBar_discrete_thumb_text_color, secondTrackColor);
         bubbleColor = typedArray.getColor(R.styleable.DiscreteSeekBar_discrete_bubble_color, secondTrackColor);
-        bubbleTextSize = typedArray.getDimensionPixelSize(R.styleable.DiscreteSeekBar_discrete_bubble_text_size, sp2px(14));
+        bubbleTextSize = typedArray.getDimensionPixelSize(R.styleable.DiscreteSeekBar_discrete_bubble_text_size, sp2px(16));
+        bubbleHeight = typedArray.getDimensionPixelSize(R.styleable.DiscreteSeekBar_discrete_bubble_height, dp2px(32));
+        bubbleArrowHeight = typedArray.getDimensionPixelSize(R.styleable.DiscreteSeekBar_discrete_bubble_arrow_height, dp2px(8));
         bubbleTextColor = typedArray.getColor(R.styleable.DiscreteSeekBar_discrete_bubble_text_color, Color.WHITE);
         isShowSectionMark = typedArray.getBoolean(R.styleable.DiscreteSeekBar_discrete_show_section_mark, false);
         isAutoAdjustSectionMark = typedArray.getBoolean(R.styleable.DiscreteSeekBar_discrete_auto_adjust_section_mark, false);
@@ -201,6 +204,7 @@ public class DiscreteSeekBar extends View {
         alwaysShowBubbleDelay = duration < 0 ? 0 : duration;
         isHideBubble = typedArray.getBoolean(R.styleable.DiscreteSeekBar_discrete_hide_bubble, false);
         isRtl = typedArray.getBoolean(R.styleable.DiscreteSeekBar_discrete_rtl, false);
+
         typedArray.recycle();
 
         paint = new Paint();
@@ -209,7 +213,7 @@ public class DiscreteSeekBar extends View {
         paint.setTextAlign(Paint.Align.CENTER);
 
         rectText = new Rect();
-        textSpace = dp2px(2);
+        textSpace = dp2px(4);
 
         initBuilderByPriority();
 
@@ -344,9 +348,8 @@ public class DiscreteSeekBar extends View {
         paint.getTextBounds(text, 0, text.length(), rectText);
         final int w2 = (rectText.width() + textSpace * 2) >> 1;
 
-        bubbleRadius = dp2px(14); // default 14dp
-        final int max = Math.max(bubbleRadius, Math.max(w1, w2));
-        bubbleRadius = max + textSpace;
+        final int max = Math.max(bubbleHeight, Math.max(w1, w2));
+        bubbleHeight = max + textSpace;
     }
 
     private void initSectionTexts() {
@@ -449,7 +452,7 @@ public class DiscreteSeekBar extends View {
     }
 
     /**
-     * In fact there two parts of the BubbleSeeBar, they are the BubbleView and the SeekBar.
+     * In fact there two parts of the BubbleSeekBar, they are the BubbleView and the SeekBar.
      * <p>
      * The BubbleView is added to Window by the WindowManager, so the only connection between
      * BubbleView and SeekBar is their origin raw coordinates on the screen.
@@ -478,8 +481,8 @@ public class DiscreteSeekBar extends View {
             bubbleCenterRawSolidX = point[0] + left - bubbleView.getMeasuredWidth() / 2f;
         }
         bubbleCenterRawX = calculateCenterRawXofBubbleView();
-        bubbleCenterRawSolidY = point[1] - bubbleView.getMeasuredHeight();
-//        bubbleCenterRawSolidY -= dp2px(2);
+        bubbleCenterRawSolidY = point[1] - bubbleView.getMeasuredHeight() - 10;
+        bubbleCenterRawSolidY -= dp2px(8);
 
         final Context context = getContext();
         if (context instanceof Activity) {
@@ -1098,6 +1101,10 @@ public class DiscreteSeekBar extends View {
         return Math.round(processProgress());
     }
 
+    public int getProgressPercent() {
+        return Math.round(((processProgress() - min) * 100.0f) / (max - min));
+    }
+
     public float getProgressFloat() {
         return formatFloat(processProgress());
     }
@@ -1199,6 +1206,7 @@ public class DiscreteSeekBar extends View {
     /////// Api ends ///////////////////////////////////////////////////////////////////////////////
 
     void config(@NonNull final Builder builder) {
+        unit = builder.unit;
         min = builder.min;
         max = builder.max;
         progress = builder.progress;
@@ -1384,10 +1392,11 @@ public class DiscreteSeekBar extends View {
     class BubbleView extends View {
 
         private Paint bubblePaint;
-        private Path bubblePath;
+        private Path tooltipPath;
         private RectF bubbleRectF;
         private Rect bubbleRect;
         private String bubbleProgressText = "";
+        private int arrowWidth;
 
         BubbleView(Context context) {
             this(context, null);
@@ -1400,11 +1409,14 @@ public class DiscreteSeekBar extends View {
         BubbleView(Context context, AttributeSet attrs, int defStyleAttr) {
             super(context, attrs, defStyleAttr);
 
+            arrowWidth = Math.round(1.667f * bubbleArrowHeight);
+
             bubblePaint = new Paint();
             bubblePaint.setAntiAlias(true);
             bubblePaint.setTextAlign(Paint.Align.CENTER);
 
-            bubblePath = new Path();
+            tooltipPath = new Path();
+
             bubbleRectF = new RectF();
             bubbleRect = new Rect();
         }
@@ -1413,16 +1425,16 @@ public class DiscreteSeekBar extends View {
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-            setMeasuredDimension(
-                3 * bubbleRadius,
-                3 * bubbleRadius
-            );
+            final int width = Math.round(1.667f * bubbleHeight);
+            final int height = bubbleHeight;
+
+            setMeasuredDimension(width, height);
 
             bubbleRectF.set(
-                getMeasuredWidth() / 2f - bubbleRadius,
                 0,
-                getMeasuredWidth() / 2f + bubbleRadius,
-                2 * bubbleRadius
+                0,
+                width,
+                height - bubbleArrowHeight
             );
         }
 
@@ -1430,40 +1442,34 @@ public class DiscreteSeekBar extends View {
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 
-            bubblePath.reset();
-            final float x0 = getMeasuredWidth() / 2f;
-            final float y0 = getMeasuredHeight() - bubbleRadius / 3f;
-            bubblePath.moveTo(x0, y0);
-            final float x1 = (float) (getMeasuredWidth() / 2f - Math.sqrt(3) / 2f * bubbleRadius);
-            final float y1 = 3 / 2f * bubbleRadius;
-            bubblePath.quadTo(
-                x1 - dp2px(2),
-                y1 - dp2px(2),
-                x1,
-                y1
-            );
-            bubblePath.arcTo(bubbleRectF, 150, 240);
+            tooltipPath.reset();
 
-            final float x2 = (float) (getMeasuredWidth() / 2f + Math.sqrt(3) / 2f * bubbleRadius);
-            bubblePath.quadTo(
-                x2 + dp2px(2), y1 - dp2px(2),
-                x0, y0
-            );
-            bubblePath.close();
+            float middle = bubbleRectF.width() / 2;
+
+            tooltipPath.moveTo(0, 0);
+
+            tooltipPath.addRoundRect(bubbleRectF, 8, 8, Path.Direction.CW);
+
+            tooltipPath.moveTo(middle - (arrowWidth / 2), bubbleRectF.bottom);
+            tooltipPath.lineTo(middle, bubbleRectF.bottom + bubbleArrowHeight);
+            tooltipPath.lineTo(middle + (arrowWidth / 2), bubbleRectF.bottom);
+
+            tooltipPath.close();
 
             bubblePaint.setColor(bubbleColor);
-            canvas.drawPath(bubblePath, bubblePaint);
+
+            canvas.drawPath(tooltipPath, paint);
 
             bubblePaint.setTextSize(bubbleTextSize);
             bubblePaint.setColor(bubbleTextColor);
             bubblePaint.getTextBounds(bubbleProgressText, 0, bubbleProgressText.length(), bubbleRect);
             final Paint.FontMetrics fontMetrics = bubblePaint.getFontMetrics();
-            final float baseline = bubbleRadius + (fontMetrics.descent - fontMetrics.ascent) / 2f - fontMetrics.descent;
+            final float baseline = (bubbleHeight - bubbleArrowHeight) / 2.0f + (fontMetrics.descent - fontMetrics.ascent) / 2f - fontMetrics.descent;
             canvas.drawText(bubbleProgressText, getMeasuredWidth() / 2f, baseline, bubblePaint);
         }
 
         void setProgressText(@NonNull final String progressText) {
-            if (progressText != null && !bubbleProgressText.equals(progressText)) {
+            if (!bubbleProgressText.equals(progressText)) {
                 bubbleProgressText = progressText;
                 invalidate();
             }

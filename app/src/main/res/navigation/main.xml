@@ -85,8 +85,8 @@
         tools:layout="@layout/fragment_threshold">
         <argument
             android:name="thresholdId"
-            android:defaultValue="-1"
-            app:type="integer"/>
+            android:defaultValue="-1L"
+            app:type="long"/>
         <argument
             android:name="day"
             android:defaultValue="-1"

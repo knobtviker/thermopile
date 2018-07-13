@@ -18,8 +18,11 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
+import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.MeasuredTemperature;
+import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 
@@ -46,6 +49,8 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @FormatTime
     private String formatTime;
 
+    @UnitTemperature
+    private int unitTemperature;
 
     private int day = -1;
 
@@ -84,6 +89,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     public ThresholdFragment() {
         formatClock = ClockMode._24H;
         formatTime = FormatTime.HH_MM;
+        unitTemperature = UnitTemperature.CELSIUS;
 
         presenter = new ThresholdPresenter(this);
     }
@@ -100,7 +106,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
             day = arguments.getDay();
             startMinute = arguments.getStartMinute();
             maxWidth = arguments.getMaxWidth();
-            thresholdId = (long) arguments.getThresholdId();
+            thresholdId = arguments.getThresholdId();
         });
     }
 
@@ -126,19 +132,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         }
     }
 
-//    @Override
-//    public void onResume() {
-//        presenter.settings();
-//
-//        if (thresholdId != -1L) {
-//            presenter.loadById(thresholdId);
-//        } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
-//            populate(startMinute, maxWidth);
-//        }
-//
-//        super.onResume();
-//    }
-
     @Override
     public void showLoading(boolean isLoading) {
 
@@ -155,7 +148,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     public void onSettingsChanged(@NonNull Settings settings) {
         this.formatClock = settings.formatClock;
         this.formatTime = settings.formatTime;
+        this.unitTemperature = settings.unitTemperature;
 
+        setupSeekBar();
         setupTimePickers();
     }
 
@@ -188,7 +183,28 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     private void setupSeekBar() {
-        //TODO: Use newBuilder() to apply Settings, min, max and section count constants
+        String unit;
+
+        switch (unitTemperature) {
+            case UnitTemperature.CELSIUS:
+                unit = getString(R.string.unit_temperature_celsius);
+                break;
+            case UnitTemperature.FAHRENHEIT:
+                unit = getString(R.string.unit_temperature_fahrenheit);
+                break;
+            case UnitTemperature.KELVIN:
+                unit = getString(R.string.unit_temperature_kelvin);
+                break;
+            default:
+                unit = getString(R.string.unit_temperature_celsius);
+                break;
+        }
+
+        seekBarTemperature.newBuilder()
+            .min(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MINIMUM))
+            .max(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MAXIMUM))
+            .unit(unit)
+            .build();
     }
 
     private void setupTimePickers() {
@@ -198,7 +214,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         textViewTimeEnd.setText(now.toString(formatTime));
 
         timePickerDialogStart = new TimePickerDialog(
-            getContext(),
+            requireContext(),
             (view, hourOfDay, minute) -> {
                 startTimeHour = hourOfDay;
                 startTimeMinute = minute;
@@ -211,7 +227,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         );
 
         timePickerDialogEnd = new TimePickerDialog(
-            getContext(),
+            requireContext(),
             (view, hourOfDay, minute) -> {
                 endTimeHour = hourOfDay;
                 endTimeMinute = minute;
@@ -239,7 +255,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         threshold.startMinute = startTimeMinute;
         threshold.endHour = endTimeHour;
         threshold.endMinute = endTimeMinute;
-        threshold.temperature = seekBarTemperature.getProgress();
+        threshold.temperature = Math.round(seekBarTemperature.getProgressPercent() * MeasuredTemperature.MAXIMUM);
         threshold.color = colorAdapter.getSelectedColor();
 
         presenter.save(threshold);
@@ -286,6 +302,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private void back() {
         NavHostFragment.findNavController(this).navigate(R.id.action_thresholdFragment_to_scheduleFragment);
+//        NavHostFragment.findNavController(this).popBackStack();
     }
 
     private void setStartTime(final int day, final int hour, final int minute) {

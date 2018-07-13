@@ -281,6 +281,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         if (thresholdAdapter != null) {
             thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
+
+            if (thresholdAdapter.getItemCount() > 0) {
+                textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+            }
         }
 
         ((ThermopileApplication) requireActivity().getApplication()).refresh();
@@ -324,9 +328,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setupRecyclerView() {
-        thresholdAdapter = new ThresholdAdapter(recyclerViewThresholds.getContext(), unitTemperature, formatTime, formatDate);
+        thresholdAdapter = new ThresholdAdapter(requireContext(), unitTemperature, formatTime, formatDate);
 
-        linearLayoutManager = new LinearLayoutManager(recyclerViewThresholds.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        linearLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
 
         recyclerViewThresholds.setLayoutManager(linearLayoutManager);
         recyclerViewThresholds.setAdapter(thresholdAdapter);

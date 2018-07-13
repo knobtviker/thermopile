@@ -67,6 +67,8 @@
         <attr name="discrete_touch_to_seek" format="boolean"/> <!--touch anywhere on track to quickly seek, default: false-->
         <attr name="discrete_seek_step_section" format="boolean"/> <!--seek one step by one section, the progress is discrete, default: false-->
         <attr name="discrete_seek_by_section" format="boolean"/> <!--seek by section, the progress may not be linear, default: false-->
+        <attr name="discrete_bubble_height" format="dimension|reference"/>
+        <attr name="discrete_bubble_arrow_height" format="dimension|reference"/>
         <attr name="discrete_bubble_color" format="color|reference"/> <!--color of bubble, default: same as left-track's color-->
         <attr name="discrete_bubble_text_size" format="dimension|reference"/> <!--text size of bubble-progress, default: 14sp-->
         <attr name="discrete_bubble_text_color" format="color|reference"/> <!--text color of bubble-progress, default: #ffffffff-->
