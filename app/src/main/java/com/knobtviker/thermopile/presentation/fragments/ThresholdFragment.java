@@ -90,8 +90,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         formatClock = ClockMode._24H;
         formatTime = FormatTime.HH_MM;
         unitTemperature = UnitTemperature.CELSIUS;
-
-        presenter = new ThresholdPresenter(this);
     }
 
     @Override
@@ -123,13 +121,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         setupTimePickers();
         setupRecyclerView();
 
-        presenter.settings();
+        presenter = new ThresholdPresenter(this);
 
-        if (thresholdId != -1L) {
-            presenter.loadById(thresholdId);
-        } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
-            populate(startMinute, maxWidth);
-        }
+        load();
     }
 
     @Override
@@ -248,6 +242,16 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         recyclerViewColors.setAdapter(colorAdapter);
     }
 
+    private void load() {
+        presenter.settings();
+
+        if (thresholdId != -1L) {
+            presenter.loadById(thresholdId);
+        } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
+            populate(startMinute, maxWidth);
+        }
+    }
+
     private void save() {
         final Threshold threshold = new Threshold();
         threshold.day = day;
@@ -301,8 +305,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     private void back() {
-        NavHostFragment.findNavController(this).navigate(R.id.action_thresholdFragment_to_scheduleFragment);
-//        NavHostFragment.findNavController(this).popBackStack();
+        NavHostFragment.findNavController(this).popBackStack();
     }
 
     private void setStartTime(final int day, final int hour, final int minute) {

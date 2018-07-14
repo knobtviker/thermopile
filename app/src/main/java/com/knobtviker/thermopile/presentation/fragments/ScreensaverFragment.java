@@ -102,8 +102,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         formatTime = FormatTime.HH_MM;
         unitTemperature = UnitTemperature.CELSIUS;
         unitPressure = UnitPressure.PASCAL;
-
-        presenter = new ScreenSaverPresenter(this);
     }
 
     @Nullable
@@ -116,8 +114,9 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        presenter.observeDateChanged(view.getContext());
-        data();
+        presenter = new ScreenSaverPresenter(this);
+
+        load();
     }
 
     @Override
@@ -244,6 +243,15 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
             textViewDate.setText(dateTime.toString(formatDate));
             textViewDay.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void load() {
+        date();
+        data();
+    }
+
+    private void date() {
+        presenter.observeDateChanged(requireContext());
     }
 
     private void data() {

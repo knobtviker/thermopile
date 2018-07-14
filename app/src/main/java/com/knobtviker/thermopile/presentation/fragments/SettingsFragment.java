@@ -48,8 +48,6 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         this.unitsFragment = UnitsFragment.newInstance();
         this.styleFragment = StyleFragment.newInstance();
         this.networkFragment = NetworkFragment.newInstance();
-
-        this.presenter = new SettingsPresenter(this);
     }
 
     @Nullable
@@ -63,13 +61,10 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         super.onViewCreated(view, savedInstanceState);
 
         setupViewPager();
-    }
 
-    @Override
-    public void onResume() {
+        this.presenter = new SettingsPresenter(this);
+
         presenter.load();
-
-        super.onResume();
     }
 
     @Override
@@ -94,7 +89,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-                NavHostFragment.findNavController(this).navigate(R.id.action_settingsFragment_to_mainFragment);
+                NavHostFragment.findNavController(this).popBackStack();
                 break;
             case R.id.button_help:
                 Timber.i("Show HelpActivity");

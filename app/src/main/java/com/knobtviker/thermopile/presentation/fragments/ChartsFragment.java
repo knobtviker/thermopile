@@ -124,8 +124,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         unitTemperature = UnitTemperature.CELSIUS;
         unitPressure = UnitPressure.PASCAL;
         unitMotion = UnitAcceleration.METERS_PER_SECOND_2;
-
-        presenter = new ChartsPresenter(this);
     }
 
     @Override
@@ -150,13 +148,15 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         setupSpinnerType();
         setupSpinnerInterval();
         setupSparkView();
+
+        presenter = new ChartsPresenter(this);
+
+        data();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        data();
     }
 
     @Override
@@ -173,7 +173,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-                NavHostFragment.findNavController(this).navigate(R.id.action_chartsFragment_to_mainFragment);
+                NavHostFragment.findNavController(this).popBackStack();
                 break;
         }
     }

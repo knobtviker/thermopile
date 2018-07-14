@@ -28,13 +28,24 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     }
 
     @Override
-    public void onDestroyView() {
+    public void onPause() {
         if (presenter != null) {
             presenter.dispose();
         }
 
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (presenter != null) {
+            presenter.dispose();
+            presenter = null;
+        }
+
         if (!unbinder.equals(Unbinder.EMPTY)) {
             unbinder.unbind();
+            unbinder = Unbinder.EMPTY;
         }
 
         super.onDestroyView();

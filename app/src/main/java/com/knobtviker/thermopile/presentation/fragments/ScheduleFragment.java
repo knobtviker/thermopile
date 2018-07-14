@@ -66,8 +66,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public ScheduleFragment() {
         formatDate = FormatDate.EEEE_DD_MM_YYYY;
         unitTemperature = UnitTemperature.CELSIUS;
-
-        presenter = new SchedulePresenter(this);
     }
 
     @Nullable
@@ -81,13 +79,10 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         super.onViewCreated(view, savedInstanceState);
 
         setupDayTouchListeners();
-    }
 
-    @Override
-    public void onResume() {
-        presenter.settings();
-        presenter.thresholds();
-        super.onResume();
+        presenter = new SchedulePresenter(this);
+
+        load();
     }
 
     @Override
@@ -120,7 +115,8 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-                NavHostFragment.findNavController(this).navigate(R.id.action_scheduleFragment_to_mainFragment);
+//                NavHostFragment.findNavController(this).navigate(R.id.action_scheduleFragment_to_mainFragment);
+                NavHostFragment.findNavController(this).popBackStack();
                 break;
             case R.id.button_add:
                 add();
@@ -162,6 +158,11 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                             return true;
                         }
                     }));
+    }
+
+    private void load() {
+        presenter.settings();
+        presenter.thresholds();
     }
 
     private void populate(@NonNull final List<Threshold> thresholds) {

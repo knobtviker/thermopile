@@ -140,8 +140,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         unitPressure = UnitPressure.PASCAL;
         unitMotion = UnitAcceleration.METERS_PER_SECOND_2;
 
-        presenter = new MainPresenter(this);
-
         pidController = new PIDController(40, 1000);
     }
 
@@ -157,15 +155,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         setupRecyclerView();
 
-        presenter.observeDateChanged(view.getContext());
-        data();
-    }
+        presenter = new MainPresenter(this);
 
-    @Override
-    public void onResume() {
-        thresholds();
-
-        super.onResume();
+        load();
     }
 
     @Override
@@ -401,6 +393,16 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         textViewDate.setText(dateTime.toString(formatDate));
     }
 
+    private void load() {
+        date();
+        data();
+        thresholds();
+    }
+
+    private void date() {
+        presenter.observeDateChanged(requireContext());
+    }
+
     private void data() {
         presenter.observeTemperature();
         presenter.observePressure();
@@ -409,7 +411,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         presenter.observeAcceleration();
         presenter.settings();
 
-        ((ThermopileApplication) getActivity().getApplication()).refresh();
+        ((ThermopileApplication) requireActivity().getApplication()).refresh();
     }
 
     private void thresholds() {

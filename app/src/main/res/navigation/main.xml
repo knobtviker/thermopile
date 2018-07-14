@@ -37,26 +37,12 @@
         android:name="com.knobtviker.thermopile.presentation.fragments.ChartsFragment"
         android:label="ChartsFragment"
         tools:layout="@layout/fragment_charts">
-        <action
-            android:id="@+id/action_chartsFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:enterAnim="@anim/enter_left_to_right"
-            app:exitAnim="@anim/exit_left_to_right"
-            app:popEnterAnim="@anim/enter_left_to_right"
-            app:popExitAnim="@anim/exit_left_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/scheduleFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.ScheduleFragment"
         android:label="ScheduleFragment"
         tools:layout="@layout/fragment_schedule">
-        <action
-            android:id="@+id/action_scheduleFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:enterAnim="@anim/enter_left_to_right"
-            app:exitAnim="@anim/exit_left_to_right"
-            app:popEnterAnim="@anim/enter_left_to_right"
-            app:popExitAnim="@anim/exit_left_to_right"/>
         <action
             android:id="@+id/showThresholdByIdAction"
             app:destination="@id/thresholdFragment"
@@ -70,13 +56,6 @@
         android:name="com.knobtviker.thermopile.presentation.fragments.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings">
-        <action
-            android:id="@+id/action_settingsFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:enterAnim="@anim/enter_left_to_right"
-            app:exitAnim="@anim/exit_left_to_right"
-            app:popEnterAnim="@anim/enter_left_to_right"
-            app:popExitAnim="@anim/exit_left_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/thresholdFragment"
@@ -99,13 +78,6 @@
             android:name="maxWidth"
             android:defaultValue="-1"
             app:type="integer"/>
-        <action
-            android:id="@+id/action_thresholdFragment_to_scheduleFragment"
-            app:destination="@id/scheduleFragment"
-            app:enterAnim="@anim/no_anim"
-            app:exitAnim="@anim/exit_top_to_bottom"
-            app:popEnterAnim="@anim/no_anim"
-            app:popExitAnim="@anim/exit_top_to_bottom"/>
     </fragment>
 
 </navigation>
