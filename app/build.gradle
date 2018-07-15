@@ -27,6 +27,8 @@ android {
         manifestPlaceholders = [fabricApiKey: buildProperties.keys['fabric_manifest'].or("").string]
         buildConfigField "String", 'KEY_FABRIC', buildProperties.keys['fabric'].or("").string
 
+//        manifestPlaceholders = [awarenessApiKey: buildProperties.keys['awareness'].or("").string]
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['objectbox.debug': 'true']

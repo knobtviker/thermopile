@@ -4,10 +4,14 @@
     android:shareInterpolator="false">
 
     <translate
-        android:duration="3000"
+        android:duration="@android:integer/config_shortAnimTime"
         android:fromXDelta="100%"
         android:fromYDelta="0%"
         android:toXDelta="0%"
         android:toYDelta="0%"/>
 
+    <alpha
+        android:duration="@android:integer/config_shortAnimTime"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0"/>
 </set>

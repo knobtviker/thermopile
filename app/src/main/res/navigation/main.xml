@@ -9,28 +9,32 @@
         android:id="@+id/mainFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.MainFragment"
         android:label="MainFragment"
+        app:enterAnim="@anim/enter_fade_in"
+        app:popEnterAnim="@anim/enter_fade_in"
+        app:exitAnim="@anim/exit_fade_out"
+        app:popExitAnim="@anim/exit_fade_out"
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_chartsFragment"
             app:destination="@id/chartsFragment"
-            app:enterAnim="@anim/enter_right_to_left"
-            app:exitAnim="@anim/exit_right_to_left"
-            app:popEnterAnim="@anim/enter_right_to_left"
-            app:popExitAnim="@anim/exit_right_to_left"/>
+            app:enterAnim="@anim/enter_fade_in_right_to_left"
+            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
+            app:exitAnim="@anim/exit_fade_out_left_to_right"
+            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
         <action
             android:id="@+id/action_mainFragment_to_scheduleFragment"
             app:destination="@id/scheduleFragment"
-            app:enterAnim="@anim/enter_right_to_left"
-            app:exitAnim="@anim/exit_right_to_left"
-            app:popEnterAnim="@anim/enter_right_to_left"
-            app:popExitAnim="@anim/exit_right_to_left"/>
+            app:enterAnim="@anim/enter_fade_in_right_to_left"
+            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
+            app:exitAnim="@anim/exit_fade_out_left_to_right"
+            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
         <action
             android:id="@+id/action_mainFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
-            app:enterAnim="@anim/enter_right_to_left"
-            app:exitAnim="@anim/exit_right_to_left"
-            app:popEnterAnim="@anim/enter_right_to_left"
-            app:popExitAnim="@anim/exit_right_to_left"/>
+            app:enterAnim="@anim/enter_fade_in_right_to_left"
+            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
+            app:exitAnim="@anim/exit_fade_out_left_to_right"
+            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/chartsFragment"

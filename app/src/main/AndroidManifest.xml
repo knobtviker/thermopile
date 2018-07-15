@@ -26,6 +26,10 @@
             android:name="io.fabric.ApiKey"
             android:value="${fabricApiKey}"/>
 
+        <!--<meta-data-->
+            <!--android:name="com.google.android.awareness.API_KEY"-->
+            <!--android:value="${awarenessApiKey}"/>-->
+
         <uses-library android:name="com.google.android.things"/>
 
         <activity
