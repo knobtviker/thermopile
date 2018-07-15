@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Thermopile.iml" filepath="$PROJECT_DIR$/Thermopile.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/drivers/drivers.iml" filepath="$PROJECT_DIR$/drivers/drivers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fram/fram.iml" filepath="$PROJECT_DIR$/fram/fram.iml" />
     </modules>
   </component>
 </project>

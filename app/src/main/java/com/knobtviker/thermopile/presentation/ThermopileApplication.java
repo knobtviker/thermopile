@@ -20,6 +20,10 @@ import timber.log.Timber;
 public class ThermopileApplication extends AbstractApplication<ApplicationContract.Presenter> implements ApplicationContract.View {
     private static final String TAG = ThermopileApplication.class.getSimpleName();
 
+    private long lastBootTimestamp = 0L;
+
+    private long bootCount = 1L;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -89,12 +93,32 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         presenter.saveMagneticField(vendor, name, values);
     }
 
+    @Override
+    public void onLastBootTimestamp(long value) {
+        lastBootTimestamp = value;
+        Timber.i("LAST BOOT TIMESTAMP %s", lastBootTimestamp);
+    }
+
+    @Override
+    public void onBootCount(long value) {
+        bootCount = value;
+        Timber.i("BOOT COUNT %s", bootCount);
+    }
+
     public void createScreensaver() {
         presenter.createScreensaver();
     }
 
     public void destroyScreensaver() {
         presenter.destroyScreensaver();
+    }
+
+    public long lastBootTimestamp() {
+        return lastBootTimestamp;
+    }
+
+    public long bootCount() {
+        return bootCount;
     }
 
     private void initPresenter() {

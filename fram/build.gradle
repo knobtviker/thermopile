@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.1"
+
+    defaultConfig {
+        applicationId "com.knobtviker.thermopile.fram"
+        minSdkVersion 27
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    buildTypes {
+        debug {
+            adbOptions {
+                installOptions "-g"
+            }
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compileOnly 'com.google.android.things:androidthings:1.0'
+    implementation 'com.android.support:support-annotations:28.0.0-alpha3'
+    implementation 'com.knobtviker.android.things.contrib.community:boards:1.0.7'
+    implementation 'com.knobtviker.android.things.contrib.community.driver:fram:1.0.0'
+    implementation 'net.danlew:android.joda:2.9.9'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+}

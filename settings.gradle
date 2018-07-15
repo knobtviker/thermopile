@@ -1,1 +1,1 @@
-include ':app', ':drivers'
+include ':app', ':drivers', ':fram'

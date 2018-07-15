@@ -32,7 +32,10 @@ import timber.log.Timber;
 public abstract class AbstractApplication<P extends BasePresenter> extends Application implements ServiceConnection, PersistentCommunicator {
 
     @Nullable
-    private Messenger serviceMessenger = null;
+    private Messenger serviceMessengerSensors = null;
+
+    @Nullable
+    private Messenger serviceMessengerFram = null;
 
     @NonNull
     private Messenger foregroundMessenger;
@@ -69,30 +72,46 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        // Driver service connected
         Timber.i("onServiceConnected %s", name.flattenToString());
-        serviceMessenger = new Messenger(service);
 
-        final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
-        messageToService.replyTo = foregroundMessenger;
-        try {
-            serviceMessenger.send(messageToService);
-        } catch (RemoteException e) { //DeadObjectException
-            Timber.e(e);
+        if (name.getPackageName().equalsIgnoreCase("com.knobtviker.thermopile.drivers")) { // Driver service connected
+            serviceMessengerSensors = new Messenger(service);
+
+            final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
+            messageToService.replyTo = foregroundMessenger;
+            try {
+                serviceMessengerSensors.send(messageToService);
+            } catch (RemoteException e) { //DeadObjectException
+                Timber.e(e);
+            }
+        } else if (name.getPackageName().equalsIgnoreCase("com.knobtviker.thermopile.fram")) { // FRAM service connected
+            serviceMessengerFram = new Messenger(service);
+
+            final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
+            messageToService.replyTo = foregroundMessenger;
+            try {
+                serviceMessengerFram.send(messageToService);
+            } catch (RemoteException e) { //DeadObjectException
+                Timber.e(e);
+            }
         }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        // Driver service disconnected ...restart?
         Timber.i("onServiceDisconnected %s", name.flattenToString());
-        serviceMessenger = null;
+
+        if (name.getPackageName().equalsIgnoreCase("com.knobtviker.thermopile.drivers")) { // Driver service disconnected
+            serviceMessengerSensors = null;
+        } else if (name.getPackageName().equalsIgnoreCase("com.knobtviker.thermopile.fram")) { // FRAM service disconnected
+            serviceMessengerFram = null;
+        }
     }
 
     @Override
     public void onBindingDied(ComponentName name) {
 //        Timber.i("onBindingDied %s", name.flattenToString());
-//        serviceMessenger = null;
+//        serviceMessengerSensors = null;
 //
 //        services();
     }
@@ -137,11 +156,32 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         onNewMagneticField(vendor, name, values);
     }
 
+    @Override
+    public void setLastBootTimestamp(long value) {
+        onLastBootTimestamp(value);
+    }
+
+    @Override
+    public void setBootCount(long value) {
+        onBootCount(value);
+    }
+
     public void refresh() {
         try {
-            if (serviceMessenger != null) {
+            if (serviceMessengerSensors != null) {
                 final Message messageToService = Message.obtain(null, MessageWhatData.CURRENT);
-                serviceMessenger.send(messageToService);
+                serviceMessengerSensors.send(messageToService);
+            }
+        } catch (RemoteException e) {
+            Timber.e(e);
+        }
+    }
+
+    public void reset() {
+        try {
+            if (serviceMessengerFram != null) {
+                final Message messageToService = Message.obtain(null, MessageWhatData.RESET);
+                serviceMessengerFram.send(messageToService);
             }
         } catch (RemoteException e) {
             Timber.e(e);
@@ -155,9 +195,13 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     private void services() {
         foregroundMessenger = new Messenger(new IncomingHandler(this));
 
-        final Intent intent = new Intent();
-        intent.setComponent(new ComponentName("com.knobtviker.thermopile.drivers", "com.knobtviker.thermopile.drivers.DriversService"));
-        bindService(intent, this, BIND_AUTO_CREATE);
+        final Intent intentSensors = new Intent();
+        intentSensors.setComponent(new ComponentName("com.knobtviker.thermopile.drivers", "com.knobtviker.thermopile.drivers.DriversService"));
+        bindService(intentSensors, this, BIND_AUTO_CREATE);
+
+        final Intent intentFram = new Intent();
+        intentFram.setComponent(new ComponentName("com.knobtviker.thermopile.fram", "com.knobtviker.thermopile.fram.Mb85rc256vService"));
+        bindService(intentFram, this, BIND_AUTO_CREATE);
     }
 
     private void memoryClass() {
@@ -205,6 +249,10 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     public abstract void onNewMagneticField(@NonNull final String vendor, @NonNull final String name, final float[] values);
 
+    public abstract void onLastBootTimestamp(final long value);
+
+    public abstract void onBootCount(final long value);
+
     public static class IncomingHandler extends Handler {
 
         @NonNull
@@ -220,6 +268,10 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
             String name = "";
             float value = 0.0f;
             float[] values = {0.0f, 0.0f, 0.0f};
+
+            long lastBootTimestamp = 0L;
+            long bootCount = 1l;
+
             switch (message.what) {
                 case MessageWhatData.TEMPERATURE:
                     vendor = message.getData().getString("vendor");
@@ -284,6 +336,14 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         persistentCommunicator.saveMagneticField(vendor, name, values);
                     }
+                    break;
+                case MessageWhatData.LAST_BOOT_TIMESTAMP:
+                    lastBootTimestamp = message.getData().getLong("value");
+                    persistentCommunicator.setLastBootTimestamp(lastBootTimestamp);
+                    break;
+                case MessageWhatData.BOOT_COUNT:
+                    bootCount = message.getData().getLong("value");
+                    persistentCommunicator.setBootCount(bootCount);
                     break;
                 default:
                     super.handleMessage(message);

@@ -15,9 +15,12 @@ import java.lang.annotation.RetentionPolicy;
     MessageWhatData.LUMINOSITY,
     MessageWhatData.ACCELERATION,
     MessageWhatData.ANGULAR_VELOCITY,
-    MessageWhatData.MAGNETIC_FIELD
+    MessageWhatData.MAGNETIC_FIELD,
+    MessageWhatData.LAST_BOOT_TIMESTAMP,
+    MessageWhatData.BOOT_COUNT
 })
 public @interface MessageWhatData {
+    int RESET = -2;
     int CURRENT = -1;
     int TEMPERATURE = 0;
     int PRESSURE = 1;
@@ -27,4 +30,6 @@ public @interface MessageWhatData {
     int ACCELERATION = 5;
     int ANGULAR_VELOCITY = 6;
     int MAGNETIC_FIELD = 7;
+    int LAST_BOOT_TIMESTAMP = 8;
+    int BOOT_COUNT = 9;
 }

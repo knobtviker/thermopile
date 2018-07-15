@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
@@ -93,6 +94,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
                 break;
             case R.id.button_help:
                 Timber.i("Show HelpActivity");
+                ((ThermopileApplication)requireActivity().getApplication()).reset();
                 break;
             case R.id.button_feedback:
                 Timber.i("Show FeedbackActivity");
