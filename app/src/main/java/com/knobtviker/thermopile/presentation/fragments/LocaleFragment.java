@@ -38,11 +38,13 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
     private long settingsId = -1L;
 
+    @NonNull
     private String timezone = Default.TIMEZONE;
 
     @ClockMode
     private int clockMode = ClockMode._24H;
 
+    @Nullable
     private TimezoneAdapter spinnerAdapter;
 
     @BindView(R.id.spinner_timezone)
@@ -93,9 +95,11 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view, final int position, final long id) {
         switch (adapterView.getId()) {
             case R.id.spinner_timezone:
-                if (spinnerTimezone.isEnabled() && spinnerAdapter != null && !TextUtils.isEmpty(spinnerAdapter.getItem(position))) {
-                    timezone = spinnerAdapter.getItem(position);
-                    presenter.saveTimezone(settingsId, timezone);
+                if (spinnerAdapter != null) {
+                    if (spinnerTimezone.isEnabled() && !TextUtils.isEmpty(spinnerAdapter.getItem(position))) {
+                        timezone = spinnerAdapter.getItem(position);
+                        presenter.saveTimezone(settingsId, timezone);
+                    }
                 }
                 break;
         }
@@ -141,10 +145,12 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     }
 
     private void setTimezone() {
-        for (int i = 0; i<spinnerAdapter.getCount(); i++) {
-            if (spinnerAdapter.getItem(i).equalsIgnoreCase(timezone)) {
-                spinnerTimezone.setSelection(i);
-                break;
+        if (spinnerAdapter != null) {
+            for (int i = 0; i<spinnerAdapter.getCount(); i++) {
+                if (spinnerAdapter.getItem(i).equalsIgnoreCase(timezone)) {
+                    spinnerTimezone.setSelection(i);
+                    break;
+                }
             }
         }
 
