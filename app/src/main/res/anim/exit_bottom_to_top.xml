@@ -4,7 +4,7 @@
     android:zAdjustment="top">
 
     <translate
-        android:duration="@android:integer/config_shortAnimTime"
+        android:duration="4000"
         android:fromXDelta="0%"
         android:fromYDelta="0%p"
         android:toXDelta="0%"

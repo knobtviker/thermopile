@@ -23,6 +23,7 @@ import com.knobtviker.thermopile.presentation.utils.constants.Default;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatDay;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.MeasuredAcceleration;
 import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
 import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
 import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
@@ -169,40 +170,11 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public void onAccelerationChanged(float[] values) {
         final double ax = values[0];
         final double ay = values[2];
-        final double az = values[1]; //možda minus
-//
-//        final double mx = -magneticField[2];
-//        final double my = -magneticField[0];
-//        final double mz = magneticField[1];
-//
-//        double roll = Math.atan2(ay, az);
-//
-//        double pitch = Math.atan2(-ax, Math.sqrt(Math.pow(ay, 2) + Math.pow(az, 2)));
-//
-//        double heading;
-//        if (my == 0) {
-//            heading = (mx < 0) ? Math.PI : 0;
-//        } else {
-//            heading = Math.atan2(mx, my);
-//        }
-//
-//        heading -= Constants.DECLINATION * Math.PI / 180;
-//
-//        if (heading > Math.PI) {
-//            heading -= (2 * Math.PI);
-//        } else if (heading < -Math.PI) {
-//            heading += (2 * Math.PI);
-//        } else if (heading < 0) {
-//            heading += 2 * Math.PI;
-//        }
-//
-//        // Convert everything from radians to degrees:
-//        heading *= 180.0 / Math.PI;
-//        pitch *= 180.0 / Math.PI;
-//        roll *= 180.0 / Math.PI;
+        final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
 
-        //Peak ground acceleration calculation
-        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az + SensorManager.GRAVITY_EARTH, 2)), 19.61330000);
+        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
+
+        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az, 2)), MeasuredAcceleration.MAXIMUM);
         textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));
     }
 
@@ -317,6 +289,12 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
                 break;
             case UnitAcceleration.G:
                 textViewMotionUnit.setText(getString(R.string.unit_acceleration_g));
+                break;
+            case UnitAcceleration.GAL:
+                textViewMotionUnit.setText(getString(R.string.unit_acceleration_gal));
+                break;
+            case UnitAcceleration.CENTIMETERS_PER_SECOND_2:
+                textViewMotionUnit.setText(getString(R.string.unit_acceleration_cms2));
                 break;
             default:
                 textViewMotionUnit.setText(getString(R.string.unit_acceleration_ms2));

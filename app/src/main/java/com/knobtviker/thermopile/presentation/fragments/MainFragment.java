@@ -25,6 +25,7 @@ import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
 import com.knobtviker.thermopile.presentation.utils.constants.Default;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.MeasuredAcceleration;
 import com.knobtviker.thermopile.presentation.utils.constants.MeasuredAirQuality;
 import com.knobtviker.thermopile.presentation.utils.constants.MeasuredHumidity;
 import com.knobtviker.thermopile.presentation.utils.constants.MeasuredPressure;
@@ -198,54 +199,17 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         arcViewIAQ.setProgress((MeasuredAirQuality.MAXIMUM - value) / MeasuredAirQuality.MAXIMUM);
     }
 
-    // Calculate pitch, roll, and heading.
-    // Pitch/roll calculations take from this app note:
-    // http://cache.freescale.com/files/sensors/doc/app_note/AN3461.pdf?fpsp=1
-    // Heading calculations taken from this app note:
-    // http://www51.honeywell.com/aero/common/documents/myaerospacecatalog-documents/Defense_Brochures-documents/Magnetic__Literature_Application_notes-documents/AN203_Compass_Heading_Using_Magnetometers.pdf
-    // The LSM9DS1's mag x and y axes are opposite to the accelerometer,
-    // so my, mx are substituted for each other.
-    // Pay attention what the position of the sensor is ato its hardcoded axes, hence the index shuffle.
-//    private void onMotionChanged(final float[] acceleration, final float[] angularVelocity, final float[] magneticField) {
     @Override
     public void onAccelerationChanged(final float[] values) {
         final double ax = values[0];
         final double ay = values[2];
-        final double az = values[1]; //možda minus
-//
-//        final double mx = -magneticField[2];
-//        final double my = -magneticField[0];
-//        final double mz = magneticField[1];
-//
-//        double roll = Math.atan2(ay, az);
-//
-//        double pitch = Math.atan2(-ax, Math.sqrt(Math.pow(ay, 2) + Math.pow(az, 2)));
-//
-//        double heading;
-//        if (my == 0) {
-//            heading = (mx < 0) ? Math.PI : 0;
-//        } else {
-//            heading = Math.atan2(mx, my);
-//        }
-//
-//        heading -= Constants.DECLINATION * Math.PI / 180;
-//
-//        if (heading > Math.PI) {
-//            heading -= (2 * Math.PI);
-//        } else if (heading < -Math.PI) {
-//            heading += (2 * Math.PI);
-//        } else if (heading < 0) {
-//            heading += 2 * Math.PI;
-//        }
-//
-//        // Convert everything from radians to degrees:
-//        heading *= 180.0 / Math.PI;
-//        pitch *= 180.0 / Math.PI;
-//        roll *= 180.0 / Math.PI;
+        final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
 
-        //Peak ground acceleration calculation
-        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az + SensorManager.GRAVITY_EARTH, 2)), 19.61330000);
-        arcViewMotion.setProgress(value / 19.61330000f); //TODO: This hardcoded value must be set according to selected unit value for acceleration in Settings
+        //ax: -0.10000000149011612 ay: -0.20000000298023224 az: -9.800000190734863 + 9.80665F
+        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
+
+        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az, 2)), MeasuredAcceleration.MAXIMUM);
+        arcViewMotion.setProgress(value / MeasuredAcceleration.MAXIMUM); // 2g in m/s2
         textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));
     }
 
@@ -381,6 +345,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
                 break;
             case UnitAcceleration.G:
                 textViewMotionUnit.setText(getString(R.string.unit_acceleration_g));
+                break;
+            case UnitAcceleration.GAL:
+                textViewMotionUnit.setText(getString(R.string.unit_acceleration_gal));
+                break;
+            case UnitAcceleration.CENTIMETERS_PER_SECOND_2:
+                textViewMotionUnit.setText(getString(R.string.unit_acceleration_cms2));
                 break;
             default:
                 textViewMotionUnit.setText(getString(R.string.unit_acceleration_ms2));

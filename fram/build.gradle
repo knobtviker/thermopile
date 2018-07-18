@@ -34,6 +34,5 @@ dependencies {
     implementation 'com.android.support:support-annotations:28.0.0-alpha3'
     implementation 'com.knobtviker.android.things.contrib.community:boards:1.0.7'
     implementation 'com.knobtviker.android.things.contrib.community.driver:fram:1.0.0'
-    implementation 'net.danlew:android.joda:2.9.9'
     implementation 'com.jakewharton.timber:timber:4.7.1'
 }

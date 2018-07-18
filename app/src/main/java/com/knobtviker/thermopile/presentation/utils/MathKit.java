@@ -55,6 +55,9 @@ public class MathKit {
                 return measuredAcceleration * 1.0f; //in m/s2
             case UnitAcceleration.G:
                 return measuredAcceleration * 0.101971621f; //in g
+            case UnitAcceleration.CENTIMETERS_PER_SECOND_2:
+            case UnitAcceleration.GAL:
+                return measuredAcceleration * 0.01f; //in Gal or cm/s2
             default:
                 return measuredAcceleration * 1.0f;
         }

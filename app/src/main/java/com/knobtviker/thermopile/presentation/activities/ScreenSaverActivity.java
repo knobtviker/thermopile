@@ -6,6 +6,7 @@ import android.view.WindowManager;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
+import com.knobtviker.thermopile.presentation.utils.constants.Brightness;
 
 /**
  * Created by bojan on 11/06/2017.
@@ -19,31 +20,17 @@ public class ScreenSaverActivity extends BaseActivity {
 
         setContentView(R.layout.activity_screensaver);
 
-        brightnessMin();
+        brightness(Brightness.MINIMUM);
     }
 
     @Override
     protected void onDestroy() {
-        brightnessMax();
+        brightness(Brightness.MAXIMUM);
 
         super.onDestroy();
     }
 
-//    @Override
-//    public void finish() {
-//        overridePendingTransition(R.anim.no_anim, R.anim.exit_bottom_to_top);
-//        super.finish();
-//    }
-
-    private void brightnessMin() {
-        brightness(0.1f);
-    }
-
-    private void brightnessMax() {
-        brightness(1.0f);
-    }
-
-    private void brightness(final float value) {
+    private void brightness(@Brightness final float value) {
         final WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.screenBrightness = value;
         getWindow().setAttributes(layoutParams);

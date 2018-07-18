@@ -135,6 +135,16 @@
             <RadioButton
                 android:id="@+id/unit_g"
                 android:text="@string/unit_acceleration_g"
+                style="@style/Widget.RadioButton.Middle"/>
+
+            <RadioButton
+                android:id="@+id/unit_gal"
+                android:text="@string/unit_acceleration_gal"
+                style="@style/Widget.RadioButton.Middle"/>
+
+            <RadioButton
+                android:id="@+id/unit_cms2"
+                android:text="@string/unit_acceleration_cms2"
                 style="@style/Widget.RadioButton.Right"/>
 
         </RadioGroup>

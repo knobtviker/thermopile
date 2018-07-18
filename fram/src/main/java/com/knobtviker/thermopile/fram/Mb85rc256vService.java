@@ -8,14 +8,13 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
 import com.knobtviker.android.things.contrib.community.driver.fram.Mb85rc256v;
-
-import org.joda.time.DateTimeUtils;
 
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -129,7 +128,7 @@ public class Mb85rc256vService extends Service {
             try {
                 if (fram != null) {
                     final long timestamp = bytesToLong(fram.readArray(ADDRESS_LAST_BOOT_TIMESTAMP, Long.BYTES));
-                    final long now = DateTimeUtils.currentTimeMillis();
+                    final long now = SystemClock.currentThreadTimeMillis();
 
                     if (timestamp <= now) {
                         lastBootTimestamp = now;
@@ -147,11 +146,11 @@ public class Mb85rc256vService extends Service {
                     fram.writeArray(ADDRESS_LAST_BOOT_TIMESTAMP, longToBytes(lastBootTimestamp));
                     fram.writeArray(ADDRESS_BOOT_COUNT, longToBytes(bootCount + 1L));
                 } else {
-                    lastBootTimestamp = DateTimeUtils.currentTimeMillis();
+                    lastBootTimestamp = SystemClock.currentThreadTimeMillis();
                     bootCount = 1L;
                 }
             } catch (IOException e) {
-                lastBootTimestamp = DateTimeUtils.currentTimeMillis();
+                lastBootTimestamp = SystemClock.currentThreadTimeMillis();
                 bootCount = 1L;
                 Timber.e(e);
             }
@@ -209,7 +208,7 @@ public class Mb85rc256vService extends Service {
 
         private void reset() {
             bootCount = 1L;
-            lastBootTimestamp = DateTimeUtils.currentTimeMillis();
+            lastBootTimestamp = SystemClock.currentThreadTimeMillis();
 
             if (fram != null) {
                 try {

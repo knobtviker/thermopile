@@ -301,7 +301,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
                     item.id,
                     item.vendor,
                     item.name,
-                    ((float) Math.min(Math.sqrt(Math.pow(item.valueX, 2) + Math.pow(item.valueY, 2) + Math.pow(item.valueZ + SensorManager.GRAVITY_EARTH, 2)), 19.61330000)), //TODO: This hardcoded value must be set according to selected unit value for acceleration in Settings
+                    ((float) Math.min(Math.sqrt(Math.pow(item.valueX, 2) + Math.pow(item.valueY, 2) + Math.pow(item.valueZ + SensorManager.GRAVITY_EARTH, 2)), MeasuredAcceleration.MAXIMUM)),
                     item.timestamp
                 ))
             .filter(item -> (item.value >= MeasuredAcceleration.MINIMUM && item.value <= MeasuredAcceleration.MAXIMUM))
@@ -515,6 +515,12 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
                 break;
             case UnitAcceleration.G:
                 textViewMotionUnit = getString(R.string.unit_acceleration_g);
+                break;
+            case UnitAcceleration.GAL:
+                textViewMotionUnit = getString(R.string.unit_acceleration_gal);
+                break;
+            case UnitAcceleration.CENTIMETERS_PER_SECOND_2:
+                textViewMotionUnit = getString(R.string.unit_acceleration_cms2);
                 break;
             default:
                 textViewMotionUnit = getString(R.string.unit_acceleration_ms2);

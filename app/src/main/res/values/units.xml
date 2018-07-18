@@ -12,5 +12,7 @@
 
     <string name="unit_acceleration_ms2" translatable="false">m/s²</string>
     <string name="unit_acceleration_g" translatable="false">g</string>
+    <string name="unit_acceleration_gal" translatable="false">Gal</string>
+    <string name="unit_acceleration_cms2" translatable="false">cm/s²</string>
 
 </resources>

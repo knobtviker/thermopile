@@ -72,6 +72,12 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     @BindView(R.id.unit_g)
     public RadioButton radioButtonUnitG;
 
+    @BindView(R.id.unit_cms2)
+    public RadioButton radioButtonUnitCms2;
+
+    @BindView(R.id.unit_gal)
+    public RadioButton radioButtonUnitGal;
+
     public static UnitsFragment newInstance() {
         return new UnitsFragment();
     }
@@ -177,6 +183,12 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
                 case R.id.unit_g:
                     value = UnitAcceleration.G;
                     break;
+                case R.id.unit_gal:
+                    value = UnitAcceleration.GAL;
+                    break;
+                case R.id.unit_cms2:
+                    value = UnitAcceleration.CENTIMETERS_PER_SECOND_2;
+                    break;
                 default:
                     value = UnitAcceleration.METERS_PER_SECOND_2;
                     break;
@@ -227,6 +239,12 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
                 break;
             case UnitAcceleration.G:
                 radioButtonUnitG.setChecked(true);
+                break;
+            case UnitAcceleration.CENTIMETERS_PER_SECOND_2:
+                radioButtonUnitCms2.setChecked(true);
+                break;
+            case UnitAcceleration.GAL:
+                radioButtonUnitGal.setChecked(true);
                 break;
         }
 

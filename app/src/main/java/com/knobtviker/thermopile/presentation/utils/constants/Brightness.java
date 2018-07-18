@@ -6,8 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.SOURCE)
-@FloatRange(from = MeasuredAcceleration.MINIMUM, to = MeasuredAcceleration.MAXIMUM)
-public @interface MeasuredAcceleration {
-    float MINIMUM = 0.0f;
-    float MAXIMUM = 19.6133f; // this is 2g (default) same as 19.6133 m/s2
+@FloatRange(from = Brightness.MINIMUM, to = Brightness.MAXIMUM)
+public @interface Brightness {
+    float MINIMUM = 0.1f;
+    float MAXIMUM = 1.0f;
 }
