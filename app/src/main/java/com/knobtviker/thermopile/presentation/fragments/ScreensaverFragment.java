@@ -31,8 +31,6 @@ import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.util.Objects;
-
 import butterknife.BindView;
 import timber.log.Timber;
 
@@ -120,19 +118,19 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         load();
     }
 
-    @Override
-    public void onResume() {
-        Objects.requireNonNull(getView()).setKeepScreenOn(true);
-
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        Objects.requireNonNull(getView()).setKeepScreenOn(false);
-    }
+//    @Override
+//    public void onResume() {
+//        Objects.requireNonNull(getView()).setKeepScreenOn(true);
+//
+//        super.onResume();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//
+//        Objects.requireNonNull(getView()).setKeepScreenOn(false);
+//    }
 
     @Override
     public void showLoading(boolean isLoading) {
@@ -169,7 +167,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     @Override
     public void onAccelerationChanged(float[] values) {
         final double ax = values[0];
-        final double ay = values[2];
+        final double ay = values[2] + 0.2f;
         final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
 
         Timber.i("ax: %s ay: %s az: %s", ax, ay, az);

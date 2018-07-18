@@ -20,11 +20,16 @@ import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragm
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.utils.constants.ClockMode;
+import com.knobtviker.thermopile.presentation.utils.constants.Days;
+import com.knobtviker.thermopile.presentation.utils.constants.Default;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.Hours;
 import com.knobtviker.thermopile.presentation.utils.constants.MeasuredTemperature;
+import com.knobtviker.thermopile.presentation.utils.constants.Minutes;
 import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
 import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
+import com.knobtviker.thermopile.presentation.views.dividers.GridItemDecoration;
 
 import org.joda.time.DateTime;
 
@@ -43,6 +48,10 @@ import timber.log.Timber;
 public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter> implements ThresholdContract.View {
     public static String TAG = ThresholdFragment.class.getSimpleName();
 
+    private long thresholdId = Default.INVALID_ID;
+
+    private int maxWidth = Default.INVALID_WIDTH;
+
     @ClockMode
     private int formatClock;
 
@@ -52,21 +61,23 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @UnitTemperature
     private int unitTemperature;
 
-    private int day = -1;
+    @Days
+    private int day;
 
-    private int startMinute = -1;
+    @Minutes
+    private int startMinute;
 
-    private int maxWidth = -1;
+    @Hours
+    private int startTimeHour;
 
-    private long thresholdId = -1L;
+    @Minutes
+    private int startTimeMinute;
 
-    private int startTimeHour = -1;
+    @Hours
+    private int endTimeHour;
 
-    private int startTimeMinute = -1;
-
-    private int endTimeHour = -1;
-
-    private int endTimeMinute = -1;
+    @Minutes
+    private int endTimeMinute;
 
     private TimePickerDialog timePickerDialogStart;
 
@@ -101,10 +112,10 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         final Optional<Bundle> argumentsOptional = Optional.ofNullable(getArguments());
         argumentsOptional.ifPresent(bundle -> {
             final ThresholdFragmentArgs arguments = ThresholdFragmentArgs.fromBundle(bundle);
+            thresholdId = arguments.getThresholdId();
+            maxWidth = arguments.getMaxWidth();
             day = arguments.getDay();
             startMinute = arguments.getStartMinute();
-            maxWidth = arguments.getMaxWidth();
-            thresholdId = arguments.getThresholdId();
         });
     }
 
@@ -235,19 +246,21 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     private void setupRecyclerView() {
+        final int spanCount = 7;
         colorAdapter = new ColorAdapter(requireContext());
 
         recyclerViewColors.setHasFixedSize(true);
-        recyclerViewColors.setLayoutManager(new GridLayoutManager(getContext(), 7));
+        recyclerViewColors.setLayoutManager(new GridLayoutManager(requireContext(), spanCount));
         recyclerViewColors.setAdapter(colorAdapter);
+        recyclerViewColors.addItemDecoration(GridItemDecoration.create(getResources().getDimensionPixelSize(R.dimen.margin_small)));
     }
 
     private void load() {
         presenter.settings();
 
-        if (thresholdId != -1L) {
+        if (thresholdId != Default.INVALID_ID) {
             presenter.loadById(thresholdId);
-        } else if (day != -1 && startMinute != -1 && maxWidth != -1) {
+        } else if (maxWidth != Default.INVALID_WIDTH) {
             populate(startMinute, maxWidth);
         }
     }

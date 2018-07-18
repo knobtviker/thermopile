@@ -10,6 +10,7 @@ import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.utils.constants.ChartType;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -49,9 +50,9 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
     }
 
     @Override
-    public void data(int type, long startTimestamp, long endTimestamp) {
+    public void data(@ChartType int type, long startTimestamp, long endTimestamp) {
         switch (type) {
-            case 0:
+            case ChartType.TEMPERATURE:
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadTemperatureBetween(startTimestamp, endTimestamp)
@@ -63,7 +64,7 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
                         )
                 );
                 break;
-            case 1:
+            case ChartType.HUMIDITY:
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadHumidityBetween(startTimestamp, endTimestamp)
@@ -75,7 +76,7 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
                         )
                 );
                 break;
-            case 2:
+            case ChartType.PRESSURE:
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadPressureBetween(startTimestamp, endTimestamp)
@@ -87,7 +88,7 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
                         )
                 );
                 break;
-            case 3:
+            case ChartType.AIR_QUALITY:
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadAirQualityBetween(startTimestamp, endTimestamp)
@@ -99,7 +100,7 @@ public class ChartsPresenter extends AbstractPresenter implements ChartsContract
                         )
                 );
                 break;
-            case 4:
+            case ChartType.MOTION:
                 compositeDisposable.add(
                     atmosphereRepository
                         .loadAccelerationBetween(startTimestamp, endTimestamp)

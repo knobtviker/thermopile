@@ -8,6 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.SOURCE)
 @FloatRange(from = Brightness.MINIMUM, to = Brightness.MAXIMUM)
 public @interface Brightness {
-    float MINIMUM = 0.1f;
+    float OFF = 0.0f;
+    float MINIMUM = 0.05f;
     float MAXIMUM = 1.0f;
 }

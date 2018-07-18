@@ -202,7 +202,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @Override
     public void onAccelerationChanged(final float[] values) {
         final double ax = values[0];
-        final double ay = values[2];
+        final double ay = values[2] + 0.2f;
         final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
 
         //ax: -0.10000000149011612 ay: -0.20000000298023224 az: -9.800000190734863 + 9.80665F
@@ -238,7 +238,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         if (thresholdAdapter != null) {
             thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
 
-            if (thresholdAdapter.getItemCount() > 0) {
+            if (thresholdAdapter.getItemCount() > 0 && linearLayoutManager.findFirstVisibleItemPosition() != -1) {
                 textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
             }
         }

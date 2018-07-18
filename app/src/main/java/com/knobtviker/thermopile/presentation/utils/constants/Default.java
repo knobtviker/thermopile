@@ -16,4 +16,6 @@ public @interface Default {
     int UNIT_ACCELERATION = UnitAcceleration.METERS_PER_SECOND_2;
     int SCREENSAVER_DELAY = ScreensaverTimeout._1MIN;
     int THEME = AppCompatDelegate.MODE_NIGHT_AUTO;
+    long INVALID_ID = -1L;
+    int INVALID_WIDTH = -1;
 }

@@ -29,6 +29,8 @@ import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.ChartsPresenter;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
+import com.knobtviker.thermopile.presentation.utils.constants.ChartInterval;
+import com.knobtviker.thermopile.presentation.utils.constants.ChartType;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
 import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
 import com.knobtviker.thermopile.presentation.utils.constants.MeasuredAcceleration;
@@ -53,12 +55,13 @@ import java.util.stream.Collectors;
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 
 /**
  * Created by bojan on 15/06/2017.
  */
 
-public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> implements ChartsContract.View, AdapterView.OnItemSelectedListener, SparkView.OnScrubListener {
+public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> implements ChartsContract.View, SparkView.OnScrubListener {
     public static final String TAG = ChartsFragment.class.getSimpleName();
 
     @FormatDate
@@ -76,7 +79,9 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     @UnitAcceleration
     private int unitMotion;
 
+    @ChartType
     private int type;
+
     private Interval interval;
 
     private ChartAdapter<SingleModel> sparkAdapter;
@@ -155,11 +160,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void showLoading(boolean isLoading) {
 
     }
@@ -167,15 +167,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     @Override
     public void showError(@NonNull Throwable throwable) {
 
-    }
-
-    @OnClick({R.id.button_back})
-    public void onClicked(@NonNull final View view) {
-        switch (view.getId()) {
-            case R.id.button_back:
-                NavHostFragment.findNavController(this).popBackStack();
-                break;
-        }
     }
 
     @Override
@@ -191,23 +182,23 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         setMotionUnit();
 
         switch (type) {
-            case 0:
+            case ChartType.TEMPERATURE:
                 setMinMaxUnit(textViewTemperatureUnit);
                 setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MAXIMUM))), String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MINIMUM))));
                 break;
-            case 1:
+            case ChartType.HUMIDITY:
                 setMinMaxUnit(getString(R.string.unit_humidity_percent));
                 setMinMaxValue(String.valueOf(MathKit.round(MeasuredHumidity.MAXIMUM)), String.valueOf(MathKit.round(MeasuredHumidity.MINIMUM)));
                 break;
-            case 2:
+            case ChartType.PRESSURE:
                 setMinMaxUnit(textViewPressureUnit);
                 setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MAXIMUM))), String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MINIMUM))));
                 break;
-            case 3:
+            case ChartType.AIR_QUALITY:
                 setMinMaxUnit("");
                 setMinMaxValue("Good", "Very bad");
                 break;
-            case 4:
+            case ChartType.MOTION:
                 setMinMaxUnit(textViewMotionUnit);
                 setMinMaxValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MAXIMUM))), String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MINIMUM))));
                 break;
@@ -322,7 +313,42 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onScrubbed(@Nullable Object value) {
+        if (value == null) {
+            noScrubbedValue();
+        } else {
+            final SingleModel object = (SingleModel) value;
+            switch (type) {
+                case ChartType.TEMPERATURE:
+                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, object.value))), textViewTemperatureUnit, object.timestamp);
+                    break;
+                case ChartType.HUMIDITY:
+                    hasScrubbedValue(String.valueOf(MathKit.round(object.value)), getString(R.string.unit_humidity_percent), object.timestamp);
+                    break;
+                case ChartType.PRESSURE:
+                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, object.value))), textViewPressureUnit, object.timestamp);
+                    break;
+                case ChartType.AIR_QUALITY:
+                    hasScrubbedValueWithoutUnit(MathKit.convertIAQValueToLabel(object.value), object.timestamp);
+                    break;
+                case ChartType.MOTION:
+                    hasScrubbedValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, object.value))), textViewMotionUnit, object.timestamp);
+                    break;
+            }
+        }
+    }
+
+    @OnClick({R.id.button_back})
+    public void onClicked(@NonNull final View view) {
+        switch (view.getId()) {
+            case R.id.button_back:
+                NavHostFragment.findNavController(this).popBackStack();
+                break;
+        }
+    }
+
+    @OnItemSelected(value = {R.id.spinner_type, R.id.spinner_interval}, callback = OnItemSelected.Callback.ITEM_SELECTED)
+    public void onItemSelected(AdapterView<?> parent, int position) {
         switch (parent.getId()) {
             case R.id.spinner_type:
                 setType(position);
@@ -335,30 +361,22 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         data();
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
     private void setupSpinnerType() {
-        setType(0);
+        setType(ChartType.TEMPERATURE);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.chart_types, R.layout.item_spinner);
         adapter.setDropDownViewResource(R.layout.item_spinner);
 
         spinnerType.setAdapter(adapter);
-        spinnerType.setOnItemSelectedListener(this);
-
     }
 
     private void setupSpinnerInterval() {
-        setInterval(0);
+        setInterval(ChartInterval.TODAY);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.chart_intervals, R.layout.item_spinner);
         adapter.setDropDownViewResource(R.layout.item_spinner);
 
         spinnerInterval.setAdapter(adapter);
-        spinnerInterval.setOnItemSelectedListener(this);
     }
 
     private void setupSparkView() {
@@ -374,11 +392,11 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     }
 
 
-    private void setType(final int typeItemPosition) {
+    private void setType(@ChartType final int typeItemPosition) {
         this.type = typeItemPosition;
     }
 
-    private void setInterval(final int intervalItemPosition) {
+    private void setInterval(@ChartInterval final int intervalItemPosition) {
         this.interval = intervalForType(intervalItemPosition);
     }
 
@@ -386,67 +404,41 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         presenter.data(type, interval.getStartMillis(), interval.getEndMillis());
     }
 
-    private Interval intervalForType(final int interval) {
+    private Interval intervalForType(@ChartInterval final int interval) {
         final DateTime now = DateTime.now();
         final DateTime other;
 
         switch (interval) {
-            case 0: //Today
+            case ChartInterval.TODAY:
                 other = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
                 return new Interval(other, now);
-            case 1: //Yesterday
+            case ChartInterval.YESTERDAY:
                 final DateTime today = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
                 final DateTime yesterday = today.minusDays(1);
                 return new Interval(yesterday, today);
-            case 2: //This week
+            case ChartInterval.THIS_WEEK:
                 other = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfWeek(1);
                 return new Interval(other, now);
-            case 3: //Last week
+            case ChartInterval.LAST_WEEK:
                 final DateTime thisWeek = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfWeek(1);
                 final DateTime lastWeek = thisWeek.minusWeeks(1);
                 return new Interval(lastWeek, thisWeek);
-            case 4: //This month
+            case ChartInterval.THIS_MONTH:
                 other = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfMonth(1);
                 return new Interval(other, now);
-            case 5: //Last month
+            case ChartInterval.LAST_MONTH:
                 final DateTime thisMonth = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfMonth(1);
                 final DateTime lastMonth = thisMonth.minusMonths(1);
                 return new Interval(lastMonth, thisMonth);
-            case 6: //This year
+            case ChartInterval.THIS_YEAR:
                 other = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfYear(1);
                 return new Interval(other, now);
-            case 7: //Last year
+            case ChartInterval.LAST_YEAR:
                 final DateTime thisYear = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfYear(1);
                 final DateTime lastYear = thisYear.minusYears(1);
                 return new Interval(lastYear, thisYear);
             default:
                 return new Interval(now.minusMillis(1), now);
-        }
-    }
-
-    @Override
-    public void onScrubbed(@Nullable Object value) {
-        if (value == null) {
-            noScrubbedValue();
-        } else {
-            final SingleModel object = (SingleModel) value;
-            switch (type) {
-                case 0:
-                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, object.value))), textViewTemperatureUnit, object.timestamp);
-                    break;
-                case 1:
-                    hasScrubbedValue(String.valueOf(MathKit.round(object.value)), getString(R.string.unit_humidity_percent), object.timestamp);
-                    break;
-                case 2:
-                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, object.value))), textViewPressureUnit, object.timestamp);
-                    break;
-                case 3:
-                    hasScrubbedValueWithoutUnit(MathKit.convertIAQValueToLabel(object.value), object.timestamp);
-                    break;
-                case 4:
-                    hasScrubbedValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, object.value))), textViewMotionUnit, object.timestamp);
-                    break;
-            }
         }
     }
 

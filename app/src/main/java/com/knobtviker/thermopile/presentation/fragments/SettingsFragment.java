@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
@@ -64,6 +65,11 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         setupViewPager();
 
         this.presenter = new SettingsPresenter(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         presenter.load();
     }
@@ -100,7 +106,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
                 Timber.i("Show FeedbackActivity");
                 break;
             case R.id.button_about:
-                Timber.i("Show AboutActivity");
+                Timber.i("Version name: "+BuildConfig.VERSION_NAME+" Version code: "+BuildConfig.VERSION_CODE+" Hash: "+BuildConfig.GIT_COMMIT_SHA+" Build time: "+BuildConfig.GIT_COMMIT_TIMESTAMP);
                 break;
         }
     }
