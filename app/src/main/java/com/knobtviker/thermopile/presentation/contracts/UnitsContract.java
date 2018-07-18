@@ -1,9 +1,9 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitTemperature;
 import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
 
 /**

@@ -1,6 +1,14 @@
-package com.knobtviker.thermopile.presentation.utils.constants;
+package com.knobtviker.thermopile.presentation.utils.constants.integrity;
 
 import android.support.v7.app.AppCompatDelegate;
+
+import com.knobtviker.thermopile.presentation.utils.constants.settings.ClockMode;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.FormatDate;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.ScreensaverTimeout;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitTemperature;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

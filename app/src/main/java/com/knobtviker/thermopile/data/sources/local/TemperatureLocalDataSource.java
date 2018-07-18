@@ -3,7 +3,7 @@ package com.knobtviker.thermopile.data.sources.local;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.Temperature_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
-import com.knobtviker.thermopile.presentation.utils.constants.MeasuredTemperature;
+import com.knobtviker.thermopile.presentation.utils.constants.integrity.MeasuredTemperature;
 
 import java.util.List;
 

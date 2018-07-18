@@ -15,8 +15,8 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.FormatsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.FormatsPresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
-import com.knobtviker.thermopile.presentation.utils.constants.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.FormatDate;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.FormatTime;
 import com.knobtviker.thermopile.presentation.views.adapters.FormatAdapter;
 
 import java.util.Arrays;

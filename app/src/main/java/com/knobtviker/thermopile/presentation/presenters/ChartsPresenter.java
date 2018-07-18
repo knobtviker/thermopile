@@ -10,7 +10,7 @@ import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.ChartType;
+import com.knobtviker.thermopile.presentation.utils.constants.charts.ChartType;
 
 /**
  * Created by bojan on 15/07/2017.

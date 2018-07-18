@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.presentation.utils.constants;
+package com.knobtviker.thermopile.presentation.utils.constants.time;
 
 import android.support.annotation.IntRange;
 

@@ -34,7 +34,7 @@ import com.knobtviker.thermopile.data.sources.raw.TimeProfile;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.RequestCode;
+import com.knobtviker.thermopile.presentation.utils.constants.integrity.RequestCode;
 import com.knobtviker.thermopile.presentation.views.listeners.GattServerListener;
 
 import java.math.BigInteger;

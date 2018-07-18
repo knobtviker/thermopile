@@ -14,9 +14,9 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.UnitsPresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitTemperature;
 
 import butterknife.BindView;
 import timber.log.Timber;

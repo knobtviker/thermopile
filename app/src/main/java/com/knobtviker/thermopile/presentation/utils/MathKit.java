@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.presentation.utils.constants.MeasuredAirQuality;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitAcceleration;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitPressure;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.constants.integrity.MeasuredAirQuality;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitTemperature;
 
 /**
  * Created by bojan on 10/08/2017.

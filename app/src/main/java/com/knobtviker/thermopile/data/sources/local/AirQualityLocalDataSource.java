@@ -3,7 +3,7 @@ package com.knobtviker.thermopile.data.sources.local;
 import com.knobtviker.thermopile.data.models.local.AirQuality;
 import com.knobtviker.thermopile.data.models.local.AirQuality_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
-import com.knobtviker.thermopile.presentation.utils.constants.MeasuredAirQuality;
+import com.knobtviker.thermopile.presentation.utils.constants.integrity.MeasuredAirQuality;
 
 import java.util.List;
 

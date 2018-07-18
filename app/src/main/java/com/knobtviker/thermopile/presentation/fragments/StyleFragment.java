@@ -17,8 +17,8 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.Default;
-import com.knobtviker.thermopile.presentation.utils.constants.ScreensaverTimeout;
+import com.knobtviker.thermopile.presentation.utils.constants.integrity.Default;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.ScreensaverTimeout;
 import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
 import java.util.Arrays;

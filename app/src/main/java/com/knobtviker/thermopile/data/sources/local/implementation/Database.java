@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.models.local.MyObjectBox;
 import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.presentation.utils.constants.Default;
+import com.knobtviker.thermopile.presentation.utils.constants.integrity.Default;
 
 import io.objectbox.BoxStore;
 import io.objectbox.BoxStoreBuilder;

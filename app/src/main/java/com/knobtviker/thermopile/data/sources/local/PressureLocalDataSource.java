@@ -3,7 +3,7 @@ package com.knobtviker.thermopile.data.sources.local;
 import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Pressure_;
 import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
-import com.knobtviker.thermopile.presentation.utils.constants.MeasuredPressure;
+import com.knobtviker.thermopile.presentation.utils.constants.integrity.MeasuredPressure;
 
 import java.util.List;
 

@@ -19,8 +19,8 @@ import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.MessageWhatData;
-import com.knobtviker.thermopile.presentation.utils.constants.MessageWhatUser;
+import com.knobtviker.thermopile.presentation.utils.constants.messenger.MessageWhatData;
+import com.knobtviker.thermopile.presentation.utils.constants.messenger.MessageWhatUser;
 import com.knobtviker.thermopile.presentation.views.communicators.PersistentCommunicator;
 
 import net.danlew.android.joda.JodaTimeAndroid;

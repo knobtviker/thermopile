@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.presentation.utils.constants;
+package com.knobtviker.thermopile.presentation.utils.constants.settings;
 
 import android.support.annotation.IntDef;
 
@@ -7,8 +7,10 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.SOURCE)
 @IntDef({
-    MessageWhatUser.REGISTER
+    ClockMode._12H,
+    ClockMode._24H
 })
-public @interface MessageWhatUser {
-    int REGISTER = 0;
+public @interface ClockMode {
+    int _12H = 0;
+    int _24H = 1;
 }

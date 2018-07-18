@@ -21,8 +21,8 @@ import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
-import com.knobtviker.thermopile.presentation.utils.constants.FormatDate;
-import com.knobtviker.thermopile.presentation.utils.constants.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.FormatDate;
+import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitTemperature;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import org.joda.time.DateTime;
