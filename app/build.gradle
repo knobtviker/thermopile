@@ -19,7 +19,7 @@ android {
         versionCode buildConfig.version.code
         versionName buildConfig.version.name
 
-        applicationId "com.knobtviker.thermopile"
+        applicationId buildConfig.packageName + modules.app.suffix
 
         buildConfigField "String", 'GIT_COMMIT_SHA', "\"${gitSha()}\""
         buildConfigField "long", 'GIT_COMMIT_TIMESTAMP', gitTimestamp().toString() + "L"
@@ -37,6 +37,20 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['objectbox.debug': 'true']
+            }
+        }
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                def apkNameBuilder = new StringBuilder()
+
+                apkNameBuilder.append(modules.app.archive)
+                apkNameBuilder.append("_")
+                apkNameBuilder.append(gitSha())
+                apkNameBuilder.append("_")
+                apkNameBuilder.append(output.baseName)
+                apkNameBuilder.append(".apk")
+
+                output.outputFileName = apkNameBuilder.toString().replace("-", "_")
             }
         }
     }

@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.knobtviker.thermopile.drivers">
 
     <uses-permission android:name="com.google.android.things.permission.MANAGE_SENSOR_DRIVERS"/>
     <uses-permission android:name="com.google.android.things.permission.SET_TIME"/>
 
-    <application>
+    <application tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
         <uses-library android:name="com.google.android.things"/>
 
-        <service android:name=".DriversService" android:exported="true"/>
+        <service
+            android:name=".DriversService"
+            android:exported="true"
+            tools:ignore="ExportedService"/>
     </application>
 
 </manifest>
