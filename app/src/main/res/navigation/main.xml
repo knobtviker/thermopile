@@ -69,19 +69,19 @@
         <argument
             android:name="thresholdId"
             android:defaultValue="-1L"
-            app:type="long"/>
+            app:argType="long"/>
         <argument
             android:name="day"
             android:defaultValue="-1"
-            app:type="integer"/>
+            app:argType="integer"/>
         <argument
             android:name="startMinute"
             android:defaultValue="-1"
-            app:type="integer"/>
+            app:argType="integer"/>
         <argument
             android:name="maxWidth"
             android:defaultValue="-1"
-            app:type="integer"/>
+            app:argType="integer"/>
     </fragment>
 
 </navigation>
