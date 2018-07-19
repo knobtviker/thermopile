@@ -1,10 +1,8 @@
 package com.knobtviker.thermopile.presentation;
 
-import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
@@ -21,6 +19,7 @@ import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.constants.messenger.MessageWhatData;
 import com.knobtviker.thermopile.presentation.utils.constants.messenger.MessageWhatUser;
+import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.PersistentCommunicator;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -51,9 +50,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
         services();
 
-        memoryClass();
-        memoryInfo();
-
         initCrashlytics();
         initJodaTime();
         initDatabase();
@@ -74,7 +70,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public void onServiceConnected(ComponentName name, IBinder service) {
         Timber.i("onServiceConnected %s", name.flattenToString());
 
-        if (name.getPackageName().equalsIgnoreCase("com.knobtviker.thermopile.drivers")) { // Driver service connected
+        if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameDrivers(this))) { // Driver service connected
             serviceMessengerSensors = new Messenger(service);
 
             final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
@@ -84,7 +80,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
             } catch (RemoteException e) { //DeadObjectException
                 Timber.e(e);
             }
-        } else if (name.getPackageName().equalsIgnoreCase("com.knobtviker.thermopile.fram")) { // FRAM service connected
+        } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service connected
             serviceMessengerFram = new Messenger(service);
 
             final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
@@ -101,9 +97,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public void onServiceDisconnected(ComponentName name) {
         Timber.i("onServiceDisconnected %s", name.flattenToString());
 
-        if (name.getPackageName().equalsIgnoreCase("com.knobtviker.thermopile.drivers")) { // Driver service disconnected
+        if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameDrivers(this))) { // Driver service disconnected
             serviceMessengerSensors = null;
-        } else if (name.getPackageName().equalsIgnoreCase("com.knobtviker.thermopile.fram")) { // FRAM service disconnected
+        } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service disconnected
             serviceMessengerFram = null;
         }
     }
@@ -195,28 +191,8 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     private void services() {
         foregroundMessenger = new Messenger(new IncomingHandler(this));
 
-        final Intent intentSensors = new Intent();
-        intentSensors.setComponent(new ComponentName("com.knobtviker.thermopile.drivers", "com.knobtviker.thermopile.drivers.DriversService"));
-        bindService(intentSensors, this, BIND_AUTO_CREATE);
-
-        final Intent intentFram = new Intent();
-        intentFram.setComponent(new ComponentName("com.knobtviker.thermopile.fram", "com.knobtviker.thermopile.fram.Mb85rc256vService"));
-        bindService(intentFram, this, BIND_AUTO_CREATE);
-    }
-
-    private void memoryClass() {
-        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        final int memoryClass = activityManager.getMemoryClass();
-
-        Timber.i("Memory class: %d", memoryClass); // 256MB for RPi3
-    }
-
-    public void memoryInfo() {
-        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        activityManager.getMemoryInfo(memoryInfo);
-
-        Timber.i("Memory info -> Available: %d Total: %d Threshold: %d Is low: %s", memoryInfo.availMem, memoryInfo.totalMem, memoryInfo.threshold, memoryInfo.lowMemory);
+        bindService(ServiceFactory.drivers(this), this, BIND_AUTO_CREATE);
+        bindService(ServiceFactory.fram(this), this, BIND_AUTO_CREATE);
     }
 
     private void initCrashlytics() {
