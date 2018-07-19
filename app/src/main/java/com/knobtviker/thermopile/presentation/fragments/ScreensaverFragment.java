@@ -118,20 +118,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         load();
     }
 
-//    @Override
-//    public void onResume() {
-//        Objects.requireNonNull(getView()).setKeepScreenOn(true);
-//
-//        super.onResume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//
-//        Objects.requireNonNull(getView()).setKeepScreenOn(false);
-//    }
-
     @Override
     public void showLoading(boolean isLoading) {
         //NO-OP

@@ -14,27 +14,8 @@ buildscript {
                     'build': 0,
             ],
 
-            'archive'    : 'Thermopile',
+            'archive'    : 'thermopile',
             'packageName': 'com.knobtviker.thermopile',
-    ]
-
-    ext.buildConfig.version['name'] = "${buildConfig.version.major}.${buildConfig.version.minor}.${buildConfig.version.patch}"
-    ext.buildConfig.version['fullName'] = "${buildConfig.version.name}.${buildConfig.version.build}"
-    ext.buildConfig.version['code'] = buildConfig.version.major * 1000000 + buildConfig.version.minor * 10000 + buildConfig.version.patch * 100 + buildConfig.version.build
-
-    ext.modules = [
-            'app'    : [
-                    'suffix' : '',
-                    'archive': "${buildConfig.archive}_${buildConfig.version.fullName}",
-            ],
-            'drivers': [
-                    'suffix' : '.drivers',
-                    'archive': "${buildConfig.archive}_Drivers_${buildConfig.version.fullName}",
-            ],
-            'fram'   : [
-                    'suffix' : '.fram',
-                    'archive': "${buildConfig.archive}_Fram_${buildConfig.version.fullName}",
-            ],
     ]
 
     ext.versions = [
@@ -62,6 +43,25 @@ buildscript {
             'ds3231'       : '1.0.5',
             'lsm9ds1'      : '1.0.4',
             'fram'         : '1.0.0',
+    ]
+
+    ext.buildConfig.version['name'] = "${buildConfig.version.major}.${buildConfig.version.minor}.${buildConfig.version.patch}"
+    ext.buildConfig.version['fullName'] = "${buildConfig.version.name}.${buildConfig.version.build}"
+    ext.buildConfig.version['code'] = buildConfig.version.major * 1000000 + buildConfig.version.minor * 10000 + buildConfig.version.patch * 100 + buildConfig.version.build
+
+    ext.modules = [
+            'app'    : [
+                    'suffix' : '',
+                    'archive': "${buildConfig.archive}_${buildConfig.version.fullName}",
+            ],
+            'drivers': [
+                    'suffix' : '.drivers',
+                    'archive': "${buildConfig.archive}_drivers_${buildConfig.version.fullName}",
+            ],
+            'fram'   : [
+                    'suffix' : '.fram',
+                    'archive': "${buildConfig.archive}_fram_${buildConfig.version.fullName}",
+            ],
     ]
 
     ext.deps = [
