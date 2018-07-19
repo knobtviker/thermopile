@@ -106,7 +106,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
                 Timber.i("Show FeedbackActivity");
                 break;
             case R.id.button_about:
-                Timber.i("Version name: "+BuildConfig.VERSION_NAME+" Version code: "+BuildConfig.VERSION_CODE+" Hash: "+BuildConfig.GIT_COMMIT_SHA+" Build time: "+BuildConfig.GIT_COMMIT_TIMESTAMP);
+                Timber.i("Version name: "+BuildConfig.VERSION_NAME+" Version code: "+BuildConfig.VERSION_CODE+" Hash: "+BuildConfig.GIT_COMMIT_SHA+" Build time: "+BuildConfig.GIT_COMMIT_TIMESTAMP+" Reboot count: "+ThermopileApplication.bootCount()+" Last boot timestamp: "+ThermopileApplication.lastBootTimestamp());
                 break;
         }
     }

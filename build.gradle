@@ -157,5 +157,5 @@ def gitTimestamp() {
         f.parentFile.mkdirs()
         f.text = p.text.trim()
     }
-    return f.text.trim()
+    return f.text.trim()+'000'
 }
