@@ -31,6 +31,7 @@ import timber.log.Timber;
  */
 
 public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> implements FormatsContract.View {
+
     public static final String TAG = FormatsFragment.class.getSimpleName();
 
     private FormatAdapter spinnerAdapterDate;
@@ -86,7 +87,9 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view, final int position, final long id) {
         switch (adapterView.getId()) {
             case R.id.spinner_date_format:
-                if (spinnerFormatDate.isEnabled() && spinnerAdapterDate != null && !TextUtils.isEmpty(spinnerAdapterDate.getItem(position))) {
+                if (spinnerFormatDate.isEnabled()
+                    && spinnerAdapterDate != null
+                    && !TextUtils.isEmpty(spinnerAdapterDate.getItem(position))) {
                     formatDate = spinnerAdapterDate.getItem(position);
                     if (!TextUtils.isEmpty(formatDate)) {
                         presenter.saveFormatDate(settingsId, formatDate);
@@ -94,7 +97,9 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
                 }
                 break;
             case R.id.spinner_time_format:
-                if (spinnerFormatTime.isEnabled() && spinnerAdapterTime != null && !TextUtils.isEmpty(spinnerAdapterTime.getItem(position))) {
+                if (spinnerFormatTime.isEnabled()
+                    && spinnerAdapterTime != null
+                    && !TextUtils.isEmpty(spinnerAdapterTime.getItem(position))) {
                     formatTime = spinnerAdapterTime.getItem(position);
                     presenter.saveFormatTime(settingsId, formatTime);
                 }

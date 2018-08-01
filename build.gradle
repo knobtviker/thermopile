@@ -1,48 +1,48 @@
 buildscript {
 
     ext.buildConfig = [
-            'minSdk'     : 27,
-            'compileSdk' : 28,
-            'targetSdk'  : 28,
+        'minSdk'     : 27,
+        'compileSdk' : 28,
+        'targetSdk'  : 28,
 
-            'buildTools' : '28.0.1',
+        'buildTools' : '28.0.1',
 
-            'version'    : [
-                    'major': 1,
-                    'minor': 0,
-                    'patch': 0,
-                    'build': 0,
-            ],
+        'version'    : [
+            'major': 1,
+            'minor': 0,
+            'patch': 0,
+            'build': 0,
+        ],
 
-            'archive'    : 'thermopile',
-            'packageName': 'com.knobtviker.thermopile',
+        'archive'    : 'thermopile',
+        'packageName': 'com.knobtviker.thermopile',
     ]
 
     ext.versions = [
-            'things'       : '1.0',
-            'annotations'  : '28.0.0-alpha3',
-            'appcompat'    : '28.0.0-alpha3',
-            'design'       : '28.0.0-alpha1',
-            'recyclerview' : '28.0.0-alpha3',
-            'constraint'   : '2.0.0-alpha1',
-            'navigation'   : '1.0.0-alpha04',
-            'rxjava'       : '2.1.16',
-            'rxandroid'    : '2.0.2',
-            'dagger'       : '2.16',
-            'joda'         : '2.9.9',
-            'objectbox'    : '2.0.0-beta',
-            'autovalue'    : '1.6',
-            'butterknife'  : '8.8.1',
-            'timber'       : '4.7.1',
-            'firebase_core': '16.0.1',
-            'crashlytics'  : '2.9.4@aar',
-            'boards'       : '1.0.7',
-            'bme280'       : '1.1.5',
-            'bme680'       : '1.1.4',
-            'tsl2561'      : '1.1.2',
-            'ds3231'       : '1.0.5',
-            'lsm9ds1'      : '1.0.4',
-            'fram'         : '1.0.0',
+        'things'       : '1.0',
+        'annotations'  : '28.0.0-beta01',
+        'appcompat'    : '28.0.0-beta01',
+        'design'       : '28.0.0-beta01',
+        'recyclerview' : '28.0.0-beta01',
+        'constraint'   : '2.0.0-alpha1',
+        'navigation'   : '1.0.0-alpha04',
+        'rxjava'       : '2.2.0',
+        'rxandroid'    : '2.0.2',
+        'dagger'       : '2.16',
+        'joda'         : '2.9.9',
+        'objectbox'    : '2.0.0',
+        'autovalue'    : '1.6',
+        'butterknife'  : '8.8.1',
+        'timber'       : '4.7.1',
+        'firebase_core': '16.0.1',
+        'crashlytics'  : '2.9.4@aar',
+        'boards'       : '1.0.7',
+        'bme280'       : '1.1.5',
+        'bme680'       : '1.1.4',
+        'tsl2561'      : '1.1.2',
+        'ds3231'       : '1.0.5',
+        'lsm9ds1'      : '1.0.4',
+        'fram'         : '1.0.0',
     ]
 
     ext.buildConfig.version['name'] = "${buildConfig.version.major}.${buildConfig.version.minor}.${buildConfig.version.patch}"
@@ -50,74 +50,74 @@ buildscript {
     ext.buildConfig.version['code'] = buildConfig.version.major * 1000000 + buildConfig.version.minor * 10000 + buildConfig.version.patch * 100 + buildConfig.version.build
 
     ext.modules = [
-            'app'    : [
-                    'suffix' : '',
-                    'archive': "${buildConfig.archive}_${buildConfig.version.fullName}",
-            ],
-            'drivers': [
-                    'suffix' : '.drivers',
-                    'archive': "${buildConfig.archive}_drivers_${buildConfig.version.fullName}",
-            ],
-            'fram'   : [
-                    'suffix' : '.fram',
-                    'archive': "${buildConfig.archive}_fram_${buildConfig.version.fullName}",
-            ],
+        'app'    : [
+            'suffix' : '',
+            'archive': "${buildConfig.archive}_${buildConfig.version.fullName}",
+        ],
+        'drivers': [
+            'suffix' : '.drivers',
+            'archive': "${buildConfig.archive}_drivers_${buildConfig.version.fullName}",
+        ],
+        'fram'   : [
+            'suffix' : '.fram',
+            'archive': "${buildConfig.archive}_fram_${buildConfig.version.fullName}",
+        ],
     ]
 
     ext.deps = [
-            'android'    : [
-                    'things'      : "com.google.android.things:androidthings:${versions.things}",
-                    'annotations' : "com.android.support:support-annotations:${versions.annotations}",
-                    'appcompat'   : "com.android.support:appcompat-v7:${versions.appcompat}",
-                    'design'      : "com.android.support:design-widget:${versions.design}",
-                    'recyclerview': "com.android.support:recyclerview-v7:${versions.recyclerview}",
-                    'constraint'  : "com.android.support.constraint:constraint-layout:${versions.constraint}",
-                    'navigation'  : [
-                            'fragment': "android.arch.navigation:navigation-fragment:${versions.navigation}",
-                            'ui'      : "android.arch.navigation:navigation-ui:${versions.navigation}",
-                    ],
+        'android'    : [
+            'things'      : "com.google.android.things:androidthings:${versions.things}",
+            'annotations' : "com.android.support:support-annotations:${versions.annotations}",
+            'appcompat'   : "com.android.support:appcompat-v7:${versions.appcompat}",
+            'design'      : "com.android.support:design:${versions.design}",
+            'recyclerview': "com.android.support:recyclerview-v7:${versions.recyclerview}",
+            'constraint'  : "com.android.support.constraint:constraint-layout:${versions.constraint}",
+            'navigation'  : [
+                'fragment': "android.arch.navigation:navigation-fragment:${versions.navigation}",
+                'ui'      : "android.arch.navigation:navigation-ui:${versions.navigation}",
             ],
-            'rx'         : [
-                    'java'   : "io.reactivex.rxjava2:rxjava:${versions.rxjava}",
-                    'android': "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}",
-            ],
-            'dagger'     : [
-                    'runtime' : "com.google.dagger:dagger:${versions.dagger}",
-                    'compiler': "com.google.dagger:dagger-compiler:${versions.dagger}",
-            ],
-            'joda'       : [
-                    'android': "net.danlew:android.joda:${versions.joda}",
-            ],
-            'objectbox'  : [
-                    'browser': "io.objectbox:objectbox-android-objectbrowser:${versions.objectbox}",
-                    'android': "io.objectbox:objectbox-android:${versions.objectbox}",
-            ],
-            'autovalue'  : [
-                    'runtime' : "com.google.auto.value:auto-value-annotations:${versions.autovalue}",
-                    'compiler': "com.google.auto.value:auto-value:${versions.autovalue}",
-            ],
-            'butterknife': [
-                    'runtime' : "com.jakewharton:butterknife:${versions.butterknife}",
-                    'compiler': "com.jakewharton:butterknife-compiler:${versions.butterknife}",
-            ],
-            'timber'     : [
-                    'android': "com.jakewharton.timber:timber:${versions.timber}",
-            ],
-            'firebase'   : [
-                    'core': "com.google.firebase:firebase-core:${versions.firebase_core}",
-            ],
-            'crashlytics': [
-                    'android': "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}",
-            ],
-            'knobtviker' : [
-                    'boards' : "com.knobtviker.android.things.contrib.community:boards:${versions.boards}",
-                    'bme280' : "com.knobtviker.android.things.contrib.community.driver:bme280:${versions.bme280}",
-                    'bme680' : "com.knobtviker.android.things.contrib.community.driver:bme680:${versions.bme680}",
-                    'tsl2561': "com.knobtviker.android.things.contrib.community.driver:tsl2561:${versions.tsl2561}",
-                    'ds3231' : "com.knobtviker.android.things.contrib.community.driver:ds3231:${versions.ds3231}",
-                    'lsm9ds1': "com.knobtviker.android.things.contrib.community.driver:lsm9ds1:${versions.lsm9ds1}",
-                    'fram'   : "com.knobtviker.android.things.contrib.community.driver:fram:${versions.fram}",
-            ],
+        ],
+        'rx'         : [
+            'java'   : "io.reactivex.rxjava2:rxjava:${versions.rxjava}",
+            'android': "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}",
+        ],
+        'dagger'     : [
+            'runtime' : "com.google.dagger:dagger:${versions.dagger}",
+            'compiler': "com.google.dagger:dagger-compiler:${versions.dagger}",
+        ],
+        'joda'       : [
+            'android': "net.danlew:android.joda:${versions.joda}",
+        ],
+        'objectbox'  : [
+            'browser': "io.objectbox:objectbox-android-objectbrowser:${versions.objectbox}",
+            'android': "io.objectbox:objectbox-android:${versions.objectbox}",
+        ],
+        'autovalue'  : [
+            'runtime' : "com.google.auto.value:auto-value-annotations:${versions.autovalue}",
+            'compiler': "com.google.auto.value:auto-value:${versions.autovalue}",
+        ],
+        'butterknife': [
+            'runtime' : "com.jakewharton:butterknife:${versions.butterknife}",
+            'compiler': "com.jakewharton:butterknife-compiler:${versions.butterknife}",
+        ],
+        'timber'     : [
+            'android': "com.jakewharton.timber:timber:${versions.timber}",
+        ],
+        'firebase'   : [
+            'core': "com.google.firebase:firebase-core:${versions.firebase_core}",
+        ],
+        'crashlytics': [
+            'android': "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}",
+        ],
+        'knobtviker' : [
+            'boards' : "com.knobtviker.android.things.contrib.community:boards:${versions.boards}",
+            'bme280' : "com.knobtviker.android.things.contrib.community.driver:bme280:${versions.bme280}",
+            'bme680' : "com.knobtviker.android.things.contrib.community.driver:bme680:${versions.bme680}",
+            'tsl2561': "com.knobtviker.android.things.contrib.community.driver:tsl2561:${versions.tsl2561}",
+            'ds3231' : "com.knobtviker.android.things.contrib.community.driver:ds3231:${versions.ds3231}",
+            'lsm9ds1': "com.knobtviker.android.things.contrib.community.driver:lsm9ds1:${versions.lsm9ds1}",
+            'fram'   : "com.knobtviker.android.things.contrib.community.driver:fram:${versions.fram}",
+        ],
     ]
 
     repositories {
@@ -131,10 +131,10 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.0-alpha03'
         classpath 'com.novoda:gradle-build-properties-plugin:0.4.1'
-        classpath 'io.objectbox:objectbox-gradle-plugin:2.0.0-beta'
+        classpath 'io.objectbox:objectbox-gradle-plugin:2.0.0'
         classpath 'com.google.gms:google-services:4.0.1'
         classpath 'io.fabric.tools:gradle:1.25.4'
-        classpath 'android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0-alpha03'
+        classpath 'android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0-alpha04'
     }
 }
 
