@@ -30,7 +30,7 @@ public class Database {
 
         INSTANCE = builder.build();
 
-        if (BuildConfig.DEBUG && BuildConfig.DEBUG_LOCAL) {
+        if (BuildConfig.DEBUG_LOCAL) {
             final boolean started = new AndroidObjectBrowser(INSTANCE).start(context);
         }
 

@@ -51,7 +51,7 @@ import timber.log.Timber;
 /**
  * Created by bojan on 15/06/2017.
  */
-
+//To connect to a Wi‑Fi network via ADB, run `adb shell am startservice -n com.google.wifisetup/.WifiSetupService -a WifiSetupService.Connect -e ssid {SSID} -e passphrase {PASSPHRASE}` with the appropriate SSID and passphrase.
 public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> implements NetworkContract.View, CompoundButton.OnCheckedChangeListener, GattServerListener {
     public static final String TAG = NetworkFragment.class.getSimpleName();
 
