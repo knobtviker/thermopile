@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.presentation.views.communicators;
 
 import android.support.annotation.NonNull;
 
-public interface PersistentCommunicator {
+public interface IncomingCommunicator {
 
     void saveTemperature(@NonNull final String vendor, @NonNull final String name, final float value);
 

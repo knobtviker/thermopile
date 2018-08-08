@@ -18,7 +18,7 @@ import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
-import com.knobtviker.thermopile.presentation.views.communicators.PersistentCommunicator;
+import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
 import com.knobtviker.thermopile.shared.MessageWhatData;
 import com.knobtviker.thermopile.shared.MessageWhatUser;
 
@@ -28,7 +28,7 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 
-public abstract class AbstractApplication<P extends BasePresenter> extends Application implements ServiceConnection, PersistentCommunicator {
+public abstract class AbstractApplication<P extends BasePresenter> extends Application implements ServiceConnection, IncomingCommunicator {
 
     @Nullable
     private Messenger serviceMessengerSensors = null;
@@ -248,10 +248,10 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public static class IncomingHandler extends Handler {
 
         @NonNull
-        private final PersistentCommunicator persistentCommunicator;
+        private final IncomingCommunicator incomingCommunicator;
 
         IncomingHandler(@NonNull final Context context) {
-            persistentCommunicator = (PersistentCommunicator) context;
+            incomingCommunicator = (IncomingCommunicator) context;
         }
 
         @Override
@@ -270,7 +270,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        persistentCommunicator.saveTemperature(vendor, name, value);
+                        incomingCommunicator.saveTemperature(vendor, name, value);
                     }
                     break;
                 case MessageWhatData.PRESSURE:
@@ -278,7 +278,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        persistentCommunicator.savePressure(vendor, name, value);
+                        incomingCommunicator.savePressure(vendor, name, value);
                     }
                     break;
                 case MessageWhatData.HUMIDITY:
@@ -286,7 +286,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        persistentCommunicator.saveHumidity(vendor, name, value);
+                        incomingCommunicator.saveHumidity(vendor, name, value);
                     }
                     break;
                 case MessageWhatData.AIR_QUALITY:
@@ -294,7 +294,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        persistentCommunicator.saveAirQuality(vendor, name, value);
+                        incomingCommunicator.saveAirQuality(vendor, name, value);
                     }
                     break;
                 case MessageWhatData.LUMINOSITY:
@@ -302,7 +302,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     value = message.getData().getFloat("value");
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        persistentCommunicator.saveLuminosity(vendor, name, value);
+                        incomingCommunicator.saveLuminosity(vendor, name, value);
                     }
                     break;
                 case MessageWhatData.ACCELERATION:
@@ -310,7 +310,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        persistentCommunicator.saveAcceleration(vendor, name, values);
+                        incomingCommunicator.saveAcceleration(vendor, name, values);
                     }
                     break;
                 case MessageWhatData.ANGULAR_VELOCITY:
@@ -318,7 +318,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        persistentCommunicator.saveAngularVelocity(vendor, name, values);
+                        incomingCommunicator.saveAngularVelocity(vendor, name, values);
                     }
                     break;
                 case MessageWhatData.MAGNETIC_FIELD:
@@ -326,16 +326,16 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     name = message.getData().getString("name");
                     values = message.getData().getFloatArray("values");
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        persistentCommunicator.saveMagneticField(vendor, name, values);
+                        incomingCommunicator.saveMagneticField(vendor, name, values);
                     }
                     break;
                 case MessageWhatData.LAST_BOOT_TIMESTAMP:
                     lastBootTimestamp = message.getData().getLong("value");
-                    persistentCommunicator.setLastBootTimestamp(lastBootTimestamp);
+                    incomingCommunicator.setLastBootTimestamp(lastBootTimestamp);
                     break;
                 case MessageWhatData.BOOT_COUNT:
                     bootCount = message.getData().getLong("value");
-                    persistentCommunicator.setBootCount(bootCount);
+                    incomingCommunicator.setBootCount(bootCount);
                     break;
                 default:
                     super.handleMessage(message);
