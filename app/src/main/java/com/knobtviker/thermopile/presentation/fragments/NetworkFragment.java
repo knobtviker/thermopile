@@ -29,19 +29,17 @@ import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.sources.raw.EnvironmentProfile;
 import com.knobtviker.thermopile.data.sources.raw.GattServerCallback;
-import com.knobtviker.thermopile.data.sources.raw.RxBluetoothManager;
 import com.knobtviker.thermopile.data.sources.raw.TimeProfile;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.integrity.RequestCode;
 import com.knobtviker.thermopile.presentation.views.listeners.GattServerListener;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -241,7 +239,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
 
         if (isOn) {
             presenter.name(getString(R.string.app_name));
-            presenter.discoverable(requireActivity(), RequestCode.BLUETOOTH_DISCOVERABILITY, RxBluetoothManager.MAX_DISCOVERABILITY_PERIOD_SECONDS);
+//            presenter.discoverable(requireActivity(), RequestCode.BLUETOOTH_DISCOVERABILITY, RxBluetoothManager.MAX_DISCOVERABILITY_PERIOD_SECONDS);
         }
     }
 
@@ -279,7 +277,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
     @Override
     public void onGattSendResponse(@NonNull BluetoothDevice device, int requestId, int status, @NonNull UUID uuid) {
         if (gattServer != null) {
-            byte[] response = new byte[0];
+//            byte[] response = new byte[0];
 //            if (uuid.equals(EnvironmentProfile.UUID_TEMPERATURE)) {
 //                response = EnvironmentProfile.toByteArray(Math.round(atmosphere.temperature()));
 //                Log.i(TAG, atmosphere.temperature() + "");
@@ -320,9 +318,12 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter> imp
         switchBluetoothGatt.setVisibility(isOn ? View.VISIBLE : View.GONE);
 
         if (isOn) {
-            presenter.setBluetoothDeviceClass(BluetoothClass.Service.INFORMATION, BluetoothClass.Device.COMPUTER_SERVER, BluetoothConfigManager.IO_CAPABILITY_IO
+            presenter.setBluetoothDeviceClass(
+                BluetoothClass.Service.INFORMATION,
+                BluetoothClass.Device.COMPUTER_SERVER,
+                BluetoothConfigManager.IO_CAPABILITY_IO
             );
-            presenter.setBluetoothProfiles(Collections.singletonList(BluetoothProfile.GATT_SERVER));
+            presenter.setBluetoothProfiles(Arrays.asList(BluetoothProfile.GATT, BluetoothProfile.GATT_SERVER));
 
             switchBluetoothGatt.setEnabled(false);
             presenter.isGattServerRunning();

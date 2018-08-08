@@ -5,7 +5,7 @@ buildscript {
         'compileSdk' : 28,
         'targetSdk'  : 28,
 
-        'buildTools' : '28.0.1',
+        'buildTools' : '28.0.2',
 
         'version'    : [
             'major': 1,
@@ -20,10 +20,10 @@ buildscript {
 
     ext.versions = [
         'things'       : '1.0',
-        'annotations'  : '28.0.0-beta01',
-        'appcompat'    : '28.0.0-beta01',
-        'design'       : '28.0.0-beta01',
-        'recyclerview' : '28.0.0-beta01',
+        'annotations'  : '28.0.0-rc01',
+        'appcompat'    : '28.0.0-rc01',
+        'design'       : '28.0.0-rc01',
+        'recyclerview' : '28.0.0-rc01',
         'constraint'   : '2.0.0-alpha1',
         'navigation'   : '1.0.0-alpha04',
         'rxjava'       : '2.2.0',
@@ -50,21 +50,28 @@ buildscript {
     ext.buildConfig.version['code'] = buildConfig.version.major * 1000000 + buildConfig.version.minor * 10000 + buildConfig.version.patch * 100 + buildConfig.version.build
 
     ext.modules = [
-        'app'    : [
+        'app'      : [
             'suffix' : '',
             'archive': "${buildConfig.archive}_${buildConfig.version.fullName}",
         ],
-        'drivers': [
+        'drivers'  : [
             'suffix' : '.drivers',
             'archive': "${buildConfig.archive}_drivers_${buildConfig.version.fullName}",
         ],
-        'fram'   : [
+        'fram'     : [
             'suffix' : '.fram',
             'archive': "${buildConfig.archive}_fram_${buildConfig.version.fullName}",
+        ],
+        'bluetooth': [
+            'suffix' : '.bluetooth',
+            'archive': "${buildConfig.archive}_bluetooth_${buildConfig.version.fullName}",
         ],
     ]
 
     ext.deps = [
+        'internal'   : [
+            'shared': ":shared",
+        ],
         'android'    : [
             'things'      : "com.google.android.things:androidthings:${versions.things}",
             'annotations' : "com.android.support:support-annotations:${versions.annotations}",
@@ -129,7 +136,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha04'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha05'
         classpath 'com.novoda:gradle-build-properties-plugin:0.4.1'
         classpath 'io.objectbox:objectbox-gradle-plugin:2.0.0'
         classpath 'com.google.gms:google-services:4.0.1'

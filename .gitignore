@@ -11,3 +11,8 @@
 /uninstall_remote
 /keys.properties
 app/fabric.properties
+/shared/build/
+.idea/caches/
+.idea/codeStyles/
+.idea/markdown-navigator.xml
+.idea/markdown-navigator/

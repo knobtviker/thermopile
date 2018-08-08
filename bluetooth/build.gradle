@@ -1,34 +1,65 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.2"
+    compileSdkVersion buildConfig.compileSdk
+    buildToolsVersion buildConfig.buildTools
 
     defaultConfig {
-        applicationId "com.knobtviker.thermopile.bluetooth"
-        minSdkVersion 27
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion buildConfig.minSdk
+        targetSdkVersion buildConfig.targetSdk
+        versionCode buildConfig.version.code
+        versionName buildConfig.version.name
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        applicationId buildConfig.packageName + modules.bluetooth.suffix
 
+        buildConfigField "String", 'GIT_COMMIT_SHA', "\"${gitSha()}\""
+        buildConfigField 'long', 'GIT_COMMIT_TIMESTAMP', gitTimestamp().toString() + "L"
+
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                def apkNameBuilder = new StringBuilder()
+
+                apkNameBuilder.append(modules.bluetooth.archive)
+                apkNameBuilder.append("_")
+                apkNameBuilder.append(gitSha())
+                apkNameBuilder.append("_")
+                apkNameBuilder.append(output.baseName)
+                apkNameBuilder.append(".apk")
+
+                output.outputFileName = apkNameBuilder.toString().replace("-", "_")
+            }
+        }
     }
 
     buildTypes {
+        debug {
+            adbOptions {
+                installOptions "-g"
+            }
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a'
+            universalApk false
+        }
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha3'
-    compileOnly 'com.google.android.things:androidthings:+'
-
+    implementation project(path: deps.internal.shared)
+    compileOnly deps.android.things
+    implementation deps.android.annotations
+    implementation deps.knobtviker.boards
+    implementation deps.timber.android
 }

@@ -10,6 +10,7 @@ public class ServiceFactory {
 
     private final static Pair<String, String> DRIVERS = Pair.create("drivers", "DriversService");
     private final static Pair<String, String> FRAM = Pair.create("fram", "Mb85rc256vService");
+    private final static Pair<String, String> BLUETOOTH = Pair.create("bluetooth", "BluetoothService");
 
     public static Intent drivers(@NonNull final Context context) {
         return new Intent()
@@ -21,12 +22,21 @@ public class ServiceFactory {
             .setComponent(component(context, FRAM.first, FRAM.second));
     }
 
+    public static Intent bluetooth(@NonNull final Context context) {
+        return new Intent()
+            .setComponent(component(context, BLUETOOTH.first, BLUETOOTH.second));
+    }
+
     public static String packageNameDrivers(@NonNull final Context context) {
         return packageName(context, DRIVERS.first);
     }
 
     public static String packageNameFram(@NonNull final Context context) {
         return packageName(context, FRAM.first);
+    }
+
+    public static String packageNameBluetooth(@NonNull final Context context) {
+        return packageName(context, BLUETOOTH.first);
     }
 
     private static String packageName(@NonNull final Context context, @NonNull final String module) {

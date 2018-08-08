@@ -24,7 +24,7 @@ android {
         buildConfigField "String", 'GIT_COMMIT_SHA', "\"${gitSha()}\""
         buildConfigField "long", 'GIT_COMMIT_TIMESTAMP', gitTimestamp().toString() + "L"
 
-        buildConfigField "boolean", 'DEBUG_LOCAL', "true"
+        buildConfigField "boolean", 'DEBUG_LOCAL', "false"
         buildConfigField "boolean", 'DEBUG_REMOTE', "true"
 
         buildConfigField "String", 'DATABASE_NAME', '"thermopile.objectbox"'
@@ -82,6 +82,9 @@ android {
 }
 
 dependencies {
+    //internal
+    implementation project(path: deps.internal.shared)
+
     //base
     compileOnly deps.android.things
     implementation deps.rx.java

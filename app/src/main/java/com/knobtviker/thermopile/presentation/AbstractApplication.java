@@ -17,10 +17,10 @@ import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.messenger.MessageWhatData;
-import com.knobtviker.thermopile.presentation.utils.constants.messenger.MessageWhatUser;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.PersistentCommunicator;
+import com.knobtviker.thermopile.shared.MessageWhatData;
+import com.knobtviker.thermopile.shared.MessageWhatUser;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -35,6 +35,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     @Nullable
     private Messenger serviceMessengerFram = null;
+
+    @Nullable
+    private Messenger serviceMessengerBluetooth = null;
 
     @NonNull
     private Messenger foregroundMessenger;
@@ -90,6 +93,16 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
             } catch (RemoteException e) { //DeadObjectException
                 Timber.e(e);
             }
+        } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameBluetooth(this))) { // Bluetooth service connected
+            serviceMessengerBluetooth = new Messenger(service);
+
+            final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
+            messageToService.replyTo = foregroundMessenger;
+            try {
+                serviceMessengerBluetooth.send(messageToService);
+            } catch (RemoteException e) { //DeadObjectException
+                Timber.e(e);
+            }
         }
     }
 
@@ -101,6 +114,8 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
             serviceMessengerSensors = null;
         } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service disconnected
             serviceMessengerFram = null;
+        } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameBluetooth(this))) { // FRAM service disconnected
+            serviceMessengerBluetooth = null;
         }
     }
 
@@ -193,6 +208,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
         bindService(ServiceFactory.drivers(this), this, BIND_AUTO_CREATE);
         bindService(ServiceFactory.fram(this), this, BIND_AUTO_CREATE);
+        bindService(ServiceFactory.bluetooth(this), this, BIND_AUTO_CREATE);
     }
 
     private void initCrashlytics() {

@@ -14,7 +14,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.SystemClock;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -27,46 +26,14 @@ import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231;
 import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
+import com.knobtviker.thermopile.shared.MessageWhatData;
+import com.knobtviker.thermopile.shared.MessageWhatUser;
 
 import java.io.IOException;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 import timber.log.Timber;
 
 public class DriversService extends Service implements SensorEventListener {
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({
-        MessageWhatUser.REGISTER
-    })
-    public @interface MessageWhatUser {
-        int REGISTER = 0;
-    }
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({
-        MessageWhatData.CURRENT,
-        MessageWhatData.TEMPERATURE,
-        MessageWhatData.PRESSURE,
-        MessageWhatData.HUMIDITY,
-        MessageWhatData.AIR_QUALITY,
-        MessageWhatData.LUMINOSITY,
-        MessageWhatData.ACCELERATION,
-        MessageWhatData.ANGULAR_VELOCITY,
-        MessageWhatData.MAGNETIC_FIELD
-    })
-    public @interface MessageWhatData {
-        int CURRENT = -1;
-        int TEMPERATURE = 0;
-        int PRESSURE = 1;
-        int HUMIDITY = 2;
-        int AIR_QUALITY = 3;
-        int LUMINOSITY = 4;
-        int ACCELERATION = 5;
-        int ANGULAR_VELOCITY = 6;
-        int MAGNETIC_FIELD = 7;
-    }
 
     private int LOW_PASS_FILTER_SMOOTHING_FACTOR_TEMPERATURE = 200;
     private int LOW_PASS_FILTER_SMOOTHING_FACTOR_PRESSURE = 200;

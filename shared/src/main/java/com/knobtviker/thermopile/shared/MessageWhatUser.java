@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.presentation.utils.constants.messenger;
+package com.knobtviker.thermopile.shared;
 
 import android.support.annotation.IntDef;
 

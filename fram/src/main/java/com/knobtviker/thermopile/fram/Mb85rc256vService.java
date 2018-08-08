@@ -9,16 +9,15 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.SystemClock;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
 import com.knobtviker.android.things.contrib.community.driver.fram.Mb85rc256v;
+import com.knobtviker.thermopile.shared.MessageWhatData;
+import com.knobtviker.thermopile.shared.MessageWhatUser;
 
 import java.io.IOException;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.nio.ByteBuffer;
 
 import timber.log.Timber;
@@ -27,26 +26,6 @@ public class Mb85rc256vService extends Service {
 
     public final static int ADDRESS_LAST_BOOT_TIMESTAMP = 0;
     public final static int ADDRESS_BOOT_COUNT = Long.BYTES; //1 * Long.BYTES to shift for 8 bytes, next address is 2 * Long.BYTES
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({
-        MessageWhatUser.REGISTER,
-        MessageWhatUser.RESET
-    })
-    public @interface MessageWhatUser {
-        int RESET = -2;
-        int REGISTER = 0;
-    }
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({
-        MessageWhatData.LAST_BOOT_TIMESTAMP,
-        MessageWhatData.BOOT_COUNT
-    })
-    public @interface MessageWhatData {
-        int LAST_BOOT_TIMESTAMP = 8;
-        int BOOT_COUNT = 9;
-    }
 
     @NonNull
     private IncomingHandler incomingHandler;
@@ -165,7 +144,7 @@ public class Mb85rc256vService extends Service {
                     sendMessageToForeground(buildLongValueMessage(MessageWhatData.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
                     sendMessageToForeground(buildLongValueMessage(MessageWhatData.BOOT_COUNT, bootCount));
                     break;
-                case MessageWhatUser.RESET:
+                case MessageWhatData.RESET:
                     reset();
 
                     sendMessageToForeground(buildLongValueMessage(MessageWhatData.LAST_BOOT_TIMESTAMP, lastBootTimestamp));

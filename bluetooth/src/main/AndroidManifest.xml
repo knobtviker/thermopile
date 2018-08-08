@@ -1,8 +1,18 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.knobtviker.thermopile.bluetooth"
-    >
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.knobtviker.thermopile.bluetooth">
 
-    <application android:label="@string/app_name">
+    <uses-permission android:name="com.google.android.things.permission.MANAGE_BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <application tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
         <uses-library android:name="com.google.android.things"/>
+
+        <service
+            android:name=".BluetoothService"
+            android:exported="true"
+            tools:ignore="ExportedService"/>
     </application>
 </manifest>
