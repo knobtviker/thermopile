@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.drivers;
 
-import android.app.Service;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -26,14 +25,17 @@ import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231;
 import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
-import com.knobtviker.thermopile.shared.MessageWhatData;
-import com.knobtviker.thermopile.shared.MessageWhatUser;
+import com.knobtviker.thermopile.shared.UniqueService;
+import com.knobtviker.thermopile.shared.constants.Keys;
+import com.knobtviker.thermopile.shared.constants.Uid;
+import com.knobtviker.thermopile.shared.message.Action;
+import com.knobtviker.thermopile.shared.message.Type;
 
 import java.io.IOException;
 
 import timber.log.Timber;
 
-public class DriversService extends Service implements SensorEventListener {
+public class DriversService extends UniqueService implements SensorEventListener {
 
     private int LOW_PASS_FILTER_SMOOTHING_FACTOR_TEMPERATURE = 200;
     private int LOW_PASS_FILTER_SMOOTHING_FACTOR_PRESSURE = 200;
@@ -88,6 +90,10 @@ public class DriversService extends Service implements SensorEventListener {
     private long lastUpdateAcceleration = 0L;
     private long lastUpdateAngularVelocity = 0L;
     private long lastUpdateMagneticField = 0L;
+
+    protected DriversService() {
+        super(Uid.DRIVERS);
+    }
 
     @Override
     public void onCreate() {
@@ -336,7 +342,7 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentTemperature) {
             currentTemperature = normalizedValue;
             incomingHandler.currentTemperature = currentTemperature;
-            sendMessageToForeground(buildSingleValueMessage(event, MessageWhatData.TEMPERATURE, currentTemperature));
+            sendMessageToForeground(buildSingleValueMessage(event, Type.TEMPERATURE, currentTemperature));
         }
     }
 
@@ -346,7 +352,7 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentPressure) {
             currentPressure = normalizedValue;
             incomingHandler.currentPressure = currentPressure;
-            sendMessageToForeground(buildSingleValueMessage(event, MessageWhatData.PRESSURE, currentPressure));
+            sendMessageToForeground(buildSingleValueMessage(event, Type.PRESSURE, currentPressure));
         }
     }
 
@@ -356,7 +362,7 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentHumidity) {
             currentHumidity = normalizedValue;
             incomingHandler.currentHumidity = currentHumidity;
-            sendMessageToForeground(buildSingleValueMessage(event, MessageWhatData.HUMIDITY, currentHumidity));
+            sendMessageToForeground(buildSingleValueMessage(event, Type.HUMIDITY, currentHumidity));
         }
     }
 
@@ -366,7 +372,7 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentAirQuality) {
             currentAirQuality = normalizedValue;
             incomingHandler.currentAirQuality = currentAirQuality;
-            sendMessageToForeground(buildSingleValueMessage(event, MessageWhatData.AIR_QUALITY, currentAirQuality));
+            sendMessageToForeground(buildSingleValueMessage(event, Type.AIR_QUALITY, currentAirQuality));
         }
     }
 
@@ -376,7 +382,7 @@ public class DriversService extends Service implements SensorEventListener {
         if (normalizedValue != currentLuminosity) {
             currentLuminosity = normalizedValue;
             incomingHandler.currentLuminosity = currentLuminosity;
-            sendMessageToForeground(buildSingleValueMessage(event, MessageWhatData.LUMINOSITY, currentLuminosity));
+            sendMessageToForeground(buildSingleValueMessage(event, Type.LUMINOSITY, currentLuminosity));
         }
     }
 
@@ -390,7 +396,7 @@ public class DriversService extends Service implements SensorEventListener {
         if (newVector != currentAccelerationVector) {
             currentAccelerationVector = newVector;
             incomingHandler.currentAcceleration = buffer;
-            sendMessageToForeground(buildCartesianValueMessage(event, MessageWhatData.ACCELERATION, buffer));
+            sendMessageToForeground(buildCartesianValueMessage(event, Type.ACCELERATION, buffer));
         }
     }
 
@@ -404,7 +410,7 @@ public class DriversService extends Service implements SensorEventListener {
         if (newVector != currentAngularVelocityVector) {
             currentAngularVelocityVector = newVector;
             incomingHandler.currentAngularVelocity = buffer;
-            sendMessageToForeground(buildCartesianValueMessage(event, MessageWhatData.ANGULAR_VELOCITY, buffer));
+            sendMessageToForeground(buildCartesianValueMessage(event, Type.ANGULAR_VELOCITY, buffer));
         }
     }
 
@@ -418,16 +424,17 @@ public class DriversService extends Service implements SensorEventListener {
         if (newVector != currentMagneticFieldVector) {
             currentMagneticFieldVector = newVector;
             incomingHandler.currentMagneticField = buffer;
-            sendMessageToForeground(buildCartesianValueMessage(event, MessageWhatData.MAGNETIC_FIELD, buffer));
+            sendMessageToForeground(buildCartesianValueMessage(event, Type.MAGNETIC_FIELD, buffer));
         }
     }
 
     private static Bundle buildSingleValueBundle(@Nullable final SensorEvent event, final float normalizedValue) {
         final Bundle bundle = new Bundle();
 
-        bundle.putString("vendor", event == null ? "" : event.sensor.getVendor());
-        bundle.putString("name", event == null ? "" : event.sensor.getName());
-        bundle.putFloat("value", normalizedValue);
+        bundle.putInt(Keys.UID, uid());
+        bundle.putString(Keys.VENDOR, event == null ? "" : event.sensor.getVendor());
+        bundle.putString(Keys.NAME, event == null ? "" : event.sensor.getName());
+        bundle.putFloat(Keys.VALUE, normalizedValue);
 
         return bundle;
     }
@@ -435,14 +442,15 @@ public class DriversService extends Service implements SensorEventListener {
     private static Bundle buildCartesianValueBundle(@Nullable final SensorEvent event, final float[] normalizedValues) {
         final Bundle bundle = new Bundle();
 
-        bundle.putString("vendor", event == null ? "" : event.sensor.getVendor());
-        bundle.putString("name", event == null ? "" : event.sensor.getName());
-        bundle.putFloatArray("values", normalizedValues);
+        bundle.putInt(Keys.UID, uid());
+        bundle.putString(Keys.VENDOR, event == null ? "" : event.sensor.getVendor());
+        bundle.putString(Keys.NAME, event == null ? "" : event.sensor.getName());
+        bundle.putFloatArray(Keys.VALUES, normalizedValues);
 
         return bundle;
     }
 
-    private static Message buildSingleValueMessage(@Nullable final SensorEvent event, @MessageWhatData final int messageWhat, final float normalizedValue) {
+    private static Message buildSingleValueMessage(@Nullable final SensorEvent event, @Type final int messageWhat, final float normalizedValue) {
         final Message message = Message.obtain(null, messageWhat);
 
         message.setData(buildSingleValueBundle(event, normalizedValue));
@@ -450,7 +458,7 @@ public class DriversService extends Service implements SensorEventListener {
         return message;
     }
 
-    private static Message buildCartesianValueMessage(@Nullable final SensorEvent event, @MessageWhatData final int messageWhat, final float[] normalizedValues) {
+    private static Message buildCartesianValueMessage(@Nullable final SensorEvent event, @Type final int messageWhat, final float[] normalizedValues) {
         final Message message = Message.obtain(null, messageWhat);
 
         message.setData(buildCartesianValueBundle(event, normalizedValues));
@@ -483,10 +491,10 @@ public class DriversService extends Service implements SensorEventListener {
         @Override
         public void handleMessage(Message message) {
             switch (message.what) {
-                case MessageWhatUser.REGISTER:
+                case Action.REGISTER:
                     foregroundMessenger = message.replyTo;
                     break;
-                case MessageWhatData.CURRENT:
+                case Action.CURRENT:
                     sendCurrentToForeground();
                 default:
                     super.handleMessage(message);
@@ -494,14 +502,14 @@ public class DriversService extends Service implements SensorEventListener {
         }
 
         private void sendCurrentToForeground() {
-            sendMessageToForeground(buildSingleValueMessage(null, MessageWhatData.TEMPERATURE, currentTemperature));
-            sendMessageToForeground(buildSingleValueMessage(null, MessageWhatData.PRESSURE, currentPressure));
-            sendMessageToForeground(buildSingleValueMessage(null, MessageWhatData.HUMIDITY, currentHumidity));
-            sendMessageToForeground(buildSingleValueMessage(null, MessageWhatData.AIR_QUALITY, currentAirQuality));
-            sendMessageToForeground(buildSingleValueMessage(null, MessageWhatData.LUMINOSITY, currentLuminosity));
-            sendMessageToForeground(buildCartesianValueMessage(null, MessageWhatData.ACCELERATION, currentAcceleration));
-            sendMessageToForeground(buildCartesianValueMessage(null, MessageWhatData.ANGULAR_VELOCITY, currentAngularVelocity));
-            sendMessageToForeground(buildCartesianValueMessage(null, MessageWhatData.MAGNETIC_FIELD, currentMagneticField));
+            sendMessageToForeground(buildSingleValueMessage(null, Type.TEMPERATURE, currentTemperature));
+            sendMessageToForeground(buildSingleValueMessage(null, Type.PRESSURE, currentPressure));
+            sendMessageToForeground(buildSingleValueMessage(null, Type.HUMIDITY, currentHumidity));
+            sendMessageToForeground(buildSingleValueMessage(null, Type.AIR_QUALITY, currentAirQuality));
+            sendMessageToForeground(buildSingleValueMessage(null, Type.LUMINOSITY, currentLuminosity));
+            sendMessageToForeground(buildCartesianValueMessage(null, Type.ACCELERATION, currentAcceleration));
+            sendMessageToForeground(buildCartesianValueMessage(null, Type.ANGULAR_VELOCITY, currentAngularVelocity));
+            sendMessageToForeground(buildCartesianValueMessage(null, Type.MAGNETIC_FIELD, currentMagneticField));
         }
 
         private void sendMessageToForeground(@NonNull final Message message) {

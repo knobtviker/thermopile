@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.fram;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,21 +13,21 @@ import android.support.annotation.Nullable;
 
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
 import com.knobtviker.android.things.contrib.community.driver.fram.Mb85rc256v;
-import com.knobtviker.thermopile.shared.MessageWhatData;
-import com.knobtviker.thermopile.shared.MessageWhatUser;
+import com.knobtviker.thermopile.shared.UniqueService;
+import com.knobtviker.thermopile.shared.constants.Keys;
+import com.knobtviker.thermopile.shared.constants.Uid;
+import com.knobtviker.thermopile.shared.message.Action;
+import com.knobtviker.thermopile.shared.message.Data;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import timber.log.Timber;
 
-public class Mb85rc256vService extends Service {
+public class Mb85rc256vService extends UniqueService {
 
     public final static int ADDRESS_LAST_BOOT_TIMESTAMP = 0;
     public final static int ADDRESS_BOOT_COUNT = Long.BYTES; //1 * Long.BYTES to shift for 8 bytes, next address is 2 * Long.BYTES
-
-    @NonNull
-    private IncomingHandler incomingHandler;
 
     @NonNull
     private Messenger serviceMessenger;
@@ -38,6 +37,10 @@ public class Mb85rc256vService extends Service {
 
     @Nullable
     private Mb85rc256v fram;
+
+    protected Mb85rc256vService() {
+        super(Uid.FRAM);
+    }
 
     @Override
     public void onCreate() {
@@ -68,8 +71,7 @@ public class Mb85rc256vService extends Service {
     }
 
     private void setupMessenger() {
-        incomingHandler = new IncomingHandler(fram);
-        serviceMessenger = new Messenger(incomingHandler);
+        serviceMessenger = new Messenger(new IncomingHandler(fram));
     }
 
     private void setupDriver() {
@@ -138,30 +140,31 @@ public class Mb85rc256vService extends Service {
         @Override
         public void handleMessage(Message message) {
             switch (message.what) {
-                case MessageWhatUser.REGISTER:
+                case Action.REGISTER:
                     foregroundMessenger = message.replyTo;
 
-                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.BOOT_COUNT, bootCount));
+                    sendMessageToForeground(buildLongValueMessage(Data.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
+                    sendMessageToForeground(buildLongValueMessage(Data.BOOT_COUNT, bootCount));
                     break;
-                case MessageWhatData.RESET:
+                case Action.RESET:
                     reset();
 
-                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.BOOT_COUNT, bootCount));
+                    sendMessageToForeground(buildLongValueMessage(Data.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
+                    sendMessageToForeground(buildLongValueMessage(Data.BOOT_COUNT, bootCount));
                     break;
-                case MessageWhatData.LAST_BOOT_TIMESTAMP:
-                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-                case MessageWhatData.BOOT_COUNT:
-                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.BOOT_COUNT, bootCount));
+                case Data.LAST_BOOT_TIMESTAMP:
+                    sendMessageToForeground(buildLongValueMessage(Data.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
+                case Data.BOOT_COUNT:
+                    sendMessageToForeground(buildLongValueMessage(Data.BOOT_COUNT, bootCount));
                 default:
                     super.handleMessage(message);
             }
         }
 
-        private static Message buildLongValueMessage(@MessageWhatData final int messageWhat, final long normalizedValue) {
+        private static Message buildLongValueMessage(@Data final int messageWhat, final long normalizedValue) {
             final Message message = Message.obtain(null, messageWhat);
 
+            message.sendingUid = uid();
             message.setData(buildLongValueBundle(normalizedValue));
 
             return message;
@@ -170,7 +173,8 @@ public class Mb85rc256vService extends Service {
         private static Bundle buildLongValueBundle(final long normalizedValue) {
             final Bundle bundle = new Bundle();
 
-            bundle.putLong("value", normalizedValue);
+            bundle.putInt(Keys.UID, uid());
+            bundle.putLong(Keys.VALUE, normalizedValue);
 
             return bundle;
         }

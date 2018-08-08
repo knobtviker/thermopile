@@ -19,14 +19,16 @@ import com.knobtviker.thermopile.data.sources.local.implementation.Database;
 import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
-import com.knobtviker.thermopile.shared.MessageWhatData;
-import com.knobtviker.thermopile.shared.MessageWhatUser;
+import com.knobtviker.thermopile.shared.constants.Keys;
+import com.knobtviker.thermopile.shared.constants.Uid;
+import com.knobtviker.thermopile.shared.message.Action;
+import com.knobtviker.thermopile.shared.message.Data;
+import com.knobtviker.thermopile.shared.message.Type;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
-
 
 public abstract class AbstractApplication<P extends BasePresenter> extends Application implements ServiceConnection, IncomingCommunicator {
 
@@ -76,7 +78,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameDrivers(this))) { // Driver service connected
             serviceMessengerSensors = new Messenger(service);
 
-            final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
+            final Message messageToService = Message.obtain(null, Action.REGISTER);
             messageToService.replyTo = foregroundMessenger;
             try {
                 serviceMessengerSensors.send(messageToService);
@@ -86,7 +88,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service connected
             serviceMessengerFram = new Messenger(service);
 
-            final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
+            final Message messageToService = Message.obtain(null, Action.REGISTER);
             messageToService.replyTo = foregroundMessenger;
             try {
                 serviceMessengerFram.send(messageToService);
@@ -96,7 +98,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameBluetooth(this))) { // Bluetooth service connected
             serviceMessengerBluetooth = new Messenger(service);
 
-            final Message messageToService = Message.obtain(null, MessageWhatUser.REGISTER);
+            final Message messageToService = Message.obtain(null, Action.REGISTER);
             messageToService.replyTo = foregroundMessenger;
             try {
                 serviceMessengerBluetooth.send(messageToService);
@@ -121,10 +123,10 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     @Override
     public void onBindingDied(ComponentName name) {
-//        Timber.i("onBindingDied %s", name.flattenToString());
-//        serviceMessengerSensors = null;
-//
-//        services();
+        //        Timber.i("onBindingDied %s", name.flattenToString());
+        //        serviceMessengerSensors = null;
+        //
+        //        services();
     }
 
     @Override
@@ -180,7 +182,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public void refresh() {
         try {
             if (serviceMessengerSensors != null) {
-                final Message messageToService = Message.obtain(null, MessageWhatData.CURRENT);
+                final Message messageToService = Message.obtain(null, Action.CURRENT);
                 serviceMessengerSensors.send(messageToService);
             }
         } catch (RemoteException e) {
@@ -191,7 +193,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public void reset() {
         try {
             if (serviceMessengerFram != null) {
-                final Message messageToService = Message.obtain(null, MessageWhatData.RESET);
+                final Message messageToService = Message.obtain(null, Action.RESET);
                 serviceMessengerFram.send(messageToService);
             }
         } catch (RemoteException e) {
@@ -256,90 +258,132 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
         @Override
         public void handleMessage(Message message) {
+            switch (message.getData().getInt(Keys.UID, Uid.INVALID)) {
+                case Uid.DRIVERS:
+                    handleDriverMessage(message);
+                    break;
+                case Uid.FRAM:
+                    handleFramMessage(message);
+                    break;
+                case Uid.BLUETOOTH:
+                    handleBluetoothMessage(message);
+                    break;
+                case Uid.INVALID:
+                default:
+                    super.handleMessage(message);
+            }
+        }
+
+        private void handleDriverMessage(@NonNull final Message message) {
             String vendor = "";
             String name = "";
             float value = 0.0f;
             float[] values = {0.0f, 0.0f, 0.0f};
 
-            long lastBootTimestamp = 0L;
-            long bootCount = 1l;
-
             switch (message.what) {
-                case MessageWhatData.TEMPERATURE:
-                    vendor = message.getData().getString("vendor");
-                    name = message.getData().getString("name");
-                    value = message.getData().getFloat("value");
+                case Type.TEMPERATURE:
+                    vendor = message.getData().getString(Keys.VENDOR);
+                    name = message.getData().getString(Keys.NAME);
+                    value = message.getData().getFloat(Keys.VALUE);
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         incomingCommunicator.saveTemperature(vendor, name, value);
                     }
                     break;
-                case MessageWhatData.PRESSURE:
-                    vendor = message.getData().getString("vendor");
-                    name = message.getData().getString("name");
-                    value = message.getData().getFloat("value");
+                case Type.PRESSURE:
+                    vendor = message.getData().getString(Keys.VENDOR);
+                    name = message.getData().getString(Keys.NAME);
+                    value = message.getData().getFloat(Keys.VALUE);
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         incomingCommunicator.savePressure(vendor, name, value);
                     }
                     break;
-                case MessageWhatData.HUMIDITY:
-                    vendor = message.getData().getString("vendor");
-                    name = message.getData().getString("name");
-                    value = message.getData().getFloat("value");
+                case Type.HUMIDITY:
+                    vendor = message.getData().getString(Keys.VENDOR);
+                    name = message.getData().getString(Keys.NAME);
+                    value = message.getData().getFloat(Keys.VALUE);
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         incomingCommunicator.saveHumidity(vendor, name, value);
                     }
                     break;
-                case MessageWhatData.AIR_QUALITY:
-                    vendor = message.getData().getString("vendor");
-                    name = message.getData().getString("name");
-                    value = message.getData().getFloat("value");
+                case Type.AIR_QUALITY:
+                    vendor = message.getData().getString(Keys.VENDOR);
+                    name = message.getData().getString(Keys.NAME);
+                    value = message.getData().getFloat(Keys.VALUE);
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         incomingCommunicator.saveAirQuality(vendor, name, value);
                     }
                     break;
-                case MessageWhatData.LUMINOSITY:
-                    vendor = message.getData().getString("vendor");
-                    name = message.getData().getString("name");
-                    value = message.getData().getFloat("value");
+                case Type.LUMINOSITY:
+                    vendor = message.getData().getString(Keys.VENDOR);
+                    name = message.getData().getString(Keys.NAME);
+                    value = message.getData().getFloat(Keys.VALUE);
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         incomingCommunicator.saveLuminosity(vendor, name, value);
                     }
                     break;
-                case MessageWhatData.ACCELERATION:
-                    vendor = message.getData().getString("vendor");
-                    name = message.getData().getString("name");
-                    values = message.getData().getFloatArray("values");
+                case Type.ACCELERATION:
+                    vendor = message.getData().getString(Keys.VENDOR);
+                    name = message.getData().getString(Keys.NAME);
+                    values = message.getData().getFloatArray(Keys.VALUES);
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         incomingCommunicator.saveAcceleration(vendor, name, values);
                     }
                     break;
-                case MessageWhatData.ANGULAR_VELOCITY:
-                    vendor = message.getData().getString("vendor");
-                    name = message.getData().getString("name");
-                    values = message.getData().getFloatArray("values");
+                case Type.ANGULAR_VELOCITY:
+                    vendor = message.getData().getString(Keys.VENDOR);
+                    name = message.getData().getString(Keys.NAME);
+                    values = message.getData().getFloatArray(Keys.VALUES);
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         incomingCommunicator.saveAngularVelocity(vendor, name, values);
                     }
                     break;
-                case MessageWhatData.MAGNETIC_FIELD:
-                    vendor = message.getData().getString("vendor");
-                    name = message.getData().getString("name");
-                    values = message.getData().getFloatArray("values");
+                case Type.MAGNETIC_FIELD:
+                    vendor = message.getData().getString(Keys.VENDOR);
+                    name = message.getData().getString(Keys.NAME);
+                    values = message.getData().getFloatArray(Keys.VALUES);
                     if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
                         incomingCommunicator.saveMagneticField(vendor, name, values);
                     }
                     break;
-                case MessageWhatData.LAST_BOOT_TIMESTAMP:
-                    lastBootTimestamp = message.getData().getLong("value");
+                default:
+                    super.handleMessage(message);
+            }
+        }
+
+        private void handleFramMessage(@NonNull final Message message) {
+            long lastBootTimestamp = 0L;
+            long bootCount = 1l;
+
+            switch (message.what) {
+                case Data.LAST_BOOT_TIMESTAMP:
+                    lastBootTimestamp = message.getData().getLong(Keys.VALUE);
                     incomingCommunicator.setLastBootTimestamp(lastBootTimestamp);
                     break;
-                case MessageWhatData.BOOT_COUNT:
-                    bootCount = message.getData().getLong("value");
+                case Data.BOOT_COUNT:
+                    bootCount = message.getData().getLong(Keys.VALUE);
                     incomingCommunicator.setBootCount(bootCount);
                     break;
                 default:
                     super.handleMessage(message);
             }
+        }
+
+        private void handleBluetoothMessage(@NonNull final Message message) {
+//            long lastBootTimestamp = 0L;
+//            long bootCount = 1l;
+//
+//            switch (message.what) {
+//                case MessageWhatData.LAST_BOOT_TIMESTAMP:
+//                    lastBootTimestamp = message.getData().getLong(Keys.VALUE);
+//                    incomingCommunicator.setLastBootTimestamp(lastBootTimestamp);
+//                    break;
+//                case MessageWhatData.BOOT_COUNT:
+//                    bootCount = message.getData().getLong(Keys.VALUE);
+//                    incomingCommunicator.setBootCount(bootCount);
+//                    break;
+//                default:
+//                    super.handleMessage(message);
+//            }
         }
     }
 }
