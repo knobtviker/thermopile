@@ -9,7 +9,7 @@ import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDat
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
-import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
 import io.reactivex.internal.functions.Functions;
 

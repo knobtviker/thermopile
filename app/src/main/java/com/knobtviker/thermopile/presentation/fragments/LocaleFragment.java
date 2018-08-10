@@ -15,10 +15,10 @@ import android.widget.Spinner;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
-import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
-import com.knobtviker.thermopile.presentation.utils.constants.integrity.Default;
-import com.knobtviker.thermopile.presentation.utils.constants.settings.ClockMode;
+import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
+import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.views.adapters.TimezoneAdapter;
 
 import org.joda.time.DateTimeZone;

@@ -15,8 +15,8 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.BuildConfig;
-import com.knobtviker.thermopile.data.sources.local.implementation.Database;
-import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
+import com.knobtviker.thermopile.data.sources.local.shared.Database;
+import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
 import com.knobtviker.thermopile.shared.constants.Keys;

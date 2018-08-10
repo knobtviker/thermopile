@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
-import com.knobtviker.thermopile.presentation.presenters.implementation.BasePresenter;
-import com.knobtviker.thermopile.presentation.views.implementation.BaseView;
+import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
+import com.knobtviker.thermopile.presentation.shared.base.BaseView;
 
 import java.util.List;
 

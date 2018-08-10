@@ -2,8 +2,7 @@ package com.knobtviker.thermopile.presentation.views.adapters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.Temperature;
-import com.knobtviker.thermopile.data.models.local.implementation.SingleModel;
+import com.knobtviker.thermopile.data.models.local.shared.SingleModel;
 import com.knobtviker.thermopile.presentation.views.spark.SparkAdapter;
 
 import java.util.ArrayList;

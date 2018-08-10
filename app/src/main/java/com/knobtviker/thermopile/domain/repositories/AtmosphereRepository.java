@@ -21,7 +21,7 @@ import com.knobtviker.thermopile.data.sources.local.LuminosityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
-import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
+import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 
 import org.joda.time.DateTimeUtils;
 

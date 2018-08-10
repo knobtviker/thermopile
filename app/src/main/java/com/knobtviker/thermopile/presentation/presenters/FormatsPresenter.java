@@ -6,7 +6,7 @@ import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSetting
 import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.presentation.contracts.FormatsContract;
-import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
 import io.reactivex.internal.functions.Functions;
 

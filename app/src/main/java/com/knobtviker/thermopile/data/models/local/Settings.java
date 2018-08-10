@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.data.models.local;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.implementation.BaseModel;
+import com.knobtviker.thermopile.data.models.local.shared.base.BaseModel;
 
 import io.objectbox.annotation.Entity;
 

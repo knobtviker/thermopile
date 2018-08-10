@@ -10,7 +10,7 @@ import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDat
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
-import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;

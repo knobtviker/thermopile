@@ -12,7 +12,7 @@ import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosph
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
-import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
 import java.util.List;
 

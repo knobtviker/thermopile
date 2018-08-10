@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.data.models.local;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.implementation.CartesianModel;
+import com.knobtviker.thermopile.data.models.local.shared.CartesianModel;
 
 import io.objectbox.annotation.Entity;
 

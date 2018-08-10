@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.data.sources.local;
 
 import com.knobtviker.thermopile.data.models.local.MagneticField;
 import com.knobtviker.thermopile.data.models.local.MagneticField_;
-import com.knobtviker.thermopile.data.sources.local.implementation.AbstractLocalDataSource;
+import com.knobtviker.thermopile.data.sources.local.shared.base.AbstractLocalDataSource;
 
 import java.util.List;
 

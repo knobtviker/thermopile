@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.presentation.activities.implementation.BaseActivity;
-import com.knobtviker.thermopile.presentation.utils.constants.integrity.Brightness;
+import com.knobtviker.thermopile.presentation.shared.base.BaseActivity;
+import com.knobtviker.thermopile.presentation.shared.constants.integrity.Brightness;
 
 /**
  * Created by bojan on 11/06/2017.

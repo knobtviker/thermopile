@@ -18,11 +18,11 @@ import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
-import com.knobtviker.thermopile.presentation.fragments.implementation.BaseFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
+import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
-import com.knobtviker.thermopile.presentation.utils.constants.settings.FormatDate;
-import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitTemperature;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import org.joda.time.DateTime;

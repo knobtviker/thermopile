@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.data.sources.local.ThresholdLocalDataSource;
-import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
+import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 import com.knobtviker.thermopile.presentation.utils.factories.ThresholdIntervalFactory;
 
 import org.joda.time.DateTime;

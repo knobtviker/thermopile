@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.local.SettingsLocalDataSource;
-import com.knobtviker.thermopile.data.sources.local.implementation.Database;
-import com.knobtviker.thermopile.domain.repositories.implementation.AbstractRepository;
+import com.knobtviker.thermopile.data.sources.local.shared.Database;
+import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 
 import javax.inject.Inject;
 

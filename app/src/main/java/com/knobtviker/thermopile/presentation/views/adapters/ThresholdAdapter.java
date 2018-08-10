@@ -14,10 +14,10 @@ import android.widget.TextView;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
-import com.knobtviker.thermopile.presentation.utils.constants.settings.FormatDate;
-import com.knobtviker.thermopile.presentation.utils.constants.settings.FormatTime;
-import com.knobtviker.thermopile.presentation.utils.constants.settings.UnitTemperature;
 import com.knobtviker.thermopile.presentation.utils.factories.ThresholdIntervalFactory;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdLineViewHolder;
 

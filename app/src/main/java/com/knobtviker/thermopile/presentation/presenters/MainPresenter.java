@@ -16,7 +16,7 @@ import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
-import com.knobtviker.thermopile.presentation.presenters.implementation.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
 import io.reactivex.Observable;
 import io.reactivex.android.MainThreadDisposable;

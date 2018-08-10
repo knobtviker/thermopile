@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.data.models.local;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.implementation.SingleModel;
+import com.knobtviker.thermopile.data.models.local.shared.SingleModel;
 
 public class Motion extends SingleModel {
 
