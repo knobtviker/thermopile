@@ -1,9 +1,10 @@
-package com.knobtviker.thermopile.presentation;
+package com.knobtviker.thermopile.presentation.shared.base;
 
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -15,17 +16,19 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.BuildConfig;
+import com.knobtviker.thermopile.data.models.presentation.BluetoothEntity;
 import com.knobtviker.thermopile.data.sources.local.shared.Database;
-import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
+import com.knobtviker.thermopile.shared.MessageFactory;
 import com.knobtviker.thermopile.shared.constants.Keys;
 import com.knobtviker.thermopile.shared.constants.Uid;
 import com.knobtviker.thermopile.shared.message.Action;
-import com.knobtviker.thermopile.shared.message.Data;
-import com.knobtviker.thermopile.shared.message.Type;
+import com.knobtviker.thermopile.shared.message.Bluetooth;
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
@@ -43,6 +46,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     @NonNull
     private Messenger foregroundMessenger;
+
+    @NonNull
+    public static BluetoothEntity bluetooth = BluetoothEntity.builder().build();
 
     @NonNull
     protected P presenter;
@@ -77,34 +83,13 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
         if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameDrivers(this))) { // Driver service connected
             serviceMessengerSensors = new Messenger(service);
-
-            final Message messageToService = Message.obtain(null, Action.REGISTER);
-            messageToService.replyTo = foregroundMessenger;
-            try {
-                serviceMessengerSensors.send(messageToService);
-            } catch (RemoteException e) { //DeadObjectException
-                Timber.e(e);
-            }
+            MessageFactory.registerToBackground(foregroundMessenger, serviceMessengerSensors);
         } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service connected
             serviceMessengerFram = new Messenger(service);
-
-            final Message messageToService = Message.obtain(null, Action.REGISTER);
-            messageToService.replyTo = foregroundMessenger;
-            try {
-                serviceMessengerFram.send(messageToService);
-            } catch (RemoteException e) { //DeadObjectException
-                Timber.e(e);
-            }
+            MessageFactory.registerToBackground(foregroundMessenger, serviceMessengerFram);
         } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameBluetooth(this))) { // Bluetooth service connected
             serviceMessengerBluetooth = new Messenger(service);
-
-            final Message messageToService = Message.obtain(null, Action.REGISTER);
-            messageToService.replyTo = foregroundMessenger;
-            try {
-                serviceMessengerBluetooth.send(messageToService);
-            } catch (RemoteException e) { //DeadObjectException
-                Timber.e(e);
-            }
+            MessageFactory.registerToBackground(foregroundMessenger, serviceMessengerBluetooth);
         }
     }
 
@@ -247,6 +232,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     public abstract void onBootCount(final long value);
 
+    //TODO: All incoming handlers should be moved away from Application/Service classes and have a unified Message builder factory.
     public static class IncomingHandler extends Handler {
 
         @NonNull
@@ -258,7 +244,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
         @Override
         public void handleMessage(Message message) {
-            switch (message.getData().getInt(Keys.UID, Uid.INVALID)) {
+            switch (message.what) {
                 case Uid.DRIVERS:
                     handleDriverMessage(message);
                     break;
@@ -275,78 +261,67 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         }
 
         private void handleDriverMessage(@NonNull final Message message) {
-            String vendor = "";
-            String name = "";
-            float value = 0.0f;
-            float[] values = {0.0f, 0.0f, 0.0f};
+            final Bundle data = message.getData();
 
-            switch (message.what) {
-                case Type.TEMPERATURE:
-                    vendor = message.getData().getString(Keys.VENDOR);
-                    name = message.getData().getString(Keys.NAME);
-                    value = message.getData().getFloat(Keys.VALUE);
-                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        incomingCommunicator.saveTemperature(vendor, name, value);
-                    }
-                    break;
-                case Type.PRESSURE:
-                    vendor = message.getData().getString(Keys.VENDOR);
-                    name = message.getData().getString(Keys.NAME);
-                    value = message.getData().getFloat(Keys.VALUE);
-                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        incomingCommunicator.savePressure(vendor, name, value);
-                    }
-                    break;
-                case Type.HUMIDITY:
-                    vendor = message.getData().getString(Keys.VENDOR);
-                    name = message.getData().getString(Keys.NAME);
-                    value = message.getData().getFloat(Keys.VALUE);
-                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        incomingCommunicator.saveHumidity(vendor, name, value);
-                    }
-                    break;
-                case Type.AIR_QUALITY:
-                    vendor = message.getData().getString(Keys.VENDOR);
-                    name = message.getData().getString(Keys.NAME);
-                    value = message.getData().getFloat(Keys.VALUE);
-                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        incomingCommunicator.saveAirQuality(vendor, name, value);
-                    }
-                    break;
-                case Type.LUMINOSITY:
-                    vendor = message.getData().getString(Keys.VENDOR);
-                    name = message.getData().getString(Keys.NAME);
-                    value = message.getData().getFloat(Keys.VALUE);
-                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        incomingCommunicator.saveLuminosity(vendor, name, value);
-                    }
-                    break;
-                case Type.ACCELERATION:
-                    vendor = message.getData().getString(Keys.VENDOR);
-                    name = message.getData().getString(Keys.NAME);
-                    values = message.getData().getFloatArray(Keys.VALUES);
-                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        incomingCommunicator.saveAcceleration(vendor, name, values);
-                    }
-                    break;
-                case Type.ANGULAR_VELOCITY:
-                    vendor = message.getData().getString(Keys.VENDOR);
-                    name = message.getData().getString(Keys.NAME);
-                    values = message.getData().getFloatArray(Keys.VALUES);
-                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        incomingCommunicator.saveAngularVelocity(vendor, name, values);
-                    }
-                    break;
-                case Type.MAGNETIC_FIELD:
-                    vendor = message.getData().getString(Keys.VENDOR);
-                    name = message.getData().getString(Keys.NAME);
-                    values = message.getData().getFloatArray(Keys.VALUES);
-                    if (!TextUtils.isEmpty(vendor) && !TextUtils.isEmpty(name)) {
-                        incomingCommunicator.saveMagneticField(vendor, name, values);
-                    }
-                    break;
-                default:
-                    super.handleMessage(message);
+            if (data.containsKey(Keys.VENDOR) && data.containsKey(Keys.NAME)) {
+                if (data.containsKey(Keys.TEMPERATURE)) {
+                    incomingCommunicator.saveTemperature(
+                        Objects.requireNonNull(data.getString(Keys.VENDOR)),
+                        Objects.requireNonNull(data.getString(Keys.NAME)),
+                        data.getFloat(Keys.TEMPERATURE)
+                    );
+                }
+                if (data.containsKey(Keys.PRESSURE)) {
+                    incomingCommunicator.savePressure(
+                        Objects.requireNonNull(data.getString(Keys.VENDOR)),
+                        Objects.requireNonNull(data.getString(Keys.NAME)),
+                        data.getFloat(Keys.PRESSURE)
+                    );
+                }
+                if (data.containsKey(Keys.HUMIDITY)) {
+                    incomingCommunicator.saveHumidity(
+                        Objects.requireNonNull(data.getString(Keys.VENDOR)),
+                        Objects.requireNonNull(data.getString(Keys.NAME)),
+                        data.getFloat(Keys.HUMIDITY)
+                    );
+                }
+                if (data.containsKey(Keys.AIR_QUALITY)) {
+                    incomingCommunicator.saveAirQuality(
+                        Objects.requireNonNull(data.getString(Keys.VENDOR)),
+                        Objects.requireNonNull(data.getString(Keys.NAME)),
+                        data.getFloat(Keys.AIR_QUALITY)
+                    );
+                }
+                if (data.containsKey(Keys.LUMINOSITY)) {
+                    incomingCommunicator.saveLuminosity(
+                        Objects.requireNonNull(data.getString(Keys.VENDOR)),
+                        Objects.requireNonNull(data.getString(Keys.NAME)),
+                        data.getFloat(Keys.LUMINOSITY)
+                    );
+                }
+                if (data.containsKey(Keys.ACCELERATION)) {
+                    incomingCommunicator.saveAcceleration(
+                        Objects.requireNonNull(data.getString(Keys.VENDOR)),
+                        Objects.requireNonNull(data.getString(Keys.NAME)),
+                        data.getFloatArray(Keys.ACCELERATION)
+                    );
+                }
+                if (data.containsKey(Keys.ANGULAR_VELOCITY)) {
+                    incomingCommunicator.saveAngularVelocity(
+                        Objects.requireNonNull(data.getString(Keys.VENDOR)),
+                        Objects.requireNonNull(data.getString(Keys.NAME)),
+                        data.getFloatArray(Keys.ANGULAR_VELOCITY)
+                    );
+                }
+                if (data.containsKey(Keys.MAGNETIC_FIELD)) {
+                    incomingCommunicator.saveMagneticField(
+                        Objects.requireNonNull(data.getString(Keys.VENDOR)),
+                        Objects.requireNonNull(data.getString(Keys.NAME)),
+                        data.getFloatArray(Keys.MAGNETIC_FIELD)
+                    );
+                }
+            } else {
+                super.handleMessage(message);
             }
         }
 
@@ -354,36 +329,42 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
             long lastBootTimestamp = 0L;
             long bootCount = 1l;
 
-            switch (message.what) {
-                case Data.LAST_BOOT_TIMESTAMP:
-                    lastBootTimestamp = message.getData().getLong(Keys.VALUE);
-                    incomingCommunicator.setLastBootTimestamp(lastBootTimestamp);
-                    break;
-                case Data.BOOT_COUNT:
-                    bootCount = message.getData().getLong(Keys.VALUE);
-                    incomingCommunicator.setBootCount(bootCount);
-                    break;
-                default:
-                    super.handleMessage(message);
+            final Bundle data = message.getData();
+            if (data.containsKey(Keys.LAST_BOOT_TIMESTAMP)) {
+                lastBootTimestamp = data.getLong(Keys.LAST_BOOT_TIMESTAMP);
+                incomingCommunicator.setLastBootTimestamp(lastBootTimestamp);
+            }
+            if (data.containsKey(Keys.BOOT_COUNT)) {
+                bootCount = data.getLong(Keys.BOOT_COUNT);
+                incomingCommunicator.setBootCount(bootCount);
             }
         }
 
         private void handleBluetoothMessage(@NonNull final Message message) {
-//            long lastBootTimestamp = 0L;
-//            long bootCount = 1l;
-//
-//            switch (message.what) {
-//                case MessageWhatData.LAST_BOOT_TIMESTAMP:
-//                    lastBootTimestamp = message.getData().getLong(Keys.VALUE);
-//                    incomingCommunicator.setLastBootTimestamp(lastBootTimestamp);
-//                    break;
-//                case MessageWhatData.BOOT_COUNT:
-//                    bootCount = message.getData().getLong(Keys.VALUE);
-//                    incomingCommunicator.setBootCount(bootCount);
-//                    break;
-//                default:
-//                    super.handleMessage(message);
-//            }
+
+            switch (message.what) {
+                case Bluetooth.HAS_BLUETOOTH:
+                    bluetooth = bluetooth.withHasBluetooth(message.getData().getBoolean(Keys.VALUE));
+                    break;
+                case Bluetooth.HAS_BLUETOOTH_LE:
+                    bluetooth = bluetooth.withHasBluetoothLE(message.getData().getBoolean(Keys.VALUE));
+                    break;
+                case Bluetooth.IS_ENABLED:
+                    bluetooth = bluetooth.withEnabled(message.getData().getBoolean(Keys.VALUE));
+                    break;
+                case Bluetooth.IS_GATT_RUNNING:
+                    bluetooth = bluetooth.withGattRunning(message.getData().getBoolean(Keys.VALUE));
+                    break;
+                case Bluetooth.IS_ADVERTISING:
+                    bluetooth = bluetooth.withAdvertising(message.getData().getBoolean(Keys.VALUE));
+                    break;
+                case Bluetooth.STATE:
+                    bluetooth = bluetooth.withState(message.getData().getInt(Keys.VALUE));
+                default:
+                    super.handleMessage(message);
+            }
+
+            Timber.i(bluetooth.toString());
         }
     }
 }

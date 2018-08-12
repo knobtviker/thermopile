@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
+import com.knobtviker.thermopile.presentation.shared.base.AbstractApplication;
 import com.knobtviker.thermopile.presentation.utils.Router;
 
 import timber.log.Timber;

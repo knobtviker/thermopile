@@ -1,30 +1,28 @@
 package com.knobtviker.thermopile.fram;
 
+import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
 import com.knobtviker.android.things.contrib.community.driver.fram.Mb85rc256v;
-import com.knobtviker.thermopile.shared.UniqueService;
+import com.knobtviker.thermopile.shared.MessageFactory;
 import com.knobtviker.thermopile.shared.constants.Keys;
-import com.knobtviker.thermopile.shared.constants.Uid;
 import com.knobtviker.thermopile.shared.message.Action;
-import com.knobtviker.thermopile.shared.message.Data;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import timber.log.Timber;
 
-public class Mb85rc256vService extends UniqueService {
+public class Mb85rc256vService extends Service {
 
     public final static int ADDRESS_LAST_BOOT_TIMESTAMP = 0;
     public final static int ADDRESS_BOOT_COUNT = Long.BYTES; //1 * Long.BYTES to shift for 8 bytes, next address is 2 * Long.BYTES
@@ -33,14 +31,7 @@ public class Mb85rc256vService extends UniqueService {
     private Messenger serviceMessenger;
 
     @Nullable
-    private static Messenger foregroundMessenger = null;
-
-    @Nullable
     private Mb85rc256v fram;
-
-    protected Mb85rc256vService() {
-        super(Uid.FRAM);
-    }
 
     @Override
     public void onCreate() {
@@ -70,10 +61,6 @@ public class Mb85rc256vService extends UniqueService {
         Timber.plant(new Timber.DebugTree());
     }
 
-    private void setupMessenger() {
-        serviceMessenger = new Messenger(new IncomingHandler(fram));
-    }
-
     private void setupDriver() {
         try {
             fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
@@ -81,6 +68,10 @@ public class Mb85rc256vService extends UniqueService {
         } catch (IOException e) {
             Timber.e(e);
         }
+    }
+
+    private void setupMessenger() {
+        serviceMessenger = new Messenger(new IncomingHandler(fram));
     }
 
     private void destroyDriver() {
@@ -139,53 +130,33 @@ public class Mb85rc256vService extends UniqueService {
 
         @Override
         public void handleMessage(Message message) {
+            final Bundle data = new Bundle();
+
             switch (message.what) {
                 case Action.REGISTER:
-                    foregroundMessenger = message.replyTo;
+                    data.putLong(Keys.LAST_BOOT_TIMESTAMP, lastBootTimestamp);
+                    data.putLong(Keys.BOOT_COUNT, bootCount);
 
-                    sendMessageToForeground(buildLongValueMessage(Data.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-                    sendMessageToForeground(buildLongValueMessage(Data.BOOT_COUNT, bootCount));
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.fram(data));
                     break;
                 case Action.RESET:
                     reset();
 
-                    sendMessageToForeground(buildLongValueMessage(Data.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-                    sendMessageToForeground(buildLongValueMessage(Data.BOOT_COUNT, bootCount));
+                    data.putLong(Keys.LAST_BOOT_TIMESTAMP, lastBootTimestamp);
+                    data.putLong(Keys.BOOT_COUNT, bootCount);
+
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.fram(data));
                     break;
-                case Data.LAST_BOOT_TIMESTAMP:
-                    sendMessageToForeground(buildLongValueMessage(Data.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-                case Data.BOOT_COUNT:
-                    sendMessageToForeground(buildLongValueMessage(Data.BOOT_COUNT, bootCount));
+                case Action.LAST_BOOT_TIMESTAMP:
+                    data.putLong(Keys.LAST_BOOT_TIMESTAMP, lastBootTimestamp);
+
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.fram(data));
+                case Action.BOOT_COUNT:
+                    data.putLong(Keys.BOOT_COUNT, bootCount);
+
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.fram(data));
                 default:
                     super.handleMessage(message);
-            }
-        }
-
-        private static Message buildLongValueMessage(@Data final int messageWhat, final long normalizedValue) {
-            final Message message = Message.obtain(null, messageWhat);
-
-            message.sendingUid = uid();
-            message.setData(buildLongValueBundle(normalizedValue));
-
-            return message;
-        }
-
-        private static Bundle buildLongValueBundle(final long normalizedValue) {
-            final Bundle bundle = new Bundle();
-
-            bundle.putInt(Keys.UID, uid());
-            bundle.putLong(Keys.VALUE, normalizedValue);
-
-            return bundle;
-        }
-
-        private void sendMessageToForeground(@NonNull final Message message) {
-            try {
-                if (foregroundMessenger != null) {
-                    foregroundMessenger.send(message);
-                }
-            } catch (RemoteException e) {
-                Timber.e(e);
             }
         }
 

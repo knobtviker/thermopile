@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.bluetooth;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
@@ -18,10 +17,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.Messenger;
-import android.support.annotation.IntDef;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -29,9 +30,12 @@ import android.text.TextUtils;
 import com.google.android.things.bluetooth.BluetoothClassFactory;
 import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.google.android.things.bluetooth.BluetoothProfileManager;
+import com.knobtviker.thermopile.shared.constants.BluetoothState;
+import com.knobtviker.thermopile.shared.constants.Keys;
+import com.knobtviker.thermopile.shared.message.Action;
+import com.knobtviker.thermopile.shared.message.Bluetooth;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
 import java.util.List;
 
 import timber.log.Timber;
@@ -39,22 +43,6 @@ import timber.log.Timber;
 public class BluetoothService extends Service {
 
     public final static int MAX_DISCOVERABILITY_PERIOD_SECONDS = 300;
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({
-        State.OFF,
-        State.TURNING_ON,
-        State.ON,
-        State.TURNING_OFF
-    })
-
-    public @interface State {
-
-        int OFF = BluetoothAdapter.STATE_OFF;
-        int TURNING_ON = BluetoothAdapter.STATE_TURNING_ON;
-        int ON = BluetoothAdapter.STATE_ON;
-        int TURNING_OFF = BluetoothAdapter.STATE_TURNING_OFF;
-    }
 
     @NonNull
     private IncomingHandler incomingHandler;
@@ -80,8 +68,8 @@ public class BluetoothService extends Service {
     @Nullable
     private AdvertiseCallback advertiseCallback;
 
-    @State
-    private int bluetoothState = State.OFF;
+    @BluetoothState
+    private int bluetoothState = BluetoothState.OFF;
 
     private boolean isBluetoothRunning = false;
     private boolean isGattServerRunning = false;
@@ -91,9 +79,9 @@ public class BluetoothService extends Service {
     public void onCreate() {
         super.onCreate();
         plantTree();
+        setupMessenger();
         setupDriver();
         registerStateReceiver();
-        setupMessenger();
     }
 
     @Override
@@ -118,13 +106,23 @@ public class BluetoothService extends Service {
     }
 
     private void setupMessenger() {
-        //        incomingHandler = new IncomingHandler(fram);
+        incomingHandler = new IncomingHandler();
         serviceMessenger = new Messenger(incomingHandler);
     }
 
     private void setupDriver() {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+
+        if (hasBluetooth() && hasBluetoothLowEnergy()) {
+            name("Thermopile");
+            setDeviceClass(
+                BluetoothClass.Service.INFORMATION,
+                BluetoothClass.Device.COMPUTER_SERVER,
+                BluetoothConfigManager.IO_CAPABILITY_IO
+            );
+            setProfiles(Arrays.asList(BluetoothProfile.GATT, BluetoothProfile.GATT_SERVER));
+        }
     }
 
     private void destroyDriver() {
@@ -140,7 +138,9 @@ public class BluetoothService extends Service {
      */
     @SuppressLint("HardwareIds")
     public boolean hasBluetooth() {
-        return bluetoothAdapter != null && !TextUtils.isEmpty(bluetoothAdapter.getAddress());
+        final boolean result = bluetoothAdapter != null && !TextUtils.isEmpty(bluetoothAdapter.getAddress());
+        incomingHandler.hasBluetooth = result;
+        return result;
     }
 
     /**
@@ -150,7 +150,9 @@ public class BluetoothService extends Service {
      * otherwise Bluetooth LE is not supported on this hardware
      */
     public boolean hasBluetoothLowEnergy() {
-        return hasBluetooth() && getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+        final boolean result = hasBluetooth() && getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+        incomingHandler.hasBluetoothLE = result;
+        return result;
     }
 
     /**
@@ -159,7 +161,9 @@ public class BluetoothService extends Service {
      * @return true if the local adapter is turned on
      */
     public boolean isEnabled() {
-        return bluetoothAdapter.isEnabled();
+        final boolean result = bluetoothAdapter.isEnabled();
+        incomingHandler.isEnabled = result;
+        return result;
     }
 
     /**
@@ -181,7 +185,7 @@ public class BluetoothService extends Service {
     }
 
     public void name(@NonNull final String name) {
-        if (bluetoothAdapter != null && isBluetoothRunning) {
+        if (bluetoothAdapter != null) {
             bluetoothAdapter.setName(name);
         }
     }
@@ -210,6 +214,7 @@ public class BluetoothService extends Service {
     public void startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
         this.gattServer = bluetoothManager.openGattServer(this, bluetoothGattServerCallback);
         this.isGattServerRunning = gattServer != null;
+        incomingHandler.isGattServerRunning = gattServer != null;
     }
 
     /**
@@ -220,6 +225,7 @@ public class BluetoothService extends Service {
             gattServer.close();
             gattServer = null;
             isGattServerRunning = false;
+            incomingHandler.isGattServerRunning = false;
         }
     }
 
@@ -239,6 +245,7 @@ public class BluetoothService extends Service {
             bluetoothLeAdvertiser.startAdvertising(settings, data, callback);
             this.advertiseCallback = callback;
             isAdvertising = true;
+            incomingHandler.isAdvertising = true;
         }
     }
 
@@ -250,6 +257,7 @@ public class BluetoothService extends Service {
             bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
             advertiseCallback = null;
             isAdvertising = false;
+            incomingHandler.isAdvertising = false;
         }
     }
 
@@ -257,34 +265,34 @@ public class BluetoothService extends Service {
         return isAdvertising;
     }
 
-
-    /**
-     * This will issue a request to make the local device discoverable to other devices. By default,
-     * the device will become discoverable for 120 seconds.
-     *
-     * @param activity    Activity
-     * @param requestCode request code
-     */
-    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode) {
-        enableDiscoverability(activity, requestCode, -1);
-    }
-
-    /**
-     * This will issue a request to make the local device discoverable to other devices. By default,
-     * the device will become discoverable for 120 seconds.  Maximum duration is capped at 300
-     * seconds.
-     *
-     * @param activity    Activity
-     * @param requestCode request code
-     * @param duration    discoverability duration in seconds
-     */
-    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode, final int duration) {
-        final Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        if (duration >= 0) {
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration > MAX_DISCOVERABILITY_PERIOD_SECONDS ? MAX_DISCOVERABILITY_PERIOD_SECONDS : duration);
-        }
-        activity.startActivityForResult(discoverableIntent, requestCode);
-    }
+//    /**
+//     * This will issue a request to make the local device discoverable to other devices. By default,
+//     * the device will become discoverable for 120 seconds.
+//     *
+//     * @param activity    Activity
+//     * @param requestCode request code
+//     */
+//    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode) {
+//        enableDiscoverability(activity, requestCode, -1);
+//    }
+//
+//    /**
+//     * This will issue a request to make the local device discoverable to other devices. By default,
+//     * the device will become discoverable for 120 seconds.  Maximum duration is capped at 300
+//     * seconds.
+//     *
+//     * @param activity    Activity
+//     * @param requestCode request code
+//     * @param duration    discoverability duration in seconds
+//     */
+//    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode, final int duration) {
+//        final Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//        if (duration >= 0) {
+//            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
+//                duration > MAX_DISCOVERABILITY_PERIOD_SECONDS ? MAX_DISCOVERABILITY_PERIOD_SECONDS : duration);
+//        }
+//        activity.startActivityForResult(intent, requestCode);
+//    }
 
     /**
      * Observe BluetoothState. Possible values are:
@@ -304,6 +312,7 @@ public class BluetoothService extends Service {
             @Override
             public void onReceive(Context context, Intent intent) {
                 bluetoothState = bluetoothAdapter.getState();
+                incomingHandler.state = bluetoothAdapter.getState();
             }
         };
 
@@ -319,118 +328,72 @@ public class BluetoothService extends Service {
 
     public static class IncomingHandler extends Handler {
 
-        //        @Nullable
-        //        private Mb85rc256v fram;
+        public boolean hasBluetooth = false;
+        public boolean hasBluetoothLE = false;
+        public boolean isEnabled = false;
+        public boolean isGattServerRunning = false;
+        public boolean isAdvertising = false;
+        public int state = BluetoothState.OFF;
 
-        //        IncomingHandler(@Nullable final Mb85rc256v fram) {
-        //            this.fram = fram;
-        //
-        //            try {
-        //                if (fram != null) {
-        //                    final long timestamp = bytesToLong(fram.readArray(ADDRESS_LAST_BOOT_TIMESTAMP, Long.BYTES));
-        //                    final long now = SystemClock.currentThreadTimeMillis();
-        //
-        //                    if (timestamp <= now) {
-        //                        lastBootTimestamp = now;
-        //                    } else {
-        //                        lastBootTimestamp = timestamp;
-        //                    }
-        //
-        //                    final long count = bytesToLong(fram.readArray(ADDRESS_BOOT_COUNT, Long.BYTES));
-        //                    if (count == 0L) {
-        //                        bootCount = 1L;
-        //                    } else {
-        //                        bootCount = count;
-        //                    }
-        //
-        //                    fram.writeArray(ADDRESS_LAST_BOOT_TIMESTAMP, longToBytes(lastBootTimestamp));
-        //                    fram.writeArray(ADDRESS_BOOT_COUNT, longToBytes(bootCount + 1L));
-        //                } else {
-        //                    lastBootTimestamp = SystemClock.currentThreadTimeMillis();
-        //                    bootCount = 1L;
-        //                }
-        //            } catch (IOException e) {
-        //                lastBootTimestamp = SystemClock.currentThreadTimeMillis();
-        //                bootCount = 1L;
-        //                Timber.e(e);
-        //            }
-        //        }
-        //
-        //        @Override
-        //        public void handleMessage(Message message) {
-        //            switch (message.what) {
-        //                case MessageWhatUser.REGISTER:
-        //                    foregroundMessenger = message.replyTo;
-        //
-        //                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-        //                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.BOOT_COUNT, bootCount));
-        //                    break;
-        //                case MessageWhatUser.RESET:
-        //                    reset();
-        //
-        //                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-        //                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.BOOT_COUNT, bootCount));
-        //                    break;
-        //                case MessageWhatData.LAST_BOOT_TIMESTAMP:
-        //                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.LAST_BOOT_TIMESTAMP, lastBootTimestamp));
-        //                case MessageWhatData.BOOT_COUNT:
-        //                    sendMessageToForeground(buildLongValueMessage(MessageWhatData.BOOT_COUNT, bootCount));
-        //                default:
-        //                    super.handleMessage(message);
-        //            }
-        //        }
-        //
-        //        private static Message buildLongValueMessage(@MessageWhatData final int messageWhat, final long normalizedValue) {
-        //            final Message message = Message.obtain(null, messageWhat);
-        //
-        //            message.setData(buildLongValueBundle(normalizedValue));
-        //
-        //            return message;
-        //        }
-        //
-        //        private static Bundle buildLongValueBundle(final long normalizedValue) {
-        //            final Bundle bundle = new Bundle();
-        //
-        //            bundle.putLong("value", normalizedValue);
-        //
-        //            return bundle;
-        //        }
-        //
-        //        private void sendMessageToForeground(@NonNull final Message message) {
-        //            try {
-        //                if (foregroundMessenger != null) {
-        //                    foregroundMessenger.send(message);
-        //                }
-        //            } catch (RemoteException e) {
-        //                Timber.e(e);
-        //            }
-        //        }
-        //
-        //        private void reset() {
-        //            bootCount = 1L;
-        //            lastBootTimestamp = SystemClock.currentThreadTimeMillis();
-        //
-        //            if (fram != null) {
-        //                try {
-        //                    fram.writeArray(ADDRESS_BOOT_COUNT, longToBytes(bootCount + 1L));
-        //                    fram.writeArray(ADDRESS_LAST_BOOT_TIMESTAMP, longToBytes(lastBootTimestamp));
-        //                } catch (IOException e) {
-        //                    Timber.e(e);
-        //                }
-        //            }
-        //        }
-        //
-        //        private byte[] longToBytes(final long x) {
-        //            final ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        //            buffer.putLong(x);
-        //            return buffer.array();
-        //        }
-        //
-        //        private long bytesToLong(final byte[] bytes) {
-        //            final ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        //            buffer.put(bytes);
-        //            buffer.flip(); //need flip
-        //            return buffer.getLong();
-        //        }
+        @Override
+        public void handleMessage(Message message) {
+            switch (message.what) {
+                case Action.REGISTER:
+                    foregroundMessenger = message.replyTo;
+
+                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.HAS_BLUETOOTH, hasBluetooth));
+                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.HAS_BLUETOOTH_LE, hasBluetoothLE));
+                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.IS_ENABLED, isEnabled));
+                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.IS_GATT_RUNNING, isGattServerRunning));
+                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.IS_ADVERTISING, isAdvertising));
+                    sendMessageToForeground(buildIntValueMessage(Bluetooth.STATE, state));
+                    break;
+                default:
+                    super.handleMessage(message);
+            }
+        }
+
+        private static Message buildBooleanValueMessage(@Bluetooth final int messageWhat, final boolean normalizedValue) {
+            final Message message = Message.obtain(null, messageWhat);
+
+            message.setData(buildBooleanValueBundle(normalizedValue));
+
+            return message;
+        }
+
+        @SuppressWarnings("SameParameterValue")
+        private static Message buildIntValueMessage(@Bluetooth final int messageWhat, final int normalizedValue) {
+            final Message message = Message.obtain(null, messageWhat);
+
+            message.setData(buildIntValueBundle(normalizedValue));
+
+            return message;
+        }
+
+        private static Bundle buildBooleanValueBundle(final boolean normalizedValue) {
+            final Bundle bundle = new Bundle();
+
+            bundle.putBoolean(Keys.VALUE, normalizedValue);
+
+            return bundle;
+        }
+
+        private static Bundle buildIntValueBundle(final int normalizedValue) {
+            final Bundle bundle = new Bundle();
+
+            bundle.putInt(Keys.VALUE, normalizedValue);
+
+            return bundle;
+        }
+
+        private void sendMessageToForeground(@NonNull final Message message) {
+            try {
+                if (foregroundMessenger != null) {
+                    foregroundMessenger.send(message);
+                }
+            } catch (RemoteException e) {
+                Timber.e(e);
+            }
+        }
     }
 }

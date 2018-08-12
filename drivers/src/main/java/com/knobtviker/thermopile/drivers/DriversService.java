@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.drivers;
 
+import android.app.Service;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,10 +12,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.android.things.device.TimeManager;
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
@@ -25,17 +24,15 @@ import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231;
 import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
-import com.knobtviker.thermopile.shared.UniqueService;
+import com.knobtviker.thermopile.shared.MessageFactory;
 import com.knobtviker.thermopile.shared.constants.Keys;
-import com.knobtviker.thermopile.shared.constants.Uid;
 import com.knobtviker.thermopile.shared.message.Action;
-import com.knobtviker.thermopile.shared.message.Type;
 
 import java.io.IOException;
 
 import timber.log.Timber;
 
-public class DriversService extends UniqueService implements SensorEventListener {
+public class DriversService extends Service implements SensorEventListener {
 
     private int LOW_PASS_FILTER_SMOOTHING_FACTOR_TEMPERATURE = 200;
     private int LOW_PASS_FILTER_SMOOTHING_FACTOR_PRESSURE = 200;
@@ -61,8 +58,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     @NonNull
     private Messenger serviceMessenger;
 
-    @Nullable
-    private static Messenger foregroundMessenger = null;
+    @NonNull
+    private static Messenger foregroundMessenger;
 
     private float currentTemperature = 0.0f;
     private float currentPressure = 0.0f;
@@ -90,10 +87,6 @@ public class DriversService extends UniqueService implements SensorEventListener
     private long lastUpdateAcceleration = 0L;
     private long lastUpdateAngularVelocity = 0L;
     private long lastUpdateMagneticField = 0L;
-
-    protected DriversService() {
-        super(Uid.DRIVERS);
-    }
 
     @Override
     public void onCreate() {
@@ -301,7 +294,7 @@ public class DriversService extends UniqueService implements SensorEventListener
             // If the DS3231 has a sane timestamp, set the system clock using the DS3231.
             // Otherwise, set the DS3231 using the system time if the system time appears sane
             if (ds3231Timestamp >= Environment.getRootDirectory().lastModified()) {
-//                Log.i(TAG, "Setting system clock using DS3231");
+                //                Log.i(TAG, "Setting system clock using DS3231");
                 final TimeManager timeManager = TimeManager.getInstance();
                 timeManager.setTime(ds3231Timestamp);
 
@@ -309,7 +302,7 @@ public class DriversService extends UniqueService implements SensorEventListener
                 // The call to setTime() disables them automatically, but that's what we use to update our DS3231.
                 timeManager.setAutoTimeEnabled(true);
             } else if (systemTimeStamp >= Environment.getRootDirectory().lastModified()) {
-//                Log.i(TAG, "Setting DS3231 time using system clock");
+                //                Log.i(TAG, "Setting DS3231 time using system clock");
                 ds3231.setTime(systemTimeStamp);
             }
         }
@@ -342,7 +335,13 @@ public class DriversService extends UniqueService implements SensorEventListener
         if (normalizedValue != currentTemperature) {
             currentTemperature = normalizedValue;
             incomingHandler.currentTemperature = currentTemperature;
-            sendMessageToForeground(buildSingleValueMessage(event, Type.TEMPERATURE, currentTemperature));
+
+            final Bundle data = new Bundle();
+            data.putString(Keys.VENDOR, event.sensor.getVendor());
+            data.putString(Keys.NAME, event.sensor.getName());
+            data.putFloat(Keys.TEMPERATURE, currentTemperature);
+
+            MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.drivers(data));
         }
     }
 
@@ -352,7 +351,13 @@ public class DriversService extends UniqueService implements SensorEventListener
         if (normalizedValue != currentPressure) {
             currentPressure = normalizedValue;
             incomingHandler.currentPressure = currentPressure;
-            sendMessageToForeground(buildSingleValueMessage(event, Type.PRESSURE, currentPressure));
+
+            final Bundle data = new Bundle();
+            data.putString(Keys.VENDOR, event.sensor.getVendor());
+            data.putString(Keys.NAME, event.sensor.getName());
+            data.putFloat(Keys.PRESSURE, currentPressure);
+
+            MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.drivers(data));
         }
     }
 
@@ -362,7 +367,13 @@ public class DriversService extends UniqueService implements SensorEventListener
         if (normalizedValue != currentHumidity) {
             currentHumidity = normalizedValue;
             incomingHandler.currentHumidity = currentHumidity;
-            sendMessageToForeground(buildSingleValueMessage(event, Type.HUMIDITY, currentHumidity));
+
+            final Bundle data = new Bundle();
+            data.putString(Keys.VENDOR, event.sensor.getVendor());
+            data.putString(Keys.NAME, event.sensor.getName());
+            data.putFloat(Keys.HUMIDITY, currentHumidity);
+
+            MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.drivers(data));
         }
     }
 
@@ -372,7 +383,13 @@ public class DriversService extends UniqueService implements SensorEventListener
         if (normalizedValue != currentAirQuality) {
             currentAirQuality = normalizedValue;
             incomingHandler.currentAirQuality = currentAirQuality;
-            sendMessageToForeground(buildSingleValueMessage(event, Type.AIR_QUALITY, currentAirQuality));
+
+            final Bundle data = new Bundle();
+            data.putString(Keys.VENDOR, event.sensor.getVendor());
+            data.putString(Keys.NAME, event.sensor.getName());
+            data.putFloat(Keys.AIR_QUALITY, currentAirQuality);
+
+            MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.drivers(data));
         }
     }
 
@@ -382,7 +399,13 @@ public class DriversService extends UniqueService implements SensorEventListener
         if (normalizedValue != currentLuminosity) {
             currentLuminosity = normalizedValue;
             incomingHandler.currentLuminosity = currentLuminosity;
-            sendMessageToForeground(buildSingleValueMessage(event, Type.LUMINOSITY, currentLuminosity));
+
+            final Bundle data = new Bundle();
+            data.putString(Keys.VENDOR, event.sensor.getVendor());
+            data.putString(Keys.NAME, event.sensor.getName());
+            data.putFloat(Keys.LUMINOSITY, currentLuminosity);
+
+            MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.drivers(data));
         }
     }
 
@@ -392,11 +415,18 @@ public class DriversService extends UniqueService implements SensorEventListener
         buffer[1] = normalizedToScale(event.values[1]);
         buffer[2] = normalizedToScale(event.values[2]);
 
-        final float newVector = lowPassFilterAcceleration(normalizedToScale((float)Math.sqrt(Math.pow(buffer[0], 2) + Math.pow(buffer[1], 2) + Math.pow(buffer[2], 2))));
+        final float newVector = lowPassFilterAcceleration(
+            normalizedToScale((float) Math.sqrt(Math.pow(buffer[0], 2) + Math.pow(buffer[1], 2) + Math.pow(buffer[2], 2))));
         if (newVector != currentAccelerationVector) {
             currentAccelerationVector = newVector;
             incomingHandler.currentAcceleration = buffer;
-            sendMessageToForeground(buildCartesianValueMessage(event, Type.ACCELERATION, buffer));
+
+            final Bundle data = new Bundle();
+            data.putString(Keys.VENDOR, event.sensor.getVendor());
+            data.putString(Keys.NAME, event.sensor.getName());
+            data.putFloatArray(Keys.ACCELERATION, buffer);
+
+            MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.drivers(data));
         }
     }
 
@@ -406,11 +436,18 @@ public class DriversService extends UniqueService implements SensorEventListener
         buffer[1] = normalizedToScale(event.values[1]);
         buffer[2] = normalizedToScale(event.values[2]);
 
-        final float newVector = lowPassFilterAngularVelocity(normalizedToScale((float)Math.sqrt(Math.pow(buffer[0], 2) + Math.pow(buffer[1], 2) + Math.pow(buffer[2], 2))));
+        final float newVector = lowPassFilterAngularVelocity(
+            normalizedToScale((float) Math.sqrt(Math.pow(buffer[0], 2) + Math.pow(buffer[1], 2) + Math.pow(buffer[2], 2))));
         if (newVector != currentAngularVelocityVector) {
             currentAngularVelocityVector = newVector;
             incomingHandler.currentAngularVelocity = buffer;
-            sendMessageToForeground(buildCartesianValueMessage(event, Type.ANGULAR_VELOCITY, buffer));
+
+            final Bundle data = new Bundle();
+            data.putString(Keys.VENDOR, event.sensor.getVendor());
+            data.putString(Keys.NAME, event.sensor.getName());
+            data.putFloatArray(Keys.ANGULAR_VELOCITY, buffer);
+
+            MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.drivers(data));
         }
     }
 
@@ -420,60 +457,18 @@ public class DriversService extends UniqueService implements SensorEventListener
         buffer[1] = normalizedToScale(event.values[1]);
         buffer[2] = normalizedToScale(event.values[2]);
 
-        final float newVector = lowPassFilterMagneticField(normalizedToScale((float)Math.sqrt(Math.pow(buffer[0], 2) + Math.pow(buffer[1], 2) + Math.pow(buffer[2], 2))));
+        final float newVector = lowPassFilterMagneticField(
+            normalizedToScale((float) Math.sqrt(Math.pow(buffer[0], 2) + Math.pow(buffer[1], 2) + Math.pow(buffer[2], 2))));
         if (newVector != currentMagneticFieldVector) {
             currentMagneticFieldVector = newVector;
             incomingHandler.currentMagneticField = buffer;
-            sendMessageToForeground(buildCartesianValueMessage(event, Type.MAGNETIC_FIELD, buffer));
-        }
-    }
 
-    private static Bundle buildSingleValueBundle(@Nullable final SensorEvent event, final float normalizedValue) {
-        final Bundle bundle = new Bundle();
+            final Bundle data = new Bundle();
+            data.putString(Keys.VENDOR, event.sensor.getVendor());
+            data.putString(Keys.NAME, event.sensor.getName());
+            data.putFloatArray(Keys.MAGNETIC_FIELD, buffer);
 
-        bundle.putInt(Keys.UID, uid());
-        bundle.putString(Keys.VENDOR, event == null ? "" : event.sensor.getVendor());
-        bundle.putString(Keys.NAME, event == null ? "" : event.sensor.getName());
-        bundle.putFloat(Keys.VALUE, normalizedValue);
-
-        return bundle;
-    }
-
-    private static Bundle buildCartesianValueBundle(@Nullable final SensorEvent event, final float[] normalizedValues) {
-        final Bundle bundle = new Bundle();
-
-        bundle.putInt(Keys.UID, uid());
-        bundle.putString(Keys.VENDOR, event == null ? "" : event.sensor.getVendor());
-        bundle.putString(Keys.NAME, event == null ? "" : event.sensor.getName());
-        bundle.putFloatArray(Keys.VALUES, normalizedValues);
-
-        return bundle;
-    }
-
-    private static Message buildSingleValueMessage(@Nullable final SensorEvent event, @Type final int messageWhat, final float normalizedValue) {
-        final Message message = Message.obtain(null, messageWhat);
-
-        message.setData(buildSingleValueBundle(event, normalizedValue));
-
-        return message;
-    }
-
-    private static Message buildCartesianValueMessage(@Nullable final SensorEvent event, @Type final int messageWhat, final float[] normalizedValues) {
-        final Message message = Message.obtain(null, messageWhat);
-
-        message.setData(buildCartesianValueBundle(event, normalizedValues));
-
-        return message;
-    }
-
-    private void sendMessageToForeground(@NonNull final Message message) {
-        try {
-            if (foregroundMessenger != null) {
-                foregroundMessenger.send(message);
-            }
-        } catch (RemoteException e) {
-            Timber.e(e);
-            System.exit(0);
+            MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.drivers(data));
         }
     }
 
@@ -490,35 +485,36 @@ public class DriversService extends UniqueService implements SensorEventListener
 
         @Override
         public void handleMessage(Message message) {
+            final Bundle data = new Bundle();
+
             switch (message.what) {
                 case Action.REGISTER:
                     foregroundMessenger = message.replyTo;
+
+                    data.putFloat(Keys.TEMPERATURE, currentTemperature);
+                    data.putFloat(Keys.PRESSURE, currentPressure);
+                    data.putFloat(Keys.HUMIDITY, currentHumidity);
+                    data.putFloat(Keys.AIR_QUALITY, currentAirQuality);
+                    data.putFloat(Keys.LUMINOSITY, currentLuminosity);
+                    data.putFloatArray(Keys.ACCELERATION, currentAcceleration);
+                    data.putFloatArray(Keys.ANGULAR_VELOCITY, currentAngularVelocity);
+                    data.putFloatArray(Keys.MAGNETIC_FIELD, currentMagneticField);
+
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.drivers(data));
                     break;
                 case Action.CURRENT:
-                    sendCurrentToForeground();
+                    data.putFloat(Keys.TEMPERATURE, currentTemperature);
+                    data.putFloat(Keys.PRESSURE, currentPressure);
+                    data.putFloat(Keys.HUMIDITY, currentHumidity);
+                    data.putFloat(Keys.AIR_QUALITY, currentAirQuality);
+                    data.putFloat(Keys.LUMINOSITY, currentLuminosity);
+                    data.putFloatArray(Keys.ACCELERATION, currentAcceleration);
+                    data.putFloatArray(Keys.ANGULAR_VELOCITY, currentAngularVelocity);
+                    data.putFloatArray(Keys.MAGNETIC_FIELD, currentMagneticField);
+
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.drivers(data));
                 default:
                     super.handleMessage(message);
-            }
-        }
-
-        private void sendCurrentToForeground() {
-            sendMessageToForeground(buildSingleValueMessage(null, Type.TEMPERATURE, currentTemperature));
-            sendMessageToForeground(buildSingleValueMessage(null, Type.PRESSURE, currentPressure));
-            sendMessageToForeground(buildSingleValueMessage(null, Type.HUMIDITY, currentHumidity));
-            sendMessageToForeground(buildSingleValueMessage(null, Type.AIR_QUALITY, currentAirQuality));
-            sendMessageToForeground(buildSingleValueMessage(null, Type.LUMINOSITY, currentLuminosity));
-            sendMessageToForeground(buildCartesianValueMessage(null, Type.ACCELERATION, currentAcceleration));
-            sendMessageToForeground(buildCartesianValueMessage(null, Type.ANGULAR_VELOCITY, currentAngularVelocity));
-            sendMessageToForeground(buildCartesianValueMessage(null, Type.MAGNETIC_FIELD, currentMagneticField));
-        }
-
-        private void sendMessageToForeground(@NonNull final Message message) {
-            try {
-                if (foregroundMessenger != null) {
-                    foregroundMessenger.send(message);
-                }
-            } catch (RemoteException e) {
-                Timber.e(e);
             }
         }
     }
@@ -526,7 +522,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     private float lowPassFilterTemperature(final float newValue) {
         final long now = SystemClock.currentThreadTimeMillis();
         final long elapsedTime = now - lastUpdateTemperature;
-        smoothedTemperature = normalizedToScale(smoothedTemperature + elapsedTime * (newValue - smoothedTemperature) / LOW_PASS_FILTER_SMOOTHING_FACTOR_TEMPERATURE);
+        smoothedTemperature = normalizedToScale(
+            smoothedTemperature + elapsedTime * (newValue - smoothedTemperature) / LOW_PASS_FILTER_SMOOTHING_FACTOR_TEMPERATURE);
         lastUpdateTemperature = now;
         return normalizedToScale(smoothedTemperature);
     }
@@ -534,7 +531,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     private float lowPassFilterPressure(final float newValue) {
         final long now = SystemClock.currentThreadTimeMillis();
         final long elapsedTime = now - lastUpdatePressure;
-        smoothedPressure = normalizedToScale(smoothedPressure + elapsedTime * (newValue - smoothedPressure) / LOW_PASS_FILTER_SMOOTHING_FACTOR_PRESSURE);
+        smoothedPressure =
+            normalizedToScale(smoothedPressure + elapsedTime * (newValue - smoothedPressure) / LOW_PASS_FILTER_SMOOTHING_FACTOR_PRESSURE);
         lastUpdatePressure = now;
         return normalizedToScale(smoothedPressure);
     }
@@ -542,7 +540,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     private float lowPassFilterHumidity(final float newValue) {
         final long now = SystemClock.currentThreadTimeMillis();
         final long elapsedTime = now - lastUpdateHumidity;
-        smoothedHumidity = normalizedToScale(smoothedHumidity + elapsedTime * (newValue - smoothedHumidity) / LOW_PASS_FILTER_SMOOTHING_FACTOR_HUMIDITY);
+        smoothedHumidity =
+            normalizedToScale(smoothedHumidity + elapsedTime * (newValue - smoothedHumidity) / LOW_PASS_FILTER_SMOOTHING_FACTOR_HUMIDITY);
         lastUpdateHumidity = now;
         return normalizedToScale(smoothedHumidity);
     }
@@ -550,7 +549,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     private float lowPassFilterAirQuality(final float newValue) {
         final long now = SystemClock.currentThreadTimeMillis();
         final long elapsedTime = now - lastUpdateAirQuality;
-        smoothedAirQuality = normalizedToScale(smoothedAirQuality + elapsedTime * (newValue - smoothedAirQuality) / LOW_PASS_FILTER_SMOOTHING_FACTOR_AIR_QUALITY);
+        smoothedAirQuality = normalizedToScale(
+            smoothedAirQuality + elapsedTime * (newValue - smoothedAirQuality) / LOW_PASS_FILTER_SMOOTHING_FACTOR_AIR_QUALITY);
         lastUpdateAirQuality = now;
         return normalizedToScale(smoothedAirQuality);
     }
@@ -558,7 +558,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     private float lowPassFilterLuminosity(final float newValue) {
         final long now = SystemClock.currentThreadTimeMillis();
         final long elapsedTime = now - lastUpdateLuminosity;
-        smoothedLuminosity = normalizedToScale(smoothedLuminosity + elapsedTime * (newValue - smoothedLuminosity) / LOW_PASS_FILTER_SMOOTHING_FACTOR_LUMINOSITY);
+        smoothedLuminosity = normalizedToScale(
+            smoothedLuminosity + elapsedTime * (newValue - smoothedLuminosity) / LOW_PASS_FILTER_SMOOTHING_FACTOR_LUMINOSITY);
         lastUpdateLuminosity = now;
         return normalizedToScale(smoothedLuminosity);
     }
@@ -566,7 +567,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     private float lowPassFilterAcceleration(final float newValue) {
         final long now = SystemClock.currentThreadTimeMillis();
         final long elapsedTime = now - lastUpdateAcceleration;
-        smoothedAcceleration = normalizedToScale(smoothedAcceleration + elapsedTime * (newValue - smoothedAcceleration) / LOW_PASS_FILTER_SMOOTHING_FACTOR_ACCELERATION);
+        smoothedAcceleration = normalizedToScale(
+            smoothedAcceleration + elapsedTime * (newValue - smoothedAcceleration) / LOW_PASS_FILTER_SMOOTHING_FACTOR_ACCELERATION);
         lastUpdateAcceleration = now;
         return normalizedToScale(smoothedAcceleration);
     }
@@ -574,7 +576,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     private float lowPassFilterAngularVelocity(final float newValue) {
         final long now = SystemClock.currentThreadTimeMillis();
         final long elapsedTime = now - lastUpdateAngularVelocity;
-        smoothedAngularVelocity = normalizedToScale(smoothedAngularVelocity + elapsedTime * (newValue - smoothedAngularVelocity) / LOW_PASS_FILTER_SMOOTHING_FACTOR_ANGULAR_VELOCITY);
+        smoothedAngularVelocity = normalizedToScale(smoothedAngularVelocity
+            + elapsedTime * (newValue - smoothedAngularVelocity) / LOW_PASS_FILTER_SMOOTHING_FACTOR_ANGULAR_VELOCITY);
         lastUpdateAngularVelocity = now;
         return normalizedToScale(smoothedAngularVelocity);
     }
@@ -582,7 +585,8 @@ public class DriversService extends UniqueService implements SensorEventListener
     private float lowPassFilterMagneticField(final float newValue) {
         final long now = SystemClock.currentThreadTimeMillis();
         final long elapsedTime = now - lastUpdateMagneticField;
-        smoothedMagneticField = normalizedToScale(smoothedMagneticField + elapsedTime * (newValue - smoothedMagneticField) / LOW_PASS_FILTER_SMOOTHING_FACTOR_MAGNETIC_FIELD);
+        smoothedMagneticField = normalizedToScale(
+            smoothedMagneticField + elapsedTime * (newValue - smoothedMagneticField) / LOW_PASS_FILTER_SMOOTHING_FACTOR_MAGNETIC_FIELD);
         lastUpdateMagneticField = now;
         return normalizedToScale(smoothedMagneticField);
     }

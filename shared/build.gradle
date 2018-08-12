@@ -24,4 +24,5 @@ android {
 
 dependencies {
     implementation deps.android.annotations
+    implementation deps.timber.android
 }
