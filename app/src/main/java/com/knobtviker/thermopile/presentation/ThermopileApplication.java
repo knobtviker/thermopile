@@ -1,8 +1,10 @@
 package com.knobtviker.thermopile.presentation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -10,6 +12,8 @@ import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractApplication;
 import com.knobtviker.thermopile.presentation.utils.Router;
+import com.knobtviker.thermopile.shared.constants.BluetoothState;
+import com.knobtviker.thermopile.shared.constants.Keys;
 
 import timber.log.Timber;
 
@@ -24,6 +28,13 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     private static long lastBootTimestamp = 0L;
 
     private static long bootCount = 1L;
+
+    private static boolean hasBluetooth = false;
+
+    private static boolean isBluetoothEnabled = false;
+
+    @BluetoothState
+    private int bluetoothState;
 
     @Override
     public void onCreate() {
@@ -104,12 +115,42 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         bootCount = value;
     }
 
+    @Override
+    public void onHasBluetooh(boolean value) {
+        hasBluetooth = value;
+    }
+
+    @Override
+    public void onBluetoothEnabled(boolean value) {
+        isBluetoothEnabled = value;
+        if (value) {
+            Router.enableDiscoverability(this, Router.MAX_DISCOVERABILITY_PERIOD_SECONDS);
+        }
+    }
+
+    @Override
+    public void onBluetoothState(@BluetoothState int value) {
+        bluetoothState = value;
+
+        final Intent intent = new Intent();
+        intent.putExtra(Keys.BLUETOOTH_STATE, bluetoothState);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
     public static long lastBootTimestamp() {
         return lastBootTimestamp;
     }
 
     public static long bootCount() {
         return bootCount;
+    }
+
+    public static boolean hasBluetooth() {
+        return hasBluetooth;
+    }
+
+    public static boolean isBluetoothEnabled() {
+        return isBluetoothEnabled;
     }
 
     public void createScreensaver() {

@@ -22,7 +22,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -30,10 +29,10 @@ import android.text.TextUtils;
 import com.google.android.things.bluetooth.BluetoothClassFactory;
 import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.google.android.things.bluetooth.BluetoothProfileManager;
+import com.knobtviker.thermopile.shared.MessageFactory;
+import com.knobtviker.thermopile.shared.constants.Action;
 import com.knobtviker.thermopile.shared.constants.BluetoothState;
 import com.knobtviker.thermopile.shared.constants.Keys;
-import com.knobtviker.thermopile.shared.message.Action;
-import com.knobtviker.thermopile.shared.message.Bluetooth;
 
 import java.util.Arrays;
 import java.util.List;
@@ -105,11 +104,6 @@ public class BluetoothService extends Service {
         Timber.plant(new Timber.DebugTree());
     }
 
-    private void setupMessenger() {
-        incomingHandler = new IncomingHandler();
-        serviceMessenger = new Messenger(incomingHandler);
-    }
-
     private void setupDriver() {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
@@ -123,6 +117,11 @@ public class BluetoothService extends Service {
             );
             setProfiles(Arrays.asList(BluetoothProfile.GATT, BluetoothProfile.GATT_SERVER));
         }
+    }
+
+    private void setupMessenger() {
+        incomingHandler = new IncomingHandler(this);
+        serviceMessenger = new Messenger(incomingHandler);
     }
 
     private void destroyDriver() {
@@ -265,34 +264,34 @@ public class BluetoothService extends Service {
         return isAdvertising;
     }
 
-//    /**
-//     * This will issue a request to make the local device discoverable to other devices. By default,
-//     * the device will become discoverable for 120 seconds.
-//     *
-//     * @param activity    Activity
-//     * @param requestCode request code
-//     */
-//    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode) {
-//        enableDiscoverability(activity, requestCode, -1);
-//    }
-//
-//    /**
-//     * This will issue a request to make the local device discoverable to other devices. By default,
-//     * the device will become discoverable for 120 seconds.  Maximum duration is capped at 300
-//     * seconds.
-//     *
-//     * @param activity    Activity
-//     * @param requestCode request code
-//     * @param duration    discoverability duration in seconds
-//     */
-//    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode, final int duration) {
-//        final Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//        if (duration >= 0) {
-//            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
-//                duration > MAX_DISCOVERABILITY_PERIOD_SECONDS ? MAX_DISCOVERABILITY_PERIOD_SECONDS : duration);
-//        }
-//        activity.startActivityForResult(intent, requestCode);
-//    }
+    //    /**
+    //     * This will issue a request to make the local device discoverable to other devices. By default,
+    //     * the device will become discoverable for 120 seconds.
+    //     *
+    //     * @param activity    Activity
+    //     * @param requestCode request code
+    //     */
+    //    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode) {
+    //        enableDiscoverability(activity, requestCode, -1);
+    //    }
+    //
+    //    /**
+    //     * This will issue a request to make the local device discoverable to other devices. By default,
+    //     * the device will become discoverable for 120 seconds.  Maximum duration is capped at 300
+    //     * seconds.
+    //     *
+    //     * @param activity    Activity
+    //     * @param requestCode request code
+    //     * @param duration    discoverability duration in seconds
+    //     */
+    //    public void enableDiscoverability(@NonNull final Activity activity, final int requestCode, final int duration) {
+    //        final Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+    //        if (duration >= 0) {
+    //            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
+    //                duration > MAX_DISCOVERABILITY_PERIOD_SECONDS ? MAX_DISCOVERABILITY_PERIOD_SECONDS : duration);
+    //        }
+    //        activity.startActivityForResult(intent, requestCode);
+    //    }
 
     /**
      * Observe BluetoothState. Possible values are:
@@ -312,7 +311,11 @@ public class BluetoothService extends Service {
             @Override
             public void onReceive(Context context, Intent intent) {
                 bluetoothState = bluetoothAdapter.getState();
-                incomingHandler.state = bluetoothAdapter.getState();
+                incomingHandler.state = bluetoothState;
+
+                final Bundle data = new Bundle();
+                data.putInt(Keys.BLUETOOTH_STATE, bluetoothState);
+                MessageFactory.sendToForeground(foregroundMessenger, MessageFactory.bluetooth(data));
             }
         };
 
@@ -328,6 +331,7 @@ public class BluetoothService extends Service {
 
     public static class IncomingHandler extends Handler {
 
+
         public boolean hasBluetooth = false;
         public boolean hasBluetoothLE = false;
         public boolean isEnabled = false;
@@ -335,64 +339,46 @@ public class BluetoothService extends Service {
         public boolean isAdvertising = false;
         public int state = BluetoothState.OFF;
 
+        private final BluetoothService bluetoothService;
+
+        final Bundle data = new Bundle();
+
+        public IncomingHandler(@NonNull final BluetoothService bluetoothService) {
+            this.bluetoothService = bluetoothService;
+        }
+
         @Override
         public void handleMessage(Message message) {
             switch (message.what) {
                 case Action.REGISTER:
                     foregroundMessenger = message.replyTo;
 
-                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.HAS_BLUETOOTH, hasBluetooth));
-                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.HAS_BLUETOOTH_LE, hasBluetoothLE));
-                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.IS_ENABLED, isEnabled));
-                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.IS_GATT_RUNNING, isGattServerRunning));
-                    sendMessageToForeground(buildBooleanValueMessage(Bluetooth.IS_ADVERTISING, isAdvertising));
-                    sendMessageToForeground(buildIntValueMessage(Bluetooth.STATE, state));
+                    data.clear();
+                    data.putBoolean(Keys.HAS_BLUETOOTH, hasBluetooth);
+                    data.putBoolean(Keys.HAS_BLUETOOTH_LE, hasBluetoothLE);
+                    data.putBoolean(Keys.IS_BLUETOOTH_ENABLED, isEnabled);
+                    data.putBoolean(Keys.IS_GATT_RUNNING, isGattServerRunning);
+                    data.putBoolean(Keys.IS_ADVERTISING, isAdvertising);
+                    data.putInt(Keys.BLUETOOTH_STATE, state);
+
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.bluetooth(data));
+                    break;
+                case Action.BLUETOOH_ENABLE:
+                    isEnabled = bluetoothService.enable();
+                    data.clear();
+                    data.putBoolean(Keys.IS_BLUETOOTH_ENABLED, isEnabled);
+
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.bluetooth(data));
+                    break;
+                case Action.BLUETOOH_DISABLE:
+                    isEnabled = !(bluetoothService.disable());
+                    data.clear();
+                    data.putBoolean(Keys.IS_BLUETOOTH_ENABLED, isEnabled);
+
+                    MessageFactory.sendToForeground(message.replyTo, MessageFactory.bluetooth(data));
                     break;
                 default:
                     super.handleMessage(message);
-            }
-        }
-
-        private static Message buildBooleanValueMessage(@Bluetooth final int messageWhat, final boolean normalizedValue) {
-            final Message message = Message.obtain(null, messageWhat);
-
-            message.setData(buildBooleanValueBundle(normalizedValue));
-
-            return message;
-        }
-
-        @SuppressWarnings("SameParameterValue")
-        private static Message buildIntValueMessage(@Bluetooth final int messageWhat, final int normalizedValue) {
-            final Message message = Message.obtain(null, messageWhat);
-
-            message.setData(buildIntValueBundle(normalizedValue));
-
-            return message;
-        }
-
-        private static Bundle buildBooleanValueBundle(final boolean normalizedValue) {
-            final Bundle bundle = new Bundle();
-
-            bundle.putBoolean(Keys.VALUE, normalizedValue);
-
-            return bundle;
-        }
-
-        private static Bundle buildIntValueBundle(final int normalizedValue) {
-            final Bundle bundle = new Bundle();
-
-            bundle.putInt(Keys.VALUE, normalizedValue);
-
-            return bundle;
-        }
-
-        private void sendMessageToForeground(@NonNull final Message message) {
-            try {
-                if (foregroundMessenger != null) {
-                    foregroundMessenger.send(message);
-                }
-            } catch (RemoteException e) {
-                Timber.e(e);
             }
         }
     }

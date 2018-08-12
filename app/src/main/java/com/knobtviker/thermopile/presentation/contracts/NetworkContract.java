@@ -1,17 +1,7 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
-import android.app.Activity;
-import android.bluetooth.BluetoothGattServer;
-import android.bluetooth.BluetoothGattServerCallback;
-import android.bluetooth.le.AdvertiseCallback;
-import android.bluetooth.le.AdvertiseData;
-import android.bluetooth.le.AdvertiseSettings;
-import android.support.annotation.NonNull;
-
 import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseView;
-
-import java.util.List;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -30,20 +20,6 @@ public interface NetworkContract {
         void onAirQualityChanged(final float value);
 
         void onAccelerationChanged(final float[] values);
-
-        void onHasBluetooth(final boolean hasBluetooth);
-
-        void onBluetoothEnabled(final boolean isEnabled);
-
-        void onBluetoothStateIndeterminate();
-
-        void onBluetoothState(final boolean isOn);
-
-        void onCheckBluetoothAdvertising(final boolean isAdvertising);
-
-        void onCheckGattServer(final boolean isGattServerRunning);
-
-        void onGattServerStarted(@NonNull final BluetoothGattServer gattServer);
     }
 
     interface Presenter extends BasePresenter {
@@ -58,32 +34,6 @@ public interface NetworkContract {
 
         void observeAcceleration();
 
-        void hasBluetooth();
-
-        void bluetooth(final boolean enable);
-
-        void isBluetoothEnabled();
-
-        void name(@NonNull final String name);
-
-        void discoverable(@NonNull final Activity activity, final int requestCode, final int duration);
-
         void observeBluetoothState();
-
-        void setBluetoothDeviceClass(final int service, final int device, final int ioCapability);
-
-        void setBluetoothProfiles(@NonNull final List<Integer> profiles);
-
-        void startGattServer(@NonNull final BluetoothGattServerCallback callback);
-
-        void stopGattServer();
-
-        void isGattServerRunning();
-
-        void startBluetoothAdvertising(@NonNull final AdvertiseSettings settings, @NonNull final AdvertiseData data, @NonNull final AdvertiseCallback callback);
-
-        void stopBluetoothAdvertising();
-
-        void isBluetoothAdvertising();
     }
 }

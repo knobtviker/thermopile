@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.utils;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -22,18 +21,17 @@ public class Router {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         context.startActivity(intent);
-//        ((AppCompatActivity)context).overridePendingTransition(R.anim.enter_top_to_bottom, R.anim.exit_bottom_to_top);
+        //        ((AppCompatActivity)context).overridePendingTransition(R.anim.enter_top_to_bottom, R.anim.exit_bottom_to_top);
     }
 
     /**
      * This will issue a request to make the local device discoverable to other devices. By default,
      * the device will become discoverable for 120 seconds.
      *
-     * @param activity    Activity
-     * @param requestCode request code
+     * @param context Context
      */
-    public static void enableDiscoverability(@NonNull final Activity activity, final int requestCode) {
-        enableDiscoverability(activity, requestCode, -1);
+    public static void enableDiscoverability(@NonNull final Context context) {
+        enableDiscoverability(context, -1);
     }
 
     /**
@@ -41,16 +39,15 @@ public class Router {
      * the device will become discoverable for 120 seconds.  Maximum duration is capped at 300
      * seconds.
      *
-     * @param activity    Activity
-     * @param requestCode request code
-     * @param duration    discoverability duration in seconds
+     * @param context  Context
+     * @param duration discoverability duration in seconds
      */
-    public static void enableDiscoverability(@NonNull final Activity activity, final int requestCode, final int duration) {
+    public static void enableDiscoverability(@NonNull final Context context, final int duration) {
         final Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         if (duration >= 0) {
             intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
                 duration >= MAX_DISCOVERABILITY_PERIOD_SECONDS ? MAX_DISCOVERABILITY_PERIOD_SECONDS : duration);
         }
-        activity.startActivityForResult(intent, requestCode);
+        context.startActivity(intent);
     }
 }

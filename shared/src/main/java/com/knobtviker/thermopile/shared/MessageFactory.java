@@ -7,8 +7,8 @@ import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.knobtviker.thermopile.shared.constants.Action;
 import com.knobtviker.thermopile.shared.constants.Uid;
-import com.knobtviker.thermopile.shared.message.Action;
 
 import timber.log.Timber;
 
@@ -34,6 +34,46 @@ public class MessageFactory {
         }
     }
 
+    public static void currentFromBackground(@NonNull final Messenger foregroundMessenger, @NonNull final Messenger backgroundMessenger) {
+        try {
+            final Message message = Message.obtain(null, Action.CURRENT);
+            message.replyTo = foregroundMessenger;
+            backgroundMessenger.send(message);
+        } catch (RemoteException e) {
+            Timber.e(e);
+        }
+    }
+
+    public static void resetToBackground(@NonNull final Messenger foregroundMessenger, @NonNull final Messenger backgroundMessenger) {
+        try {
+            final Message message = Message.obtain(null, Action.RESET);
+            message.replyTo = foregroundMessenger;
+            backgroundMessenger.send(message);
+        } catch (RemoteException e) {
+            Timber.e(e);
+        }
+    }
+
+    public static void bluetoothEnableToBackground(@NonNull final Messenger foregroundMessenger, @NonNull final Messenger backgroundMessenger) {
+        try {
+            final Message message = Message.obtain(null, Action.BLUETOOH_ENABLE);
+            message.replyTo = foregroundMessenger;
+            backgroundMessenger.send(message);
+        } catch (RemoteException e) {
+            Timber.e(e);
+        }
+    }
+
+    public static void bluetoothDisableToBackground(@NonNull final Messenger foregroundMessenger, @NonNull final Messenger backgroundMessenger) {
+        try {
+            final Message message = Message.obtain(null, Action.BLUETOOH_DISABLE);
+            message.replyTo = foregroundMessenger;
+            backgroundMessenger.send(message);
+        } catch (RemoteException e) {
+            Timber.e(e);
+        }
+    }
+
     public static Message drivers(@NonNull final Bundle data) {
         return create(Uid.DRIVERS, data);
     }
@@ -52,9 +92,5 @@ public class MessageFactory {
         message.setData(data);
 
         return message;
-    }
-
-    public static Message register() {
-        return Message.obtain(null, Action.REGISTER);
     }
 }

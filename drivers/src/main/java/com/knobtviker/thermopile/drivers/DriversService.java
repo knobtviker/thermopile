@@ -25,8 +25,8 @@ import com.knobtviker.android.things.contrib.community.driver.ds3231.Ds3231Senso
 import com.knobtviker.android.things.contrib.community.driver.lsm9ds1.Lsm9ds1SensorDriver;
 import com.knobtviker.android.things.contrib.community.driver.tsl2561.TSL2561SensorDriver;
 import com.knobtviker.thermopile.shared.MessageFactory;
+import com.knobtviker.thermopile.shared.constants.Action;
 import com.knobtviker.thermopile.shared.constants.Keys;
-import com.knobtviker.thermopile.shared.message.Action;
 
 import java.io.IOException;
 
@@ -491,6 +491,7 @@ public class DriversService extends Service implements SensorEventListener {
                 case Action.REGISTER:
                     foregroundMessenger = message.replyTo;
 
+                    data.clear();
                     data.putFloat(Keys.TEMPERATURE, currentTemperature);
                     data.putFloat(Keys.PRESSURE, currentPressure);
                     data.putFloat(Keys.HUMIDITY, currentHumidity);
@@ -503,6 +504,7 @@ public class DriversService extends Service implements SensorEventListener {
                     MessageFactory.sendToForeground(message.replyTo, MessageFactory.drivers(data));
                     break;
                 case Action.CURRENT:
+                    data.clear();
                     data.putFloat(Keys.TEMPERATURE, currentTemperature);
                     data.putFloat(Keys.PRESSURE, currentPressure);
                     data.putFloat(Keys.HUMIDITY, currentHumidity);

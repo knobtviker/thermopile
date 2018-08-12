@@ -14,8 +14,8 @@ import android.support.annotation.Nullable;
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
 import com.knobtviker.android.things.contrib.community.driver.fram.Mb85rc256v;
 import com.knobtviker.thermopile.shared.MessageFactory;
+import com.knobtviker.thermopile.shared.constants.Action;
 import com.knobtviker.thermopile.shared.constants.Keys;
-import com.knobtviker.thermopile.shared.message.Action;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -134,6 +134,7 @@ public class Mb85rc256vService extends Service {
 
             switch (message.what) {
                 case Action.REGISTER:
+                    data.clear();
                     data.putLong(Keys.LAST_BOOT_TIMESTAMP, lastBootTimestamp);
                     data.putLong(Keys.BOOT_COUNT, bootCount);
 
@@ -142,16 +143,19 @@ public class Mb85rc256vService extends Service {
                 case Action.RESET:
                     reset();
 
+                    data.clear();
                     data.putLong(Keys.LAST_BOOT_TIMESTAMP, lastBootTimestamp);
                     data.putLong(Keys.BOOT_COUNT, bootCount);
 
                     MessageFactory.sendToForeground(message.replyTo, MessageFactory.fram(data));
                     break;
                 case Action.LAST_BOOT_TIMESTAMP:
+                    data.clear();
                     data.putLong(Keys.LAST_BOOT_TIMESTAMP, lastBootTimestamp);
 
                     MessageFactory.sendToForeground(message.replyTo, MessageFactory.fram(data));
                 case Action.BOOT_COUNT:
+                    data.clear();
                     data.putLong(Keys.BOOT_COUNT, bootCount);
 
                     MessageFactory.sendToForeground(message.replyTo, MessageFactory.fram(data));

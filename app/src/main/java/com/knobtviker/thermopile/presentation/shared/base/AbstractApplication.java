@@ -9,22 +9,19 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.knobtviker.thermopile.BuildConfig;
-import com.knobtviker.thermopile.data.models.presentation.BluetoothEntity;
 import com.knobtviker.thermopile.data.sources.local.shared.Database;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
 import com.knobtviker.thermopile.shared.MessageFactory;
+import com.knobtviker.thermopile.shared.constants.BluetoothState;
 import com.knobtviker.thermopile.shared.constants.Keys;
 import com.knobtviker.thermopile.shared.constants.Uid;
-import com.knobtviker.thermopile.shared.message.Action;
-import com.knobtviker.thermopile.shared.message.Bluetooth;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -46,9 +43,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     @NonNull
     private Messenger foregroundMessenger;
-
-    @NonNull
-    public static BluetoothEntity bluetooth = BluetoothEntity.builder().build();
 
     @NonNull
     protected P presenter;
@@ -164,25 +158,42 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         onBootCount(value);
     }
 
+    @Override
+    public void setHasBluetooth(boolean value) {
+        onHasBluetooh(value);
+    }
+
+    @Override
+    public void setBluetoothEnabled(boolean value) {
+        onBluetoothEnabled(value);
+    }
+
+    @Override
+    public void setBluetoothState(int value) {
+        onBluetoothState(value);
+    }
+
     public void refresh() {
-        try {
-            if (serviceMessengerSensors != null) {
-                final Message messageToService = Message.obtain(null, Action.CURRENT);
-                serviceMessengerSensors.send(messageToService);
-            }
-        } catch (RemoteException e) {
-            Timber.e(e);
+        if (serviceMessengerSensors != null) {
+            MessageFactory.currentFromBackground(foregroundMessenger, serviceMessengerSensors);
         }
     }
 
     public void reset() {
-        try {
-            if (serviceMessengerFram != null) {
-                final Message messageToService = Message.obtain(null, Action.RESET);
-                serviceMessengerFram.send(messageToService);
-            }
-        } catch (RemoteException e) {
-            Timber.e(e);
+        if (serviceMessengerFram != null) {
+            MessageFactory.resetToBackground(foregroundMessenger, serviceMessengerFram);
+        }
+    }
+
+    public void bluetoothEnable() {
+        if (serviceMessengerBluetooth != null) {
+            MessageFactory.bluetoothEnableToBackground(foregroundMessenger, serviceMessengerBluetooth);
+        }
+    }
+
+    public void bluetoothDisable() {
+        if (serviceMessengerBluetooth != null) {
+            MessageFactory.bluetoothDisableToBackground(foregroundMessenger, serviceMessengerBluetooth);
         }
     }
 
@@ -231,6 +242,12 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     public abstract void onLastBootTimestamp(final long value);
 
     public abstract void onBootCount(final long value);
+
+    public abstract void onHasBluetooh(final boolean value);
+
+    public abstract void onBluetoothEnabled(final boolean value);
+
+    public abstract void onBluetoothState(@BluetoothState final int value);
 
     //TODO: All incoming handlers should be moved away from Application/Service classes and have a unified Message builder factory.
     public static class IncomingHandler extends Handler {
@@ -341,30 +358,23 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         }
 
         private void handleBluetoothMessage(@NonNull final Message message) {
+            final Bundle data = message.getData();
 
-            switch (message.what) {
-                case Bluetooth.HAS_BLUETOOTH:
-                    bluetooth = bluetooth.withHasBluetooth(message.getData().getBoolean(Keys.VALUE));
-                    break;
-                case Bluetooth.HAS_BLUETOOTH_LE:
-                    bluetooth = bluetooth.withHasBluetoothLE(message.getData().getBoolean(Keys.VALUE));
-                    break;
-                case Bluetooth.IS_ENABLED:
-                    bluetooth = bluetooth.withEnabled(message.getData().getBoolean(Keys.VALUE));
-                    break;
-                case Bluetooth.IS_GATT_RUNNING:
-                    bluetooth = bluetooth.withGattRunning(message.getData().getBoolean(Keys.VALUE));
-                    break;
-                case Bluetooth.IS_ADVERTISING:
-                    bluetooth = bluetooth.withAdvertising(message.getData().getBoolean(Keys.VALUE));
-                    break;
-                case Bluetooth.STATE:
-                    bluetooth = bluetooth.withState(message.getData().getInt(Keys.VALUE));
-                default:
-                    super.handleMessage(message);
+            if (data.containsKey(Keys.HAS_BLUETOOTH) && data.containsKey(Keys.HAS_BLUETOOTH_LE)) {
+                incomingCommunicator.setHasBluetooth(data.getBoolean(Keys.HAS_BLUETOOTH) && data.getBoolean(Keys.HAS_BLUETOOTH_LE));
             }
-
-            Timber.i(bluetooth.toString());
+            if (data.containsKey(Keys.IS_BLUETOOTH_ENABLED)) {
+                incomingCommunicator.setBluetoothEnabled(data.getBoolean(Keys.IS_BLUETOOTH_ENABLED));
+            }
+            if (data.containsKey(Keys.IS_GATT_RUNNING)) {
+//                bluetooth = bluetooth.withGattRunning(data.getBoolean(Keys.IS_GATT_RUNNING));
+            }
+            if (data.containsKey(Keys.IS_ADVERTISING)) {
+//                bluetooth = bluetooth.withAdvertising(data.getBoolean(Keys.IS_ADVERTISING));
+            }
+            if (data.containsKey(Keys.BLUETOOTH_STATE)) {
+                incomingCommunicator.setBluetoothState(data.getInt(Keys.BLUETOOTH_STATE));
+            }
         }
     }
 }
