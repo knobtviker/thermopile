@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import java.lang.ref.WeakReference;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposables;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -133,7 +135,22 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
             }));
         })
             .subscribe(
-
+                state -> {
+                    Timber.i("Bluetooth state changed: %d", state);
+                    switch (state) {
+                        case BluetoothAdapter.STATE_OFF:
+                            view.onBluetoothState(false);
+                            break;
+                        case BluetoothAdapter.STATE_ON:
+                            view.onBluetoothState(true);
+                            break;
+                        case BluetoothAdapter.STATE_TURNING_OFF:
+                        case BluetoothAdapter.STATE_TURNING_ON:
+                            view.onBluetoothStateIndeterminate();
+                            break;
+                    }
+                },
+                this::error
             )
         );
     }

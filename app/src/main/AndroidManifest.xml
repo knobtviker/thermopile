@@ -19,9 +19,9 @@
         android:allowBackup="false"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="${fabricApiKey}"/>
+        <!--<meta-data-->
+            <!--android:name="io.fabric.ApiKey"-->
+            <!--android:value="${fabricApiKey}"/>-->
 
         <!--<meta-data-->
             <!--android:name="com.google.android.awareness.API_KEY"-->

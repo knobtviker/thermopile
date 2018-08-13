@@ -122,7 +122,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         presenter.observeHumidity();
         presenter.observeAirQuality();
         presenter.observeAcceleration();
-        //        presenter.hasBluetooth();
 
         setupWifi(hasWiFi);
 
@@ -215,23 +214,23 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     //        groupGattAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
     //    }
 
-    //    @Override
-    //    public void onBluetoothStateIndeterminate() {
-    //        progressBarBluetooth.setVisibility(View.VISIBLE);
-    //        switchBluetoothOnOff.setEnabled(true);
-    //        groupGattAdvertising.setVisibility(View.GONE);
-    //    }
-    //
-    //    @Override
-    //    public void onBluetoothState(boolean isOn) {
-    //        progressBarBluetooth.setVisibility(View.GONE);
-    //        switchBluetoothOnOff.setEnabled(true);
-    //        switchBluetoothOnOff.setText(getString(isOn ? R.string.state_on : R.string.state_off));
-    //        groupGattAdvertising.setVisibility(isOn ? View.VISIBLE : View.GONE);
-    //
-    //        setupGattServer(isOn);
-    //        setupAdvertising(isOn);
-    //    }
+        @Override
+        public void onBluetoothStateIndeterminate() {
+            progressBarBluetooth.setVisibility(View.VISIBLE);
+            switchBluetoothOnOff.setEnabled(false);
+            groupGattAdvertising.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onBluetoothState(boolean isOn) {
+            progressBarBluetooth.setVisibility(View.GONE);
+            switchBluetoothOnOff.setEnabled(true);
+            switchBluetoothOnOff.setText(getString(isOn ? R.string.state_on : R.string.state_off));
+            groupGattAdvertising.setVisibility(isOn ? View.VISIBLE : View.GONE);
+
+//            setupGattServer(isOn);
+//            setupAdvertising(isOn);
+        }
 
     //    @Override
     //    public void onCheckGattServer(boolean isGattServerRunning) {
@@ -306,7 +305,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         switchBluetoothAdvertising.setEnabled(hasBluetooth && isBluetoothEnabled);
 
         if (hasBluetooth) {
-            presenter.observeBluetoothState();
+            presenter.observeBluetoothState(requireContext());
         }
     }
 

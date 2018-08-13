@@ -29,8 +29,8 @@ android {
 
         buildConfigField "String", 'DATABASE_NAME', '"thermopile.objectbox"'
 
-        manifestPlaceholders = [fabricApiKey: buildProperties.keys['fabric_manifest'].or("").string]
-        buildConfigField "String", 'KEY_FABRIC', buildProperties.keys['fabric'].or("").string
+//        manifestPlaceholders = [fabricApiKey: buildProperties.keys['fabric_manifest'].or("").string]
+//        buildConfigField "String", 'KEY_FABRIC', buildProperties.keys['fabric'].or("").string
 
 //        manifestPlaceholders = [awarenessApiKey: buildProperties.keys['awareness'].or("").string]
 

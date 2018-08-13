@@ -23,6 +23,10 @@ public interface NetworkContract {
         void onAirQualityChanged(final float value);
 
         void onAccelerationChanged(final float[] values);
+
+        void onBluetoothState(final boolean isOn);
+
+        void onBluetoothStateIndeterminate();
     }
 
     interface Presenter extends BasePresenter {

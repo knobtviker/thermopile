@@ -11,10 +11,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
-import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.shared.Database;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
@@ -27,7 +24,6 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.Objects;
 
-import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public abstract class AbstractApplication<P extends BasePresenter> extends Application implements ServiceConnection, IncomingCommunicator {
@@ -210,9 +206,9 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
     }
 
     private void initCrashlytics() {
-        if (!TextUtils.isEmpty(BuildConfig.KEY_FABRIC)) {
-            Fabric.with(this, new Crashlytics());
-        }
+//        if (!TextUtils.isEmpty(BuildConfig.KEY_FABRIC)) {
+//            Fabric.with(this, new Crashlytics());
+//        }
     }
 
     private void initJodaTime() {
