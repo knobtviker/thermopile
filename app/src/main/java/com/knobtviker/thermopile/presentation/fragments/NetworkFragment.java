@@ -298,11 +298,10 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         switchBluetoothOnOff.setChecked(ThermopileApplication.isBluetoothEnabled());
         switchBluetoothOnOff.setEnabled(hasBluetooth);
 
-        switchBluetoothGatt.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
-        switchBluetoothGatt.setEnabled(hasBluetooth && isBluetoothEnabled);
+        switchBluetoothGatt.setEnabled(hasBluetooth);
+        switchBluetoothAdvertising.setEnabled(hasBluetooth);
 
-        switchBluetoothAdvertising.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
-        switchBluetoothAdvertising.setEnabled(hasBluetooth && isBluetoothEnabled);
+        groupGattAdvertising.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
 
         if (hasBluetooth) {
             presenter.observeBluetoothState(requireContext());

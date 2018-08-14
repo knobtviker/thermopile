@@ -6,20 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
-import com.knobtviker.thermopile.shared.constants.Keys;
-
-import java.lang.ref.WeakReference;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.disposables.Disposables;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.MainThreadDisposable;
 import timber.log.Timber;
 
 /**
@@ -104,54 +100,47 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
 
     @Override
     public void observeBluetoothState(@NonNull Context context) {
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
         compositeDisposable.add(
-        Observable.create((ObservableEmitter<Integer> emitter) -> {
-            final IntentFilter filter = new IntentFilter();
-            filter.addAction(String.format("%s.%s", context.getApplicationContext().getPackageName(), Keys.BLUETOOTH_STATE.toUpperCase()));
+            Observable.defer(() ->
+                Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
+                    final BroadcastReceiver receiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context1, Intent intent) {
+                            emitter.onNext(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1));
+                        }
+                    };
 
-            final WeakReference<LocalBroadcastManager> localBroadcastManagerWeakReference = new WeakReference<>(LocalBroadcastManager.getInstance(context.getApplicationContext()));
+                    context.registerReceiver(receiver, filter);
 
-            final BroadcastReceiver receiver = new BroadcastReceiver() {
-
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.hasExtra(Keys.BLUETOOTH_STATE)) {
-
-                        emitter.onNext(intent.getIntExtra(Keys.BLUETOOTH_STATE, -1));
-                    } else {
-                        emitter.onError(new NoSuchFieldException());
-                    }
-                }
-            };
-
-            if (localBroadcastManagerWeakReference.get() != null) {
-                localBroadcastManagerWeakReference.get().registerReceiver(receiver, filter);
-            }
-
-            emitter.setDisposable(Disposables.fromRunnable(() -> {
-                if (localBroadcastManagerWeakReference.get() != null) {
-                    localBroadcastManagerWeakReference.get().unregisterReceiver(receiver);
-                }
-            }));
-        })
-            .subscribe(
-                state -> {
-                    Timber.i("Bluetooth state changed: %d", state);
-                    switch (state) {
-                        case BluetoothAdapter.STATE_OFF:
-                            view.onBluetoothState(false);
-                            break;
-                        case BluetoothAdapter.STATE_ON:
-                            view.onBluetoothState(true);
-                            break;
-                        case BluetoothAdapter.STATE_TURNING_OFF:
-                        case BluetoothAdapter.STATE_TURNING_ON:
-                            view.onBluetoothStateIndeterminate();
-                            break;
-                    }
-                },
-                this::error
-            )
+                    emitter.setDisposable(new MainThreadDisposable() {
+                        @Override
+                        protected void onDispose() {
+                            context.unregisterReceiver(receiver);
+                            dispose();
+                        }
+                    });
+                }))
+                .subscribe(
+                    state -> {
+                        Timber.i("BLUETOOTH state changed in presenter: %d", state);
+                        switch (state) {
+                            case BluetoothAdapter.STATE_OFF:
+                                view.onBluetoothState(false);
+                                break;
+                            case BluetoothAdapter.STATE_ON:
+                                view.onBluetoothState(true);
+                                break;
+                            case BluetoothAdapter.STATE_TURNING_OFF:
+                            case BluetoothAdapter.STATE_TURNING_ON:
+                                view.onBluetoothStateIndeterminate();
+                                break;
+                        }
+                    },
+                    this::error
+                )
         );
     }
 }

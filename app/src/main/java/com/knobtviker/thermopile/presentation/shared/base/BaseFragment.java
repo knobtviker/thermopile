@@ -24,14 +24,14 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         unbinder = ButterKnife.bind(this, view);
     }
 
-    @Override
-    public void onPause() {
-        if (presenter != null) {
-            presenter.dispose();
-        }
-
-        super.onPause();
-    }
+//    @Override
+//    public void onPause() {
+//        if (presenter != null) {
+//            presenter.dispose();
+//        }
+//
+//        super.onPause();
+//    }
 
     @Override
     public void onDestroyView() {
