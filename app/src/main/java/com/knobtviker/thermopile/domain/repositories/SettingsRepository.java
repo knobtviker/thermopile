@@ -29,16 +29,16 @@ public class SettingsRepository extends AbstractRepository {
     public Flowable<Settings> observe() {
         return settingsLocalDataSource
             .observe()
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     public Observable<Settings> load() {
         return settingsLocalDataSource
             .query()
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .map(items -> items.isEmpty() ? Database.defaultSettings() : items.get(0))
-            .observeOn(schedulerProvider.io);
+            .observeOn(schedulers.io);
     }
 
     public Completable saveTimezone(final long settingsId, @NonNull final String timezone) {
@@ -54,96 +54,96 @@ public class SettingsRepository extends AbstractRepository {
     public Completable saveClockMode(final long settingsId, final int clockMode) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .flatMap(settings -> {
                 settings.formatClock = clockMode;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulerProvider.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveFormatDate(final long settingsId, @NonNull final String item) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .flatMap(settings -> {
                 settings.formatDate = item;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulerProvider.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveFormatTime(final long settingsId, @NonNull final String item) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .flatMap(settings -> {
                 settings.formatTime = item;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulerProvider.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveTemperatureUnit(final long settingsId, final int unit) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .flatMap(settings -> {
                 settings.unitTemperature = unit;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulerProvider.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable savePressureUnit(final long settingsId, final int unit) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .flatMap(settings -> {
                 settings.unitPressure = unit;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulerProvider.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveAccelerationUnit(final long settingsId, final int unit) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .flatMap(settings -> {
                 settings.unitMotion = unit;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulerProvider.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveTheme(final long settingsId, final int value) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .flatMap(settings -> {
                 settings.theme = value;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulerProvider.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveScreensaverTimeout(long settingsId, int value) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .flatMap(settings -> {
                 settings.screensaverDelay = value;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulerProvider.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 }

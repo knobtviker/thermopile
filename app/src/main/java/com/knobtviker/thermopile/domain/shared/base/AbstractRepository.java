@@ -1,7 +1,7 @@
 package com.knobtviker.thermopile.domain.shared.base;
 
-import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulerProviderComponent;
-import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
+import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulersComponent;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 
 /**
  * Created by bojan on 13/12/2017.
@@ -9,9 +9,9 @@ import com.knobtviker.thermopile.domain.schedulers.SchedulerProvider;
 
 public abstract class AbstractRepository {
 
-    protected final SchedulerProvider schedulerProvider;
+    protected final Schedulers schedulers;
 
     protected AbstractRepository() {
-        this.schedulerProvider = DaggerSchedulerProviderComponent.create().inject();
+        this.schedulers = DaggerSchedulersComponent.create().inject();
     }
 }

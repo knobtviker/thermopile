@@ -2,7 +2,7 @@ package com.knobtviker.thermopile.di.components.domain.repositories;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.implementation.BaseComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.shared.base.BaseComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 

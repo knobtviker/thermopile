@@ -9,7 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/bluetooth" />
             <option value="$PROJECT_DIR$/drivers" />
             <option value="$PROJECT_DIR$/fram" />
             <option value="$PROJECT_DIR$/shared" />

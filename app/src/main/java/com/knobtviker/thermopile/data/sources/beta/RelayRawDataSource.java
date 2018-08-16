@@ -1,11 +1,10 @@
-package com.knobtviker.thermopile.data.sources.raw;
+package com.knobtviker.thermopile.data.sources.beta;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.PeripheralManager;
-import com.knobtviker.thermopile.data.sources.RelayDataSource;
 
 import java.io.IOException;
 import java.util.Optional;

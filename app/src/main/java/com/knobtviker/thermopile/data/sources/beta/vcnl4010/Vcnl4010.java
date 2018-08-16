@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.data.sources.raw.vcnl4010;
+package com.knobtviker.thermopile.data.sources.beta.vcnl4010;
 
 import android.os.SystemClock;
 import android.support.annotation.IntDef;

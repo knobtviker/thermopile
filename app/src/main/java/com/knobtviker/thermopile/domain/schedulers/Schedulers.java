@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import io.reactivex.Scheduler;
 
 
-public class SchedulerProvider  {
+public class Schedulers {
 
     @Inject
     @SchedulerComputation
@@ -39,6 +39,6 @@ public class SchedulerProvider  {
     public Scheduler ui;
 
     @Inject
-    public SchedulerProvider() {
+    public Schedulers() {
     }
 }

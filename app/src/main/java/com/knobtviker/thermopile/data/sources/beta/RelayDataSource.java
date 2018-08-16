@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.data.sources;
+package com.knobtviker.thermopile.data.sources.beta;
 
 /**
  * Created by bojan on 18/07/2017.

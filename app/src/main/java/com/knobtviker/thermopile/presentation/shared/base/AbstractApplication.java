@@ -16,7 +16,6 @@ import com.knobtviker.thermopile.data.sources.local.shared.Database;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
 import com.knobtviker.thermopile.shared.MessageFactory;
-import com.knobtviker.thermopile.shared.constants.BluetoothState;
 import com.knobtviker.thermopile.shared.constants.Keys;
 import com.knobtviker.thermopile.shared.constants.Uid;
 
@@ -33,9 +32,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     @Nullable
     private Messenger serviceMessengerFram = null;
-
-    @Nullable
-    private Messenger serviceMessengerBluetooth = null;
 
     @NonNull
     private Messenger foregroundMessenger;
@@ -77,9 +73,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service connected
             serviceMessengerFram = new Messenger(service);
             MessageFactory.registerToBackground(foregroundMessenger, serviceMessengerFram);
-        } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameBluetooth(this))) { // Bluetooth service connected
-            serviceMessengerBluetooth = new Messenger(service);
-            MessageFactory.registerToBackground(foregroundMessenger, serviceMessengerBluetooth);
         }
     }
 
@@ -91,8 +84,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
             serviceMessengerSensors = null;
         } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service disconnected
             serviceMessengerFram = null;
-        } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameBluetooth(this))) { // FRAM service disconnected
-            serviceMessengerBluetooth = null;
         }
     }
 
@@ -154,21 +145,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         onBootCount(value);
     }
 
-    @Override
-    public void setHasBluetooth(boolean value) {
-        onHasBluetooh(value);
-    }
-
-    @Override
-    public void setBluetoothEnabled(boolean value) {
-        onBluetoothEnabled(value);
-    }
-
-    @Override
-    public void setBluetoothState(int value) {
-        onBluetoothState(value);
-    }
-
     public void refresh() {
         if (serviceMessengerSensors != null) {
             MessageFactory.currentFromBackground(foregroundMessenger, serviceMessengerSensors);
@@ -181,18 +157,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         }
     }
 
-    public void bluetoothEnable() {
-        if (serviceMessengerBluetooth != null) {
-            MessageFactory.bluetoothEnableToBackground(foregroundMessenger, serviceMessengerBluetooth);
-        }
-    }
-
-    public void bluetoothDisable() {
-        if (serviceMessengerBluetooth != null) {
-            MessageFactory.bluetoothDisableToBackground(foregroundMessenger, serviceMessengerBluetooth);
-        }
-    }
-
     private void plantTree() {
         Timber.plant(new Timber.DebugTree());
     }
@@ -202,7 +166,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
         bindService(ServiceFactory.drivers(this), this, BIND_AUTO_CREATE);
         bindService(ServiceFactory.fram(this), this, BIND_AUTO_CREATE);
-        bindService(ServiceFactory.bluetooth(this), this, BIND_AUTO_CREATE);
     }
 
     private void initCrashlytics() {
@@ -239,12 +202,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     public abstract void onBootCount(final long value);
 
-    public abstract void onHasBluetooh(final boolean value);
-
-    public abstract void onBluetoothEnabled(final boolean value);
-
-    public abstract void onBluetoothState(@BluetoothState final int value);
-
     //TODO: All incoming handlers should be moved away from Application/Service classes and have a unified Message builder factory.
     public static class IncomingHandler extends Handler {
 
@@ -263,9 +220,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
                     break;
                 case Uid.FRAM:
                     handleFramMessage(message);
-                    break;
-                case Uid.BLUETOOTH:
-                    handleBluetoothMessage(message);
                     break;
                 case Uid.INVALID:
                 default:
@@ -350,26 +304,6 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
             if (data.containsKey(Keys.BOOT_COUNT)) {
                 bootCount = data.getLong(Keys.BOOT_COUNT);
                 incomingCommunicator.setBootCount(bootCount);
-            }
-        }
-
-        private void handleBluetoothMessage(@NonNull final Message message) {
-            final Bundle data = message.getData();
-
-            if (data.containsKey(Keys.HAS_BLUETOOTH) && data.containsKey(Keys.HAS_BLUETOOTH_LE)) {
-                incomingCommunicator.setHasBluetooth(data.getBoolean(Keys.HAS_BLUETOOTH) && data.getBoolean(Keys.HAS_BLUETOOTH_LE));
-            }
-            if (data.containsKey(Keys.IS_BLUETOOTH_ENABLED)) {
-                incomingCommunicator.setBluetoothEnabled(data.getBoolean(Keys.IS_BLUETOOTH_ENABLED));
-            }
-            if (data.containsKey(Keys.IS_GATT_RUNNING)) {
-//                bluetooth = bluetooth.withGattRunning(data.getBoolean(Keys.IS_GATT_RUNNING));
-            }
-            if (data.containsKey(Keys.IS_ADVERTISING)) {
-//                bluetooth = bluetooth.withAdvertising(data.getBoolean(Keys.IS_ADVERTISING));
-            }
-            if (data.containsKey(Keys.BLUETOOTH_STATE)) {
-                incomingCommunicator.setBluetoothState(data.getInt(Keys.BLUETOOTH_STATE));
             }
         }
     }

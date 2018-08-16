@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.data.sources.raw;
+package com.knobtviker.thermopile.data.sources.raw.bluetooth;
 /*
  * Copyright 2017, The Android Open Source Project
  *

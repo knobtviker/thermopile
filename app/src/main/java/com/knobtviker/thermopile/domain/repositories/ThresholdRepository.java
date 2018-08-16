@@ -37,14 +37,14 @@ public class ThresholdRepository extends AbstractRepository {
     public Observable<List<Threshold>> load() {
         return thresholdLocalDataSource
             .query()
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     public Observable<List<ThresholdInterval>> loadInline() {
         return thresholdLocalDataSource
             .query()
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .map(thresholds -> {
                 if (thresholds.isEmpty()) {
                     return ThresholdIntervalFactory.emptyDays();
@@ -61,28 +61,28 @@ public class ThresholdRepository extends AbstractRepository {
                     return intervalsAll;
                 }
             })
-            .observeOn(schedulerProvider.ui);
+            .observeOn(schedulers.ui);
     }
 
     public Observable<Threshold> loadById(final long thresholdId) {
         return thresholdLocalDataSource
             .queryById(thresholdId)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     public Observable<Long> save(@NonNull final Threshold item) {
         return thresholdLocalDataSource
             .save(item)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     public Completable removeById(final long id) {
         return thresholdLocalDataSource
             .removeById(id)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     private void fillDayWithThresholds(@NonNull final List<Threshold> thresholds, @NonNull final List<ThresholdInterval> thresholdIntervals, final int day) {

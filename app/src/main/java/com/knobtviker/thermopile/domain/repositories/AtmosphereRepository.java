@@ -73,148 +73,148 @@ public class AtmosphereRepository extends AbstractRepository {
     public Completable saveTemperature(@NonNull final String vendor, @NonNull final String name, final float value) {
         return temperatureLocalDataSource
             .save(new Temperature(DateTimeUtils.currentTimeMillis(), vendor, name, value))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable savePressure(@NonNull final String vendor, @NonNull final String name, final float value) {
         return pressureLocalDataSource
             .save(new Pressure(DateTimeUtils.currentTimeMillis(), vendor, name, value))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveAltitude(@NonNull final String vendor, @NonNull final String name, final float value) {
         return altitudeLocalDataSource
             .save(new Altitude(DateTimeUtils.currentTimeMillis(), vendor, name, convertPressureToAltitude(value)))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveHumidity(@NonNull final String vendor, @NonNull final String name, final float value) {
         return humidityLocalDataSource
             .save(new Humidity(DateTimeUtils.currentTimeMillis(), vendor, name, value))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveAirQuality(@NonNull final String vendor, @NonNull final String name, final float value) {
         return airQualityLocalDataSource
             .save(new AirQuality(DateTimeUtils.currentTimeMillis(), vendor, name, value))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveLuminosity(@NonNull final String vendor, @NonNull final String name, final float value) {
         return luminosityLocalDataSource
             .save(new Luminosity(DateTimeUtils.currentTimeMillis(), vendor, name, value))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveAcceleration(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return accelerationLocalDataSource
             .save(new Acceleration(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveAngularVelocity(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return angularVelocityLocalDataSource
             .save(new AngularVelocity(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Completable saveMagneticField(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return magneticFieldLocalDataSource
             .save(new MagneticField(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.io)
             .ignoreElements();
     }
 
     public Flowable<Float> observeTemperature() {
         return temperatureLocalDataSource
             .observe()
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .map(item -> item.value)
-            .observeOn(schedulerProvider.ui);
+            .observeOn(schedulers.ui);
     }
 
     public Flowable<Float> observePressure() {
         return pressureLocalDataSource
             .observe()
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .map(item -> item.value)
-            .observeOn(schedulerProvider.ui);
+            .observeOn(schedulers.ui);
     }
 
     public Flowable<Float> observeHumidity() {
         return humidityLocalDataSource
             .observe()
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .map(item -> item.value)
-            .observeOn(schedulerProvider.ui);
+            .observeOn(schedulers.ui);
     }
 
     public Flowable<Float> observeAirQuality() {
         return airQualityLocalDataSource
             .observe()
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .map(item -> item.value)
-            .observeOn(schedulerProvider.ui);
+            .observeOn(schedulers.ui);
     }
 
     public Flowable<float[]> observeAcceleration() {
         return accelerationLocalDataSource
             .observe()
-            .subscribeOn(schedulerProvider.io)
+            .subscribeOn(schedulers.io)
             .map(item -> new float[]{item.valueX, item.valueY, item.valueZ})
-            .observeOn(schedulerProvider.ui);
+            .observeOn(schedulers.ui);
     }
 
     public Observable<List<Temperature>> loadTemperatureBetween(final long start, final long end) {
         return temperatureLocalDataSource
             .queryBetween(start, end)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     public Observable<List<Humidity>> loadHumidityBetween(final long start, final long end) {
         return humidityLocalDataSource
             .queryBetween(start, end)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     public Observable<List<Pressure>> loadPressureBetween(final long start, final long end) {
         return pressureLocalDataSource
             .queryBetween(start, end)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     public Observable<List<AirQuality>> loadAirQualityBetween(final long start, final long end) {
         return airQualityLocalDataSource
             .queryBetween(start, end)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     public Observable<List<Acceleration>> loadAccelerationBetween(final long start, final long end) {
         return accelerationLocalDataSource
             .queryBetween(start, end)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui);
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui);
     }
 
     private float convertPressureToAltitude(final float value) {

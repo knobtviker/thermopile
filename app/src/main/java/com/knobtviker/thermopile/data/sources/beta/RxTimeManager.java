@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.data.sources.raw;
+package com.knobtviker.thermopile.data.sources.beta;
 
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;

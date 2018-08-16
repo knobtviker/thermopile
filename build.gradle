@@ -62,10 +62,6 @@ buildscript {
             'suffix' : '.fram',
             'archive': "${buildConfig.archive}_fram_${buildConfig.version.fullName}",
         ],
-        'bluetooth': [
-            'suffix' : '.bluetooth',
-            'archive': "${buildConfig.archive}_bluetooth_${buildConfig.version.fullName}",
-        ],
     ]
 
     ext.deps = [

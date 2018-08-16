@@ -1,8 +1,5 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-
 import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseView;
 
@@ -24,6 +21,10 @@ public interface NetworkContract {
 
         void onAccelerationChanged(final float[] values);
 
+        void onHasBluetooth(final boolean hasBluetooth);
+
+        void onIsBluetoothEnabled(final boolean isEnabled);
+
         void onBluetoothState(final boolean isOn);
 
         void onBluetoothStateIndeterminate();
@@ -41,6 +42,14 @@ public interface NetworkContract {
 
         void observeAcceleration();
 
-        void observeBluetoothState(@NonNull final Context context);
+        void hasBluetooth();
+
+        void isBluetoothEnabled();
+
+        void enableBluetooth();
+
+        void disableBluetooth();
+
+        void observeBluetoothState();
     }
 }

@@ -10,7 +10,6 @@ import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractApplication;
 import com.knobtviker.thermopile.presentation.utils.Router;
-import com.knobtviker.thermopile.shared.constants.BluetoothState;
 
 import timber.log.Timber;
 
@@ -25,13 +24,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     private static long lastBootTimestamp = 0L;
 
     private static long bootCount = 1L;
-
-    private static boolean hasBluetooth = false;
-
-    private static boolean isBluetoothEnabled = false;
-
-    @BluetoothState
-    private int bluetoothState;
 
     @Override
     public void onCreate() {
@@ -112,38 +104,12 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         bootCount = value;
     }
 
-    @Override
-    public void onHasBluetooh(boolean value) {
-        hasBluetooth = value;
-    }
-
-    @Override
-    public void onBluetoothEnabled(boolean value) {
-        isBluetoothEnabled = value;
-        if (value) {
-            Router.enableDiscoverability(this, Router.MAX_DISCOVERABILITY_PERIOD_SECONDS);
-        }
-    }
-
-    @Override
-    public void onBluetoothState(@BluetoothState int value) {
-        bluetoothState = value;
-    }
-
     public static long lastBootTimestamp() {
         return lastBootTimestamp;
     }
 
     public static long bootCount() {
         return bootCount;
-    }
-
-    public static boolean hasBluetooth() {
-        return hasBluetooth;
-    }
-
-    public static boolean isBluetoothEnabled() {
-        return isBluetoothEnabled;
     }
 
     public void createScreensaver() {

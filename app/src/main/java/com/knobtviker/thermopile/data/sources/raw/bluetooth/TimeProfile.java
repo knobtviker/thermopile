@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.data.sources.raw;
+package com.knobtviker.thermopile.data.sources.raw.bluetooth;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;

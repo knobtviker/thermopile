@@ -20,7 +20,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 @Module
-public class SchedulerProviderModule {
+public class SchedulersModule {
 
     @Provides
     @Singleton

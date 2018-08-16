@@ -1,22 +1,21 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
 import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
+import com.knobtviker.thermopile.di.components.domain.repositories.DaggerNetworkRepositoryComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
+import com.knobtviker.thermopile.di.modules.data.sources.raw.BluetoothRawDataSourceModule;
+import com.knobtviker.thermopile.di.modules.presentation.ContextModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
+import com.knobtviker.thermopile.domain.repositories.NetworkRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.MainThreadDisposable;
-import timber.log.Timber;
+import io.reactivex.internal.functions.Functions;
 
 /**
  * Created by bojan on 15/07/2017.
@@ -28,12 +27,19 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
 
     private final AtmosphereRepository atmosphereRepository;
 
+    private final NetworkRepository networkRepository;
+
     public NetworkPresenter(@NonNull final Context context, @NonNull final NetworkContract.View view) {
         super(view);
 
         this.view = view;
         this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
             .localDataSource(new AtmosphereLocalDataSourceModule())
+            .build()
+            .inject();
+        this.networkRepository = DaggerNetworkRepositoryComponent.builder()
+            .context(new ContextModule(context))
+            .bluetoothRawDataSource(new BluetoothRawDataSourceModule())
             .build()
             .inject();
     }
@@ -99,33 +105,63 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     }
 
     @Override
-    public void observeBluetoothState(@NonNull Context context) {
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-
+    public void hasBluetooth() {
         compositeDisposable.add(
-            Observable.defer(() ->
-                Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-                    final BroadcastReceiver receiver = new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context1, Intent intent) {
-                            emitter.onNext(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1));
-                        }
-                    };
+            Observable.zip(
+                networkRepository.hasBluetooth(),
+                networkRepository.hasBluetoothLowEnergy(),
+                (hasBluetooth, hasBluetoothLowEnergy) -> hasBluetooth && hasBluetoothLowEnergy
+            )
+                .subscribe(
+                    view::onHasBluetooth,
+                    this::error
+                )
+        );
+    }
 
-                    context.registerReceiver(receiver, filter);
+    @Override
+    public void isBluetoothEnabled() {
+        compositeDisposable.add(
+            networkRepository
+                .isBluetoothEnabled()
+                .subscribe(
+                    view::onIsBluetoothEnabled,
+                    this::error
+                )
+        );
+    }
 
-                    emitter.setDisposable(new MainThreadDisposable() {
-                        @Override
-                        protected void onDispose() {
-                            context.unregisterReceiver(receiver);
-                            dispose();
-                        }
-                    });
-                }))
+    @Override
+    public void enableBluetooth() {
+        compositeDisposable.add(
+            networkRepository
+                .enableBluetooth()
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void disableBluetooth() {
+        compositeDisposable.add(
+            networkRepository
+                .disableBluetooth()
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void observeBluetoothState() {
+        compositeDisposable.add(
+            networkRepository
+                .observeState()
                 .subscribe(
                     state -> {
-                        Timber.i("BLUETOOTH state changed in presenter: %d", state);
                         switch (state) {
                             case BluetoothAdapter.STATE_OFF:
                                 view.onBluetoothState(false);

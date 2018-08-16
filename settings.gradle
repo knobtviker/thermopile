@@ -1,1 +1,1 @@
-include ':app', ':drivers', ':fram', ':bluetooth', ':shared'
+include ':app', ':drivers', ':fram', ':shared'

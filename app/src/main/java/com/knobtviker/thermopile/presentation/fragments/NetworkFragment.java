@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.bluetooth.BluetoothGattServer;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiInfo;
@@ -18,7 +17,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
@@ -43,9 +41,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     public static final String TAG = NetworkFragment.class.getSimpleName();
 
     private long settingsId = -1L;
-
-    @Nullable
-    private BluetoothGattServer gattServer;
 
     @Nullable
     private WifiManager wifiManager;
@@ -112,7 +107,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupBluetooth(ThermopileApplication.hasBluetooth(), ThermopileApplication.isBluetoothEnabled());
+        presenter.hasBluetooth();
     }
 
     @Override
@@ -204,33 +199,43 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
 
     }
 
-    //    @Override
-    //    public void onBluetoothEnabled(boolean isEnabled) {
-    //        switchBluetoothOnOff.setChecked(isEnabled);
-    //        switchBluetoothOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
-    //
-    //        switchBluetoothOnOff.setEnabled(true);
-    //
-    //        groupGattAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
-    //    }
+    @Override
+    public void onHasBluetooth(boolean hasBluetooth) {
+        groupBluetooth.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
 
-        @Override
-        public void onBluetoothStateIndeterminate() {
-            progressBarBluetooth.setVisibility(View.VISIBLE);
-            switchBluetoothOnOff.setEnabled(false);
-            groupGattAdvertising.setVisibility(View.GONE);
+        if (hasBluetooth) {
+            presenter.isBluetoothEnabled();
+            presenter.observeBluetoothState();
         }
+    }
 
-        @Override
-        public void onBluetoothState(boolean isOn) {
-            progressBarBluetooth.setVisibility(View.GONE);
-            switchBluetoothOnOff.setEnabled(true);
-            switchBluetoothOnOff.setText(getString(isOn ? R.string.state_on : R.string.state_off));
-            groupGattAdvertising.setVisibility(isOn ? View.VISIBLE : View.GONE);
+    @Override
+    public void onIsBluetoothEnabled(boolean isEnabled) {
+        switchBluetoothOnOff.setChecked(isEnabled);
+        switchBluetoothOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
 
-//            setupGattServer(isOn);
-//            setupAdvertising(isOn);
-        }
+        switchBluetoothOnOff.setEnabled(true);
+
+        groupGattAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onBluetoothStateIndeterminate() {
+        progressBarBluetooth.setVisibility(View.VISIBLE);
+        switchBluetoothOnOff.setEnabled(false);
+        groupGattAdvertising.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBluetoothState(boolean isOn) {
+        progressBarBluetooth.setVisibility(View.GONE);
+        switchBluetoothOnOff.setEnabled(true);
+        switchBluetoothOnOff.setText(getString(isOn ? R.string.state_on : R.string.state_off));
+        groupGattAdvertising.setVisibility(isOn ? View.VISIBLE : View.GONE);
+
+        //            setupGattServer(isOn);
+        //            setupAdvertising(isOn);
+    }
 
     //    @Override
     //    public void onCheckGattServer(boolean isGattServerRunning) {
@@ -291,29 +296,12 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     //        }
     //    }
 
-    private void setupBluetooth(final boolean hasBluetooth, final boolean isBluetoothEnabled) {
-        groupBluetooth.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
-
-        switchBluetoothOnOff.setOnCheckedChangeListener(this);
-        switchBluetoothOnOff.setChecked(ThermopileApplication.isBluetoothEnabled());
-        switchBluetoothOnOff.setEnabled(hasBluetooth);
-
-        switchBluetoothGatt.setEnabled(hasBluetooth);
-        switchBluetoothAdvertising.setEnabled(hasBluetooth);
-
-        groupGattAdvertising.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
-
-        if (hasBluetooth) {
-            presenter.observeBluetoothState(requireContext());
-        }
-    }
-
     private void startBluetooth() {
-        ((ThermopileApplication) requireActivity().getApplication()).bluetoothEnable();
+        presenter.enableBluetooth();
     }
 
     private void stopBluetooth() {
-        ((ThermopileApplication) requireActivity().getApplication()).bluetoothDisable();
+        presenter.disableBluetooth();
     }
 
     private void startGattServer() {

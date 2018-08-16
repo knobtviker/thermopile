@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulerProviderComponent;
+import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulersComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
 import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
@@ -49,7 +49,7 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
             .localDataSource(new SettingsLocalDataSourceModule())
             .build()
             .inject();
-        this.scheduler = DaggerSchedulerProviderComponent.create().inject().screensaver;
+        this.scheduler = DaggerSchedulersComponent.create().inject().screensaver;
     }
 
     @Override
