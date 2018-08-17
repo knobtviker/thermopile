@@ -1,5 +1,7 @@
 package com.knobtviker.thermopile.di.modules.domain.schedulers;
 
+import android.os.Looper;
+
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerComputation;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerIO;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerMemory;
@@ -12,6 +14,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
+import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -47,7 +50,9 @@ public class SchedulersModule {
     @Singleton
     @SchedulerUI
     static Scheduler provideUi() {
-        return AndroidSchedulers.mainThread();
+        final Scheduler asyncMainThredScheduler = AndroidSchedulers.from(Looper.getMainLooper(), true);
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler(callable -> asyncMainThredScheduler);
+        return asyncMainThredScheduler;
     }
 
     @Provides
