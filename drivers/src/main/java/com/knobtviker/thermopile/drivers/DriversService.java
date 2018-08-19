@@ -190,7 +190,7 @@ public class DriversService extends Service implements SensorEventListener {
             bme280SensorDriver = bme280();
             bme680SensorDriver = bme680();
             ds3231SensorDriver = ds3231();
-            tsl2561SensorDriver = tsl2561();
+//            tsl2561SensorDriver = tsl2561(); //TODO: Check why this is failing
             lsm9ds1SensorDriver = lsm9ds1();
         } catch (IOException e) {
             Timber.e(e);

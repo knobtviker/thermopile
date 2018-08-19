@@ -27,7 +27,6 @@ import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.google.android.things.bluetooth.BluetoothProfile;
 import com.google.android.things.bluetooth.BluetoothProfileManager;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 
@@ -140,8 +139,6 @@ public class BluetoothRawDataSource {
      * {@link BluetoothAdapter#STATE_TURNING_ON},
      * {@link BluetoothAdapter#STATE_ON},
      * {@link BluetoothAdapter#STATE_TURNING_OFF},
-     *
-     * @return RxJava2 Observable getInstance BluetoothState
      */
     public Observable<Integer> state() {
         return Observable.defer(() ->
@@ -149,25 +146,17 @@ public class BluetoothRawDataSource {
                 final IntentFilter filter = new IntentFilter();
                 filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 
-                final WeakReference<Context> contextWeakReference = new WeakReference<>(context);
-
                 final BroadcastReceiver receiver = new BroadcastReceiver() {
 
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        emitter.onNext(bluetoothAdapter.getState());
+                        emitter.onNext(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF));
                     }
                 };
 
-                if (contextWeakReference.get() != null) {
-                    contextWeakReference.get().registerReceiver(receiver, filter);
-                }
+                context.registerReceiver(receiver, filter);
 
-                emitter.setDisposable(Disposables.fromRunnable(() -> {
-                    if (contextWeakReference.get() != null) {
-                        contextWeakReference.get().unregisterReceiver(receiver);
-                    }
-                }));
+                emitter.setDisposable(Disposables.fromRunnable(() -> context.unregisterReceiver(receiver)));
             }));
     }
 
