@@ -20,6 +20,7 @@ import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
+import com.knobtviker.thermopile.presentation.shared.constants.integrity.RequestCode;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -198,6 +199,11 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     public void onBluetoothStateIndeterminate() {
         progressBarBluetooth.setVisibility(View.VISIBLE);
         switchBluetoothOnOff.setEnabled(false);
+    }
+
+    @Override
+    public void onSetupCompleted() {
+        presenter.enableDiscoverability(requireActivity(), RequestCode.BLUETOOTH_DISCOVERABILITY);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class SettingsRepository extends AbstractRepository {
             .query()
             .subscribeOn(schedulers.io)
             .map(items -> items.isEmpty() ? Database.defaultSettings() : items.get(0))
-            .observeOn(schedulers.io);
+            .observeOn(schedulers.ui);
     }
 
     public Completable saveTimezone(final long settingsId, @NonNull final String timezone) {

@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation.presenters;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,7 +17,6 @@ import com.knobtviker.thermopile.domain.repositories.NetworkRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.internal.functions.Functions;
 
@@ -279,15 +279,17 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
         );
     }
 
+    @Override
+    public void enableDiscoverability(@NonNull Activity activity, int requestCode) {
+        networkRepository.enableDiscoverability(activity, requestCode);
+    }
+
     private void setupBluetoothDevice() {
         compositeDisposable.add(
-            Completable.concatArray(
-                networkRepository.name(R.string.app_name),
-                networkRepository.deviceClass(),
-                networkRepository.profiles()
-            )
+            networkRepository
+                .setupBluetoothDevice(R.string.app_name)
                 .subscribe(
-                    Functions.EMPTY_ACTION,
+                    view::onSetupCompleted,
                     this::error
                 )
         );

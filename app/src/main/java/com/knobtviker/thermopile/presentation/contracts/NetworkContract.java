@@ -1,5 +1,8 @@
 package com.knobtviker.thermopile.presentation.contracts;
 
+import android.app.Activity;
+import android.support.annotation.NonNull;
+
 import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseView;
 
@@ -28,6 +31,8 @@ public interface NetworkContract {
         void onBluetoothState(final boolean isOn);
 
         void onBluetoothStateIndeterminate();
+
+        void onSetupCompleted();
     }
 
     interface Presenter extends BasePresenter {
@@ -59,5 +64,7 @@ public interface NetworkContract {
         void startBluetoothAdvertising();
 
         void stopBluetoothAdvertising();
+
+        void enableDiscoverability(@NonNull final Activity activity, int requestCode);
     }
 }

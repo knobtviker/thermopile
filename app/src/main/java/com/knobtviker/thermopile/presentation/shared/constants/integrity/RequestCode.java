@@ -10,5 +10,5 @@ import java.lang.annotation.RetentionPolicy;
     RequestCode.BLUETOOTH_DISCOVERABILITY
 })
 public @interface RequestCode {
-    int BLUETOOTH_DISCOVERABILITY = 8008;
+    int BLUETOOTH_DISCOVERABILITY = 8100;
 }

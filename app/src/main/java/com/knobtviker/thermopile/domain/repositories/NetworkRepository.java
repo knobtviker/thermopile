@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.domain.repositories;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.support.annotation.NonNull;
@@ -97,6 +98,16 @@ public class NetworkRepository extends AbstractRepository {
             .observeOn(schedulers.network);
     }
 
+    public Completable setupBluetoothDevice(@StringRes final int resId) {
+        return Completable.concatArray(
+            name(resId),
+            deviceClass(),
+            profiles()
+        )
+            .subscribeOn(schedulers.network)
+            .observeOn(schedulers.ui);
+    }
+
     public Completable startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
         return bluetoothRawDataSource
             .startGattServer(bluetoothGattServerCallback)
@@ -123,5 +134,9 @@ public class NetworkRepository extends AbstractRepository {
             .stopGattServer()
             .subscribeOn(schedulers.network)
             .observeOn(schedulers.network);
+    }
+
+    public void enableDiscoverability(Activity activity, int requestCode) {
+        bluetoothRawDataSource.enableDiscoverability(activity, requestCode);
     }
 }

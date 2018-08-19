@@ -167,6 +167,21 @@ public class BluetoothRawDataSource {
             }));
     }
 
+    public Completable name(@StringRes final int resId) {
+        return Completable.defer(() ->
+            Completable.create(emitter -> {
+                if (!emitter.isDisposed()) {
+                    if (bluetoothAdapter != null) {
+                        bluetoothAdapter.setName(context.getString(resId));
+                        emitter.onComplete();
+                    } else {
+                        emitter.onError(new Throwable("BluetoothAdapter cannot be null or not running."));
+                    }
+                }
+            })
+        );
+    }
+
     public Completable setDeviceClass(final int service, final int device, final int ioCapability) {
         return Completable.defer(() ->
             Completable.create(emitter -> {
@@ -308,21 +323,6 @@ public class BluetoothRawDataSource {
                         bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
                     }
                     emitter.onComplete();
-                }
-            })
-        );
-    }
-
-    public Completable name(@StringRes final int resId) {
-        return Completable.defer(() ->
-            Completable.create(emitter -> {
-                if (!emitter.isDisposed()) {
-                    if (bluetoothAdapter != null) {
-                        bluetoothAdapter.setName(context.getString(resId));
-                        emitter.onComplete();
-                    } else {
-                        emitter.onError(new Throwable("BluetoothAdapter cannot be null or not running."));
-                    }
                 }
             })
         );
