@@ -32,7 +32,7 @@ import java.util.Locale;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposables;
+import io.reactivex.android.MainThreadDisposable;
 
 import static android.content.Context.BLUETOOTH_SERVICE;
 
@@ -141,22 +141,29 @@ public class BluetoothRawDataSource {
      * {@link BluetoothAdapter#STATE_TURNING_OFF},
      */
     public Observable<Integer> state() {
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
         return Observable.defer(() ->
             Observable.create(emitter -> {
-                final IntentFilter filter = new IntentFilter();
-                filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-
                 final BroadcastReceiver receiver = new BroadcastReceiver() {
-
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        emitter.onNext(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF));
+                        if (intent.hasExtra(BluetoothAdapter.EXTRA_STATE)) {
+                            emitter.onNext(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF));
+                        }
                     }
                 };
 
                 context.registerReceiver(receiver, filter);
 
-                emitter.setDisposable(Disposables.fromRunnable(() -> context.unregisterReceiver(receiver)));
+                emitter.setDisposable(new MainThreadDisposable() {
+                    @Override
+                    protected void onDispose() {
+                        context.unregisterReceiver(receiver);
+                        dispose();
+                    }
+                });
             }));
     }
 

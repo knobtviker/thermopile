@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.sources.raw.bluetooth.BluetoothRawDataSource;
-import com.knobtviker.thermopile.di.qualifiers.presentation.ApplicationScope;
+import com.knobtviker.thermopile.di.qualifiers.presentation.ActivityScope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -17,7 +17,7 @@ import dagger.Provides;
 public class BluetoothRawDataSourceModule {
 
     @Provides
-    static BluetoothRawDataSource provideRawDataSource(@NonNull @ApplicationScope final Context context) {
+    static BluetoothRawDataSource provideRawDataSource(@NonNull @ActivityScope final Context context) {
         return new BluetoothRawDataSource(context);
     }
 }

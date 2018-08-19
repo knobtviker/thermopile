@@ -191,6 +191,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         switchBluetoothOnOff.setChecked(isEnabled);
         switchBluetoothOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
         switchBluetoothOnOff.setEnabled(true);
+        switchBluetoothOnOff.setOnCheckedChangeListener(this);
     }
 
     @Override
