@@ -63,7 +63,7 @@ public class Mb85rc256vService extends Service {
 
     private void setupDriver() {
         try {
-            fram = new Mb85rc256v(BoardDefaults.defaultI2CBus());
+            fram = new Mb85rc256v(BoardDefaults.build().I2C().primary());
             fram.setVerbose(BuildConfig.DEBUG);
         } catch (IOException e) {
             Timber.e(e);

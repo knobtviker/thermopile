@@ -51,5 +51,13 @@ public interface NetworkContract {
         void disableBluetooth();
 
         void observeBluetoothState();
+
+        void startGattServer();
+
+        void stopGattServer();
+
+        void startBluetoothAdvertising();
+
+        void stopBluetoothAdvertising();
     }
 }

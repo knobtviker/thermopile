@@ -47,54 +47,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_on_off"/>
 
-        <Switch
-            android:id="@+id/switch_bluetooth_gatt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_default"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:text="GATT server"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressbar_bluetooth"/>
-
-        <Switch
-            android:id="@+id/switch_bluetooth_advertising"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_default"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:text="Advertising"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_gatt"/>
-
         <View
             android:id="@+id/divider_bluetooth"
             style="@style/Widget.Divider.Settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_advertising"/>
+            app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_on_off"/>
 
         <android.support.constraint.Group
+            tools:ignore="MissingConstraints"
             android:id="@+id/group_bluetooth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="textview_title_bluetooth, switch_bluetooth_on_off, divider_bluetooth"/>
-
-        <android.support.constraint.Group
-            android:id="@+id/group_gatt_advertising"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="switch_bluetooth_gatt, switch_bluetooth_advertising"/>
 
         <TextView
             android:id="@+id/textview_title_wifi"
@@ -180,46 +145,8 @@
             android:id="@+id/group_wifi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="textview_title_wifi, switch_wifi_on_off, layout_wifi_connected, divider_wifi"/>
-
-        <TextView
-            android:id="@+id/textview_title_ethernet"
-            style="@style/TextAppearance.Section"
-            android:text="Ethernet"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_wifi"/>
-
-        <TextView
-            android:id="@+id/textview_ip_ethernet"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="?android:textColorSecondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackground"
-            android:minHeight="?attr/listPreferredItemHeightSmall"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_default"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:gravity="center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_ethernet"
-            tools:text="192.168.1.248"/>
-
-        <View
-            android:id="@+id/divider_ethernet"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_ip_ethernet"/>
-
-        <android.support.constraint.Group
-            android:id="@+id/group_ethernet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="textview_title_ethernet, textview_ip_ethernet, divider_ethernet"/>
+            app:constraint_referenced_ids="textview_title_wifi, switch_wifi_on_off, layout_wifi_connected, divider_wifi"
+            tools:ignore="MissingConstraints"/>
 
         <TextView
             android:id="@+id/textview_title_servers"
@@ -228,7 +155,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_ethernet"/>
+            app:layout_constraintTop_toBottomOf="@id/divider_wifi"/>
 
         <Switch
             android:id="@+id/switch_server_http"
@@ -268,6 +195,7 @@
             app:layout_constraintTop_toBottomOf="@id/switch_server_websocket"/>
 
         <android.support.constraint.Group
+            tools:ignore="MissingConstraints"
             android:id="@+id/group_servers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

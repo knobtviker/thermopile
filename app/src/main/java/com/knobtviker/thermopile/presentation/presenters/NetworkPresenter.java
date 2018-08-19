@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.sources.raw.bluetooth.GattServerCallback;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerNetworkRepositoryComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
@@ -14,6 +16,7 @@ import com.knobtviker.thermopile.domain.repositories.NetworkRepository;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.internal.functions.Functions;
 
@@ -113,7 +116,12 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                 (hasBluetooth, hasBluetoothLowEnergy) -> hasBluetooth && hasBluetoothLowEnergy
             )
                 .subscribe(
-                    view::onHasBluetooth,
+                    hasBluetooth -> {
+                        view.onHasBluetooth(hasBluetooth);
+                        if (hasBluetooth) {
+                            setupBluetoothDevice();
+                        }
+                    },
                     this::error
                 )
         );
@@ -125,7 +133,13 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
             networkRepository
                 .isBluetoothEnabled()
                 .subscribe(
-                    view::onIsBluetoothEnabled,
+                    isEnabled -> {
+                        view.onIsBluetoothEnabled(isEnabled);
+                        if (isEnabled) {
+                            startGattServer();
+                            startBluetoothAdvertising();
+                        }
+                    },
                     this::error
                 )
         );
@@ -159,15 +173,19 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
     public void observeBluetoothState() {
         compositeDisposable.add(
             networkRepository
-                .observeState()
+                .observeBluetoothState()
                 .subscribe(
                     state -> {
                         switch (state) {
                             case BluetoothAdapter.STATE_OFF:
                                 view.onBluetoothState(false);
+                                stopBluetoothAdvertising();
+                                stopGattServer();
                                 break;
                             case BluetoothAdapter.STATE_ON:
                                 view.onBluetoothState(true);
+                                startGattServer();
+                                startBluetoothAdvertising();
                                 break;
                             case BluetoothAdapter.STATE_TURNING_OFF:
                             case BluetoothAdapter.STATE_TURNING_ON:
@@ -175,6 +193,101 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                                 break;
                         }
                     },
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void startGattServer() {
+        compositeDisposable.add(
+            networkRepository
+                .startGattServer(GattServerCallback.create())
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
+    //    @Override
+    //    public void onGattServerStarted(@NonNull BluetoothGattServer gattServer) {
+    //        this.gattServer = gattServer;
+    //
+    //        //TODO: Finish ESS and ESP BLE profile and service
+    //        final EnvironmentProfile environmentProfile = new EnvironmentProfile();
+    //        final TimeProfile timeProfile = new TimeProfile();
+    //
+    //        this.gattServer.addService(environmentProfile.createService());
+    //        this.gattServer.addService(timeProfile.createService());
+    //    }
+
+    //    @Override
+    //    public void onGattSendResponse(@NonNull BluetoothDevice device, int requestId, int status, @NonNull UUID uuid) {
+    //        if (gattServer != null) {
+    //            byte[] response = new byte[0];
+    //            if (uuid.equals(EnvironmentProfile.UUID_TEMPERATURE)) {
+    //                response = EnvironmentProfile.toByteArray(Math.round(atmosphere.temperature()));
+    //                Log.i(TAG, atmosphere.temperature() + "");
+    //            } else if (uuid.equals(EnvironmentProfile.UUID_PRESSURE)) {
+    //                response = EnvironmentProfile.toByteArray(atmosphere.pressure());
+    //                Log.i(TAG, atmosphere.pressure() + "");
+    //            } else if (uuid.equals(EnvironmentProfile.UUID_HUMIDITY)) {
+    //                response = EnvironmentProfile.toByteArray(atmosphere.humidity());
+    //                Log.i(TAG, atmosphere.humidity() + "");
+    //        } else {
+    //            Timber.e("Invalid Characteristic Read: %s", uuid);
+    //            gattServer.sendResponse(device, requestId, status, 0, null);
+    //        }
+    //            gattServer.sendResponse(device, requestId, status, 0, response);
+    //        }
+    //    }
+
+    @Override
+    public void stopGattServer() {
+        compositeDisposable.add(
+            networkRepository
+                .stopGattServer()
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void startBluetoothAdvertising() {
+        compositeDisposable.add(
+            networkRepository
+                .startBluetoothAdvertising()
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void stopBluetoothAdvertising() {
+        compositeDisposable.add(
+            networkRepository
+                .stopBluetoothAdvertising()
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
+    private void setupBluetoothDevice() {
+        compositeDisposable.add(
+            Completable.concatArray(
+                networkRepository.name(R.string.app_name),
+                networkRepository.deviceClass(),
+                networkRepository.profiles()
+            )
+                .subscribe(
+                    Functions.EMPTY_ACTION,
                     this::error
                 )
         );

@@ -36,7 +36,7 @@ buildscript {
         'timber'       : '4.7.1',
         'firebase_core': '16.0.1',
         'crashlytics'  : '2.9.4@aar',
-        'boards'       : '1.0.7',
+        'boards'       : '1.0.8',
         'bme280'       : '1.1.6',
         'bme680'       : '1.1.4',
         'tsl2561'      : '1.1.2',

@@ -50,17 +50,8 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     @BindView(R.id.group_bluetooth)
     public Group groupBluetooth;
 
-    @BindView(R.id.group_gatt_advertising)
-    public Group groupGattAdvertising;
-
     @BindView(R.id.switch_bluetooth_on_off)
     public Switch switchBluetoothOnOff;
-
-    @BindView(R.id.switch_bluetooth_gatt)
-    public Switch switchBluetoothGatt;
-
-    @BindView(R.id.switch_bluetooth_advertising)
-    public Switch switchBluetoothAdvertising;
 
     @BindView(R.id.progressbar_bluetooth)
     public ProgressBar progressBarBluetooth;
@@ -143,20 +134,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
                     stopBluetooth();
                 }
                 break;
-            case R.id.switch_bluetooth_gatt:
-                if (isChecked) {
-                    startGattServer();
-                } else {
-                    stopGattServer();
-                }
-                break;
-            case R.id.switch_bluetooth_advertising:
-                if (isChecked) {
-                    startAdvertising();
-                } else {
-                    stopAdvertising();
-                }
-                break;
             case R.id.switch_wifi_on_off:
                 if (wifiManager != null) {
                     wifiManager.setWifiEnabled(isChecked);
@@ -213,17 +190,13 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     public void onIsBluetoothEnabled(boolean isEnabled) {
         switchBluetoothOnOff.setChecked(isEnabled);
         switchBluetoothOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
-
         switchBluetoothOnOff.setEnabled(true);
-
-        groupGattAdvertising.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void onBluetoothStateIndeterminate() {
         progressBarBluetooth.setVisibility(View.VISIBLE);
         switchBluetoothOnOff.setEnabled(false);
-        groupGattAdvertising.setVisibility(View.GONE);
     }
 
     @Override
@@ -231,70 +204,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         progressBarBluetooth.setVisibility(View.GONE);
         switchBluetoothOnOff.setEnabled(true);
         switchBluetoothOnOff.setText(getString(isOn ? R.string.state_on : R.string.state_off));
-        groupGattAdvertising.setVisibility(isOn ? View.VISIBLE : View.GONE);
-
-        //            setupGattServer(isOn);
-        //            setupAdvertising(isOn);
     }
-
-    //    @Override
-    //    public void onCheckGattServer(boolean isGattServerRunning) {
-    //        switchBluetoothGatt.setChecked(isGattServerRunning);
-    //        switchBluetoothGatt.setOnCheckedChangeListener(this);
-    //        switchBluetoothGatt.setEnabled(true);
-    //    }
-
-    //    @Override
-    //    public void onGattServerStarted(@NonNull BluetoothGattServer gattServer) {
-    //        this.gattServer = gattServer;
-    //
-    //        //TODO: Finish ESS and ESP BLE profile and service
-    //        final EnvironmentProfile environmentProfile = new EnvironmentProfile();
-    //        final TimeProfile timeProfile = new TimeProfile();
-    //
-    //        this.gattServer.addService(environmentProfile.createService());
-    //        this.gattServer.addService(timeProfile.createService());
-    //    }
-
-    //    @Override
-    //    public void onCheckBluetoothAdvertising(boolean isAdvertising) {
-    //        switchBluetoothAdvertising.setChecked(isAdvertising);
-    //        switchBluetoothAdvertising.setOnCheckedChangeListener(this);
-    //        switchBluetoothAdvertising.setEnabled(true);
-    //    }
-
-    //    @Override
-    //    public void onGattConnectionStateChange(@NonNull BluetoothDevice device, int status, int newState) {
-    //        Timber.i("onGattConnectionStateChange: %s status: %d newState: %d", device.toString(), status, newState);
-    //    }
-
-    //    @Override
-    //    public void onGattSendResponse(@NonNull BluetoothDevice device, int requestId, int status, @NonNull UUID uuid) {
-    //        if (gattServer != null) {
-    //            byte[] response = new byte[0];
-    //            if (uuid.equals(EnvironmentProfile.UUID_TEMPERATURE)) {
-    //                response = EnvironmentProfile.toByteArray(Math.round(atmosphere.temperature()));
-    //                Log.i(TAG, atmosphere.temperature() + "");
-    //            } else if (uuid.equals(EnvironmentProfile.UUID_PRESSURE)) {
-    //                response = EnvironmentProfile.toByteArray(atmosphere.pressure());
-    //                Log.i(TAG, atmosphere.pressure() + "");
-    //            } else if (uuid.equals(EnvironmentProfile.UUID_HUMIDITY)) {
-    //                response = EnvironmentProfile.toByteArray(atmosphere.humidity());
-    //                Log.i(TAG, atmosphere.humidity() + "");
-    //        } else {
-    //            Timber.e("Invalid Characteristic Read: %s", uuid);
-    //            gattServer.sendResponse(device, requestId, status, 0, null);
-    //        }
-    //            gattServer.sendResponse(device, requestId, status, 0, response);
-    //        }
-    //    }
-    //
-    //    @Override
-    //    public void onGattDescriptorResponse(@NonNull BluetoothDevice device, int requestId, int status, int offset, byte[] value) {
-    //        if (gattServer != null) {
-    //            gattServer.sendResponse(device, requestId, status, offset, value);
-    //        }
-    //    }
 
     private void startBluetooth() {
         presenter.enableBluetooth();
@@ -302,46 +212,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
 
     private void stopBluetooth() {
         presenter.disableBluetooth();
-    }
-
-    private void startGattServer() {
-        //        presenter.startGattServer(GattServerCallback.create(this));
-    }
-
-    private void stopGattServer() {
-        //        presenter.stopGattServer();
-    }
-
-    private void startAdvertising() {
-        //        presenter.startBluetoothAdvertising(
-        //            new AdvertiseSettings.Builder()
-        //                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
-        //                .setConnectable(true)
-        //                .setTimeout(0)
-        //                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
-        //                .build(),
-        //            new AdvertiseData.Builder()
-        //                .setIncludeDeviceName(true)
-        //                .setIncludeTxPowerLevel(false)
-        //                .addServiceUuid(new ParcelUuid(TimeProfile.TIME_SERVICE))
-        //                .addServiceUuid(new ParcelUuid(EnvironmentProfile.ENVIRONMENT_SENSING_SERVICE))
-        //                .build(),
-        //            new AdvertiseCallback() {
-        //                @Override
-        //                public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-        //                    Timber.i("LE Advertise Started: %s", settingsInEffect.toString());
-        //                }
-        //
-        //                @Override
-        //                public void onStartFailure(int errorCode) {
-        //                    Timber.e( "LE Advertise Failed: %s", errorCode);
-        //                }
-        //            }
-        //        );
-    }
-
-    private void stopAdvertising() {
-        //        presenter.stopBluetoothAdvertising();
     }
 
     private boolean checkWiFiSupport(@NonNull final Context context) {

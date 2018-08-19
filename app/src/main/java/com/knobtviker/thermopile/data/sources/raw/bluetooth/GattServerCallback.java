@@ -1,14 +1,10 @@
 package com.knobtviker.thermopile.data.sources.raw.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothProfile;
-import android.support.annotation.NonNull;
-
-import com.knobtviker.thermopile.presentation.views.listeners.GattServerListener;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,14 +17,12 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     private final Set<BluetoothDevice> registeredDevicesPressure = new HashSet<>();
     private final Set<BluetoothDevice> registeredDevicesHumidity = new HashSet<>();
 
-    private GattServerListener listener;
-
-    public static GattServerCallback create(@NonNull final GattServerListener listener) {
-        return new GattServerCallback(listener);
+    public static GattServerCallback create() {
+        return new GattServerCallback();
     }
 
-    private GattServerCallback(@NonNull final GattServerListener listener) {
-        this.listener = listener;
+    private GattServerCallback() {
+
     }
 
     @Override
@@ -38,14 +32,14 @@ public class GattServerCallback extends BluetoothGattServerCallback {
             registeredDevicesPressure.remove(device);
             registeredDevicesHumidity.remove(device);
         }
-        listener.onGattConnectionStateChange(device, status, newState);
+//        listener.onGattConnectionStateChange(device, status, newState);
     }
 
     @Override
     public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
         final UUID uuid = characteristic.getUuid();
 
-        listener.onGattSendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, uuid);
+//        listener.onGattSendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, uuid);
     }
 
     @Override

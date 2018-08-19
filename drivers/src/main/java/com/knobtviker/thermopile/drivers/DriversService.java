@@ -43,6 +43,9 @@ public class DriversService extends Service implements SensorEventListener {
     private int LOW_PASS_FILTER_SMOOTHING_FACTOR_ANGULAR_VELOCITY = 200;
     private int LOW_PASS_FILTER_SMOOTHING_FACTOR_MAGNETIC_FIELD = 200;
 
+    @NonNull
+    private String primaryI2C;
+
     private BME280SensorDriver bme280SensorDriver;
     private Bme680SensorDriver bme680SensorDriver;
     private Ds3231SensorDriver ds3231SensorDriver;
@@ -170,6 +173,8 @@ public class DriversService extends Service implements SensorEventListener {
     }
 
     private void setupSensors() {
+        primaryI2C = BoardDefaults.build().I2C().primary();
+
         try {
             sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -262,7 +267,7 @@ public class DriversService extends Service implements SensorEventListener {
 
     //CHIP_ID_BME280 = 0x60 | DEFAULT_I2C_ADDRESS = 0x77
     private BME280SensorDriver bme280() throws IOException {
-        final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver(BoardDefaults.defaultI2CBus());
+        final BME280SensorDriver bme280SensorDriver = new BME280SensorDriver(primaryI2C);
         bme280SensorDriver.registerTemperatureSensor();
         bme280SensorDriver.registerPressureSensor();
         bme280SensorDriver.registerHumiditySensor();
@@ -272,7 +277,7 @@ public class DriversService extends Service implements SensorEventListener {
 
     //CHIP_ID_BME680 = 0x61 | DEFAULT_I2C_ADDRESS = 0x76 (or 0x77)
     private Bme680SensorDriver bme680() throws IOException {
-        final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(BoardDefaults.defaultI2CBus());
+        final Bme680SensorDriver bme680SensorDriver = new Bme680SensorDriver(primaryI2C);
         bme680SensorDriver.registerTemperatureSensor();
         bme680SensorDriver.registerPressureSensor();
         bme680SensorDriver.registerHumiditySensor();
@@ -284,7 +289,7 @@ public class DriversService extends Service implements SensorEventListener {
 
     //CHIP_ID_DS3231 = 0x?? | DEFAULT_I2C_ADDRESS = 0x68
     private Ds3231SensorDriver ds3231() throws IOException {
-        final Ds3231SensorDriver ds3231SensorDriver = new Ds3231SensorDriver(BoardDefaults.defaultI2CBus());
+        final Ds3231SensorDriver ds3231SensorDriver = new Ds3231SensorDriver(primaryI2C);
         ds3231SensorDriver.registerTemperatureSensor();
 
         final Ds3231 ds3231 = ds3231SensorDriver.device();
@@ -312,7 +317,7 @@ public class DriversService extends Service implements SensorEventListener {
 
     //CHIP_ID_TSL2561 = 0x?? | DEFAULT_I2C_ADDRESS = 0x39 (or 0x29 or 0x49)
     private TSL2561SensorDriver tsl2561() throws IOException {
-        final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(BoardDefaults.defaultI2CBus());
+        final TSL2561SensorDriver tsl2561SensorDriver = new TSL2561SensorDriver(primaryI2C);
         tsl2561SensorDriver.registerLuminositySensor();
 
         return tsl2561SensorDriver;
@@ -320,7 +325,7 @@ public class DriversService extends Service implements SensorEventListener {
 
     //CHIP_ID_LSM9DS1 = 0x?? | DEFAULT_I2C_ADDRESS_ACCEL_GYRO = 0x6B | DEFAULT_I2C_ADDRESS_MAG = 0x1E
     private Lsm9ds1SensorDriver lsm9ds1() throws IOException {
-        final Lsm9ds1SensorDriver lsm9ds1SensorDriver = new Lsm9ds1SensorDriver(BoardDefaults.defaultI2CBus());
+        final Lsm9ds1SensorDriver lsm9ds1SensorDriver = new Lsm9ds1SensorDriver(primaryI2C);
         lsm9ds1SensorDriver.registerTemperatureSensor();
         lsm9ds1SensorDriver.registerAccelerometerSensor();
         lsm9ds1SensorDriver.registerGyroscopeSensor();

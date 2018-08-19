@@ -16,16 +16,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.google.android.things.bluetooth.BluetoothClassFactory;
 import com.google.android.things.bluetooth.BluetoothConfigManager;
+import com.google.android.things.bluetooth.BluetoothProfile;
 import com.google.android.things.bluetooth.BluetoothProfileManager;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -169,11 +173,11 @@ public class BluetoothRawDataSource {
 
     public Completable setDeviceClass(final int service, final int device, final int ioCapability) {
         return Completable.defer(() ->
-            Completable.create(
-                emitter -> {
+            Completable.create(emitter -> {
                     if (!emitter.isDisposed()) {
                         final BluetoothConfigManager configManager = BluetoothConfigManager.getInstance();
                         configManager.setIoCapability(ioCapability);
+                        configManager.setLeIoCapability(ioCapability);
 
                         final BluetoothClass deviceClass = BluetoothClassFactory.build(service, device);
 
@@ -193,9 +197,20 @@ public class BluetoothRawDataSource {
             Completable.create(
                 emitter -> {
                     if (!emitter.isDisposed()) {
-                        final BluetoothProfileManager profileManager = BluetoothProfileManager.getInstance();
-                        profileManager.setEnabledProfiles(profiles);
-                        emitter.onComplete();
+                        if (profiles.contains(BluetoothProfile.A2DP) && profiles.contains(BluetoothProfile.A2DP_SINK)) {
+                            emitter.onError(new Throwable("A2DP and A2DP_SINK profiles cannot be enabled together."));
+                        } else {
+                            if (!profiles.contains(BluetoothProfile.GATT)) {
+                                profiles.add(BluetoothProfile.GATT);
+                            }
+                            if (!profiles.contains(BluetoothProfile.GATT_SERVER)) {
+                                profiles.add(BluetoothProfile.GATT_SERVER);
+                            }
+
+                            final BluetoothProfileManager profileManager = BluetoothProfileManager.getInstance();
+                            profileManager.setEnabledProfiles(profiles);
+                            emitter.onComplete();
+                        }
                     }
                 }
             )
@@ -204,19 +219,16 @@ public class BluetoothRawDataSource {
 
     /**
      * Initialize the GATT server instance getInstance callback.
-     * May return null if failed.
      */
-    public Observable<BluetoothGattServer> startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
-        return Observable.defer(() ->
-            Observable.create(emitter -> {
+    public Completable startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
+        return Completable.defer(() ->
+            Completable.create(emitter -> {
                 if (!emitter.isDisposed()) {
                     this.gattServer = bluetoothManager.openGattServer(context, bluetoothGattServerCallback);
                     this.isGattServerRunning = gattServer != null;
 
                     if (gattServer == null) {
                         emitter.onError(new Throwable("Gatt server cannot start."));
-                    } else {
-                        emitter.onNext(gattServer);
                     }
 
                     emitter.onComplete();
@@ -236,11 +248,6 @@ public class BluetoothRawDataSource {
                         gattServer.close();
                         gattServer = null;
                         isGattServerRunning = false;
-
-                        //                        emitter.onComplete();
-                        //                    } else {
-                        //                        emitter.onError(new Throwable("BluetoothGattServer is not running so it cannot shutdown
-                        // ."));
                     }
                     emitter.onComplete();
                 }
@@ -248,29 +255,45 @@ public class BluetoothRawDataSource {
         );
     }
 
-    public Observable<Boolean> isGattServerRunning() {
-        return Observable.defer(() -> Observable.just(isGattServerRunning));
-    }
-
     /**
      * Begin advertising over Bluetooth that this device is connectable and supports the selected service.
      */
-    public Completable startAdvertising(@NonNull final AdvertiseSettings settings, @NonNull final AdvertiseData data,
-        @NonNull final AdvertiseCallback callback) {
+    public Completable startAdvertising() {
         return Completable.defer(() ->
             Completable.create(emitter -> {
                     if (!emitter.isDisposed()) {
+
+                        final AdvertiseSettings settings = advertiseSettings();
+                        final AdvertiseData data = advertiseData();
+
                         bluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
                         if (bluetoothLeAdvertiser != null) {
-                            bluetoothLeAdvertiser.startAdvertising(settings, data, callback);
-                            this.advertiseCallback = callback;
-                            isAdvertising = true;
+                            advertiseCallback = new AdvertiseCallback() {
+                                @Override
+                                public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                                    super.onStartSuccess(settingsInEffect);
 
-                            emitter.onComplete();
+                                    isAdvertising = true;
+
+                                    emitter.onComplete();
+                                }
+
+                                @Override
+                                public void onStartFailure(int errorCode) {
+                                    super.onStartFailure(errorCode);
+
+                                    isAdvertising = false;
+                                    advertiseCallback = null;
+
+                                    emitter.onError(
+                                        new Throwable(String.format(Locale.getDefault(), "Advertising error: %d", errorCode))
+                                    );
+                                }
+                            };
+
+                            bluetoothLeAdvertiser.startAdvertising(settings, data, advertiseCallback);
                         } else {
-                            emitter
-                                .onError(new Throwable("Bluetooth is turned off or Bluetooth LE Advertising is not supported on this "
-                                    + "device."));
+                            emitter.onError(new Throwable("Bluetooth LE Advertising is not supported on this device."));
                         }
                     }
                 }
@@ -285,35 +308,21 @@ public class BluetoothRawDataSource {
         return Completable.defer(() ->
             Completable.create(emitter -> {
                 if (!emitter.isDisposed()) {
-                    //                    if (advertiseCallback == null) {
-                    //                        emitter.onError(new Throwable("Advertising callback cannot be null."));
-                    //                    } else {
                     if (bluetoothLeAdvertiser != null) {
                         bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
-                        advertiseCallback = null;
-                        isAdvertising = false;
-
-                        //                            emitter.onComplete();
-                        //                        } else {
-                        //                            emitter.onError(new Throwable("BluetoothLeAdvertiser cannot be null."));
                     }
                     emitter.onComplete();
-                    //                    }
                 }
             })
         );
     }
 
-    public Observable<Boolean> isAdvertising() {
-        return Observable.defer(() -> Observable.just(isAdvertising));
-    }
-
-    public Completable name(@NonNull final String name) {
+    public Completable name(@StringRes final int resId) {
         return Completable.defer(() ->
             Completable.create(emitter -> {
                 if (!emitter.isDisposed()) {
                     if (bluetoothAdapter != null) {
-                        bluetoothAdapter.setName(name);
+                        bluetoothAdapter.setName(context.getString(resId));
                         emitter.onComplete();
                     } else {
                         emitter.onError(new Throwable("BluetoothAdapter cannot be null or not running."));
@@ -350,5 +359,23 @@ public class BluetoothRawDataSource {
                 duration > MAX_DISCOVERABILITY_PERIOD_SECONDS ? MAX_DISCOVERABILITY_PERIOD_SECONDS : duration);
         }
         activity.startActivityForResult(discoverableIntent, requestCode);
+    }
+
+    private AdvertiseSettings advertiseSettings() {
+        return new AdvertiseSettings.Builder()
+            .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+            .setConnectable(true)
+            .setTimeout(0)
+            .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+            .build();
+    }
+
+    private AdvertiseData advertiseData() {
+        return new AdvertiseData.Builder()
+            .setIncludeDeviceName(true)
+            .setIncludeTxPowerLevel(false)
+            .addServiceUuid(new ParcelUuid(TimeProfile.TIME_SERVICE))
+            .addServiceUuid(new ParcelUuid(EnvironmentProfile.ENVIRONMENT_SENSING_SERVICE))
+            .build();
     }
 }
