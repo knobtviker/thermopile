@@ -1,13 +1,11 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +19,6 @@ import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.RequestCode;
-
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteOrder;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -42,11 +35,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     public static final String TAG = NetworkFragment.class.getSimpleName();
 
     private long settingsId = -1L;
-
-    @Nullable
-    private WifiManager wifiManager;
-
-    private boolean hasWiFi = false;
 
     @BindView(R.id.group_bluetooth)
     public Group groupBluetooth;
@@ -82,11 +70,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         super.onAttach(context);
 
         presenter = new NetworkPresenter(context, this);
-
-        hasWiFi = checkWiFiSupport(context);
-        if (hasWiFi) {
-            wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        }
     }
 
     @Nullable
@@ -100,6 +83,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
 
         presenter.hasBluetooth();
+        presenter.hasWifi();
     }
 
     @Override
@@ -109,8 +93,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         presenter.observeHumidity();
         presenter.observeAirQuality();
         presenter.observeAcceleration();
-
-        setupWifi(hasWiFi);
 
         super.onResume();
     }
@@ -130,14 +112,16 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
         switch (compoundButton.getId()) {
             case R.id.switch_bluetooth_on_off:
                 if (isChecked) {
-                    startBluetooth();
+                    presenter.enableBluetooth();
                 } else {
-                    stopBluetooth();
+                    presenter.disableBluetooth();
                 }
                 break;
             case R.id.switch_wifi_on_off:
-                if (wifiManager != null) {
-                    wifiManager.setWifiEnabled(isChecked);
+                if (isChecked) {
+                    presenter.enableWifi();
+                } else {
+                    presenter.disableWifi();
                 }
                 break;
         }
@@ -180,11 +164,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     @Override
     public void onHasBluetooth(boolean hasBluetooth) {
         groupBluetooth.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
-
-        if (hasBluetooth) {
-            presenter.isBluetoothEnabled();
-            presenter.observeBluetoothState();
-        }
     }
 
     @Override
@@ -196,91 +175,40 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     }
 
     @Override
-    public void onBluetoothStateIndeterminate() {
-        progressBarBluetooth.setVisibility(View.VISIBLE);
-        switchBluetoothOnOff.setEnabled(false);
-    }
-
-    @Override
-    public void onSetupCompleted() {
-        presenter.enableDiscoverability(requireActivity(), RequestCode.BLUETOOTH_DISCOVERABILITY);
-    }
-
-    @Override
     public void onBluetoothState(boolean isOn) {
         progressBarBluetooth.setVisibility(View.GONE);
         switchBluetoothOnOff.setEnabled(true);
         switchBluetoothOnOff.setText(getString(isOn ? R.string.state_on : R.string.state_off));
     }
 
-    private void startBluetooth() {
-        presenter.enableBluetooth();
+    @Override
+    public void onBluetoothStateIndeterminate() {
+        progressBarBluetooth.setVisibility(View.VISIBLE);
+        switchBluetoothOnOff.setEnabled(false);
     }
 
-    private void stopBluetooth() {
-        presenter.disableBluetooth();
+    @Override
+    public void onBluetoothSetupCompleted() {
+        presenter.enableDiscoverability(requireActivity(), RequestCode.BLUETOOTH_DISCOVERABILITY);
     }
 
-    private boolean checkWiFiSupport(@NonNull final Context context) {
-        return context
-            .getPackageManager()
-            .hasSystemFeature(PackageManager.FEATURE_WIFI);
+    @Override
+    public void onHasWifi(boolean hasWifi) {
+        groupWiFi.setVisibility(hasWifi ? View.VISIBLE : View.GONE);
     }
 
-    private void setupWifi(final boolean hasWiFi) {
-        groupWiFi.setVisibility(hasWiFi ? View.VISIBLE : View.GONE);
+    @Override
+    public void onIsWifiEnabled(boolean isEnabled) {
+        switchWifiOnOff.setChecked(isEnabled);
+        switchWifiOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
+        switchWifiOnOff.setOnCheckedChangeListener(this);
 
-        if (hasWiFi) {
-            if (wifiManager != null) {
-                final boolean isEnabled = wifiManager.isWifiEnabled();
-
-                switchWifiOnOff.setChecked(isEnabled);
-                switchWifiOnOff.setText(getString(isEnabled ? R.string.state_on : R.string.state_off));
-                switchWifiOnOff.setOnCheckedChangeListener(this);
-
-                switchWifiOnOff.setEnabled(true);
-
-                final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-
-                textViewWiFiSSID.setText(wifiInfo.getSSID().replace("\"", ""));
-                textViewIpWifi.setText(extractIP(wifiInfo));
-
-                //192.168.1.244 ---
-                // SSID: Knobtviker,
-                // BSSID: 78:8c:54:33:55:cc,
-                // MAC: 02:00:00:00:00:00,
-                // Supplicant state: COMPLETED,
-                // RSSI: -71,
-                // Link speed: 43Mbps,
-                // Frequency: 2462MHz,
-                // Net ID: 0,
-                // Metered hint: false,
-                // score: 60
-
-                //Knobtviker       2.4GHz
-                //WPA2             43Mbps
-                //192.168.1.244    -71
-            } else {
-                groupWiFi.setVisibility(View.GONE);
-            }
-        } else {
-            groupWiFi.setVisibility(View.GONE);
-        }
+        switchWifiOnOff.setEnabled(true);
     }
 
-    private String extractIP(@NonNull final WifiInfo wifiInfo) {
-        int ipAddress = wifiInfo.getIpAddress();
-        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
-            ipAddress = Integer.reverseBytes(ipAddress);
-        }
-
-        final byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
-
-        try {
-            return InetAddress.getByAddress(ipByteArray).getHostAddress();
-        } catch (UnknownHostException ex) {
-            Timber.e(ex);
-            return null;
-        }
+    @Override
+    public void onWifiInfo(@NonNull Pair<String, String> ssidIpPair) {
+        textViewWiFiSSID.setText(ssidIpPair.first);
+        textViewIpWifi.setText(ssidIpPair.second);
     }
 }

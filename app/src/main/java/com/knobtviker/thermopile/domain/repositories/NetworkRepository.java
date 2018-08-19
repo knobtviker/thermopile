@@ -3,20 +3,28 @@ package com.knobtviker.thermopile.domain.repositories;
 import android.app.Activity;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothGattServerCallback;
+import android.net.wifi.WifiInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.util.Pair;
 
 import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.google.android.things.bluetooth.BluetoothProfile;
 import com.knobtviker.thermopile.data.sources.raw.bluetooth.BluetoothRawDataSource;
+import com.knobtviker.thermopile.data.sources.raw.network.WifiRawDataSource;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import timber.log.Timber;
 
 /**
  * Created by bojan on 17/07/2017.
@@ -26,6 +34,9 @@ public class NetworkRepository extends AbstractRepository {
 
     @Inject
     BluetoothRawDataSource bluetoothRawDataSource;
+
+    @Inject
+    WifiRawDataSource wifiRawDataSource;
 
     @Inject
     NetworkRepository() {
@@ -138,5 +149,67 @@ public class NetworkRepository extends AbstractRepository {
 
     public void enableDiscoverability(Activity activity, int requestCode) {
         bluetoothRawDataSource.enableDiscoverability(activity, requestCode);
+    }
+
+    public Observable<Boolean> hasWifi() {
+        return wifiRawDataSource
+            .hasWifi()
+            .subscribeOn(schedulers.network)
+            .observeOn(schedulers.ui);
+    }
+
+    public Completable setupWifiDevice() {
+        return wifiRawDataSource
+            .setup()
+            .subscribeOn(schedulers.network)
+            .observeOn(schedulers.network);
+    }
+
+    public Observable<Boolean> isWifiEnabled() {
+        return wifiRawDataSource
+            .isEnabled()
+            .subscribeOn(schedulers.network)
+            .observeOn(schedulers.ui);
+    }
+
+    public Observable<Pair<String, String>> wifiInfo() {
+        return wifiRawDataSource.wifiInfo()
+            .map(wifiInfo -> {
+                final String ssid = wifiInfo.getSSID().replace("\"", "");
+                final String ip = extractIP(wifiInfo);
+                return Pair.create(ssid, ip);
+            })
+            .subscribeOn(schedulers.network)
+            .observeOn(schedulers.ui);
+    }
+
+    private String extractIP(@NonNull final WifiInfo wifiInfo) {
+        int ipAddress = wifiInfo.getIpAddress();
+        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
+            ipAddress = Integer.reverseBytes(ipAddress);
+        }
+
+        final byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
+
+        try {
+            return InetAddress.getByAddress(ipByteArray).getHostAddress();
+        } catch (UnknownHostException ex) {
+            Timber.e(ex);
+            return "";
+        }
+    }
+
+    public Completable enableWifi() {
+        return wifiRawDataSource
+            .enable()
+            .subscribeOn(schedulers.network)
+            .observeOn(schedulers.network);
+    }
+
+    public Completable disableWifi() {
+        return wifiRawDataSource
+            .disable()
+            .subscribeOn(schedulers.network)
+            .observeOn(schedulers.network);
     }
 }

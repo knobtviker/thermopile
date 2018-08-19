@@ -11,6 +11,7 @@ import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosph
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerNetworkRepositoryComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
 import com.knobtviker.thermopile.di.modules.data.sources.raw.BluetoothRawDataSourceModule;
+import com.knobtviker.thermopile.di.modules.data.sources.raw.WifiRawDataSourceModule;
 import com.knobtviker.thermopile.di.modules.presentation.ContextModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.NetworkRepository;
@@ -42,6 +43,7 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
             .inject();
         this.networkRepository = DaggerNetworkRepositoryComponent.builder()
             .context(new ContextModule(context))
+            .wifiRawDataSource(new WifiRawDataSourceModule())
             .bluetoothRawDataSource(new BluetoothRawDataSourceModule())
             .build()
             .inject();
@@ -119,6 +121,8 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
                     hasBluetooth -> {
                         view.onHasBluetooth(hasBluetooth);
                         if (hasBluetooth) {
+                            isBluetoothEnabled();
+                            observeBluetoothState();
                             setupBluetoothDevice();
                         }
                     },
@@ -284,12 +288,89 @@ public class NetworkPresenter extends AbstractPresenter implements NetworkContra
         networkRepository.enableDiscoverability(activity, requestCode);
     }
 
+    @Override
+    public void hasWifi() {
+        compositeDisposable.add(
+            networkRepository.hasWifi()
+                .subscribe(
+                    hasWifi -> {
+                        if (hasWifi) {
+                            setupWifiDevice();
+                        }
+                        view.onHasWifi(hasWifi);
+                    },
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void isWifiEnabled() {
+        compositeDisposable.add(
+            networkRepository
+                .isWifiEnabled()
+                .subscribe(
+                    isWifiEnabled -> {
+                        view.onIsWifiEnabled(isWifiEnabled);
+                        wifiInfo();
+                    },
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void enableWifi() {
+        compositeDisposable.add(
+            networkRepository
+                .enableWifi()
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void disableWifi() {
+        compositeDisposable.add(
+            networkRepository
+                .disableWifi()
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
     private void setupBluetoothDevice() {
         compositeDisposable.add(
             networkRepository
                 .setupBluetoothDevice(R.string.app_name)
                 .subscribe(
-                    view::onSetupCompleted,
+                    view::onBluetoothSetupCompleted,
+                    this::error
+                )
+        );
+    }
+
+    private void setupWifiDevice() {
+        compositeDisposable.add(
+            networkRepository
+                .setupWifiDevice()
+                .subscribe(
+                    this::isWifiEnabled,
+                    this::error
+                )
+        );
+    }
+
+    private void wifiInfo() {
+        compositeDisposable.add(
+            networkRepository
+                .wifiInfo()
+                .subscribe(
+                    view::onWifiInfo,
                     this::error
                 )
         );

@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.contracts;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseView;
@@ -32,7 +33,13 @@ public interface NetworkContract {
 
         void onBluetoothStateIndeterminate();
 
-        void onSetupCompleted();
+        void onBluetoothSetupCompleted();
+
+        void onHasWifi(final boolean hasWifi);
+
+        void onIsWifiEnabled(final boolean isEnabled);
+
+        void onWifiInfo(@NonNull final Pair<String, String> ssidIpPair);
     }
 
     interface Presenter extends BasePresenter {
@@ -66,5 +73,13 @@ public interface NetworkContract {
         void stopBluetoothAdvertising();
 
         void enableDiscoverability(@NonNull final Activity activity, int requestCode);
+
+        void hasWifi();
+
+        void isWifiEnabled();
+
+        void enableWifi();
+
+        void disableWifi();
     }
 }
