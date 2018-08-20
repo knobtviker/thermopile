@@ -20,6 +20,7 @@ import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.RequestCode;
 
+import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -131,7 +132,9 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.layout_wifi_connected:
-                Timber.i("Open WiFiActivity");
+                NavHostFragment
+                    .findNavController(this)
+                    .navigate(R.id.showWirelessAction);
                 break;
         }
     }

@@ -272,13 +272,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //                    .subscribe();
                 break;
             case R.id.button_charts:
-                NavHostFragment.findNavController(this).navigate(R.id.action_mainFragment_to_chartsFragment);
+                NavHostFragment.findNavController(this).navigate(R.id.showChartsAction);
                 break;
             case R.id.button_schedule:
-                NavHostFragment.findNavController(this).navigate(R.id.action_mainFragment_to_scheduleFragment);
+                NavHostFragment.findNavController(this).navigate(R.id.showScheduleAction);
                 break;
             case R.id.button_settings:
-                NavHostFragment.findNavController(this).navigate(R.id.action_mainFragment_to_settingsFragment);
+                NavHostFragment.findNavController(this).navigate(R.id.showSettingsAction);
                 break;
         }
     }

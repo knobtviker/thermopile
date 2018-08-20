@@ -115,7 +115,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-//                NavHostFragment.findNavController(this).navigate(R.id.action_scheduleFragment_to_mainFragment);
                 NavHostFragment.findNavController(this).popBackStack();
                 break;
             case R.id.button_add:
