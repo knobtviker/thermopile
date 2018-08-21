@@ -3,8 +3,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.design.widget.BottomNavigationView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,9 @@ import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
-import com.knobtviker.thermopile.presentation.views.adapters.SettingsPagerAdapter;
-
-import java.util.Arrays;
 
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -30,26 +27,13 @@ import timber.log.Timber;
  */
 
 public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> implements SettingsContract.View {
+
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
-    private final FormatsFragment formatsFragment;
-    private final UnitsFragment unitsFragment;
-    private final LocaleFragment localeFragment;
-    private final StyleFragment styleFragment;
-    private final NetworkFragment networkFragment;
-
-    @BindView(R.id.tab_layout)
-    public TabLayout tabLayout;
-
-    @BindView(R.id.view_pager)
-    public ViewPager viewPager;
+    @BindView(R.id.bottom_navigation_view)
+    public BottomNavigationView bottomNavigationView;
 
     public SettingsFragment() {
-        this.localeFragment = LocaleFragment.newInstance();
-        this.formatsFragment = FormatsFragment.newInstance();
-        this.unitsFragment = UnitsFragment.newInstance();
-        this.styleFragment = StyleFragment.newInstance();
-        this.networkFragment = NetworkFragment.newInstance();
     }
 
     @Nullable
@@ -62,7 +46,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupViewPager();
+        setupBottomNavigationView();
 
         this.presenter = new SettingsPresenter(this);
     }
@@ -71,15 +55,15 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     public void onResume() {
         super.onResume();
 
-        presenter.load();
+        //        presenter.load();
     }
 
     @Override
     public void onLoad(@NonNull Settings settings) {
-        localeFragment.onLoad(settings);
-        formatsFragment.onLoad(settings);
-        unitsFragment.onLoad(settings);
-        styleFragment.onLoad(settings);
+        //        localeFragment.onLoad(settings);
+        //        formatsFragment.onLoad(settings);
+        //        unitsFragment.onLoad(settings);
+        //        styleFragment.onLoad(settings);
     }
 
     @Override
@@ -96,33 +80,28 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-                NavHostFragment.findNavController(this).popBackStack();
+                NavHostFragment.findNavController(this).navigateUp();
                 break;
             case R.id.button_help:
                 Timber.i("Show HelpActivity");
-                ((ThermopileApplication)requireActivity().getApplication()).reset();
+                ((ThermopileApplication) requireActivity().getApplication()).reset();
                 break;
             case R.id.button_feedback:
                 Timber.i("Show FeedbackActivity");
+                //                NavHostFragment.findNavController(this).navigate(R.id.activityScreensaver);
                 break;
             case R.id.button_about:
-                Timber.i("Version name: "+BuildConfig.VERSION_NAME+" Version code: "+BuildConfig.VERSION_CODE+" Hash: "+BuildConfig.GIT_COMMIT_SHA+" Build time: "+BuildConfig.GIT_COMMIT_TIMESTAMP+" Reboot count: "+ThermopileApplication.bootCount()+" Last boot timestamp: "+ThermopileApplication.lastBootTimestamp());
+                Timber.i("Version name: " + BuildConfig.VERSION_NAME + " Version code: " + BuildConfig.VERSION_CODE + " Hash: "
+                    + BuildConfig.GIT_COMMIT_SHA + " Build time: " + BuildConfig.GIT_COMMIT_TIMESTAMP + " Reboot count: "
+                    + ThermopileApplication.bootCount() + " Last boot timestamp: " + ThermopileApplication.lastBootTimestamp());
                 break;
         }
     }
 
-    private void setupViewPager() {
-        viewPager.setAdapter(new SettingsPagerAdapter(
-                getChildFragmentManager(),
-                Arrays.asList(getString(R.string.label_formats), getString(R.string.label_units), getString(R.string.label_locale), getString(R.string.label_style), getString(R.string.label_network)),
-                Arrays.asList(formatsFragment, unitsFragment, localeFragment, styleFragment, networkFragment),
-                viewPager.getId()
-            )
-        );
-        if (viewPager.getAdapter() != null) {
-            viewPager.setOffscreenPageLimit(viewPager.getAdapter().getCount());
+    private void setupBottomNavigationView() {
+        final NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.navigation_host_settings);
+        if (navHostFragment != null) {
+            NavigationUI.setupWithNavController(bottomNavigationView, navHostFragment.getNavController());
         }
-
-        tabLayout.setupWithViewPager(viewPager);
     }
 }

@@ -93,6 +93,6 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
     }
 
     private void back() {
-        NavHostFragment.findNavController(this).popBackStack();
+        NavHostFragment.findNavController(this).navigateUp();
     }
 }

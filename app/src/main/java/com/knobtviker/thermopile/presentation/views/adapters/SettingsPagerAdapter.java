@@ -25,7 +25,8 @@ public class SettingsPagerAdapter extends PagerAdapter {
 
     private FragmentTransaction currentTransaction;
 
-    public SettingsPagerAdapter(@NonNull final FragmentManager fragmentManager, @NonNull final List<String> titles, @NonNull final List<Fragment> fragments, final int containerId) {
+    public SettingsPagerAdapter(@NonNull final FragmentManager fragmentManager, @NonNull final List<String> titles,
+        @NonNull final List<Fragment> fragments, final int containerId) {
         if (containerId == View.NO_ID) {
             throw new IllegalStateException("ViewPager with adapter " + this + " requires a view id");
         }
@@ -35,7 +36,11 @@ public class SettingsPagerAdapter extends PagerAdapter {
         this.fragments = fragments;
 
         final FragmentTransaction transaction = this.fragmentManager.beginTransaction();
-        this.fragments.forEach(fragment -> transaction.add(containerId, fragment));
+        this.fragments.forEach(fragment -> {
+            if (!fragment.isAdded()) {
+                transaction.add(containerId, fragment);
+            }
+        });
         transaction.commitNowAllowingStateLoss();
     }
 

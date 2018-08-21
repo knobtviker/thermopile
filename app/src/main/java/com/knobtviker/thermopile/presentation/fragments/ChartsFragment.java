@@ -342,7 +342,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_back:
-                NavHostFragment.findNavController(this).popBackStack();
+                NavHostFragment.findNavController(this).navigateUp();
                 break;
         }
     }

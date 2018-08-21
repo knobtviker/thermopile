@@ -318,7 +318,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     private void back() {
-        NavHostFragment.findNavController(this).popBackStack();
+        NavHostFragment.findNavController(this).navigateUp();
     }
 
     private void setStartTime(final int day, final int hour, final int minute) {
