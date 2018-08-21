@@ -31,6 +31,20 @@ public class FormatsPresenter extends AbstractPresenter implements FormatsContra
     }
 
     @Override
+    public void load() {
+        compositeDisposable.add(
+            settingsRepository
+                .load()
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
+                .subscribe(
+                    view::onLoad,
+                    this::error
+                )
+        );
+    }
+
+    @Override
     public void saveFormatDate(long settingsId, @NonNull String item) {
         compositeDisposable.add(
             settingsRepository

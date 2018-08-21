@@ -31,6 +31,20 @@ public class StylePresenter extends AbstractPresenter implements StyleContract.P
     }
 
     @Override
+    public void load() {
+        compositeDisposable.add(
+            settingsRepository
+                .load()
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
+                .subscribe(
+                    view::onLoad,
+                    this::error
+                )
+        );
+    }
+
+    @Override
     public void saveTheme(long settingsId, int value) {
         compositeDisposable.add(
             settingsRepository

@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.contracts;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseView;
 
@@ -13,9 +14,12 @@ public interface LocaleContract {
 
     interface View extends BaseView {
 
+        void onLoad(@NonNull final Settings settings);
     }
 
     interface Presenter extends BasePresenter {
+
+        void load();
 
         void saveTimezone(final long settingsId, @NonNull final String timezone);
 

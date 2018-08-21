@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.knobtviker.thermopile.presentation.views.adapters.TimezoneAdapter;
 import org.joda.time.DateTimeZone;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnItemSelected;
@@ -59,10 +61,6 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     @BindView(R.id.mode_24h)
     public RadioButton radioButton24h;
 
-    public static LocaleFragment newInstance() {
-        return new LocaleFragment();
-    }
-
     public LocaleFragment() {
         presenter = new LocalePresenter(this);
     }
@@ -79,16 +77,30 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
         setupSpinnerTimezone();
         setupRadioGroupClockMode();
+
+        presenter.load();
     }
 
     @Override
     public void showLoading(boolean isLoading) {
-
+        //TODO: Do some loading if needed
     }
 
     @Override
     public void showError(@NonNull Throwable throwable) {
         Timber.e(throwable);
+
+        Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLoad(@NonNull Settings settings) {
+        this.settingsId = settings.id;
+        this.timezone = settings.timezone;
+        this.clockMode = settings.formatClock;
+
+        setTimezone();
+        setClockMode();
     }
 
     @OnItemSelected(value = {R.id.spinner_timezone}, callback = OnItemSelected.Callback.ITEM_SELECTED)
@@ -103,15 +115,6 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
                 }
                 break;
         }
-    }
-
-    public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id;
-        this.timezone = settings.timezone;
-        this.clockMode = settings.formatClock;
-
-        setTimezone();
-        setClockMode();
     }
 
     private void setupSpinnerTimezone() {

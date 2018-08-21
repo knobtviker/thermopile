@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -99,18 +102,23 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         setupRadioGroupTemperatureUnit();
         setupRadioGroupPressureUnit();
         setupRadioGroupAccelerationUnit();
+
+        presenter.load();
     }
 
     @Override
     public void showLoading(boolean isLoading) {
-
+        //TODO: Do some loading if needed
     }
 
     @Override
     public void showError(@NonNull Throwable throwable) {
         Timber.e(throwable);
+
+        Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
+    @Override
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id;
         this.unitTemperature = settings.unitTemperature;

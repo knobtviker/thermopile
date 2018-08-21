@@ -31,6 +31,20 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
     }
 
     @Override
+    public void load() {
+        compositeDisposable.add(
+            settingsRepository
+                .load()
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
+                .subscribe(
+                    view::onLoad,
+                    this::error
+                )
+        );
+    }
+
+    @Override
     public void saveTemperatureUnit(long settingsId, int unit) {
         compositeDisposable.add(
             settingsRepository

@@ -4,17 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
-import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
-import com.knobtviker.thermopile.presentation.presenters.SettingsPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
+
+import java.util.Objects;
 
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -26,7 +26,7 @@ import timber.log.Timber;
  * Created by bojan on 15/06/2017.
  */
 
-public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> implements SettingsContract.View {
+public class SettingsFragment extends BaseFragment {
 
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
@@ -47,33 +47,18 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         super.onViewCreated(view, savedInstanceState);
 
         setupBottomNavigationView();
-
-        this.presenter = new SettingsPresenter(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //        presenter.load();
-    }
-
-    @Override
-    public void onLoad(@NonNull Settings settings) {
-        //        localeFragment.onLoad(settings);
-        //        formatsFragment.onLoad(settings);
-        //        unitsFragment.onLoad(settings);
-        //        styleFragment.onLoad(settings);
     }
 
     @Override
     public void showLoading(boolean isLoading) {
-        //NO-OP
+        //TODO: Do some loading if needed
     }
 
     @Override
     public void showError(@NonNull Throwable throwable) {
         Timber.e(throwable);
+
+        Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
     @OnClick({R.id.button_back, R.id.button_help, R.id.button_feedback, R.id.button_about})
@@ -102,6 +87,8 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
         final NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.navigation_host_settings);
         if (navHostFragment != null) {
             NavigationUI.setupWithNavController(bottomNavigationView, navHostFragment.getNavController());
+        } else {
+            showError(new Throwable("Cannot find NavHostFragment"));
         }
     }
 }

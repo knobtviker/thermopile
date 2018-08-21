@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.knobtviker.thermopile.presentation.views.adapters.FormatAdapter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnItemSelected;
@@ -51,10 +53,6 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     @BindView(R.id.spinner_time_format)
     public Spinner spinnerFormatTime;
 
-    public static FormatsFragment newInstance() {
-        return new FormatsFragment();
-    }
-
     public FormatsFragment() {
         presenter = new FormatsPresenter(this);
     }
@@ -71,16 +69,30 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
 
         setupSpinnerDate();
         setupSpinnerTime();
+
+        presenter.load();
     }
 
     @Override
     public void showLoading(boolean isLoading) {
-
+        //TODO: Do some loading if needed
     }
 
     @Override
     public void showError(@NonNull Throwable throwable) {
         Timber.e(throwable);
+
+        Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLoad(@NonNull Settings settings) {
+        this.settingsId = settings.id;
+        this.formatDate = settings.formatDate;
+        this.formatTime = settings.formatTime;
+
+        setFormatDate();
+        setFormatTime();
     }
 
     @OnItemSelected(value = {R.id.spinner_date_format, R.id.spinner_time_format}, callback = OnItemSelected.Callback.ITEM_SELECTED)
@@ -105,15 +117,6 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
                 }
                 break;
         }
-    }
-
-    public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id;
-        this.formatDate = settings.formatDate;
-        this.formatTime = settings.formatTime;
-
-        setFormatDate();
-        setFormatTime();
     }
 
     private void setupSpinnerDate() {

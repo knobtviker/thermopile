@@ -31,6 +31,20 @@ public class LocalePresenter extends AbstractPresenter implements LocaleContract
     }
 
     @Override
+    public void load() {
+        compositeDisposable.add(
+            settingsRepository
+                .load()
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
+                .subscribe(
+                    view::onLoad,
+                    this::error
+                )
+        );
+    }
+
+    @Override
     public void saveTimezone(long settingsId, @NonNull String timezone) {
         compositeDisposable.add(
             settingsRepository

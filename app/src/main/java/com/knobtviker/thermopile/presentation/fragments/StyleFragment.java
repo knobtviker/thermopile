@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnItemSelected;
@@ -59,10 +61,6 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     @BindView(R.id.spinner_timeout)
     public Spinner spinnerTimeout;
 
-    public static StyleFragment newInstance() {
-        return new StyleFragment();
-    }
-
     public StyleFragment() {
         presenter = new StylePresenter(this);
     }
@@ -79,16 +77,30 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
         setupRadioGroupTheme();
         setupSpinnerTimeout();
+
+        presenter.load();
     }
 
     @Override
     public void showLoading(boolean isLoading) {
-
+        //TODO: Do some loading if needed
     }
 
     @Override
     public void showError(@NonNull Throwable throwable) {
         Timber.e(throwable);
+
+        Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLoad(@NonNull Settings settings) {
+        this.settingsId = settings.id;
+        this.theme = settings.theme;
+        this.screenSaverTimeout = settings.screensaverDelay;
+
+        setTheme();
+        setScreenSaverTimeout();
     }
 
     @OnItemSelected(value = {R.id.spinner_timeout}, callback = OnItemSelected.Callback.ITEM_SELECTED)
@@ -103,15 +115,6 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
                 }
                 break;
         }
-    }
-
-    public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id;
-        this.theme = settings.theme;
-        this.screenSaverTimeout = settings.screensaverDelay;
-
-        setTheme();
-        setScreenSaverTimeout();
     }
 
     private void setupRadioGroupTheme() {
