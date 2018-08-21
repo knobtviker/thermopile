@@ -33,7 +33,15 @@
         android:id="@+id/networkFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.NetworkFragment"
         android:label="NetworkFragment"
-        tools:layout="@layout/fragment_network"/>
+        tools:layout="@layout/fragment_network">
+        <action
+            android:id="@+id/showWirelessAction"
+            app:destination="@id/wirelessFragment"
+            app:enterAnim="@anim/enter_bottom_to_top"
+            app:exitAnim="@anim/exit_top_to_bottom"
+            app:popEnterAnim="@anim/enter_bottom_to_top"
+            app:popExitAnim="@anim/exit_top_to_bottom"/>
+    </fragment>
 
     <fragment
         android:id="@+id/wirelessFragment"

@@ -28,6 +28,15 @@
         <item name="android:paddingBottom">1dp</item>
     </style>
 
+    <style name="Widget.BottomNavigationView" parent="Widget.Design.BottomNavigationView">
+        <item name="android:background">@drawable/background_border_top</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.Item.BottomNavigationView.Active</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.Item.BottomNavigationView.Inactive</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemIconTint">@drawable/selector_bottomnavigation_icon_tint</item>
+        <item name="itemTextColor">@drawable/selector_bottomnavigation_text_color</item>
+    </style>
+
     <style name="TextAppearance.Date" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">0dp</item>
         <item name="android:textAllCaps">true</item>
@@ -99,6 +108,20 @@
         <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
+    <style name="TextAppearance.Item.BottomNavigationView.Active" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
+    </style>
+
+    <style name="TextAppearance.Item.BottomNavigationView.Inactive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
+    </style>
+
     <style name="Widget.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:button">@null</item>
@@ -110,15 +133,15 @@
     </style>
 
     <style name="Widget.RadioButton.Left" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/background_radiobutton_left</item>
+        <item name="android:background">@drawable/selector_background_radiobutton_left</item>
     </style>
 
     <style name="Widget.RadioButton.Middle" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/background_radiobutton_middle</item>
+        <item name="android:background">@drawable/selector_background_radiobutton_middle</item>
     </style>
 
     <style name="Widget.RadioButton.Right" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/background_radiobutton_right</item>
+        <item name="android:background">@drawable/selector_background_radiobutton_right</item>
     </style>
 
     <style name="Widget.Divider.Settings" parent="Widget.Divider">

@@ -110,4 +110,6 @@
     <color name="spark_base_line_color">#757577</color>
     <color name="spark_scrub_line_color">#757577</color>
     <color name="spark_line_under_color">#757577</color>
+
+    <color name="bottom_navigation_shadow_color">#14000000</color>
 </resources>

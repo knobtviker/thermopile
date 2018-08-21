@@ -3,27 +3,27 @@
 
     <item
         android:id="@id/formatsFragment"
-        android:icon="@drawable/ic_about"
+        android:icon="@drawable/ic_formats"
         android:title="@string/label_formats"/>
 
     <item
         android:id="@id/unitsFragment"
-        android:icon="@drawable/ic_about"
+        android:icon="@drawable/ic_units"
         android:title="@string/label_units"/>
 
     <item
         android:id="@id/localeFragment"
-        android:icon="@drawable/ic_about"
+        android:icon="@drawable/ic_locale"
         android:title="@string/label_locale"/>
 
     <item
         android:id="@id/styleFragment"
-        android:icon="@drawable/ic_about"
+        android:icon="@drawable/ic_style"
         android:title="@string/label_style"/>
 
     <item
         android:id="@id/networkFragment"
-        android:icon="@drawable/ic_about"
+        android:icon="@drawable/ic_network"
         android:title="@string/label_network"/>
 
 </menu>
