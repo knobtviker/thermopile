@@ -14,7 +14,9 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.things.device.TimeManager;
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
 import com.knobtviker.android.things.contrib.community.driver.bme280.BME280SensorDriver;
@@ -30,6 +32,7 @@ import com.knobtviker.thermopile.shared.constants.Keys;
 
 import java.io.IOException;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public class DriversService extends Service implements SensorEventListener {
@@ -94,6 +97,7 @@ public class DriversService extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         plantTree();
+        initCrashlytics();
         prepareLowPassFilters();
         setupMessenger();
         setupSensors();
@@ -157,6 +161,12 @@ public class DriversService extends Service implements SensorEventListener {
         Timber.plant(new Timber.DebugTree());
     }
 
+    private void initCrashlytics() {
+        if (!TextUtils.isEmpty(BuildConfig.KEY_FABRIC)) {
+            Fabric.with(this, new Crashlytics());
+        }
+    }
+
     private void prepareLowPassFilters() {
         final long now = SystemClock.currentThreadTimeMillis();
 
@@ -190,7 +200,7 @@ public class DriversService extends Service implements SensorEventListener {
             bme280SensorDriver = bme280();
             bme680SensorDriver = bme680();
             ds3231SensorDriver = ds3231();
-//            tsl2561SensorDriver = tsl2561(); //TODO: Check why this is failing
+            //            tsl2561SensorDriver = tsl2561(); //TODO: Check why this is failing
             lsm9ds1SensorDriver = lsm9ds1();
         } catch (IOException e) {
             Timber.e(e);

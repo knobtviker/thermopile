@@ -62,7 +62,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     public Spinner spinnerTimeout;
 
     public StyleFragment() {
-        presenter = new StylePresenter(this);
+
     }
 
     @Nullable
@@ -77,6 +77,8 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
         setupRadioGroupTheme();
         setupSpinnerTimeout();
+
+        presenter = new StylePresenter(this);
 
         presenter.load();
     }

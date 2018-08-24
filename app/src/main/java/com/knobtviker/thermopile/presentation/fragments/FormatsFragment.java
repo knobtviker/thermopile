@@ -34,8 +34,6 @@ import timber.log.Timber;
 
 public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> implements FormatsContract.View {
 
-    public static final String TAG = FormatsFragment.class.getSimpleName();
-
     private FormatAdapter spinnerAdapterDate;
     private FormatAdapter spinnerAdapterTime;
 
@@ -54,7 +52,6 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     public Spinner spinnerFormatTime;
 
     public FormatsFragment() {
-        presenter = new FormatsPresenter(this);
     }
 
     @Nullable
@@ -69,6 +66,8 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
 
         setupSpinnerDate();
         setupSpinnerTime();
+
+        presenter = new FormatsPresenter(this);
 
         presenter.load();
     }

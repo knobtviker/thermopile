@@ -62,7 +62,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public RadioButton radioButton24h;
 
     public LocaleFragment() {
-        presenter = new LocalePresenter(this);
+
     }
 
     @Nullable
@@ -77,6 +77,8 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
         setupSpinnerTimezone();
         setupRadioGroupClockMode();
+
+        presenter = new LocalePresenter(this);
 
         presenter.load();
     }

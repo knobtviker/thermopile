@@ -86,7 +86,7 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     }
 
     public UnitsFragment() {
-        presenter = new UnitsPresenter(this);
+
     }
 
     @Nullable
@@ -102,6 +102,8 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         setupRadioGroupTemperatureUnit();
         setupRadioGroupPressureUnit();
         setupRadioGroupAccelerationUnit();
+
+        presenter = new UnitsPresenter(this);
 
         presenter.load();
     }

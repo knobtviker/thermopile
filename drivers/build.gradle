@@ -1,4 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.novoda.build-properties'
+apply plugin: 'io.fabric'
+
+buildProperties {
+    keys {
+        using project.file('../keys.properties')
+    }
+}
 
 android {
     compileSdkVersion buildConfig.compileSdk
@@ -14,6 +22,9 @@ android {
 
         buildConfigField "String", 'GIT_COMMIT_SHA', "\"${gitSha()}\""
         buildConfigField 'long', 'GIT_COMMIT_TIMESTAMP', gitTimestamp().toString() + "L"
+
+        manifestPlaceholders = [fabricApiKey: buildProperties.keys['fabric_manifest'].or("").string]
+        buildConfigField "String", 'KEY_FABRIC', buildProperties.keys['fabric'].or("").string
 
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
@@ -68,4 +79,7 @@ dependencies {
     implementation deps.knobtviker.ds3231
     implementation deps.knobtviker.lsm9ds1
     implementation deps.timber.android
+    implementation(deps.crashlytics.android) {
+        transitive = true
+    }
 }

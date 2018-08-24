@@ -10,7 +10,9 @@ import android.os.Messenger;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.knobtviker.android.things.contrib.community.boards.BoardDefaults;
 import com.knobtviker.android.things.contrib.community.driver.fram.Mb85rc256v;
 import com.knobtviker.thermopile.shared.MessageFactory;
@@ -20,6 +22,7 @@ import com.knobtviker.thermopile.shared.constants.Keys;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public class Mb85rc256vService extends Service {
@@ -37,6 +40,7 @@ public class Mb85rc256vService extends Service {
     public void onCreate() {
         super.onCreate();
         plantTree();
+        initCrashlytics();
         setupDriver();
         setupMessenger();
     }
@@ -59,6 +63,12 @@ public class Mb85rc256vService extends Service {
 
     private void plantTree() {
         Timber.plant(new Timber.DebugTree());
+    }
+
+    private void initCrashlytics() {
+        if (!TextUtils.isEmpty(BuildConfig.KEY_FABRIC)) {
+            Fabric.with(this, new Crashlytics());
+        }
     }
 
     private void setupDriver() {

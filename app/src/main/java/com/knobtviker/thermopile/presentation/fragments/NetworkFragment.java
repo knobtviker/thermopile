@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,19 +57,8 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     @BindView(R.id.textview_ip_wifi)
     public TextView textViewIpWifi;
 
-    public static NetworkFragment newInstance() {
-        return new NetworkFragment();
-    }
-
     public NetworkFragment() {
         // do nothing
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        presenter = new NetworkPresenter(context, this);
     }
 
     @Nullable
@@ -83,19 +71,16 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        presenter = new NetworkPresenter(requireContext(), this);
+
         presenter.hasBluetooth();
         presenter.hasWifi();
-    }
 
-    @Override
-    public void onResume() {
         presenter.observeTemperature();
         presenter.observePressure();
         presenter.observeHumidity();
         presenter.observeAirQuality();
         presenter.observeAcceleration();
-
-        super.onResume();
     }
 
     @Override

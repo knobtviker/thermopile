@@ -14,6 +14,11 @@
             android:name=".DriversService"
             android:exported="true"
             tools:ignore="ExportedService"/>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="${fabricApiKey}"/>
+
     </application>
 
 </manifest>
