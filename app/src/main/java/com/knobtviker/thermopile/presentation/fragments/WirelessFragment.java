@@ -17,7 +17,6 @@ import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 
 import java.util.Objects;
 
-import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -93,6 +92,6 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
     }
 
     private void back() {
-        NavHostFragment.findNavController(this).navigateUp();
+        requireActivity().finish();
     }
 }

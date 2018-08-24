@@ -15,9 +15,9 @@
 
     <application
         android:name=".presentation.ThermopileApplication"
+        android:allowBackup="false"
         android:extractNativeLibs="false"
         android:icon="@mipmap/ic_launcher"
-        android:allowBackup="false"
         tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data
@@ -25,15 +25,15 @@
             android:value="${fabricApiKey}"/>
 
         <!--<meta-data-->
-            <!--android:name="com.google.android.awareness.API_KEY"-->
-            <!--android:value="${awarenessApiKey}"/>-->
+        <!--android:name="com.google.android.awareness.API_KEY"-->
+        <!--android:value="${awarenessApiKey}"/>-->
 
         <uses-library android:name="com.google.android.things"/>
 
         <activity
             android:name=".presentation.activities.MainActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="reverseLandscape">
+            android:screenOrientation="reverseLandscape"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -49,8 +49,13 @@
 
         <activity
             android:name=".presentation.activities.ScreenSaverActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="reverseLandscape"/>
+            android:screenOrientation="reverseLandscape"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".presentation.activities.WirelessActivity"
+            android:screenOrientation="reverseLandscape"
+            android:theme="@style/AppTheme"/>
+        
     </application>
 
 </manifest>
