@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
+
 import java.util.List;
+import java.util.Optional;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -175,7 +179,7 @@ public class WifiRawDataSource {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         if (intent.hasExtra(WifiManager.EXTRA_RESULTS_UPDATED)) {
-                            if(intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)) {
+                            if (intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)) {
                                 if (wifiManager != null) {
                                     emitter.onNext(wifiManager.getScanResults());
                                 } else {
@@ -195,6 +199,129 @@ public class WifiRawDataSource {
                         dispose();
                     }
                 });
-            }));
+            })
+        );
+    }
+
+    public Observable<Boolean> connect(@NonNull final String ssid, @Nullable final String password, @WiFiType final String type) {
+        return Observable.defer(() ->
+            Observable.create(emitter -> {
+                if (!emitter.isDisposed()) {
+                    if (password == null && !type.equalsIgnoreCase(WiFiType.OPEN)) {
+                        emitter.onError(new IllegalStateException());
+                        emitter.onComplete();
+                        return;
+                    }
+
+                    if (wifiManager != null) {
+                        final List<WifiConfiguration> configurations = wifiManager.getConfiguredNetworks();
+                        final Optional<WifiConfiguration> optionalWifiConfiguration = configurations
+                            .stream()
+                            .filter(configuration -> configuration.SSID.equals("\"".concat(ssid).concat("\"")))
+                            .findFirst();
+
+                        if (optionalWifiConfiguration.isPresent()) {
+                            final WifiConfiguration wifiConfiguration = optionalWifiConfiguration.get();
+
+                            switch (type) {
+                                case WiFiType.OPEN:
+                                    break;
+                                case WiFiType.WEP:
+                                    wifiConfiguration.wepKeys[0] = "\"".concat(password).concat("\"");
+                                    wifiConfiguration.wepTxKeyIndex = 0;
+                                    break;
+                                case WiFiType.WPA:
+                                case WiFiType.WPA2:
+                                    wifiConfiguration.preSharedKey = "\"".concat(password).concat("\"");
+                                    break;
+                                default:
+                                    emitter.onError(new IllegalStateException());
+                                    break;
+                            }
+
+                            if (wifiConfiguration.networkId != -1) {
+                                boolean result = false;
+                                result = wifiManager.disconnect();
+                                result = wifiManager.enableNetwork(wifiConfiguration.networkId, true);
+                                result = wifiManager.reconnect();
+                                emitter.onNext(result);
+                            }
+                        } else {
+                            emitter.onError(new IllegalStateException());
+                        }
+                    } else {
+                        emitter.onError(new IllegalStateException());
+                    }
+/*
+
+
+                    wifiConfiguration.SSID = "\"".concat(ssid).concat("\"");
+                    wifiConfiguration.status = WifiConfiguration.Status.DISABLED;
+
+                    switch (type) {
+                        case WiFiType.OPEN:
+                            wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                            wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+                            wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                            wifiConfiguration.allowedAuthAlgorithms.clear();
+                            wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                            wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+                            break;
+                        case WiFiType.WEP:
+                            wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                            wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+                            wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                            wifiConfiguration.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                            wifiConfiguration.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
+                            wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                            wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+
+                            wifiConfiguration.wepKeys[0] = "\"".concat(password).concat("\"");
+                            wifiConfiguration.wepTxKeyIndex = 0;
+                            break;
+                        case WiFiType.WPA:
+                        case WiFiType.WPA2:
+                            wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                            wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+                            wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                            wifiConfiguration.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                            wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                            wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+                            wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+
+                            wifiConfiguration.preSharedKey = "\"".concat(password).concat("\"");
+                            break;
+                            default:
+                                emitter.onError(new IllegalStateException());
+                                break;
+                    }
+
+                    if (wifiManager != null) {
+                        final int networkId = wifiManager.addNetwork(wifiConfiguration);
+                        if (networkId != -1) {
+                            boolean result = false;
+                            result = wifiManager.disconnect();
+                            result = wifiManager.enableNetwork(networkId, true);
+                            result = wifiManager.reconnect();
+                            emitter.onNext(result);
+                        }
+                    } else {
+                        emitter.onError(new IllegalStateException());
+                    }
+                    */
+
+                    emitter.onComplete();
+                }
+            })
+        );
     }
 }

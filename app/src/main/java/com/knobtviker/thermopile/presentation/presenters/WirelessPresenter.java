@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.knobtviker.thermopile.di.components.domain.repositories.DaggerNetworkRepositoryComponent;
 import com.knobtviker.thermopile.di.modules.data.sources.raw.BluetoothRawDataSourceModule;
@@ -10,6 +11,7 @@ import com.knobtviker.thermopile.di.modules.presentation.ContextModule;
 import com.knobtviker.thermopile.domain.repositories.NetworkRepository;
 import com.knobtviker.thermopile.presentation.contracts.WirelessContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
 
 import io.reactivex.internal.functions.Functions;
 
@@ -94,6 +96,18 @@ public class WirelessPresenter extends AbstractPresenter implements WirelessCont
                 .observeScanResults()
                 .subscribe(
                     view::onScanResults,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void connectWifi(@NonNull String ssid, @Nullable String password, @WiFiType String type) {
+        compositeDisposable.add(
+            networkRepository
+                .connectWifi(ssid, password, type)
+                .subscribe(
+                    view::onConnectWifi,
                     this::error
                 )
         );

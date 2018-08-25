@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattServerCallback;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Pair;
 
@@ -14,6 +15,7 @@ import com.google.android.things.bluetooth.BluetoothProfile;
 import com.knobtviker.thermopile.data.sources.raw.bluetooth.BluetoothRawDataSource;
 import com.knobtviker.thermopile.data.sources.raw.network.WifiRawDataSource;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
+import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -228,7 +230,13 @@ public class NetworkRepository extends AbstractRepository {
         return wifiRawDataSource
             .scanResults()
             .subscribeOn(schedulers.network)
-            //TODO: Add a mapper raw to presentation here
+            .observeOn(schedulers.ui);
+    }
+
+    public Observable<Boolean> connectWifi(@NonNull final String ssid, @Nullable final String password, @WiFiType final String type) {
+        return wifiRawDataSource
+            .connect(ssid, password, type)
+            .subscribeOn(schedulers.network)
             .observeOn(schedulers.ui);
     }
 }

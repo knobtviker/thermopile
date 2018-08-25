@@ -15,7 +15,11 @@ import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.contracts.WirelessContract;
 import com.knobtviker.thermopile.presentation.presenters.WirelessPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
+import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
 import com.knobtviker.thermopile.presentation.views.adapters.WirelessAdapter;
+import com.knobtviker.thermopile.presentation.views.dialogs.BottomDialog;
+import com.knobtviker.thermopile.presentation.views.listeners.WirelessSelectListener;
+import com.knobtviker.thermopile.presentation.views.viewholders.ConnecDialogViewHolder;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +32,7 @@ import timber.log.Timber;
  * Created by bojan on 28/10/2017.
  */
 
-public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> implements WirelessContract.View {
+public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> implements WirelessContract.View, WirelessSelectListener {
 
     public static String TAG = WirelessFragment.class.getSimpleName();
 
@@ -76,20 +80,17 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
         Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
-    @OnClick({R.id.button_discard, R.id.button_save})
+    @OnClick({R.id.button_discard})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_discard:
                 back();
                 break;
-            case R.id.button_save:
-                //                save();
-                break;
         }
     }
 
     private void setupRecyclerView() {
-        adapter = new WirelessAdapter();
+        adapter = new WirelessAdapter(this);
         recyclerViewNetworks.setHasFixedSize(true);
         recyclerViewNetworks.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewNetworks.setAdapter(adapter);
@@ -118,5 +119,29 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
     @Override
     public void onScanResults(@NonNull List<ScanResult> scanResults) {
         adapter.updateItems(scanResults);
+    }
+
+    @Override
+    public void onConnectWifi(boolean isConnected) {
+        Timber.i("onConnectWifi: %s", isConnected);
+    }
+
+    @Override
+    public void onWirelessSelected(@NonNull ScanResult scanResult, @WiFiType String type) {
+        if (type.equalsIgnoreCase(WiFiType.OPEN)) {
+            presenter.connectWifi(scanResult.SSID, null, type);
+        } else {
+            final View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_connect, null);
+            final ConnecDialogViewHolder viewHolder = new ConnecDialogViewHolder(view);
+            viewHolder.textViewSSID.setText(scanResult.SSID);
+            viewHolder.buttonConnect.setOnClickListener(
+                v -> presenter.connectWifi(scanResult.SSID, viewHolder.editTextPassword.getText().toString(), type)
+            );
+
+            final BottomDialog dialog = new BottomDialog(requireContext());
+            dialog.setContentView(view);
+            dialog.setTitle("Connect2");
+            dialog.show();
+        }
     }
 }

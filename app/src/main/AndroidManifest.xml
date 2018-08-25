@@ -33,6 +33,7 @@
         <activity
             android:name=".presentation.activities.MainActivity"
             android:screenOrientation="reverseLandscape"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -50,10 +51,12 @@
         <activity
             android:name=".presentation.activities.ScreenSaverActivity"
             android:screenOrientation="reverseLandscape"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/AppTheme"/>
 
         <activity android:name=".presentation.activities.WirelessActivity"
             android:screenOrientation="reverseLandscape"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/AppTheme"/>
         
     </application>

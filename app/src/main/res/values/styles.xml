@@ -123,8 +123,8 @@
     </style>
 
     <style name="TextAppearance.Item.Wireless" parent="TextAppearance.AppCompat.Subhead">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center_vertical|start</item>
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
@@ -172,6 +172,7 @@
         <item name="android:layout_marginTop">@dimen/margin_default</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
     <style name="TextAppearance.Section.Borderless.Colored" parent="TextAppearance.AppCompat.Caption">
@@ -183,6 +184,7 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
     <style name="TextAppearance.Borderless.Colored" parent="TextAppearance.AppCompat.Body1">
@@ -191,6 +193,36 @@
         <item name="android:paddingTop">@dimen/margin_default</item>
         <item name="android:paddingBottom">@dimen/margin_default</item>
         <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
+    </style>
+
+    <style name="TextAppearance.Dialog.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/margin_default</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
+    </style>
+
+    <style name="TextAppearance.Dialog.Section" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
+    </style>
+
+    <style name="TextAppearance.Dialog.Label" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
+    </style>
+
+    <style name="TextAppearance.Dialog.Input" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
     <!--Spark-->
@@ -214,4 +246,5 @@
         <item name="spark_lineUnderColor">@color/spark_line_under_color</item>
         <item name="spark_clipAmount">1.0</item>
     </style>
+
 </resources>

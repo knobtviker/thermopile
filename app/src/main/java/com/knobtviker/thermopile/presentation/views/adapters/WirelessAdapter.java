@@ -8,13 +8,13 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
+import com.knobtviker.thermopile.presentation.views.listeners.WirelessSelectListener;
 import com.knobtviker.thermopile.presentation.views.viewholders.WirelessViewHolder;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import timber.log.Timber;
 
 /**
  * Created by bojan on 25/08/2018.
@@ -23,17 +23,14 @@ import timber.log.Timber;
 public class WirelessAdapter extends RecyclerView.Adapter<WirelessViewHolder> {
 
     private static final int MAX_LEVELS = 5;
-    private static final String WPA2 = "WPA2";
-    private static final String WPA = "WPA";
-    private static final String WEP = "WEP";
-    private static final String OPEN = "Open";
-    private static final String WPA_EAP = "WPA-EAP";
-    private static final String IEEE8021X = "IEEE8021X";
+
+    @NonNull
+    private final WirelessSelectListener listener;
 
     private List<ScanResult> items = Collections.emptyList();
 
-    public WirelessAdapter() {
-
+    public WirelessAdapter(@NonNull final WirelessSelectListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,16 +42,18 @@ public class WirelessAdapter extends RecyclerView.Adapter<WirelessViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull WirelessViewHolder viewHolder, int position) {
         final ScanResult item = items.get(position);
-        final boolean isSecured = !Objects.equals(securityMode(item.capabilities), OPEN);
+        final String securityMode = securityMode(item.capabilities);
+        final boolean isSecured = !Objects.equals(securityMode, WiFiType.OPEN);
         final int level = WifiManager.calculateSignalLevel(item.level, MAX_LEVELS);
 
         viewHolder.imageViewIcon.setImageResource(fromRSSI(level, isSecured));
         viewHolder.textViewSSID.setText(item.SSID);
-        Timber.i("%d %s", level, item.SSID);
+        viewHolder.itemView.setOnClickListener(v -> listener.onWirelessSelected(item, securityMode));
     }
 
     @Override
     public void onViewRecycled(@NonNull WirelessViewHolder viewHolder) {
+        viewHolder.itemView.setOnClickListener(null);
         super.onViewRecycled(viewHolder);
     }
 
@@ -85,14 +84,15 @@ public class WirelessAdapter extends RecyclerView.Adapter<WirelessViewHolder> {
         }
     }
 
+    @WiFiType
     private String securityMode(@NonNull final String cap) {
-        final String[] securityModes = {WEP, WPA, WPA2, WPA_EAP, IEEE8021X};
+        final String[] securityModes = {WiFiType.WEP, WiFiType.WPA, WiFiType.WPA2, WiFiType.WPA_EAP, WiFiType.IEEE8021X};
         for (int i = securityModes.length - 1; i >= 0; i--) {
             if (cap.contains(securityModes[i])) {
                 return securityModes[i];
             }
         }
 
-        return OPEN;
+        return WiFiType.OPEN;
     }
 }
