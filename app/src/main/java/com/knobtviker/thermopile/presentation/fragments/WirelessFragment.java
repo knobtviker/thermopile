@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
+import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +15,9 @@ import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.contracts.WirelessContract;
 import com.knobtviker.thermopile.presentation.presenters.WirelessPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
+import com.knobtviker.thermopile.presentation.views.adapters.WirelessAdapter;
 
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -26,10 +29,14 @@ import timber.log.Timber;
  */
 
 public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> implements WirelessContract.View {
+
     public static String TAG = WirelessFragment.class.getSimpleName();
 
     @BindView(R.id.recyclerview_networks)
     public RecyclerView recyclerViewNetworks;
+
+    @NonNull
+    private WirelessAdapter adapter;
 
     public WirelessFragment() {
     }
@@ -52,9 +59,9 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
 
         setupRecyclerView();
 
-        presenter = new WirelessPresenter(this);
+        presenter = new WirelessPresenter(requireContext(), this);
 
-        load();
+        presenter.hasWifi();
     }
 
     @Override
@@ -76,22 +83,40 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
                 back();
                 break;
             case R.id.button_save:
-//                save();
+                //                save();
                 break;
         }
     }
 
     private void setupRecyclerView() {
+        adapter = new WirelessAdapter();
         recyclerViewNetworks.setHasFixedSize(true);
         recyclerViewNetworks.setLayoutManager(new LinearLayoutManager(requireContext()));
-//        recyclerViewColors.setAdapter(colorAdapter);
-    }
-
-    private void load() {
-
+        recyclerViewNetworks.setAdapter(adapter);
     }
 
     private void back() {
         requireActivity().finish();
+    }
+
+    @Override
+    public void onHasWifi(boolean hasWifi) {
+        // ... do something
+    }
+
+    @Override
+    public void onIsWifiEnabled(boolean isEnabled) {
+        if (isEnabled) { // do the scan
+            presenter.scan();
+            presenter.observeScanResults();
+        } else {
+            presenter.enableWifi(); // enable wifi first and then do the scan (actually show dialog asking user if he wants to scan or
+            // dismiss)
+        }
+    }
+
+    @Override
+    public void onScanResults(@NonNull List<ScanResult> scanResults) {
+        adapter.updateItems(scanResults);
     }
 }

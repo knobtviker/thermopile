@@ -8,63 +8,46 @@
     android:layout_height="match_parent"
     android:clickable="true">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/appbar_layout"
         android:layout_width="0dp"
-        android:background="@color/background_appbar"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+        <ImageButton
+            android:id="@+id/button_back"
+            style="@style/Widget.AppCompat.Light.ActionButton"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:src="?attr/homeAsUpIndicator"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageButton
-                android:id="@+id/button_back"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="?attr/homeAsUpIndicator"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            style="@style/TextAppearance.Title"
+            android:text="@string/label_schedule"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Schedule"/>
 
-            <TextView
-                style="@style/TextAppearance.Title"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/label_schedule"
-                tools:text="Schedule"/>
+        <ImageButton
+            android:id="@+id/button_add"
+            style="@style/Widget.AppCompat.Light.ActionButton"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:src="@drawable/ic_add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageButton
-                android:id="@+id/button_add"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="@drawable/ic_add"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <ImageView
-        android:id="@+id/appbar_layout_shadow"
-        android:layout_width="0dp"
-        android:layout_height="8dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/shadow_slice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
@@ -72,7 +55,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow">
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline_days"
@@ -101,9 +84,9 @@
             android:id="@+id/divider_monday"
             style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_tuesday"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_monday"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_monday"/>
 
         <TextView
             android:id="@+id/textview_day_tuesday"
@@ -123,9 +106,9 @@
             android:id="@+id/divider_tuesday"
             style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_wednesday"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_tuesday"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_tuesday"/>
 
         <TextView
             android:id="@+id/textview_day_wednesday"
@@ -145,9 +128,9 @@
             android:id="@+id/divider_wednesday"
             style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_thursday"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_wednesday"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_wednesday"/>
 
         <TextView
             android:id="@+id/textview_day_thursday"
@@ -167,9 +150,9 @@
             android:id="@+id/divider_thursday"
             style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_friday"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_thursday"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_thursday"/>
 
         <TextView
             android:id="@+id/textview_day_friday"
@@ -189,9 +172,9 @@
             android:id="@+id/divider_friday"
             style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_saturday"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_friday"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_friday"/>
 
         <TextView
             android:id="@+id/textview_day_saturday"
@@ -211,9 +194,9 @@
             android:id="@+id/divider_saturday"
             style="@style/Widget.Divider.Schedule"
             app:layout_constraintBottom_toTopOf="@+id/textview_day_sunday"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_saturday"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textview_day_saturday"/>
 
         <TextView
             android:id="@+id/textview_day_sunday"

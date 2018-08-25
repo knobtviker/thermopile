@@ -122,6 +122,13 @@
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
+    <style name="TextAppearance.Item.Wireless" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:gravity">center_vertical|start</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
+    </style>
+
     <style name="Widget.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:button">@null</item>

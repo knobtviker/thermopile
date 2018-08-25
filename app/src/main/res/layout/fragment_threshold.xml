@@ -7,63 +7,46 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/appbar_layout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+        <ImageButton
+            android:id="@+id/button_discard"
+            style="@style/Widget.AppCompat.Light.ActionButton"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:src="@drawable/ic_discard"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageButton
-                android:id="@+id/button_discard"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="@drawable/ic_discard"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            style="@style/TextAppearance.Title"
+            android:text="Threshold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Threshold"/>
 
-            <TextView
-                style="@style/TextAppearance.Title"
-                android:text="Threshold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Threshold"/>
+        <ImageButton
+            android:id="@+id/button_save"
+            style="@style/Widget.AppCompat.Light.ActionButton"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:src="@drawable/ic_save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageButton
-                android:id="@+id/button_save"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="@drawable/ic_save"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <ImageView
-        android:id="@+id/appbar_layout_shadow"
-        android:layout_width="0dp"
-        android:layout_height="8dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/shadow_slice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
@@ -71,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow">
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
         <TextView
             android:id="@+id/textview_title_temperature"
@@ -156,10 +139,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:paddingLeft="@dimen/margin_default"
-                android:paddingRight="@dimen/margin_small"
                 android:foreground="?attr/selectableItemBackground"
                 android:orientation="horizontal"
+                android:paddingLeft="@dimen/margin_default"
+                android:paddingRight="@dimen/margin_small"
                 app:layout_constraintEnd_toStartOf="@id/guideline_split"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -179,12 +162,12 @@
             <LinearLayout
                 android:id="@+id/layout_end_time"
                 android:layout_width="0dp"
-                android:paddingLeft="@dimen/margin_small"
-                android:paddingRight="@dimen/margin_default"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground"
                 android:orientation="horizontal"
+                android:paddingLeft="@dimen/margin_small"
+                android:paddingRight="@dimen/margin_default"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/guideline_split"
                 app:layout_constraintTop_toTopOf="parent">

@@ -8,52 +8,35 @@
     android:layout_height="match_parent"
     android:clickable="true">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/appbar_layout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+        <ImageButton
+            android:id="@+id/button_back"
+            style="@style/Widget.AppCompat.Light.ActionButton"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:src="?attr/homeAsUpIndicator"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageButton
-                android:id="@+id/button_back"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="?attr/homeAsUpIndicator"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            style="@style/TextAppearance.Title"
+            android:text="Charts"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Charts"/>
 
-            <TextView
-                style="@style/TextAppearance.Title"
-                android:text="Charts"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Charts"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <ImageView
-        android:id="@+id/appbar_layout_shadow"
-        android:layout_width="0dp"
-        android:layout_height="8dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/shadow_slice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline_spinners"
@@ -64,7 +47,7 @@
         app:layout_constraintGuide_begin="104dp"
         app:layout_constraintGuide_end="104dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout_shadow"/>
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
 
     <Spinner
         android:id="@+id/spinner_type"
@@ -72,7 +55,7 @@
         android:layout_height="?attr/listPreferredItemHeightSmall"
         android:paddingLeft="@dimen/margin_default"
         android:popupElevation="4dp"
-        android:spinnerMode="dropdown"
+        android:spinnerMode="dialog"
         app:layout_constraintBottom_toBottomOf="@id/guideline_spinners"
         app:layout_constraintEnd_toStartOf="@+id/spinner_interval"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -81,7 +64,7 @@
         android:id="@+id/spinner_interval"
         android:layout_width="0dp"
         android:layout_height="?attr/listPreferredItemHeightSmall"
-        android:spinnerMode="dropdown"
+        android:spinnerMode="dialog"
         app:layout_constraintBottom_toBottomOf="@id/guideline_spinners"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/spinner_type"/>
@@ -93,9 +76,9 @@
         android:orientation="horizontal"
         android:paddingLeft="@dimen/margin_default"
         android:paddingRight="@dimen/margin_default"
-        app:layout_constraintTop_toBottomOf="@id/guideline_spinners"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_spinners">
 
         <TextView
             android:id="@+id/textview_scrubbed_value"
@@ -110,8 +93,8 @@
             android:id="@+id/textview_scrubbed_unit"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="@dimen/margin_xxsmall"
             android:layout_height="?attr/listPreferredItemHeightSmall"
+            android:layout_marginLeft="@dimen/margin_xxsmall"
             android:fontFamily="@font/googlesans_regular"
             android:gravity="center"
             tools:text="°C"/>
@@ -124,12 +107,12 @@
         android:layout_width="wrap_content"
         android:layout_height="?attr/listPreferredItemHeightSmall"
         android:fontFamily="@font/googlesans_regular"
-        android:textSize="14sp"
         android:gravity="center"
         android:paddingLeft="@dimen/margin_default"
         android:paddingRight="@dimen/margin_default"
-        app:layout_constraintTop_toBottomOf="@id/guideline_spinners"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_spinners"
         tools:text="Wednesday 31.05.2016 10:30"/>
 
     <android.support.constraint.Guideline
@@ -137,21 +120,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/layout_scrubbed"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintGuide_begin="64dp"
         app:layout_constraintGuide_end="64dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/layout_scrubbed"/>
 
     <com.knobtviker.thermopile.presentation.views.spark.SparkView
         android:id="@+id/sparkview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/layout_scrubbed"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_split"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_scrubbed"
         app:spark_animateChanges="true"
         app:spark_cornerRadius="4dp"
         app:spark_fillType="down"
@@ -161,53 +144,53 @@
     <TextView
         android:id="@+id/textview_max_value"
         android:layout_width="0dp"
-        tools:text="1000"
-        android:textSize="14sp"
-        android:gravity="end"
-        android:fontFamily="@font/googlesans_medium"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/googlesans_medium"
+        android:gravity="end"
+        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/textview_max_unit"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/sparkview"/>
+        app:layout_constraintTop_toTopOf="@id/sparkview"
+        tools:text="1000"/>
 
     <TextView
         android:id="@+id/textview_max_unit"
-        tools:text="hPa"
-        android:gravity="end"
-        android:layout_marginLeft="@dimen/margin_xxsmall"
-        android:layout_marginRight="@dimen/margin_xxsmall"
-        android:textSize="12sp"
-        android:fontFamily="@font/googlesans_regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_xxsmall"
+        android:layout_marginRight="@dimen/margin_xxsmall"
+        android:fontFamily="@font/googlesans_regular"
+        android:gravity="end"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/textview_max_value"
         app:layout_constraintEnd_toEndOf="@id/guideline_split"
         app:layout_constraintStart_toEndOf="@id/textview_max_value"
-        app:layout_constraintBottom_toBottomOf="@id/textview_max_value"/>
+        tools:text="hPa"/>
 
     <TextView
         android:id="@+id/textview_min_value"
         android:layout_width="0dp"
-        tools:text="1000"
-        android:textSize="14sp"
-        android:gravity="end"
-        android:fontFamily="@font/googlesans_medium"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/googlesans_medium"
+        android:gravity="end"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/sparkview"
         app:layout_constraintEnd_toStartOf="@+id/textview_min_unit"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/sparkview"/>
+        tools:text="1000"/>
 
     <TextView
         android:id="@+id/textview_min_unit"
-        tools:text="hPa"
-        android:gravity="end"
-        android:layout_marginLeft="@dimen/margin_xxsmall"
-        android:layout_marginRight="@dimen/margin_xxsmall"
-        android:textSize="12sp"
-        android:fontFamily="@font/googlesans_regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_xxsmall"
+        android:layout_marginRight="@dimen/margin_xxsmall"
+        android:fontFamily="@font/googlesans_regular"
+        android:gravity="end"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/sparkview"
         app:layout_constraintEnd_toEndOf="@id/guideline_split"
         app:layout_constraintStart_toEndOf="@id/textview_min_value"
-        app:layout_constraintBottom_toBottomOf="@id/sparkview"/>
+        tools:text="hPa"/>
 
 </android.support.constraint.ConstraintLayout>

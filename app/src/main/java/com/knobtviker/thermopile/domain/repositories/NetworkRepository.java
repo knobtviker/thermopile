@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.domain.repositories;
 import android.app.Activity;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothGattServerCallback;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -19,6 +20,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -211,5 +214,21 @@ public class NetworkRepository extends AbstractRepository {
             .disable()
             .subscribeOn(schedulers.network)
             .observeOn(schedulers.network);
+    }
+
+    public Completable scanWifi() {
+        return Observable
+            .interval(0,30, TimeUnit.SECONDS, schedulers.network)
+            .flatMapCompletable(tick -> wifiRawDataSource.scan())
+            .subscribeOn(schedulers.network)
+            .observeOn(schedulers.network);
+    }
+
+    public Observable<List<ScanResult>> observeScanResults() {
+        return wifiRawDataSource
+            .scanResults()
+            .subscribeOn(schedulers.network)
+            //TODO: Add a mapper raw to presentation here
+            .observeOn(schedulers.ui);
     }
 }

@@ -9,102 +9,79 @@
     tools:context=".presentation.activities.MainActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/top_toolbar"
+        android:id="@+id/appbar_layout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/appbar_layout"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:background="@color/background_appbar"
-            android:clipToPadding="false"
+        <TextClock
+            android:id="@+id/textview_clock"
+            style="@style/TextAppearance.Time"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:minWidth="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_default="spread">
+            tools:text="22:30"/>
 
-            <TextClock
-                android:id="@+id/textview_clock"
-                style="@style/TextAppearance.Time"
-                android:layout_height="0dp"
-                android:gravity="center"
-                android:minWidth="100dp"
+        <TextView
+            android:id="@+id/textview_date"
+            style="@style/TextAppearance.Date"
+            android:gravity="center_vertical|start"
+            android:paddingStart="@dimen/margin_default"
+            android:paddingEnd="@dimen/margin_large"
+            app:layout_constraintBottom_toBottomOf="@id/textview_clock"
+            app:layout_constraintEnd_toStartOf="@id/textview_clock"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textview_clock"
+            tools:text="TUESDAY 31.05.2016."/>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/textview_clock"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textview_clock"
+            app:layout_constraintTop_toTopOf="@id/textview_clock">
+
+            <ImageButton
+                android:id="@+id/button_settings"
+                style="@style/Widget.AppCompat.Light.ActionButton"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:src="@drawable/ic_settings"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="22:30"/>
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            <TextView
-                android:id="@+id/textview_date"
-                style="@style/TextAppearance.Date"
-                android:gravity="center_vertical|start"
-                android:paddingStart="@dimen/margin_default"
-                android:paddingEnd="@dimen/margin_large"
-                app:layout_constraintBottom_toBottomOf="@id/textview_clock"
-                app:layout_constraintEnd_toStartOf="@id/textview_clock"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textview_clock"
-                tools:text="TUESDAY 31.05.2016."/>
+            <ImageButton
+                android:id="@+id/button_schedule"
+                style="@style/Widget.AppCompat.Light.ActionButton"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:src="@drawable/ic_schedule"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/button_settings"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="@id/textview_clock"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/textview_clock"
-                app:layout_constraintTop_toTopOf="@id/textview_clock">
-
-                <ImageButton
-                    android:id="@+id/button_settings"
-                    style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:src="@drawable/ic_settings"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <ImageButton
-                    android:id="@+id/button_schedule"
-                    style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:src="@drawable/ic_schedule"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toStartOf="@id/button_settings"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <ImageButton
-                    android:id="@+id/button_charts"
-                    style="@style/Widget.AppCompat.Light.ActionButton"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:src="@drawable/ic_charts"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toStartOf="@id/button_schedule"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/button_charts"
+                style="@style/Widget.AppCompat.Light.ActionButton"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:src="@drawable/ic_charts"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/button_schedule"
+                app:layout_constraintTop_toTopOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
-
-        <ImageView
-            android:id="@+id/appbar_layout_shadow"
-            android:layout_width="0dp"
-            android:layout_height="8dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/shadow_slice"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -132,22 +109,22 @@
             android:id="@+id/textview_day"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:clickable="false"
             android:ellipsize="end"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:gravity="center_horizontal|top"
             android:maxLines="1"
             android:paddingTop="@dimen/margin_xxxsmall"
             android:singleLine="true"
             android:textAllCaps="true"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:clickable="false"
-            app:layout_constraintVertical_bias="0.0"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textColor="?android:textColorTertiary"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bottom_toolbar_divider"
+            app:layout_constraintVertical_bias="0.0"
             tools:text="Četvrtak"/>
 
         <android.support.v7.widget.RecyclerView
@@ -168,7 +145,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_toolbar">
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
         <com.knobtviker.thermopile.presentation.views.ArcView
             android:id="@+id/arc_temperature"
