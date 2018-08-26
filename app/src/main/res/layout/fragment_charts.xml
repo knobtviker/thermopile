@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true">
@@ -38,159 +37,201 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_spinners"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_begin="104dp"
-        app:layout_constraintGuide_end="104dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout"/>
-
-    <Spinner
-        android:id="@+id/spinner_type"
-        android:layout_width="0dp"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
-        android:paddingLeft="@dimen/margin_default"
-        android:popupElevation="4dp"
-        android:spinnerMode="dialog"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_spinners"
-        app:layout_constraintEnd_toStartOf="@+id/spinner_interval"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <Spinner
-        android:id="@+id/spinner_interval"
-        android:layout_width="0dp"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
-        android:spinnerMode="dialog"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_spinners"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/spinner_type"/>
-
     <LinearLayout
-        android:id="@+id/layout_scrubbed"
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/margin_default"
-        android:paddingRight="@dimen/margin_default"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline_spinners">
-
-        <TextView
-            android:id="@+id/textview_scrubbed_value"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="wrap_content"
-            android:layout_height="?attr/listPreferredItemHeightSmall"
-            android:fontFamily="@font/googlesans_medium"
-            android:gravity="center"
-            tools:text="30"/>
-
-        <TextView
-            android:id="@+id/textview_scrubbed_unit"
-            style="@style/TextAppearance.AppCompat.Body1"
-            android:layout_width="wrap_content"
-            android:layout_height="?attr/listPreferredItemHeightSmall"
-            android:layout_marginLeft="@dimen/margin_xxsmall"
-            android:fontFamily="@font/googlesans_regular"
-            android:gravity="center"
-            tools:text="°C"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textview_scrubbed_datetime"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
-        android:fontFamily="@font/googlesans_regular"
-        android:gravity="center"
-        android:paddingLeft="@dimen/margin_default"
-        android:paddingRight="@dimen/margin_default"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline_spinners"
-        tools:text="Wednesday 31.05.2016 10:30"/>
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_split"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_begin="64dp"
-        app:layout_constraintGuide_end="64dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_scrubbed"/>
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
-    <com.knobtviker.thermopile.presentation.views.spark.SparkView
-        android:id="@+id/sparkview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline_split"
-        app:layout_constraintTop_toBottomOf="@id/layout_scrubbed"
-        app:spark_animateChanges="true"
-        app:spark_cornerRadius="4dp"
-        app:spark_fillType="down"
-        app:spark_lineWidth="1dp"
-        app:spark_scrubEnabled="true"/>
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-    <TextView
-        android:id="@+id/textview_max_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/googlesans_medium"
-        android:gravity="end"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/textview_max_unit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/sparkview"
-        tools:text="1000"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textview_max_unit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_xxsmall"
-        android:layout_marginRight="@dimen/margin_xxsmall"
-        android:fontFamily="@font/googlesans_regular"
-        android:gravity="end"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@id/textview_max_value"
-        app:layout_constraintEnd_toEndOf="@id/guideline_split"
-        app:layout_constraintStart_toEndOf="@id/textview_max_value"
-        tools:text="hPa"/>
+                <Spinner
+                    android:id="@+id/spinner_type"
+                    android:layout_width="0dp"
+                    android:layout_height="?attr/listPreferredItemHeightSmall"
+                    android:layout_weight="1"
+                    android:spinnerMode="dialog"/>
 
-    <TextView
-        android:id="@+id/textview_min_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/googlesans_medium"
-        android:gravity="end"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/sparkview"
-        app:layout_constraintEnd_toStartOf="@+id/textview_min_unit"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="1000"/>
+                <Spinner
+                    android:id="@+id/spinner_interval"
+                    android:layout_width="0dp"
+                    android:layout_height="?attr/listPreferredItemHeightSmall"
+                    android:layout_weight="1"
+                    android:spinnerMode="dialog"/>
 
-    <TextView
-        android:id="@+id/textview_min_unit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_xxsmall"
-        android:layout_marginRight="@dimen/margin_xxsmall"
-        android:fontFamily="@font/googlesans_regular"
-        android:gravity="end"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@id/sparkview"
-        app:layout_constraintEnd_toEndOf="@id/guideline_split"
-        app:layout_constraintStart_toEndOf="@id/textview_min_value"
-        tools:text="hPa"/>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPaddingBottom="8dp"
+            app:contentPaddingTop="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/listPreferredItemHeightSmall">
+
+                    <LinearLayout
+                        android:id="@+id/layout_scrubbed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/margin_default"
+                        android:paddingRight="@dimen/margin_default"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/textview_scrubbed_value"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="?attr/listPreferredItemHeightSmall"
+                            android:fontFamily="@font/googlesans_medium"
+                            android:gravity="center"
+                            tools:text="30"/>
+
+                        <TextView
+                            android:id="@+id/textview_scrubbed_unit"
+                            style="@style/TextAppearance.AppCompat.Body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="?attr/listPreferredItemHeightSmall"
+                            android:layout_marginLeft="@dimen/margin_xxsmall"
+                            android:fontFamily="@font/googlesans_regular"
+                            android:gravity="center"
+                            tools:text="°C"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textview_scrubbed_datetime"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/margin_default"
+                        android:paddingRight="@dimen/margin_default"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Wednesday 31.05.2016 10:30"/>
+
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.constraint.Guideline
+                        android:id="@+id/guideline_split"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintGuide_begin="64dp"
+                        app:layout_constraintGuide_end="64dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <com.knobtviker.thermopile.presentation.views.spark.SparkView
+                        android:id="@+id/sparkview"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/guideline_split"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:spark_animateChanges="true"
+                        app:spark_cornerRadius="4dp"
+                        app:spark_fillType="down"
+                        app:spark_lineWidth="1dp"
+                        app:spark_scrubEnabled="true"/>
+
+                    <TextView
+                        android:id="@+id/textview_max_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:gravity="end"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/textview_max_unit"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/sparkview"
+                        tools:text="1000"/>
+
+                    <TextView
+                        android:id="@+id/textview_max_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_xxsmall"
+                        android:layout_marginRight="@dimen/margin_xxsmall"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:gravity="end"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@id/textview_max_value"
+                        app:layout_constraintEnd_toEndOf="@id/guideline_split"
+                        app:layout_constraintStart_toEndOf="@id/textview_max_value"
+                        tools:text="hPa"/>
+
+                    <TextView
+                        android:id="@+id/textview_min_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:gravity="end"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@id/sparkview"
+                        app:layout_constraintEnd_toStartOf="@+id/textview_min_unit"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="1000"/>
+
+                    <TextView
+                        android:id="@+id/textview_min_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_xxsmall"
+                        android:layout_marginRight="@dimen/margin_xxsmall"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:gravity="end"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@id/sparkview"
+                        app:layout_constraintEnd_toEndOf="@id/guideline_split"
+                        app:layout_constraintStart_toEndOf="@id/textview_min_value"
+                        tools:text="hPa"/>
+
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

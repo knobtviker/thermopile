@@ -170,11 +170,8 @@
     </style>
 
     <style name="TextAppearance.Section" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/margin_default</item>
-        <item name="android:layout_marginRight">@dimen/margin_default</item>
-        <item name="android:layout_marginTop">@dimen/margin_default</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:fontFamily">@font/googlesans_regular</item>

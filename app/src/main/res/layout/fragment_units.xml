@@ -2,160 +2,157 @@
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textview_title_unit_temperature"
-            style="@style/TextAppearance.Section"
-            android:text="Temperature"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <RadioGroup
-            android:id="@+id/radiogroup_temperature_unit"
-            android:layout_width="0dp"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_unit_temperature">
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-            <RadioButton
-                android:id="@+id/unit_celsius"
-                style="@style/Widget.RadioButton.Left"
-                android:text="Celsius"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/unit_farenheit"
-                style="@style/Widget.RadioButton.Middle"
-                android:text="Fahrenheit"/>
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Temperature"/>
 
-            <RadioButton
-                android:id="@+id/unit_kelvin"
-                style="@style/Widget.RadioButton.Right"
-                android:text="Kelvin"/>
+                <RadioGroup
+                    android:id="@+id/radiogroup_temperature_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/unit_celsius"
+                        style="@style/Widget.RadioButton.Left"
+                        android:text="Celsius"/>
 
-        <View
-            android:id="@+id/divider_units_pressure"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radiogroup_temperature_unit"/>
+                    <RadioButton
+                        android:id="@+id/unit_farenheit"
+                        style="@style/Widget.RadioButton.Middle"
+                        android:text="Fahrenheit"/>
 
-        <TextView
-            android:id="@+id/textview_title_unit_pressure"
-            style="@style/TextAppearance.Section"
-            android:text="Pressure"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_units_pressure"/>
+                    <RadioButton
+                        android:id="@+id/unit_kelvin"
+                        style="@style/Widget.RadioButton.Right"
+                        android:text="Kelvin"/>
 
-        <RadioGroup
-            android:id="@+id/radiogroup_pressure_unit"
-            android:layout_width="0dp"
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_unit_pressure">
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-            <RadioButton
-                android:id="@+id/unit_pascal"
-                style="@style/Widget.RadioButton.Left"
-                android:text="@string/unit_pressure_pascal"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/unit_bar"
-                android:text="@string/unit_pressure_bar"
-                style="@style/Widget.RadioButton.Middle"/>
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Pressure"/>
 
-            <RadioButton
-                android:id="@+id/unit_psi"
-                style="@style/Widget.RadioButton.Right"
-                android:text="@string/unit_pressure_psi"/>
+                <RadioGroup
+                    android:id="@+id/radiogroup_pressure_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/unit_pascal"
+                        style="@style/Widget.RadioButton.Left"
+                        android:text="@string/unit_pressure_pascal"/>
 
-        <View
-            android:id="@+id/divider_units_acceleration"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radiogroup_pressure_unit"
-            style="@style/Widget.Divider.Settings"/>
+                    <RadioButton
+                        android:id="@+id/unit_bar"
+                        style="@style/Widget.RadioButton.Middle"
+                        android:text="@string/unit_pressure_bar"/>
 
-        <TextView
-            android:id="@+id/textview_title_unit_acceleration"
-            style="@style/TextAppearance.Section"
-            android:text="Motion"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_units_acceleration"/>
+                    <RadioButton
+                        android:id="@+id/unit_psi"
+                        style="@style/Widget.RadioButton.Right"
+                        android:text="@string/unit_pressure_psi"/>
 
-        <RadioGroup
-            android:id="@+id/radiogroup_acceleration_unit"
-            android:layout_width="0dp"
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_unit_acceleration">
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-            <RadioButton
-                android:id="@+id/unit_ms2"
-                style="@style/Widget.RadioButton.Left"
-                android:text="@string/unit_acceleration_ms2"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/unit_g"
-                android:text="@string/unit_acceleration_g"
-                style="@style/Widget.RadioButton.Middle"/>
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Motion"/>
 
-            <RadioButton
-                android:id="@+id/unit_gal"
-                android:text="@string/unit_acceleration_gal"
-                style="@style/Widget.RadioButton.Middle"/>
+                <RadioGroup
+                    android:id="@+id/radiogroup_acceleration_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
 
-            <RadioButton
-                android:id="@+id/unit_cms2"
-                android:text="@string/unit_acceleration_cms2"
-                style="@style/Widget.RadioButton.Right"/>
+                    <RadioButton
+                        android:id="@+id/unit_ms2"
+                        style="@style/Widget.RadioButton.Left"
+                        android:text="@string/unit_acceleration_ms2"/>
 
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/unit_g"
+                        style="@style/Widget.RadioButton.Middle"
+                        android:text="@string/unit_acceleration_g"/>
 
-        <View
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radiogroup_acceleration_unit"
-            style="@style/Widget.Divider.Settings"/>
+                    <RadioButton
+                        android:id="@+id/unit_gal"
+                        style="@style/Widget.RadioButton.Middle"
+                        android:text="@string/unit_acceleration_gal"/>
 
+                    <RadioButton
+                        android:id="@+id/unit_cms2"
+                        style="@style/Widget.RadioButton.Right"
+                        android:text="@string/unit_acceleration_cms2"/>
 
-    </android.support.constraint.ConstraintLayout>
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

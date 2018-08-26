@@ -4,318 +4,376 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/margin_default">
+    android:layout_height="match_parent">
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_data"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintGuide_percent="0.7"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <TextClock
-        android:id="@+id/textview_clock"
-        style="@style/TextAppearance.AppCompat.Display4"
+    <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/googlesans_bold"
-        android:gravity="top|start"
-        android:textColor="?android:textColorPrimary"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="8dp"
+        app:contentPadding="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="21:25"/>
-
-    <TextView
-        android:id="@+id/textview_date"
-        style="@style/TextAppearance.AppCompat.Display3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/googlesans_bold"
-        android:gravity="center_vertical|start"
-        android:textColor="?android:textColorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="22.10.2017."/>
-
-    <TextView
-        android:id="@+id/textview_day"
-        style="@style/TextAppearance.AppCompat.Display1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/googlesans_regular"
-        android:gravity="center_vertical|start"
-        android:textAllCaps="true"
-        android:textColor="?android:textColorSecondary"
-        app:layout_constraintBottom_toTopOf="@id/textview_date"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Sunday"/>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:weightSum="5"
-        app:layout_constraintStart_toEndOf="@id/guideline_data"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextClock
+            android:id="@+id/textview_clock"
+            style="@style/TextAppearance.AppCompat.Display4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/googlesans_bold"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:textColor="?android:textColorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="21:25"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="8dp"
+        app:contentPadding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textview_label_temperature"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:id="@+id/textview_day"
+                style="@style/TextAppearance.AppCompat.Display1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/googlesans_regular"
-                android:gravity="end"
+                android:gravity="center_vertical|start"
                 android:maxLines="1"
-                android:text="Temperature"
                 android:textAllCaps="true"
-                android:textColor="?android:textColorSecondary"/>
+                android:textColor="?android:textColorSecondary"
+                tools:text="Sunday"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="end"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textview_temperature"
-                    style="@style/TextAppearance.AppCompat.Display2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/googlesans_medium"
-                    android:gravity="end"
-                    android:maxLines="1"
-                    android:textColor="?android:textColorPrimary"
-                    tools:text="30"/>
-
-                <TextView
-                    android:id="@+id/textview_temperature_unit"
-                    style="@style/TextAppearance.AppCompat.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/googlesans_regular"
-                    android:gravity="bottom"
-                    android:maxLines="1"
-                    android:text="@string/unit_temperature_celsius"
-                    android:textColor="?android:textColorSecondary"/>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/textview_date"
+                style="@style/TextAppearance.AppCompat.Display3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/googlesans_bold"
+                android:gravity="center_vertical|start"
+                android:maxLines="1"
+                android:textColor="?android:textColorPrimary"
+                tools:text="22.10.2017"/>
 
         </LinearLayout>
 
-        <LinearLayout
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:weightSum="5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="4dp"
             android:layout_weight="1"
-            android:layout_marginTop="@dimen/margin_default"
-            android:gravity="end"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textview_label_humidity"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:fontFamily="@font/googlesans_regular"
-                android:gravity="end"
-                android:maxLines="1"
-                android:text="Humidity"
-                android:textAllCaps="true"
-                android:textColor="?android:textColorSecondary"/>
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:gravity="end"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textview_humidity"
-                    style="@style/TextAppearance.AppCompat.Display2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="bottom"
-                    android:fontFamily="@font/googlesans_medium"
-                    android:gravity="end"
-                    android:maxLines="1"
-                    android:textColor="?android:textColorPrimary"
-                    tools:text="68"/>
-
-                <TextView
-                    android:id="@+id/textview_humidity_unit"
-                    style="@style/TextAppearance.AppCompat.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:id="@+id/textview_label_temperature"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
                     android:fontFamily="@font/googlesans_regular"
-                    android:gravity="bottom"
-                    android:maxLines="1"
-                    android:text="@string/unit_humidity_percent"
-                    android:textColor="?android:textColorSecondary"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/margin_default"
-            android:gravity="end"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textview_label_pressure"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:fontFamily="@font/googlesans_regular"
-                android:gravity="end"
-                android:maxLines="1"
-                android:text="Pressure"
-                android:textAllCaps="true"
-                android:textColor="?android:textColorSecondary"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="end"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textview_pressure"
-                    style="@style/TextAppearance.AppCompat.Display2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/googlesans_medium"
                     android:gravity="end"
                     android:maxLines="1"
-                    android:textColor="?android:textColorPrimary"
-                    tools:text="1000"/>
-
-                <TextView
-                    android:id="@+id/textview_pressure_unit"
-                    style="@style/TextAppearance.AppCompat.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/googlesans_regular"
-                    android:gravity="bottom"
-                    android:maxLines="1"
-                    android:text="@string/unit_pressure_pascal"
-                    android:textColor="?android:textColorSecondary"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/margin_default"
-            android:gravity="end"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textview_label_iaq"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:fontFamily="@font/googlesans_regular"
-                android:gravity="end"
-                android:maxLines="1"
-                android:text="Air quality"
-                android:textAllCaps="true"
-                android:textColor="?android:textColorSecondary"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="end"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textview_iaq"
-                    style="@style/TextAppearance.AppCompat.Display2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/googlesans_medium"
-                    android:gravity="end"
-                    android:maxLines="1"
+                    android:text="Temperature"
                     android:textAllCaps="true"
-                    android:textColor="?android:textColorPrimary"
-                    tools:text="Good"/>
+                    android:textColor="?android:textColorSecondary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textview_temperature"
+                        style="@style/TextAppearance.AppCompat.Display2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:textColor="?android:textColorPrimary"
+                        tools:text="30"/>
+
+                    <TextView
+                        android:id="@+id/textview_temperature_unit"
+                        style="@style/TextAppearance.AppCompat.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:gravity="bottom"
+                        android:maxLines="1"
+                        android:text="@string/unit_temperature_celsius"
+                        android:textColor="?android:textColorSecondary"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </android.support.v7.widget.CardView>
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="4dp"
             android:layout_weight="1"
-            android:layout_marginTop="@dimen/margin_default"
-            android:gravity="end"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textview_label_motion"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:fontFamily="@font/googlesans_regular"
-                android:gravity="end"
-                android:maxLines="1"
-                android:text="Motion"
-                android:textAllCaps="true"
-                android:textColor="?android:textColorSecondary"/>
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:gravity="end"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textview_motion"
-                    style="@style/TextAppearance.AppCompat.Display2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/googlesans_medium"
+                    android:id="@+id/textview_label_humidity"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:fontFamily="@font/googlesans_regular"
                     android:gravity="end"
                     android:maxLines="1"
-                    android:textColor="?android:textColorPrimary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/textview_motion_unit"
-                    app:layout_constraintStart_toStartOf="@id/guideline_data"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_label_motion"
-                    tools:text="0.3"/>
-
-                <TextView
-                    android:id="@+id/textview_motion_unit"
-                    style="@style/TextAppearance.AppCompat.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/googlesans_regular"
-                    android:gravity="bottom"
-                    android:maxLines="1"
-                    android:text="@string/unit_acceleration_ms2"
+                    android:text="Humidity"
+                    android:textAllCaps="true"
                     android:textColor="?android:textColorSecondary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textview_humidity"
+                        style="@style/TextAppearance.AppCompat.Display2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="bottom"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:textColor="?android:textColorPrimary"
+                        tools:text="68"/>
+
+                    <TextView
+                        android:id="@+id/textview_humidity_unit"
+                        style="@style/TextAppearance.AppCompat.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:gravity="bottom"
+                        android:maxLines="1"
+                        android:text="@string/unit_humidity_percent"
+                        android:textColor="?android:textColorSecondary"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview_label_pressure"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:fontFamily="@font/googlesans_regular"
+                    android:gravity="end"
+                    android:maxLines="1"
+                    android:text="Pressure"
+                    android:textAllCaps="true"
+                    android:textColor="?android:textColorSecondary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textview_pressure"
+                        style="@style/TextAppearance.AppCompat.Display2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:textColor="?android:textColorPrimary"
+                        tools:text="1000"/>
+
+                    <TextView
+                        android:id="@+id/textview_pressure_unit"
+                        style="@style/TextAppearance.AppCompat.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:gravity="bottom"
+                        android:maxLines="1"
+                        android:text="@string/unit_pressure_pascal"
+                        android:textColor="?android:textColorSecondary"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview_label_iaq"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:fontFamily="@font/googlesans_regular"
+                    android:gravity="end"
+                    android:maxLines="1"
+                    android:text="Air quality"
+                    android:textAllCaps="true"
+                    android:textColor="?android:textColorSecondary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textview_iaq"
+                        style="@style/TextAppearance.AppCompat.Display2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:textAllCaps="true"
+                        android:textColor="?android:textColorPrimary"
+                        tools:text="Good"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview_label_motion"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:fontFamily="@font/googlesans_regular"
+                    android:gravity="end"
+                    android:maxLines="1"
+                    android:text="Motion"
+                    android:textAllCaps="true"
+                    android:textColor="?android:textColorSecondary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textview_motion"
+                        style="@style/TextAppearance.AppCompat.Display2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:textColor="?android:textColorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/textview_motion_unit"
+                        app:layout_constraintTop_toBottomOf="@+id/textview_label_motion"
+                        tools:text="0.3"/>
+
+                    <TextView
+                        android:id="@+id/textview_motion_unit"
+                        style="@style/TextAppearance.AppCompat.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:gravity="bottom"
+                        android:maxLines="1"
+                        android:text="@string/unit_acceleration_ms2"
+                        android:textColor="?android:textColorSecondary"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 

@@ -3,7 +3,7 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.Group;
+import android.support.v7.widget.CardView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +36,8 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
 
     private long settingsId = -1L;
 
-    @BindView(R.id.group_bluetooth)
-    public Group groupBluetooth;
+    @BindView(R.id.cardview_bluetooth)
+    public CardView cardViewBluetooth;
 
     @BindView(R.id.switch_bluetooth_on_off)
     public Switch switchBluetoothOnOff;
@@ -45,8 +45,11 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     @BindView(R.id.progressbar_bluetooth)
     public ProgressBar progressBarBluetooth;
 
-    @BindView(R.id.group_wifi)
-    public Group groupWiFi;
+    @BindView(R.id.cardview_wireless)
+    public CardView cardViewWireless;
+
+    @BindView(R.id.cardview_servers)
+    public CardView cardViewServers;
 
     @BindView(R.id.switch_wifi_on_off)
     public Switch switchWifiOnOff;
@@ -151,7 +154,7 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
 
     @Override
     public void onHasBluetooth(boolean hasBluetooth) {
-        groupBluetooth.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
+        cardViewBluetooth.setVisibility(hasBluetooth ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -182,7 +185,8 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
 
     @Override
     public void onHasWifi(boolean hasWifi) {
-        groupWiFi.setVisibility(hasWifi ? View.VISIBLE : View.GONE);
+        cardViewWireless.setVisibility(hasWifi ? View.VISIBLE : View.GONE);
+        cardViewServers.setVisibility(hasWifi ? View.VISIBLE : View.GONE);
     }
 
     @Override

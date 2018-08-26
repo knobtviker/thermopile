@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/appbar_layout"
@@ -48,172 +47,171 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
-        <TextView
-            android:id="@+id/textview_title_temperature"
-            style="@style/TextAppearance.Section"
-            android:text="Temperature"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <com.knobtviker.thermopile.presentation.views.DiscreteSeekBar
-            android:id="@+id/seekbar_temperature"
-            android:layout_width="0dp"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginTop="72dp"
-            android:layout_marginRight="@dimen/margin_default"
-            app:discrete_bubble_color="@color/colorAccent"
-            app:discrete_bubble_text_color="@color/white"
-            app:discrete_is_float_type="false"
-            app:discrete_max="35"
-            app:discrete_min="5"
-            app:discrete_progress="0"
-            app:discrete_section_count="30"
-            app:discrete_section_text_position="sides"
-            app:discrete_seek_by_section="true"
-            app:discrete_seek_step_section="true"
-            app:discrete_show_progress_in_float="true"
-            app:discrete_show_section_mark="true"
-            app:discrete_show_section_text="true"
-            app:discrete_show_thumb_text="true"
-            app:discrete_thumb_color="@color/colorAccent"
-            app:discrete_thumb_radius="8dp"
-            app:discrete_thumb_radius_on_dragging="4dp"
-            app:discrete_thumb_text_color="?android:textColorPrimary"
-            app:discrete_touch_to_seek="true"
-            app:discrete_track_color="?android:textColorSecondary"
-            app:discrete_unit="@string/unit_temperature_celsius"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_temperature"/>
-
-        <com.knobtviker.thermopile.presentation.views.TemperatureGradientView
-            android:layout_width="0dp"
-            android:layout_height="?attr/listPreferredItemHeightSmall"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:background="@drawable/background_discrete_seekbar_decoration"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_temperature"/>
-
-        <View
-            android:id="@+id/divider_temperature"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/seekbar_temperature"/>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_temperature">
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline_split"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintGuide_percent="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
             <LinearLayout
-                android:id="@+id/layout_start_time"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/margin_default"
-                android:paddingRight="@dimen/margin_small"
-                app:layout_constraintEnd_toStartOf="@id/guideline_split"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textview_time_start_label"
-                    style="@style/TextAppearance.Section.Borderless.Colored"
-                    android:text="Start time"/>
+                    style="@style/TextAppearance.Section"
+                    android:text="Temperature"/>
 
-                <TextView
-                    android:id="@+id/textview_time_start"
-                    style="@style/TextAppearance.Borderless.Colored"
-                    tools:text="14:28"/>
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.knobtviker.thermopile.presentation.views.TemperatureGradientView
+                        android:layout_width="0dp"
+                        android:layout_height="?attr/listPreferredItemHeightSmall"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginTop="@dimen/margin_default"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:background="@drawable/background_discrete_seekbar_decoration"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <com.knobtviker.thermopile.presentation.views.DiscreteSeekBar
+                        android:id="@+id/seekbar_temperature"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginTop="72dp"
+                        android:layout_marginRight="@dimen/margin_default"
+                        app:discrete_bubble_color="@color/colorAccent"
+                        app:discrete_bubble_text_color="@color/white"
+                        app:discrete_is_float_type="false"
+                        app:discrete_max="35"
+                        app:discrete_min="5"
+                        app:discrete_progress="0"
+                        app:discrete_section_count="30"
+                        app:discrete_section_text_position="sides"
+                        app:discrete_seek_by_section="true"
+                        app:discrete_seek_step_section="true"
+                        app:discrete_show_progress_in_float="true"
+                        app:discrete_show_section_mark="true"
+                        app:discrete_show_section_text="true"
+                        app:discrete_show_thumb_text="true"
+                        app:discrete_thumb_color="@color/colorAccent"
+                        app:discrete_thumb_radius="8dp"
+                        app:discrete_thumb_radius_on_dragging="4dp"
+                        app:discrete_thumb_text_color="?android:textColorPrimary"
+                        app:discrete_touch_to_seek="true"
+                        app:discrete_track_color="?android:textColorSecondary"
+                        app:discrete_unit="@string/unit_temperature_celsius"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                </android.support.constraint.ConstraintLayout>
 
             </LinearLayout>
 
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
+
             <LinearLayout
-                android:id="@+id/layout_end_time"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/margin_small"
-                android:paddingRight="@dimen/margin_default"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/guideline_split"
-                app:layout_constraintTop_toTopOf="parent">
+                android:weightSum="2">
 
-                <TextView
-                    android:id="@+id/textview_time_end_label"
-                    style="@style/TextAppearance.Section.Borderless.Colored"
-                    android:text="End time"/>
+                <LinearLayout
+                    android:id="@+id/layout_start_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/margin_small">
 
-                <TextView
-                    android:id="@+id/textview_time_end"
-                    style="@style/TextAppearance.Borderless.Colored"
-                    tools:text="23:42"/>
+                    <TextView
+                        android:id="@+id/textview_time_start_label"
+                        style="@style/TextAppearance.Section.Borderless.Colored"
+                        android:text="Start time"/>
+
+                    <TextView
+                        android:id="@+id/textview_time_start"
+                        style="@style/TextAppearance.Borderless.Colored"
+                        tools:text="14:28"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_end_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/margin_small">
+
+                    <TextView
+                        android:id="@+id/textview_time_end_label"
+                        style="@style/TextAppearance.Section.Borderless.Colored"
+                        android:text="End time"/>
+
+                    <TextView
+                        android:id="@+id/textview_time_end"
+                        style="@style/TextAppearance.Borderless.Colored"
+                        tools:text="23:42"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
 
-        <View
-            android:id="@+id/divider_time"
-            style="@style/Widget.Divider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_time"/>
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-        <TextView
-            android:id="@+id/textview_title_color"
-            style="@style/TextAppearance.Section"
-            android:text="Color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_time"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_colors"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_default"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_color"/>
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Color"/>
 
-    </android.support.constraint.ConstraintLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerview_colors"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

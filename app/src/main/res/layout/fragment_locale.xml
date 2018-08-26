@@ -3,84 +3,81 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textview_title_timezone"
-            style="@style/TextAppearance.Section"
-            android:text="Timezone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <Spinner
-            android:id="@+id/spinner_timezone"
-            android:layout_width="0dp"
-            android:layout_height="?attr/listPreferredItemHeightSmall"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_default"
-            android:spinnerMode="dialog"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_timezone"/>
-
-        <View
-            android:id="@+id/divider_timezone"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinner_timezone"/>
-
-        <TextView
-            android:id="@+id/textview_title_clock_mode"
-            style="@style/TextAppearance.Section"
-            android:text="Clock mode"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_timezone"/>
-
-        <RadioGroup
-            android:id="@+id/radiogroup_clock_mode"
-            android:layout_width="0dp"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_clock_mode">
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-            <RadioButton
-                android:id="@+id/mode_12h"
-                android:text="12h"
-                style="@style/Widget.RadioButton.Left"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/mode_24h"
-                android:text="24h"
-                style="@style/Widget.RadioButton.Right"/>
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Timezone"/>
 
-        </RadioGroup>
+                <Spinner
+                    android:id="@+id/spinner_timezone"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/listPreferredItemHeightSmall"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:spinnerMode="dialog"/>
 
-        <View
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radiogroup_clock_mode"/>
+            </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Clock mode"/>
+
+                <RadioGroup
+                    android:id="@+id/radiogroup_clock_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RadioButton
+                        android:id="@+id/mode_12h"
+                        style="@style/Widget.RadioButton.Left"
+                        android:text="12h"/>
+
+                    <RadioButton
+                        android:id="@+id/mode_24h"
+                        style="@style/Widget.RadioButton.Right"
+                        android:text="24h"/>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

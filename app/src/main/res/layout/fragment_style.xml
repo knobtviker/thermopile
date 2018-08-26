@@ -2,87 +2,87 @@
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textview_title_theme"
-            style="@style/TextAppearance.Section"
-            android:text="Theme"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <RadioGroup
-            android:id="@+id/radiogroup_theme"
-            android:layout_width="0dp"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_theme">
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-            <RadioButton
-                android:id="@+id/light"
-                style="@style/Widget.RadioButton.Left"
-                android:text="Light"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/dark"
-                style="@style/Widget.RadioButton.Middle"
-                android:text="Dark"/>
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Theme"/>
 
-            <RadioButton
-                android:id="@+id/automatic"
-                style="@style/Widget.RadioButton.Right"
-                android:text="Automatic"/>
+                <RadioGroup
+                    android:id="@+id/radiogroup_theme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/light"
+                        style="@style/Widget.RadioButton.Left"
+                        android:text="Light"/>
 
-        <View
-            android:id="@+id/divider_theme"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radiogroup_theme"/>
+                    <RadioButton
+                        android:id="@+id/dark"
+                        style="@style/Widget.RadioButton.Middle"
+                        android:text="Dark"/>
 
-        <TextView
-            android:id="@+id/textview_title_timeout"
-            style="@style/TextAppearance.Section"
-            android:text="Screensaver timeout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_theme"/>
+                    <RadioButton
+                        android:id="@+id/automatic"
+                        style="@style/Widget.RadioButton.Right"
+                        android:text="Automatic"/>
 
-        <Spinner
-            android:id="@+id/spinner_timeout"
-            android:layout_width="0dp"
-            android:layout_height="?attr/listPreferredItemHeightSmall"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_default"
-            android:spinnerMode="dialog"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_timeout"/>
+                </RadioGroup>
 
-        <View
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinner_timeout"/>
+            </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Screensaver timeout"/>
+
+                <Spinner
+                    android:id="@+id/spinner_timeout"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/listPreferredItemHeightSmall"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:spinnerMode="dialog"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

@@ -3,204 +3,162 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textview_title_bluetooth"
-            style="@style/TextAppearance.Section"
-            android:text="Bluetooth"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <Switch
-            android:id="@+id/switch_bluetooth_on_off"
-            android:layout_width="0dp"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardview_bluetooth"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_default"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:text="Off"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_bluetooth"/>
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-        <ProgressBar
-            android:id="@+id/progressbar_bluetooth"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Bluetooth"/>
+
+                <Switch
+                    android:id="@+id/switch_bluetooth_on_off"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/listPreferredItemHeightSmall"
+                    android:enabled="false"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:text="Off"/>
+
+                <ProgressBar
+                    android:id="@+id/progressbar_bluetooth"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:indeterminateOnly="true"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardview_wireless"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateOnly="true"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_on_off"/>
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-        <View
-            android:id="@+id/divider_bluetooth"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_bluetooth_on_off"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <android.support.constraint.Group
-            tools:ignore="MissingConstraints"
-            android:id="@+id/group_bluetooth"
-            android:layout_width="wrap_content"
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="WiFi"/>
+
+                <Switch
+                    android:id="@+id/switch_wifi_on_off"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/listPreferredItemHeightSmall"
+                    android:enabled="false"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:text="Off"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_wifi_connected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:minHeight="?attr/listPreferredItemHeightSmall"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textview_wifi_ssid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:textColor="?android:textColorPrimary"
+                            tools:text="Knobtviker"/>
+
+                        <TextView
+                            android:id="@+id/textview_ip_wifi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            android:textColor="?android:textColorSecondary"
+                            tools:text="192.168.1.244"/>
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_next"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardview_servers"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="textview_title_bluetooth, switch_bluetooth_on_off, divider_bluetooth"/>
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:contentPadding="8dp">
 
-        <TextView
-            android:id="@+id/textview_title_wifi"
-            style="@style/TextAppearance.Section"
-            android:text="WiFi"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_bluetooth"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Switch
-            android:id="@+id/switch_wifi_on_off"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_default"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:text="Off"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_wifi"/>
+                <TextView
+                    style="@style/TextAppearance.Section"
+                    android:text="Servers"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_wifi_connected"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackground"
-            android:minHeight="?attr/listPreferredItemHeightSmall"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_default"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_wifi_on_off">
+                <Switch
+                    android:id="@+id/switch_server_http"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/listPreferredItemHeightSmall"
+                    android:enabled="false"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:text="HTTP"/>
 
-            <ImageView
-                android:id="@+id/imageview_arrow_next"
-                android:src="@drawable/ic_arrow_next"
-                android:layout_width="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_height="wrap_content"/>
+                <Switch
+                    android:id="@+id/switch_server_websocket"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/listPreferredItemHeightSmall"
+                    android:enabled="false"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:text="Websocket"/>
 
-            <TextView
-                android:id="@+id/textview_wifi_ssid"
-                android:layout_width="0dp"
-                tools:text="Knobtviker"
-                android:textColor="?android:textColorPrimary"
-                app:layout_constraintTop_toTopOf="parent"
-                android:gravity="center_vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/imageview_arrow_next"
-                app:layout_constraintBottom_toTopOf="@+id/textview_ip_wifi"
-                android:layout_height="0dp"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/textview_ip_wifi"
-                android:layout_width="0dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="?android:textColorSecondary"
-                app:layout_constraintTop_toBottomOf="@id/textview_wifi_ssid"
-                app:layout_constraintEnd_toStartOf="@id/imageview_arrow_next"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:gravity="center_vertical"
-                tools:text="192.168.1.244"
-                android:layout_height="0dp"/>
+        </android.support.v7.widget.CardView>
 
-        </android.support.constraint.ConstraintLayout>
-
-        <View
-            android:id="@+id/divider_wifi"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_wifi_connected"/>
-
-        <android.support.constraint.Group
-            android:id="@+id/group_wifi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="textview_title_wifi, switch_wifi_on_off, layout_wifi_connected, divider_wifi"
-            tools:ignore="MissingConstraints"/>
-
-        <TextView
-            android:id="@+id/textview_title_servers"
-            style="@style/TextAppearance.Section"
-            android:text="Servers"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_wifi"/>
-
-        <Switch
-            android:id="@+id/switch_server_http"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_default"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:text="HTTP"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_servers"/>
-
-        <Switch
-            android:id="@+id/switch_server_websocket"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingLeft="@dimen/margin_default"
-            android:paddingRight="@dimen/margin_default"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:text="Websocket"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_server_http"/>
-
-        <View
-            android:id="@+id/divider_servers"
-            style="@style/Widget.Divider.Settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_server_websocket"/>
-
-        <android.support.constraint.Group
-            tools:ignore="MissingConstraints"
-            android:id="@+id/group_servers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="textview_title_servers, switch_server_http, switch_server_websocket, divider_servers"/>
-
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
