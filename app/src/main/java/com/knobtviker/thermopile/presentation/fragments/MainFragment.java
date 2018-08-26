@@ -258,15 +258,15 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         }
     }
 
-    @OnClick({R.id.floatingactionbutton_down, R.id.floatingactionbutton_up, R.id.button_charts, R.id.button_schedule, R.id.button_settings})
+    @OnClick({R.id.button_decrease, R.id.button_increase, R.id.button_charts, R.id.button_schedule, R.id.button_settings})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
-            case R.id.floatingactionbutton_down:
+            case R.id.button_decrease:
 //                RelayRawDataSource.getInstance()
 //                    .on()
 //                    .subscribe();
                 break;
-            case R.id.floatingactionbutton_up:
+            case R.id.button_increase:
 //                RelayRawDataSource.getInstance()
 //                    .off()
 //                    .subscribe();

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="iaq_0_50">#00e400</color>
+    <color name="iaq_51_100">#ffff00</color>
+    <color name="iaq_101_200">#ff7e00</color>
+    <color name="iaq_201_300">#ff0000</color>
+    <color name="iaq_301_400">#99004c</color>
+    <color name="iaq_401_500">#000000</color>
+
+    <array name="colors_iaq">
+        <item>@color/iaq_0_50</item>
+        <item>@color/iaq_51_100</item>
+        <item>@color/iaq_101_200</item>
+        <item>@color/iaq_201_300</item>
+        <item>@color/iaq_301_400</item>
+        <item>@color/iaq_401_500</item>
+    </array>
+
+    <array name="colors_iaq_500">
+        <item>@color/light_green_500</item>
+        <item>@color/yellow_500</item>
+        <item>@color/orange_500</item>
+        <item>@color/red_500</item>
+        <item>@color/pink_500</item>
+        <item>@color/black</item>
+    </array>
+
+</resources>

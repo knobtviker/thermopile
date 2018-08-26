@@ -18,6 +18,7 @@
         android:allowBackup="false"
         android:extractNativeLibs="false"
         android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="true"
         tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data

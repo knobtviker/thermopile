@@ -99,6 +99,7 @@ dependencies {
     implementation deps.android.appcompat
     implementation deps.android.design
     implementation deps.android.recyclerview
+    implementation deps.android.cardsview
     implementation deps.android.constraint
 
     implementation deps.android.navigation.fragment

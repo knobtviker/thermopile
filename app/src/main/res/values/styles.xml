@@ -129,6 +129,11 @@
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
+    <style name="Widget.Button.Action" parent="Widget.AppCompat.ActionButton">
+        <item name="android:layout_width">?attr/listPreferredItemHeightSmall</item>
+        <item name="android:layout_height">?attr/listPreferredItemHeightSmall</item>
+    </style>
+
     <style name="Widget.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:button">@null</item>

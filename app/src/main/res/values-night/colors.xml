@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#A4C639</color>
-
-    <color name="background_appbar">#212121</color>
     <color name="background">#303030</color>
-
-    <color name="background_arc_track">#424242</color>
-    <color name="background_fab">#616161</color>
-    <color name="background_bottom_sheet">#212121</color>
+    <color name="background_arc_track">#616161</color>
     <color name="background_divider">#E0E0E0</color>
-
     <color name="background_radiobutton_stroke">#c6c6c6</color>
 
     <color name="textcolor_radiobutton_default">#ffffff</color>
