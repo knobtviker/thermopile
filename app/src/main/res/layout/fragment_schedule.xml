@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true">
@@ -49,260 +48,162 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/layout_days"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:orientation="vertical"
+        android:weightSum="7"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar_layout">
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline_days"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintGuide_begin="@dimen/guideline_schedule"
-            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/textview_day_monday"
             style="@style/TextAppearance.Schedule.Day"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/day_monday"
-            app:layout_constraintBottom_toTopOf="@+id/divider_monday"
-            app:layout_constraintEnd_toStartOf="@id/guideline_days"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_default="spread"/>
-
-        <View
-            android:id="@+id/divider_monday"
-            style="@style/Widget.Divider.Schedule"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_tuesday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_monday"/>
+            android:text="@string/day_monday"/>
 
         <TextView
             android:id="@+id/textview_day_tuesday"
             style="@style/TextAppearance.Schedule.Day"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/day_tuesday"
-            app:layout_constraintBottom_toTopOf="@+id/divider_tuesday"
-            app:layout_constraintEnd_toStartOf="@id/guideline_days"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_monday"
-            app:layout_constraintWidth_default="spread"/>
-
-        <View
-            android:id="@+id/divider_tuesday"
-            style="@style/Widget.Divider.Schedule"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_wednesday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_tuesday"/>
+            android:text="@string/day_tuesday"/>
 
         <TextView
             android:id="@+id/textview_day_wednesday"
             style="@style/TextAppearance.Schedule.Day"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/day_wednesday"
-            app:layout_constraintBottom_toTopOf="@+id/divider_wednesday"
-            app:layout_constraintEnd_toStartOf="@id/guideline_days"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_tuesday"
-            app:layout_constraintWidth_default="spread"/>
-
-        <View
-            android:id="@+id/divider_wednesday"
-            style="@style/Widget.Divider.Schedule"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_thursday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_wednesday"/>
+            android:text="@string/day_wednesday"/>
 
         <TextView
             android:id="@+id/textview_day_thursday"
             style="@style/TextAppearance.Schedule.Day"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/day_thursday"
-            app:layout_constraintBottom_toTopOf="@+id/divider_thursday"
-            app:layout_constraintEnd_toStartOf="@id/guideline_days"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_wednesday"
-            app:layout_constraintWidth_default="spread"/>
-
-        <View
-            android:id="@+id/divider_thursday"
-            style="@style/Widget.Divider.Schedule"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_friday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_thursday"/>
+            android:text="@string/day_thursday"/>
 
         <TextView
             android:id="@+id/textview_day_friday"
             style="@style/TextAppearance.Schedule.Day"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/day_friday"
-            app:layout_constraintBottom_toTopOf="@+id/divider_friday"
-            app:layout_constraintEnd_toStartOf="@id/guideline_days"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_thursday"
-            app:layout_constraintWidth_default="spread"/>
-
-        <View
-            android:id="@+id/divider_friday"
-            style="@style/Widget.Divider.Schedule"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_saturday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_friday"/>
+            android:text="@string/day_friday"/>
 
         <TextView
             android:id="@+id/textview_day_saturday"
             style="@style/TextAppearance.Schedule.Day"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/day_saturday"
-            app:layout_constraintBottom_toTopOf="@+id/divider_saturday"
-            app:layout_constraintEnd_toStartOf="@id/guideline_days"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_friday"
-            app:layout_constraintWidth_default="spread"/>
-
-        <View
-            android:id="@+id/divider_saturday"
-            style="@style/Widget.Divider.Schedule"
-            app:layout_constraintBottom_toTopOf="@+id/textview_day_sunday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_day_saturday"/>
+            android:text="@string/day_saturday"/>
 
         <TextView
             android:id="@+id/textview_day_sunday"
             style="@style/TextAppearance.Schedule.Day"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/day_sunday"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guideline_days"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_saturday"
-            app:layout_constraintWidth_default="spread"/>
+            android:text="@string/day_sunday"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout_days"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_hours_monday"
-            style="@style/Widget.Schedule.DayHours"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_monday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintTop_toTopOf="@id/textview_day_monday"
-            app:layout_constraintWidth_default="spread"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_hours_tuesday"
-            style="@style/Widget.Schedule.DayHours"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_tuesday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintTop_toTopOf="@id/textview_day_tuesday"
-            app:layout_constraintWidth_default="spread"/>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_hours_monday"
+                style="@style/Widget.Schedule.DayHours"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/layout_hours_tuesday"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="spread"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_hours_wednesday"
-            style="@style/Widget.Schedule.DayHours"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_wednesday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintTop_toTopOf="@id/textview_day_wednesday"
-            app:layout_constraintWidth_default="spread"/>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_hours_tuesday"
+                style="@style/Widget.Schedule.DayHours"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/layout_hours_wednesday"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_hours_monday"
+                app:layout_constraintWidth_default="spread"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_hours_thursday"
-            style="@style/Widget.Schedule.DayHours"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_thursday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintTop_toTopOf="@id/textview_day_thursday"
-            app:layout_constraintWidth_default="spread"/>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_hours_wednesday"
+                style="@style/Widget.Schedule.DayHours"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/layout_hours_thursday"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_hours_tuesday"
+                app:layout_constraintWidth_default="spread"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_hours_friday"
-            style="@style/Widget.Schedule.DayHours"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_friday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintTop_toTopOf="@id/textview_day_friday"
-            app:layout_constraintWidth_default="spread"/>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_hours_thursday"
+                style="@style/Widget.Schedule.DayHours"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/layout_hours_friday"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_hours_wednesday"
+                app:layout_constraintWidth_default="spread"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_hours_saturday"
-            style="@style/Widget.Schedule.DayHours"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_saturday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintTop_toTopOf="@id/textview_day_saturday"
-            app:layout_constraintWidth_default="spread"/>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_hours_friday"
+                style="@style/Widget.Schedule.DayHours"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/layout_hours_saturday"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_hours_thursday"
+                app:layout_constraintWidth_default="spread"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layout_hours_sunday"
-            style="@style/Widget.Schedule.DayHours"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/textview_day_sunday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="spread"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/guideline_days"
-            app:layout_constraintTop_toTopOf="@id/textview_day_sunday"
-            app:layout_constraintWidth_default="spread"/>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_hours_saturday"
+                style="@style/Widget.Schedule.DayHours"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/layout_hours_sunday"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_hours_friday"
+                app:layout_constraintWidth_default="spread"/>
 
-    </android.support.constraint.ConstraintLayout>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_hours_sunday"
+                style="@style/Widget.Schedule.DayHours"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_hours_saturday"
+                app:layout_constraintWidth_default="spread"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
 
 </android.support.constraint.ConstraintLayout>

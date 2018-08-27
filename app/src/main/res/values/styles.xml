@@ -13,6 +13,9 @@
     <style name="TextAppearance.Schedule.Day" parent="TextAppearance.AppCompat.Caption">
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:layout_gravity">center_vertical|left</item>
         <item name="android:gravity">center_vertical|left</item>
@@ -23,13 +26,13 @@
 
     <style name="Widget.Schedule.DayHours" parent="android:Widget">
         <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/background_border_bottom</item>
         <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:paddingTop">1dp</item>
         <item name="android:paddingBottom">1dp</item>
     </style>
 
     <style name="Widget.BottomNavigationView" parent="Widget.Design.BottomNavigationView">
-        <item name="android:background">@drawable/background_border_top</item>
         <item name="itemTextAppearanceActive">@style/TextAppearance.Item.BottomNavigationView.Active</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.Item.BottomNavigationView.Inactive</item>
         <item name="labelVisibilityMode">labeled</item>
@@ -156,14 +159,7 @@
         <item name="android:background">@drawable/selector_background_radiobutton_right</item>
     </style>
 
-    <style name="Widget.Divider.Settings" parent="Widget.Divider">
-        <item name="android:layout_marginTop">@dimen/margin_default</item>
-    </style>
-
-    <style name="Widget.Divider.Schedule" parent="Widget.Divider">
-    </style>
-
-    <style name="Widget.Divider" parent="android:Widget">
+    <style name="Widget.Divider.Schedule" parent="android:Widget">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">@color/background_divider</item>

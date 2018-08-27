@@ -12,6 +12,20 @@ import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+    // Possible solution to DayNight mixed resources issue.
+    // https://issuetracker.google.com/issues/37083803
+    // https://issuetracker.google.com/issues/37110398
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        final int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//
+//        if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+//            newConfig.uiMode = (newConfig.uiMode & ~Configuration.UI_MODE_NIGHT_MASK) | Configuration.UI_MODE_NIGHT_YES;
+//        }
+//
+//        super.onConfigurationChanged(newConfig);
+//    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (this.getClass().getSimpleName().equalsIgnoreCase(ScreenSaverActivity.class.getSimpleName())) {
