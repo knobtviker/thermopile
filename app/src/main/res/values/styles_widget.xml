@@ -1,0 +1,47 @@
+<resources>
+
+    <style name="Widget.Schedule.DayHours" parent="android:Widget">
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/background_border_bottom</item>
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:paddingTop">1dp</item>
+        <item name="android:paddingBottom">1dp</item>
+    </style>
+
+    <style name="Widget.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemTextAppearanceActive">@style/TextAppearance.Item.BottomNavigationView.Active</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.Item.BottomNavigationView.Inactive</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemIconTint">@drawable/selector_bottomnavigation_icon_tint</item>
+        <item name="itemTextColor">@drawable/selector_bottomnavigation_text_color</item>
+    </style>
+
+    <style name="Widget.Button.Action" parent="Widget.MaterialComponents.Button.UnelevatedButton.Icon">
+        <item name="android:layout_width">?attr/listPreferredItemHeightSmall</item>
+        <item name="android:layout_height">?attr/listPreferredItemHeightSmall</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="Widget.RadioButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@drawable/textcolor_radiobutton</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:layout_height">@dimen/height_radiobutton</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="Widget.RadioButton.Left" parent="Widget.RadioButton">
+        <item name="android:background">@drawable/selector_background_radiobutton_left</item>
+    </style>
+
+    <style name="Widget.RadioButton.Middle" parent="Widget.RadioButton">
+        <item name="android:background">@drawable/selector_background_radiobutton_middle</item>
+    </style>
+
+    <style name="Widget.RadioButton.Right" parent="Widget.RadioButton">
+        <item name="android:background">@drawable/selector_background_radiobutton_right</item>
+    </style>
+
+</resources>

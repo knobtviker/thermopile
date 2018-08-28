@@ -8,31 +8,26 @@
     <fragment
         android:id="@+id/formatsFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.FormatsFragment"
-        android:label="FormatsFragment"
         tools:layout="@layout/fragment_formats"/>
 
     <fragment
         android:id="@+id/unitsFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.UnitsFragment"
-        android:label="UnitsFragment"
         tools:layout="@layout/fragment_units"/>
 
     <fragment
         android:id="@+id/localeFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.LocaleFragment"
-        android:label="LocaleFragment"
         tools:layout="@layout/fragment_locale"/>
 
     <fragment
         android:id="@+id/styleFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.StyleFragment"
-        android:label="StyleFragment"
         tools:layout="@layout/fragment_style"/>
 
     <fragment
         android:id="@+id/networkFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.NetworkFragment"
-        android:label="NetworkFragment"
         tools:layout="@layout/fragment_network">
         <action
             android:id="@+id/showWirelessAction"
@@ -46,7 +41,6 @@
     <activity
         android:id="@+id/wirelessActivity"
         android:name="com.knobtviker.thermopile.presentation.activities.WirelessActivity"
-        android:label="WirelessActivity"
         tools:layout="@layout/activity_wireless"/>
 
 </navigation>

@@ -1,0 +1,25 @@
+<resources>
+
+    <!--Spark-->
+    <style name="spark_SparkView">
+        <item name="spark_lineColor">@color/spark_line_color</item>
+        <item name="spark_lineWidth">@dimen/spark_line_width</item>
+        <item name="spark_cornerRadius">@dimen/spark_corner_radius</item>
+        <item name="spark_fillColor">@color/spark_fill_color</item>
+
+        <item name="spark_baseLineColor">@color/spark_base_line_color</item>
+        <item name="spark_baseLineWidth">@dimen/spark_base_line_width</item>
+
+        <item name="spark_scrubLineColor">@color/spark_scrub_line_color</item>
+        <item name="spark_scrubLineWidth">@dimen/spark_scrub_line_width</item>
+        <item name="spark_scrubEnabled">false</item>
+        <item name="spark_animateChanges">true</item>
+
+        <item name="spark_fadeLengthLeft">0dp</item>
+        <item name="spark_fadeLengthRight">0dp</item>
+
+        <item name="spark_lineUnderColor">@color/spark_line_under_color</item>
+        <item name="spark_clipAmount">1.0</item>
+    </style>
+
+</resources>

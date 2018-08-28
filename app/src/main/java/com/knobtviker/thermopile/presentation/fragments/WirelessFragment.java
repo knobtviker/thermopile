@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -43,13 +42,6 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
     private WirelessAdapter adapter;
 
     public WirelessFragment() {
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -78,15 +70,6 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
         Timber.e(throwable);
 
         Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
-    }
-
-    @OnClick({R.id.button_discard})
-    public void onClicked(@NonNull final View view) {
-        switch (view.getId()) {
-            case R.id.button_discard:
-                back();
-                break;
-        }
     }
 
     private void setupRecyclerView() {

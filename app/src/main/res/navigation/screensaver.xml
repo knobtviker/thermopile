@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/screensaverFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.ScreensaverFragment"
-        android:label="ScreensaverFragment"
         tools:layout="@layout/fragment_screensaver"/>
 
 </navigation>

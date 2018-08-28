@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/wirelessFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.WirelessFragment"
-        android:label="WirelessFragment"
         tools:layout="@layout/fragment_wireless"/>
 
 </navigation>

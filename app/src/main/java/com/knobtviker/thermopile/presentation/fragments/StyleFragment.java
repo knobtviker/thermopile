@@ -61,10 +61,6 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     @BindView(R.id.spinner_timeout)
     public Spinner spinnerTimeout;
 
-    public StyleFragment() {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

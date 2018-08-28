@@ -61,10 +61,6 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     @BindView(R.id.mode_24h)
     public RadioButton radioButton24h;
 
-    public LocaleFragment() {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

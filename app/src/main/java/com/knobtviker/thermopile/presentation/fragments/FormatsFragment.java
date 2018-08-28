@@ -51,9 +51,6 @@ public class FormatsFragment extends BaseFragment<FormatsContract.Presenter> imp
     @BindView(R.id.spinner_time_format)
     public Spinner spinnerFormatTime;
 
-    public FormatsFragment() {
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

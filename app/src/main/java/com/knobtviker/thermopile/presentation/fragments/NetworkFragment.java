@@ -60,10 +60,6 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     @BindView(R.id.textview_ip_wifi)
     public TextView textViewIpWifi;
 
-    public NetworkFragment() {
-        // do nothing
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

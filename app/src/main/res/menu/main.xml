@@ -3,23 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@id/showHelpAction"
-        android:icon="@drawable/ic_help"
-        android:title="Help"
+        android:id="@id/showChartsAction"
+        android:icon="@drawable/ic_charts"
+        android:title="Charts"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction"/>
 
     <item
-        android:id="@id/showFeedbackAction"
-        android:icon="@drawable/ic_feedback"
-        android:title="Feedback"
+        android:id="@id/showScheduleAction"
+        android:icon="@drawable/ic_schedule"
+        android:title="Schedule"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction"/>
 
     <item
-        android:id="@id/showAboutAction"
-        android:icon="@drawable/ic_about"
-        android:title="About"
+        android:id="@id/showSettingsAction"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction"/>
 

@@ -1,16 +1,6 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="android:colorPrimary">@color/dark_gray</item>
-        <item name="android:colorPrimaryDark">@color/black</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:soundEffectsEnabled">false</item>
-        <item name="android:hapticFeedbackEnabled">false</item>
-        <item name="android:windowActivityTransitions">true</item>
-    </style>
-
-    <style name="TextAppearance.Schedule.Day" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Schedule.Day" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
         <item name="android:layout_weight">1</item>
@@ -24,43 +14,36 @@
         <item name="android:fontFamily">@font/worksans_light</item>
     </style>
 
-    <style name="Widget.Schedule.DayHours" parent="android:Widget">
-        <item name="android:clickable">true</item>
-        <item name="android:background">@drawable/background_border_bottom</item>
-        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
-        <item name="android:paddingTop">1dp</item>
-        <item name="android:paddingBottom">1dp</item>
-    </style>
-
-    <style name="Widget.BottomNavigationView" parent="Widget.Design.BottomNavigationView">
-        <item name="itemTextAppearanceActive">@style/TextAppearance.Item.BottomNavigationView.Active</item>
-        <item name="itemTextAppearanceInactive">@style/TextAppearance.Item.BottomNavigationView.Inactive</item>
-        <item name="labelVisibilityMode">labeled</item>
-        <item name="itemIconTint">@drawable/selector_bottomnavigation_icon_tint</item>
-        <item name="itemTextColor">@drawable/selector_bottomnavigation_text_color</item>
-    </style>
-
-    <style name="TextAppearance.Date" parent="TextAppearance.AppCompat.Title">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:fontFamily">@font/googlesans_medium</item>
-    </style>
-
-    <style name="TextAppearance.Time" parent="TextAppearance.AppCompat.Title">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:fontFamily">@font/googlesans_medium</item>
-    </style>
-
-    <style name="TextAppearance.Title" parent="TextAppearance.AppCompat.Title">
+    <style name="TextAppearance.Date" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/margin_xsmall</item>
+        <item name="android:paddingStart">@dimen/margin_small</item>
+        <item name="android:paddingEnd">@dimen/margin_small</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_vertical|start</item>
+        <item name="android:gravity">center_vertical|start</item>
         <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
-    <style name="TextAppearance.Data.Primary.Unit" parent="TextAppearance.AppCompat.Display2">
+    <style name="TextAppearance.Time" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
+    </style>
+
+    <style name="TextAppearance.Title" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/googlesans_medium</item>
+    </style>
+
+    <style name="TextAppearance.Data.Primary.Unit" parent="TextAppearance.MaterialComponents.Headline3">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">?android:textColorPrimary</item>
@@ -68,7 +51,7 @@
         <item name="android:fontFamily">@font/worksans_light</item>
     </style>
 
-    <style name="TextAppearance.Data.Secondary.Unit" parent="TextAppearance.AppCompat.Medium">
+    <style name="TextAppearance.Data.Secondary.Unit" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">4dp</item>
@@ -77,7 +60,7 @@
         <item name="android:fontFamily">@font/worksans_light</item>
     </style>
 
-    <style name="TextAppearance.Data.Secondary" parent="TextAppearance.AppCompat.Display1">
+    <style name="TextAppearance.Data.Secondary" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textSize">32sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -87,7 +70,7 @@
         <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
-    <style name="TextAppearance.Data.Primary" parent="TextAppearance.AppCompat.Display2">
+    <style name="TextAppearance.Data.Primary" parent="TextAppearance.MaterialComponents.Headline3">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">bottom</item>
@@ -96,13 +79,13 @@
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="TextAppearance.Item.Day" parent="TextAppearance.AppCompat.Body1">
+    <style name="TextAppearance.Item.Day" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
-    <style name="TextAppearance.Item.ThresholdTemperature" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Item.ThresholdTemperature" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:layout_width">@dimen/height_threshold</item>
         <item name="android:layout_height">@dimen/height_threshold</item>
         <item name="android:gravity">center</item>
@@ -111,61 +94,28 @@
         <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
-    <style name="TextAppearance.Item.BottomNavigationView.Active" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Item.BottomNavigationView.Active" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="TextAppearance.Item.BottomNavigationView.Inactive" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Item.BottomNavigationView.Inactive" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="TextAppearance.Item.Wireless" parent="TextAppearance.AppCompat.Subhead">
+    <style name="TextAppearance.Item.Wireless" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center_vertical|start</item>
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="Widget.Button.Action" parent="Widget.AppCompat.ActionButton">
-        <item name="android:layout_width">?attr/listPreferredItemHeightSmall</item>
-        <item name="android:layout_height">?attr/listPreferredItemHeightSmall</item>
-    </style>
-
-    <style name="Widget.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:button">@null</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@drawable/textcolor_radiobutton</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:layout_height">@dimen/height_radiobutton</item>
-        <item name="android:layout_weight">1</item>
-    </style>
-
-    <style name="Widget.RadioButton.Left" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/selector_background_radiobutton_left</item>
-    </style>
-
-    <style name="Widget.RadioButton.Middle" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/selector_background_radiobutton_middle</item>
-    </style>
-
-    <style name="Widget.RadioButton.Right" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/selector_background_radiobutton_right</item>
-    </style>
-
-    <style name="Widget.Divider.Schedule" parent="android:Widget">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">@color/background_divider</item>
-    </style>
-
-    <style name="TextAppearance.Section" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Section" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAllCaps">true</item>
@@ -173,7 +123,7 @@
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="TextAppearance.Section.Borderless.Colored" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Section.Borderless.Colored" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">@dimen/margin_default</item>
@@ -185,7 +135,7 @@
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="TextAppearance.Borderless.Colored" parent="TextAppearance.AppCompat.Body1">
+    <style name="TextAppearance.Borderless.Colored" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">@dimen/margin_default</item>
@@ -194,14 +144,14 @@
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="TextAppearance.Dialog.Title" parent="TextAppearance.AppCompat.Title">
+    <style name="TextAppearance.Dialog.Title" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">@dimen/margin_default</item>
         <item name="android:fontFamily">@font/googlesans_medium</item>
     </style>
 
-    <style name="TextAppearance.Dialog.Section" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextAppearance.Dialog.Section" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
@@ -210,39 +160,17 @@
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="TextAppearance.Dialog.Label" parent="TextAppearance.AppCompat.Body1">
+    <style name="TextAppearance.Dialog.Label" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:layout_weight">1</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
-    <style name="TextAppearance.Dialog.Input" parent="TextAppearance.AppCompat.Body1">
+    <style name="TextAppearance.Dialog.Input" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/googlesans_regular</item>
-    </style>
-
-    <!--Spark-->
-    <style name="spark_SparkView">
-        <item name="spark_lineColor">@color/spark_line_color</item>
-        <item name="spark_lineWidth">@dimen/spark_line_width</item>
-        <item name="spark_cornerRadius">@dimen/spark_corner_radius</item>
-        <item name="spark_fillColor">@color/spark_fill_color</item>
-
-        <item name="spark_baseLineColor">@color/spark_base_line_color</item>
-        <item name="spark_baseLineWidth">@dimen/spark_base_line_width</item>
-
-        <item name="spark_scrubLineColor">@color/spark_scrub_line_color</item>
-        <item name="spark_scrubLineWidth">@dimen/spark_scrub_line_width</item>
-        <item name="spark_scrubEnabled">false</item>
-        <item name="spark_animateChanges">true</item>
-
-        <item name="spark_fadeLengthLeft">0dp</item>
-        <item name="spark_fadeLengthRight">0dp</item>
-
-        <item name="spark_lineUnderColor">@color/spark_line_under_color</item>
-        <item name="spark_clipAmount">1.0</item>
     </style>
 
 </resources>

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,7 @@ import org.joda.time.DateTimeZone;
 import java.util.List;
 
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -80,6 +82,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private int unitMotion;
 
     private final PIDController pidController;
+
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
 
     @BindView(R.id.textview_date)
     public TextView textViewDate;
@@ -154,6 +159,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setupToolbar();
         setupRecyclerView();
 
         presenter = new MainPresenter(this);
@@ -258,7 +264,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         }
     }
 
-    @OnClick({R.id.button_decrease, R.id.button_increase, R.id.button_charts, R.id.button_schedule, R.id.button_settings})
+    @OnClick({R.id.button_decrease, R.id.button_increase})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_decrease:
@@ -271,16 +277,17 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 //                    .off()
 //                    .subscribe();
                 break;
-            case R.id.button_charts:
-                NavHostFragment.findNavController(this).navigate(R.id.showChartsAction);
-                break;
-            case R.id.button_schedule:
-                NavHostFragment.findNavController(this).navigate(R.id.showScheduleAction);
-                break;
-            case R.id.button_settings:
-                NavHostFragment.findNavController(this).navigate(R.id.showSettingsAction);
-                break;
+
         }
+    }
+
+    private void setupToolbar() {
+        toolbar.inflateMenu(R.menu.main);
+
+        toolbar.setOnMenuItemClickListener(menuItem -> {
+            NavigationUI.onNavDestinationSelected(menuItem, NavHostFragment.findNavController(this));
+            return false;
+        });
     }
 
     private void setupRecyclerView() {

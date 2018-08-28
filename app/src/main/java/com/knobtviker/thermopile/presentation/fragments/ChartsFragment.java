@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.Guideline;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +54,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import butterknife.BindView;
-import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
 /**
@@ -85,6 +86,9 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     private Interval interval;
 
     private ChartAdapter<SingleModel> sparkAdapter;
+
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
 
     @BindView(R.id.spinner_type)
     public Spinner spinnerType;
@@ -150,6 +154,7 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setupToolbar();
         setupSpinnerType();
         setupSpinnerInterval();
         setupSparkView();
@@ -338,15 +343,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         }
     }
 
-    @OnClick({R.id.button_back})
-    public void onClicked(@NonNull final View view) {
-        switch (view.getId()) {
-            case R.id.button_back:
-                NavHostFragment.findNavController(this).navigateUp();
-                break;
-        }
-    }
-
     @OnItemSelected(value = {R.id.spinner_type, R.id.spinner_interval}, callback = OnItemSelected.Callback.ITEM_SELECTED)
     public void onItemSelected(AdapterView<?> parent, int position) {
         switch (parent.getId()) {
@@ -359,6 +355,10 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         }
 
         data();
+    }
+
+    private void setupToolbar() {
+        NavigationUI.setupWithNavController(toolbar, NavHostFragment.findNavController(this));
     }
 
     private void setupSpinnerType() {
