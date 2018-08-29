@@ -19,6 +19,7 @@
         android:extractNativeLibs="false"
         android:icon="@mipmap/ic_launcher"
         android:hardwareAccelerated="true"
+        android:theme="@style/Theme.DayNight"
         tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data
@@ -34,8 +35,7 @@
         <activity
             android:name=".presentation.activities.MainActivity"
             android:screenOrientation="reverseLandscape"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/AppTheme">
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -52,14 +52,12 @@
         <activity
             android:name=".presentation.activities.ScreenSaverActivity"
             android:screenOrientation="reverseLandscape"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/AppTheme"/>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity android:name=".presentation.activities.WirelessActivity"
             android:screenOrientation="reverseLandscape"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/AppTheme"/>
-        
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
     </application>
 
 </manifest>

@@ -81,14 +81,6 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     @BindView(R.id.unit_gal)
     public RadioButton radioButtonUnitGal;
 
-    public static UnitsFragment newInstance() {
-        return new UnitsFragment();
-    }
-
-    public UnitsFragment() {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

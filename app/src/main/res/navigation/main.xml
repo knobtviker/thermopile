@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.MainFragment"
-        android:label="MainFragment"
         app:enterAnim="@anim/enter_fade_in"
         app:exitAnim="@anim/exit_fade_out"
         app:popEnterAnim="@anim/enter_fade_in"
@@ -36,15 +35,15 @@
             app:popEnterAnim="@anim/enter_fade_in_right_to_left"
             app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
     </fragment>
+
     <fragment
         android:id="@+id/chartsFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.ChartsFragment"
-        android:label="ChartsFragment"
         tools:layout="@layout/fragment_charts"/>
+
     <fragment
         android:id="@+id/scheduleFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.ScheduleFragment"
-        android:label="ScheduleFragment"
         tools:layout="@layout/fragment_schedule">
         <action
             android:id="@+id/showThresholdByIdAction"
@@ -54,16 +53,37 @@
             app:popEnterAnim="@anim/enter_bottom_to_top"
             app:popExitAnim="@anim/exit_top_to_bottom"/>
     </fragment>
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.SettingsFragment"
-        android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/showHelpAction"
+            app:destination="@id/blankFragment"
+            app:enterAnim="@anim/enter_fade_in_right_to_left"
+            app:exitAnim="@anim/exit_fade_out_left_to_right"
+            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
+            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
+        <action
+            android:id="@+id/showFeedbackAction"
+            app:destination="@id/blankFragment"
+            app:enterAnim="@anim/enter_fade_in_right_to_left"
+            app:exitAnim="@anim/exit_fade_out_left_to_right"
+            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
+            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
+        <action
+            android:id="@+id/showAboutAction"
+            app:destination="@id/blankFragment"
+            app:enterAnim="@anim/enter_fade_in_right_to_left"
+            app:exitAnim="@anim/exit_fade_out_left_to_right"
+            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
+            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
     </fragment>
+
     <fragment
         android:id="@+id/thresholdFragment"
         android:name="com.knobtviker.thermopile.presentation.fragments.ThresholdFragment"
-        android:label="ThresholdFragment"
         tools:layout="@layout/fragment_threshold">
         <argument
             android:name="thresholdId"
@@ -82,5 +102,10 @@
             android:defaultValue="-1"
             app:argType="integer"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/blankFragment"
+        android:name="com.knobtviker.thermopile.presentation.fragments.BlankFragment"
+        tools:layout="@layout/fragment_blank"/>
 
 </navigation>

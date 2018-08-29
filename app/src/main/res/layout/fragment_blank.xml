@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -18,19 +19,9 @@
 
         <TextView
             style="@style/TextAppearance.Title"
-            android:text="Networks"
-            tools:text="Networks"/>
+            android:text="Blank"
+            tools:text="Blank"/>
 
     </android.support.v7.widget.Toolbar>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_networks"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
 </android.support.constraint.ConstraintLayout>

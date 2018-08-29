@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ import org.joda.time.DateTime;
 import java.util.Objects;
 import java.util.Optional;
 
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -85,6 +87,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private ColorAdapter colorAdapter;
 
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
+
     @BindView(R.id.textview_time_start)
     public TextView textViewTimeStart;
 
@@ -107,8 +112,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(true);
-
         final Optional<Bundle> argumentsOptional = Optional.ofNullable(getArguments());
         argumentsOptional.ifPresent(bundle -> {
             final ThresholdFragmentArgs arguments = ThresholdFragmentArgs.fromBundle(bundle);
@@ -128,6 +131,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setupToolbar();
         setupSeekBar();
         setupTimePickers();
         setupRecyclerView();
@@ -166,18 +170,12 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     @Override
     public void onSaved() {
-        back();
+        NavHostFragment.findNavController(this).navigateUp();
     }
 
-    @OnClick({R.id.button_discard, R.id.button_save, R.id.layout_start_time, R.id.layout_end_time})
+    @OnClick({R.id.layout_start_time, R.id.layout_end_time})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
-            case R.id.button_discard:
-                back();
-                break;
-            case R.id.button_save:
-                save();
-                break;
             case R.id.layout_start_time:
                 showStartTimePicker();
                 break;
@@ -185,6 +183,22 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
                 showEndTimePicker();
                 break;
         }
+    }
+
+    private void setupToolbar() {
+        final NavController navController = NavHostFragment.findNavController(this);
+        toolbar.setNavigationIcon(R.drawable.ic_discard);
+        toolbar.setNavigationOnClickListener(v -> navController.navigateUp());
+        toolbar.inflateMenu(R.menu.threshold);
+        toolbar.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.saveAction:
+                    save();
+                    return true;
+                default:
+                    return false;
+            }
+        });
     }
 
     private void setupSeekBar() {
@@ -315,10 +329,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private void showEndTimePicker() {
         timePickerDialogEnd.show();
-    }
-
-    private void back() {
-        NavHostFragment.findNavController(this).navigateUp();
     }
 
     private void setStartTime(final int day, final int hour, final int minute) {

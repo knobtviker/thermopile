@@ -7,82 +7,27 @@
     android:layout_height="match_parent"
     tools:context=".presentation.activities.MainActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/appbar_layout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextClock
-            android:id="@+id/textview_clock"
-            style="@style/TextAppearance.Time"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:minWidth="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="22:30"/>
-
         <TextView
             android:id="@+id/textview_date"
             style="@style/TextAppearance.Date"
-            android:gravity="center_vertical|start"
-            android:paddingStart="@dimen/margin_default"
-            android:paddingEnd="@dimen/margin_large"
-            app:layout_constraintBottom_toBottomOf="@id/textview_clock"
-            app:layout_constraintEnd_toStartOf="@id/textview_clock"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textview_clock"
             tools:text="TUESDAY 31.05.2016."/>
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/textview_clock"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textview_clock"
-            app:layout_constraintTop_toTopOf="@id/textview_clock">
+        <TextClock
+            android:id="@+id/textview_clock"
+            style="@style/TextAppearance.Time"
+            tools:text="22:30"/>
 
-            <ImageButton
-                android:id="@+id/button_settings"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="@drawable/ic_settings"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <ImageButton
-                android:id="@+id/button_schedule"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="@drawable/ic_schedule"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@id/button_settings"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <ImageButton
-                android:id="@+id/button_charts"
-                style="@style/Widget.AppCompat.Light.ActionButton"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="@drawable/ic_charts"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@id/button_schedule"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.Toolbar>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/bottom_toolbar"
@@ -133,9 +78,9 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <android.support.v7.widget.CardView
+        <android.support.design.card.MaterialCardView
             android:id="@+id/cardview_temperature"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -186,18 +131,24 @@
                     app:layout_constraintTop_toTopOf="@id/textview_temperature"
                     app:layout_constraintVertical_bias="0.75"/>
 
-                <ImageButton
+                <android.support.design.button.MaterialButton
                     android:id="@+id/button_decrease"
                     style="@style/Widget.Button.Action"
-                    android:src="@drawable/ic_decrease"
+                    app:backgroundTint="@color/transparent"
+                    app:cornerRadius="@dimen/corner_24dp"
+                    app:icon="@drawable/ic_decrease"
+                    app:iconTint="?android:textColorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintStart_toStartOf="parent"/>
 
-                <ImageButton
+                <android.support.design.button.MaterialButton
                     android:id="@+id/button_increase"
                     style="@style/Widget.Button.Action"
-                    android:src="@drawable/ic_increase"
+                    app:backgroundTint="@color/transparent"
+                    app:cornerRadius="@dimen/corner_24dp"
+                    app:icon="@drawable/ic_increase"
+                    app:iconTint="?android:textColorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"/>
@@ -213,9 +164,9 @@
 
             </android.support.constraint.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.design.card.MaterialCardView>
 
-        <android.support.v7.widget.CardView
+        <android.support.design.card.MaterialCardView
             android:id="@+id/cardview_humidity"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -276,9 +227,9 @@
 
             </android.support.constraint.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.design.card.MaterialCardView>
 
-        <android.support.v7.widget.CardView
+        <android.support.design.card.MaterialCardView
             android:id="@+id/cardview_iaq"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -335,9 +286,9 @@
 
             </android.support.constraint.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.design.card.MaterialCardView>
 
-        <android.support.v7.widget.CardView
+        <android.support.design.card.MaterialCardView
             android:id="@+id/cardview_pressure"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -398,9 +349,9 @@
 
             </android.support.constraint.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.design.card.MaterialCardView>
 
-        <android.support.v7.widget.CardView
+        <android.support.design.card.MaterialCardView
             android:id="@+id/cardview_motion"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -462,7 +413,7 @@
 
             </android.support.constraint.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.design.card.MaterialCardView>
 
     </android.support.constraint.ConstraintLayout>
 

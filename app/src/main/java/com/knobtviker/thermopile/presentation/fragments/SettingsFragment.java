@@ -5,21 +5,20 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 
 import java.util.Objects;
 
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import butterknife.BindView;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -28,7 +27,8 @@ import timber.log.Timber;
 
 public class SettingsFragment extends BaseFragment {
 
-    public static final String TAG = SettingsFragment.class.getSimpleName();
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
 
     @BindView(R.id.bottom_navigation_view)
     public BottomNavigationView bottomNavigationView;
@@ -46,6 +46,7 @@ public class SettingsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setupToolbar();
         setupBottomNavigationView();
     }
 
@@ -61,26 +62,14 @@ public class SettingsFragment extends BaseFragment {
         Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
-    @OnClick({R.id.button_back, R.id.button_help, R.id.button_feedback, R.id.button_about})
-    public void onClicked(@NonNull final View view) {
-        switch (view.getId()) {
-            case R.id.button_back:
-                NavHostFragment.findNavController(this).navigateUp();
-                break;
-            case R.id.button_help:
-                Timber.i("Show HelpActivity");
-                ((ThermopileApplication) requireActivity().getApplication()).reset();
-                break;
-            case R.id.button_feedback:
-                Timber.i("Show FeedbackActivity");
-                //                NavHostFragment.findNavController(this).navigate(R.id.activityScreensaver);
-                break;
-            case R.id.button_about:
-                Timber.i("Version name: " + BuildConfig.VERSION_NAME + " Version code: " + BuildConfig.VERSION_CODE + " Hash: "
-                    + BuildConfig.GIT_COMMIT_SHA + " Build time: " + BuildConfig.GIT_COMMIT_TIMESTAMP + " Reboot count: "
-                    + ThermopileApplication.bootCount() + " Last boot timestamp: " + ThermopileApplication.lastBootTimestamp());
-                break;
-        }
+    private void setupToolbar() {
+        final NavController navController = NavHostFragment.findNavController(this);
+        toolbar.inflateMenu(R.menu.settings);
+        toolbar.setOnMenuItemClickListener(menuItem -> {
+            NavigationUI.onNavDestinationSelected(menuItem, navController);
+            return false;
+        });
+        NavigationUI.setupWithNavController(toolbar, navController);
     }
 
     private void setupBottomNavigationView() {
@@ -88,7 +77,13 @@ public class SettingsFragment extends BaseFragment {
         if (navHostFragment != null) {
             NavigationUI.setupWithNavController(bottomNavigationView, navHostFragment.getNavController());
         } else {
-            showError(new Throwable("Cannot find NavHostFragment"));
+            showError(new IllegalStateException("Cannot find NavHostFragment"));
         }
     }
 }
+
+//((ThermopileApplication) requireActivity().getApplication()).reset();
+//                Timber.i("Version name: " + BuildConfig.VERSION_NAME + " Version code: " + BuildConfig.VERSION_CODE + " Hash: "
+//                    + BuildConfig.GIT_COMMIT_SHA + " Build time: " + BuildConfig.GIT_COMMIT_TIMESTAMP + " Reboot count: "
+//                    + ThermopileApplication.bootCount() + " Last boot timestamp: " + ThermopileApplication.lastBootTimestamp());
+

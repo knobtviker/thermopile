@@ -24,5 +24,9 @@ public interface LocaleContract {
         void saveTimezone(final long settingsId, @NonNull final String timezone);
 
         void saveClockMode(final long settingsId, final int clockMode);
+
+        void saveFormatDate(final long settingsId, @NonNull final String item);
+
+        void saveFormatTime(final long settingsId, @NonNull final String item);
     }
 }

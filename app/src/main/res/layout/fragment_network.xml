@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <android.support.design.card.MaterialCardView
             android:id="@+id/cardview_bluetooth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,9 +48,9 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.design.card.MaterialCardView>
 
-        <android.support.v7.widget.CardView
+        <android.support.design.card.MaterialCardView
             android:id="@+id/cardview_wireless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -118,9 +118,9 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.design.card.MaterialCardView>
 
-        <android.support.v7.widget.CardView
+        <android.support.design.card.MaterialCardView
             android:id="@+id/cardview_servers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.design.card.MaterialCardView>
 
     </LinearLayout>
 

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,8 +35,9 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
+import butterknife.BindView;
 import butterknife.BindViews;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 import static android.support.constraint.ConstraintSet.BOTTOM;
@@ -47,6 +49,7 @@ import static android.support.constraint.ConstraintSet.TOP;
  */
 
 public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
+
     public static final String TAG = ScheduleFragment.class.getSimpleName();
 
     @FormatDate
@@ -57,10 +60,15 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     private List<Threshold> thresholds = new ArrayList<>(0);
 
-    @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday, R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
+
+    @BindViews({R.id.layout_hours_monday, R.id.layout_hours_tuesday, R.id.layout_hours_wednesday, R.id.layout_hours_thursday,
+        R.id.layout_hours_friday, R.id.layout_hours_saturday, R.id.layout_hours_sunday})
     public List<ConstraintLayout> weekdayLayouts;
 
-    @BindViews({R.id.textview_day_monday, R.id.textview_day_tuesday, R.id.textview_day_wednesday, R.id.textview_day_thursday, R.id.textview_day_friday, R.id.textview_day_saturday, R.id.textview_day_sunday})
+    @BindViews({R.id.textview_day_monday, R.id.textview_day_tuesday, R.id.textview_day_wednesday, R.id.textview_day_thursday,
+        R.id.textview_day_friday, R.id.textview_day_saturday, R.id.textview_day_sunday})
     public List<TextView> weekdayTextViews;
 
     public ScheduleFragment() {
@@ -78,6 +86,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setupToolbar();
         setupDayTouchListeners();
 
         presenter = new SchedulePresenter(this);
@@ -111,16 +120,18 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
         populate(thresholds);
     }
 
-    @OnClick({R.id.button_back, R.id.button_add})
-    public void onClicked(@NonNull final View view) {
-        switch (view.getId()) {
-            case R.id.button_back:
-                NavHostFragment.findNavController(this).navigateUp();
-                break;
-            case R.id.button_add:
-                add();
-                break;
-        }
+    private void setupToolbar() {
+        toolbar.inflateMenu(R.menu.schedule);
+        toolbar.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.showAddDialog:
+                    add();
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        NavigationUI.setupWithNavController(toolbar, NavHostFragment.findNavController(this));
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -148,7 +159,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                                 final int endY = (int) event.getY();
                                 final int dX = Math.abs(endX - startX);
                                 final int dY = Math.abs(endY - startY);
-
 
                                 if (Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)) <= touchSlop) {
                                     navigateToThreshold(index, startX, weekdayLayouts.get(0).getWidth());
@@ -221,7 +231,8 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                     ).getMinutes() / 2.0f
                 ));
                 set.constrainHeight(thresholdView.getId(), ConstraintSet.MATCH_CONSTRAINT);
-                set.connect(thresholdView.getId(), START, ConstraintSet.PARENT_ID, START, Math.round((threshold.startHour * 60 + threshold.startMinute) / 2.0f));
+                set.connect(thresholdView.getId(), START, ConstraintSet.PARENT_ID, START,
+                    Math.round((threshold.startHour * 60 + threshold.startMinute) / 2.0f));
                 set.connect(thresholdView.getId(), TOP, ConstraintSet.PARENT_ID, TOP, 8);
                 set.connect(thresholdView.getId(), BOTTOM, ConstraintSet.PARENT_ID, BOTTOM, 8);
 
