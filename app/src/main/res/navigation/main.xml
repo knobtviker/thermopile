@@ -66,13 +66,6 @@
             app:popEnterAnim="@anim/enter_fade_in_right_to_left"
             app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
         <action
-            android:id="@+id/showFeedbackAction"
-            app:destination="@id/blankFragment"
-            app:enterAnim="@anim/enter_fade_in_right_to_left"
-            app:exitAnim="@anim/exit_fade_out_left_to_right"
-            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
-            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
-        <action
             android:id="@+id/showAboutAction"
             app:destination="@id/blankFragment"
             app:enterAnim="@anim/enter_fade_in_right_to_left"

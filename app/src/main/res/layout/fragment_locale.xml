@@ -92,7 +92,7 @@
 
                 <TextView
                     style="@style/TextAppearance.Section"
-                    android:text="Date"/>
+                    android:text="Date format"/>
 
                 <Spinner
                     android:id="@+id/spinner_date_format"
@@ -119,7 +119,7 @@
 
                 <TextView
                     style="@style/TextAppearance.Section"
-                    android:text="Time"/>
+                    android:text="Time format"/>
 
                 <Spinner
                     android:id="@+id/spinner_time_format"
