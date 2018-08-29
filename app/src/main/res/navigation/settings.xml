@@ -3,12 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@+id/formatsFragment">
-
-    <fragment
-        android:id="@+id/formatsFragment"
-        android:name="com.knobtviker.thermopile.presentation.fragments.FormatsFragment"
-        tools:layout="@layout/fragment_formats"/>
+    app:startDestination="@id/unitsFragment">
 
     <fragment
         android:id="@+id/unitsFragment"

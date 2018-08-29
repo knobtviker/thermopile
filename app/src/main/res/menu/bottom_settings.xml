@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@id/formatsFragment"
-        android:icon="@drawable/ic_formats"
-        android:title="@string/label_formats"/>
-
-    <item
         android:id="@id/unitsFragment"
         android:icon="@drawable/ic_units"
         android:title="@string/label_units"/>

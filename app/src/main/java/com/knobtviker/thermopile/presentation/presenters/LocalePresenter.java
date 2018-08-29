@@ -71,4 +71,32 @@ public class LocalePresenter extends AbstractPresenter implements LocaleContract
                 )
         );
     }
+
+    @Override
+    public void saveFormatDate(long settingsId, @NonNull String item) {
+        compositeDisposable.add(
+            settingsRepository
+                .saveFormatDate(settingsId, item)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
+
+    @Override
+    public void saveFormatTime(long settingsId, @NonNull String item) {
+        compositeDisposable.add(
+            settingsRepository
+                .saveFormatTime(settingsId, item)
+                .doOnSubscribe(consumer -> subscribed())
+                .doOnTerminate(this::terminated)
+                .subscribe(
+                    Functions.EMPTY_ACTION,
+                    this::error
+                )
+        );
+    }
 }
