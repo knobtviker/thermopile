@@ -22,26 +22,14 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="Widget.RadioButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="Widget.MaterialToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:layout_width">0dp</item>
-        <item name="android:button">@null</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@drawable/textcolor_radiobutton</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:layout_height">@dimen/height_radiobutton</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-    </style>
-
-    <style name="Widget.RadioButton.Left" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/selector_background_radiobutton_left</item>
-    </style>
-
-    <style name="Widget.RadioButton.Middle" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/selector_background_radiobutton_middle</item>
-    </style>
-
-    <style name="Widget.RadioButton.Right" parent="Widget.RadioButton">
-        <item name="android:background">@drawable/selector_background_radiobutton_right</item>
+        <item name="cornerRadius">@dimen/corner_24dp</item>
+        <item name="strokeColor">@drawable/textcolor_radiobutton</item>
     </style>
 
 </resources>

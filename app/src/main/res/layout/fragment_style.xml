@@ -26,7 +26,7 @@
                     style="@style/TextAppearance.Section"
                     android:text="Theme"/>
 
-                <RadioGroup
+                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
                     android:id="@+id/radiogroup_theme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -35,22 +35,22 @@
                     android:orientation="horizontal"
                     android:weightSum="3">
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/light"
-                        style="@style/Widget.RadioButton.Left"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="Light"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/dark"
-                        style="@style/Widget.RadioButton.Middle"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="Dark"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/automatic"
-                        style="@style/Widget.RadioButton.Right"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="Automatic"/>
 
-                </RadioGroup>
+                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
 
             </LinearLayout>
 

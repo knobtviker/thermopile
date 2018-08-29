@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
@@ -20,6 +18,8 @@ import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ScreensaverTimeout;
+import com.knobtviker.thermopile.presentation.views.MaterialToggleButton;
+import com.knobtviker.thermopile.presentation.views.MaterialToggleGroup;
 import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
 import java.util.Arrays;
@@ -47,16 +47,16 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     private int screenSaverTimeout = ScreensaverTimeout._1MIN;
 
     @BindView(R.id.radiogroup_theme)
-    public RadioGroup radioGroupTheme;
+    public MaterialToggleGroup radioGroupTheme;
 
     @BindView(R.id.light)
-    public RadioButton radioButtonLight;
+    public MaterialToggleButton radioButtonLight;
 
     @BindView(R.id.dark)
-    public RadioButton radioButtonDark;
+    public MaterialToggleButton radioButtonDark;
 
     @BindView(R.id.automatic)
-    public RadioButton radioButtonAutomatic;
+    public MaterialToggleButton radioButtonAutomatic;
 
     @BindView(R.id.spinner_timeout)
     public Spinner spinnerTimeout;

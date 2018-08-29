@@ -1,37 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="ArcView">
-        <attr name="progress" format="float"/>
-        <attr name="progressColor" format="color"/>
-        <attr name="trackColor" format="color"/>
-        <attr name="stroke_thickness" format="dimension"/>
-    </declare-styleable>
-
-    <declare-styleable name="CircularSeekBar">
-        <attr name="progress_" format="integer"/>
-        <attr name="min" format="integer"/>
-        <attr name="max" format="integer"/>
-        <attr name="move_outside_circle" format="boolean"/>
-        <attr name="maintain_equal_circle" format="boolean"/>
-        <attr name="use_custom_radii" format="boolean"/>
-        <attr name="lock_enabled" format="boolean"/>
-        <attr name="circle_x_radius" format="dimension" />
-        <attr name="circle_y_radius" format="dimension" />
-        <attr name="circle_stroke_width" format="dimension" />
-        <attr name="pointer_radius" format="dimension" />
-        <attr name="pointer_halo_width" format="dimension" />
-        <attr name="pointer_halo_border_width" format="dimension"/>
-        <attr name="circle_progress_color" format="color"/>
-        <attr name="pointer_color" format="color"/>
-        <attr name="pointer_halo_color" format="color"/>
-        <attr name="pointer_halo_color_ontouch" format="color"/>
-        <attr name="pointer_alpha_ontouch" format="integer"/>
-        <attr name="start_angle" format="float"/>
-        <attr name="end_angle" format="float"/>
-        <attr name="circle_fill" format="color"/>
-    </declare-styleable>
-
     <declare-styleable name="DiscreteSeekBar">
         <attr name="discrete_unit" format="string"/>
         <attr name="discrete_min" format="float|reference"/> <!--min < max, default: 0.0f-->
@@ -77,39 +46,6 @@
         <attr name="discrete_always_show_bubble_delay" format="integer"/> <!--the delay duration before bubble shows all the time, default: 200ms-->
         <attr name="discrete_hide_bubble" format="boolean"/> <!--hide bubble, default: false-->
         <attr name="discrete_rtl" format="boolean"/> <!--right to left, default: false-->
-    </declare-styleable>
-
-    <!--Spark-->
-    <attr name="spark_SparkViewStyle" format="reference" />
-
-    <declare-styleable name="SparkView">
-        <attr name="spark_lineColor" format="color|reference" />
-        <attr name="spark_lineWidth" format="dimension|reference" />
-        <attr name="spark_cornerRadius" format="dimension|reference" />
-        <attr name="spark_fillColor" format="color|reference" />
-        <attr name="spark_fillType" format="enum">
-            <!-- must match values in SparkView.FillType -->
-            <enum name="none" value="0" />
-            <enum name="up" value="1" />
-            <enum name="down" value="2" />
-            <enum name="towardZero" value="3" />
-        </attr>
-
-        <attr name="spark_baseLineColor" format="color|reference" />
-        <attr name="spark_baseLineWidth" format="dimension|reference" />
-
-        <attr name="spark_scrubLineColor" format="color|reference" />
-        <attr name="spark_scrubLineWidth" format="dimension|reference" />
-
-        <attr name="spark_scrubEnabled" format="boolean|reference" />
-
-        <attr name="spark_animateChanges" format="boolean|reference" />
-
-        <attr name="spark_fadeLengthLeft" format="dimension|reference" />
-        <attr name="spark_fadeLengthRight" format="dimension|reference" />
-
-        <attr name="spark_lineUnderColor" format="color|reference" />
-        <attr name="spark_clipAmount" format="float|reference"/>
     </declare-styleable>
 
 </resources>

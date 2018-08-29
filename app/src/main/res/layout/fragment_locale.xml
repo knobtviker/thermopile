@@ -53,7 +53,7 @@
                     style="@style/TextAppearance.Section"
                     android:text="Clock mode"/>
 
-                <RadioGroup
+                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
                     android:id="@+id/radiogroup_clock_mode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,17 +62,17 @@
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/mode_12h"
-                        style="@style/Widget.RadioButton.Left"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="12h"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/mode_24h"
-                        style="@style/Widget.RadioButton.Right"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="24h"/>
 
-                </RadioGroup>
+                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
 
             </LinearLayout>
 

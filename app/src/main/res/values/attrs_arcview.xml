@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ArcView">
+        <attr name="progress" format="float"/>
+        <attr name="progressColor" format="color"/>
+        <attr name="trackColor" format="color"/>
+        <attr name="stroke_thickness" format="dimension"/>
+    </declare-styleable>
+
+</resources>

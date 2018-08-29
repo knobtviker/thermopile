@@ -26,31 +26,29 @@
                     style="@style/TextAppearance.Section"
                     android:text="Temperature"/>
 
-                <RadioGroup
+                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
                     android:id="@+id/radiogroup_temperature_unit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
                     android:weightSum="3">
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_celsius"
-                        style="@style/Widget.RadioButton.Left"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="Celsius"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_farenheit"
-                        style="@style/Widget.RadioButton.Middle"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="Fahrenheit"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_kelvin"
-                        style="@style/Widget.RadioButton.Right"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="Kelvin"/>
 
-                </RadioGroup>
+                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
 
             </LinearLayout>
 
@@ -72,7 +70,7 @@
                     style="@style/TextAppearance.Section"
                     android:text="Pressure"/>
 
-                <RadioGroup
+                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
                     android:id="@+id/radiogroup_pressure_unit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -81,22 +79,22 @@
                     android:orientation="horizontal"
                     android:weightSum="3">
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_pascal"
-                        style="@style/Widget.RadioButton.Left"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="@string/unit_pressure_pascal"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_bar"
-                        style="@style/Widget.RadioButton.Middle"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="@string/unit_pressure_bar"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_psi"
-                        style="@style/Widget.RadioButton.Right"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="@string/unit_pressure_psi"/>
 
-                </RadioGroup>
+                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
 
             </LinearLayout>
 
@@ -118,7 +116,7 @@
                     style="@style/TextAppearance.Section"
                     android:text="Motion"/>
 
-                <RadioGroup
+                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
                     android:id="@+id/radiogroup_acceleration_unit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -127,27 +125,27 @@
                     android:orientation="horizontal"
                     android:weightSum="4">
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_ms2"
-                        style="@style/Widget.RadioButton.Left"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="@string/unit_acceleration_ms2"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_g"
-                        style="@style/Widget.RadioButton.Middle"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="@string/unit_acceleration_g"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_gal"
-                        style="@style/Widget.RadioButton.Middle"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="@string/unit_acceleration_gal"/>
 
-                    <RadioButton
+                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
                         android:id="@+id/unit_cms2"
-                        style="@style/Widget.RadioButton.Right"
+                        style="@style/Widget.MaterialToggleButton"
                         android:text="@string/unit_acceleration_cms2"/>
 
-                </RadioGroup>
+                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
 
             </LinearLayout>
 

@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
@@ -22,6 +20,8 @@ import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
+import com.knobtviker.thermopile.presentation.views.MaterialToggleButton;
+import com.knobtviker.thermopile.presentation.views.MaterialToggleGroup;
 import com.knobtviker.thermopile.presentation.views.adapters.FormatAdapter;
 import com.knobtviker.thermopile.presentation.views.adapters.TimezoneAdapter;
 
@@ -67,13 +67,13 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public Spinner spinnerTimezone;
 
     @BindView(R.id.radiogroup_clock_mode)
-    public RadioGroup radioGroupClockMode;
+    public MaterialToggleGroup radioGroupClockMode;
 
     @BindView(R.id.mode_12h)
-    public RadioButton radioButton12h;
+    public MaterialToggleButton radioButton12h;
 
     @BindView(R.id.mode_24h)
-    public RadioButton radioButton24h;
+    public MaterialToggleButton radioButton24h;
 
     @BindView(R.id.spinner_date_format)
     public Spinner spinnerFormatDate;
