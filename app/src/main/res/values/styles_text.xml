@@ -173,4 +173,10 @@
         <item name="android:fontFamily">@font/googlesans_regular</item>
     </style>
 
+    <style name="TextAppearance.Chip" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">@drawable/selector_textcolor_chip_choice</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:fontFamily">@font/googlesans_regular</item>
+    </style>
+
 </resources>

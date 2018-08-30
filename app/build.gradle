@@ -54,7 +54,7 @@ android {
     }
     buildTypes {
         debug {
-            debuggable false
+            debuggable true
             adbOptions {
                 installOptions "-g"
             }

@@ -26,7 +26,7 @@
                     style="@style/TextAppearance.Section"
                     android:text="Theme"/>
 
-                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
+                <android.support.design.chip.ChipGroup
                     android:id="@+id/radiogroup_theme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -35,22 +35,35 @@
                     android:orientation="horizontal"
                     android:weightSum="3">
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/light"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="Light"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/dark"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="Dark"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/automatic"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="Automatic"/>
 
-                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
+                </android.support.design.chip.ChipGroup>
 
             </LinearLayout>
 

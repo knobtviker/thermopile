@@ -3,6 +3,8 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.chip.Chip;
+import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,8 +22,6 @@ import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
-import com.knobtviker.thermopile.presentation.views.MaterialToggleButton;
-import com.knobtviker.thermopile.presentation.views.MaterialToggleGroup;
 import com.knobtviker.thermopile.presentation.views.adapters.FormatAdapter;
 import com.knobtviker.thermopile.presentation.views.adapters.TimezoneAdapter;
 
@@ -67,13 +67,13 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public Spinner spinnerTimezone;
 
     @BindView(R.id.radiogroup_clock_mode)
-    public MaterialToggleGroup radioGroupClockMode;
+    public ChipGroup radioGroupClockMode;
 
     @BindView(R.id.mode_12h)
-    public MaterialToggleButton radioButton12h;
+    public Chip radioButton12h;
 
     @BindView(R.id.mode_24h)
-    public MaterialToggleButton radioButton24h;
+    public Chip radioButton24h;
 
     @BindView(R.id.spinner_date_format)
     public Spinner spinnerFormatDate;
@@ -92,7 +92,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         super.onViewCreated(view, savedInstanceState);
 
         setupSpinnerTimezone();
-        setupRadioGroupClockMode();
+        setupGroupClockMode();
         setupSpinnerDate();
         setupSpinnerTime();
 
@@ -167,7 +167,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         spinnerTimezone.setAdapter(spinnerAdapter);
     }
 
-    private void setupRadioGroupClockMode() {
+    private void setupGroupClockMode() {
         radioGroupClockMode.setEnabled(false);
         radioGroupClockMode.setOnCheckedChangeListener((radioGroup, checkedId) -> {
             int value;

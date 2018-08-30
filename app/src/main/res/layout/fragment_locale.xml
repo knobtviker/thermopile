@@ -53,26 +53,33 @@
                     style="@style/TextAppearance.Section"
                     android:text="Clock mode"/>
 
-                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
+                <android.support.design.chip.ChipGroup
                     android:id="@+id/radiogroup_clock_mode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:layout_marginTop="@dimen/margin_small">
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/mode_12h"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="12h"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/mode_24h"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="24h"/>
 
-                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
+                </android.support.design.chip.ChipGroup>
 
             </LinearLayout>
 

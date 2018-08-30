@@ -3,6 +3,8 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.chip.Chip;
+import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +18,6 @@ import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
-import com.knobtviker.thermopile.presentation.views.MaterialToggleButton;
-import com.knobtviker.thermopile.presentation.views.MaterialToggleGroup;
 
 import java.util.Objects;
 
@@ -43,43 +43,43 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     private int unitAcceleration = UnitAcceleration.METERS_PER_SECOND_2;
 
     @BindView(R.id.radiogroup_temperature_unit)
-    public MaterialToggleGroup radioGroupTemperatureUnit;
+    public ChipGroup radioGroupTemperatureUnit;
 
     @BindView(R.id.unit_celsius)
-    public MaterialToggleButton radioButtonUnitCelsius;
+    public Chip radioButtonUnitCelsius;
 
     @BindView(R.id.unit_farenheit)
-    public MaterialToggleButton radioButtonUnitFarenheit;
+    public Chip radioButtonUnitFarenheit;
 
     @BindView(R.id.unit_kelvin)
-    public MaterialToggleButton radioButtonUnitKelvin;
+    public Chip radioButtonUnitKelvin;
 
     @BindView(R.id.radiogroup_pressure_unit)
-    public MaterialToggleGroup radioGroupPressureUnit;
+    public ChipGroup radioGroupPressureUnit;
 
     @BindView(R.id.unit_pascal)
-    public MaterialToggleButton radioButtonUnitPascal;
+    public Chip radioButtonUnitPascal;
 
     @BindView(R.id.unit_bar)
-    public MaterialToggleButton radioButtonUnitBar;
+    public Chip radioButtonUnitBar;
 
     @BindView(R.id.unit_psi)
-    public MaterialToggleButton radioButtonUnitPsi;
+    public Chip radioButtonUnitPsi;
 
     @BindView(R.id.radiogroup_acceleration_unit)
-    public MaterialToggleGroup radioGroupAccelerationUnit;
+    public ChipGroup radioGroupAccelerationUnit;
 
     @BindView(R.id.unit_ms2)
-    public MaterialToggleButton radioButtonUnitMs2;
+    public Chip radioButtonUnitMs2;
 
     @BindView(R.id.unit_g)
-    public MaterialToggleButton radioButtonUnitG;
+    public Chip radioButtonUnitG;
 
     @BindView(R.id.unit_cms2)
-    public MaterialToggleButton radioButtonUnitCms2;
+    public Chip radioButtonUnitCms2;
 
     @BindView(R.id.unit_gal)
-    public MaterialToggleButton radioButtonUnitGal;
+    public Chip radioButtonUnitGal;
 
     @Nullable
     @Override
@@ -91,9 +91,9 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupMaterialToggleGroupTemperatureUnit();
-        setupMaterialToggleGroupPressureUnit();
-        setupMaterialToggleGroupAccelerationUnit();
+        setupGroupTemperatureUnit();
+        setupGroupPressureUnit();
+        setupGroupAccelerationUnit();
 
         presenter = new UnitsPresenter(this);
 
@@ -124,7 +124,7 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         setUnitAcceleration();
     }
 
-    private void setupMaterialToggleGroupTemperatureUnit() {
+    private void setupGroupTemperatureUnit() {
         radioGroupTemperatureUnit.setEnabled(false);
         radioGroupTemperatureUnit.setOnCheckedChangeListener((radioGroup, checkedId) -> {
             int value;
@@ -149,7 +149,7 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         });
     }
 
-    private void setupMaterialToggleGroupPressureUnit() {
+    private void setupGroupPressureUnit() {
         radioGroupPressureUnit.setEnabled(false);
         radioGroupPressureUnit.setOnCheckedChangeListener((radioGroup, checkedId) -> {
             int value;
@@ -174,7 +174,7 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         });
     }
 
-    private void setupMaterialToggleGroupAccelerationUnit() {
+    private void setupGroupAccelerationUnit() {
         radioGroupAccelerationUnit.setEnabled(false);
         radioGroupAccelerationUnit.setOnCheckedChangeListener((radioGroup, checkedId) -> {
             int value;

@@ -26,29 +26,44 @@
                     style="@style/TextAppearance.Section"
                     android:text="Temperature"/>
 
-                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
+                <android.support.design.chip.ChipGroup
                     android:id="@+id/radiogroup_temperature_unit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:weightSum="3">
+                    app:singleSelection="true">
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_celsius"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="Celsius"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_farenheit"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="Fahrenheit"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_kelvin"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="Kelvin"/>
 
-                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
+                </android.support.design.chip.ChipGroup>
 
             </LinearLayout>
 
@@ -70,31 +85,44 @@
                     style="@style/TextAppearance.Section"
                     android:text="Pressure"/>
 
-                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
+                <android.support.design.chip.ChipGroup
                     android:id="@+id/radiogroup_pressure_unit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    app:singleSelection="true">
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_pascal"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="@string/unit_pressure_pascal"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_bar"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="@string/unit_pressure_bar"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_psi"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="@string/unit_pressure_psi"/>
 
-                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
+                </android.support.design.chip.ChipGroup>
 
             </LinearLayout>
 
@@ -116,36 +144,54 @@
                     style="@style/TextAppearance.Section"
                     android:text="Motion"/>
 
-                <com.knobtviker.thermopile.presentation.views.MaterialToggleGroup
+                <android.support.design.chip.ChipGroup
                     android:id="@+id/radiogroup_acceleration_unit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="4">
+                    app:singleSelection="true">
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_ms2"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="@string/unit_acceleration_ms2"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_g"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="@string/unit_acceleration_g"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_gal"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="@string/unit_acceleration_gal"/>
 
-                    <com.knobtviker.thermopile.presentation.views.MaterialToggleButton
+                    <android.support.design.chip.Chip
                         android:id="@+id/unit_cms2"
-                        style="@style/Widget.MaterialToggleButton"
+                        app:chipBackgroundColor="@drawable/background_chip_choice"
+                        app:chipStrokeColor="?android:textColorPrimary"
+                        app:chipStrokeWidth="1dp"
+                        app:chipEndPadding="32dp"
+                        app:chipStartPadding="32dp"
+                        style="@style/Widget.Chip.Choice"
                         android:text="@string/unit_acceleration_cms2"/>
 
-                </com.knobtviker.thermopile.presentation.views.MaterialToggleGroup>
+                </android.support.design.chip.ChipGroup>
 
             </LinearLayout>
 

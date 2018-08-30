@@ -3,6 +3,8 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.chip.Chip;
+import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
@@ -18,8 +20,6 @@ import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ScreensaverTimeout;
-import com.knobtviker.thermopile.presentation.views.MaterialToggleButton;
-import com.knobtviker.thermopile.presentation.views.MaterialToggleGroup;
 import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
 import java.util.Arrays;
@@ -47,16 +47,16 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     private int screenSaverTimeout = ScreensaverTimeout._1MIN;
 
     @BindView(R.id.radiogroup_theme)
-    public MaterialToggleGroup radioGroupTheme;
+    public ChipGroup radioGroupTheme;
 
     @BindView(R.id.light)
-    public MaterialToggleButton radioButtonLight;
+    public Chip radioButtonLight;
 
     @BindView(R.id.dark)
-    public MaterialToggleButton radioButtonDark;
+    public Chip radioButtonDark;
 
     @BindView(R.id.automatic)
-    public MaterialToggleButton radioButtonAutomatic;
+    public Chip radioButtonAutomatic;
 
     @BindView(R.id.spinner_timeout)
     public Spinner spinnerTimeout;
@@ -71,7 +71,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupRadioGroupTheme();
+        setupGroupTheme();
         setupSpinnerTimeout();
 
         presenter = new StylePresenter(this);
@@ -115,7 +115,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         }
     }
 
-    private void setupRadioGroupTheme() {
+    private void setupGroupTheme() {
         radioGroupTheme.setEnabled(false);
         radioGroupTheme.setOnCheckedChangeListener((radioGroup, checkedId) -> {
             int value;
