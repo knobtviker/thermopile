@@ -35,6 +35,7 @@ import timber.log.Timber;
  */
 
 public class StyleFragment extends BaseFragment<StyleContract.Presenter> implements StyleContract.View {
+
     public static final String TAG = StyleFragment.class.getSimpleName();
 
     private TimeoutAdapter spinnerAdapterTimeout;
@@ -134,10 +135,9 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
                     break;
             }
             if (radioGroupTheme.isEnabled()) {
-                AppCompatDelegate.setDefaultNightMode(value);
                 this.theme = value;
                 presenter.saveTheme(settingsId, value);
-
+                AppCompatDelegate.setDefaultNightMode(value);
                 requireActivity().recreate();
             }
         });

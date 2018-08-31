@@ -57,7 +57,8 @@
                     android:id="@+id/radiogroup_clock_mode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small">
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:singleSelection="true">
 
                     <android.support.design.chip.Chip
                         android:id="@+id/mode_12h"

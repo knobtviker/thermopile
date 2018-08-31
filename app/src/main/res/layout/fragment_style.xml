@@ -31,9 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    app:singleSelection="true">
 
                     <android.support.design.chip.Chip
                         android:id="@+id/light"
