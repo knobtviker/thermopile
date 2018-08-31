@@ -156,7 +156,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         final double ay = values[2] + 0.2f;
         final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
 
-        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
+//        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
 
         final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az, 2)), MeasuredAcceleration.MAXIMUM);
         textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));

@@ -112,7 +112,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
     private void initPresenter() {
         presenter = new ApplicationPresenter(this);
-
         presenter.createScreensaver();
     }
 
