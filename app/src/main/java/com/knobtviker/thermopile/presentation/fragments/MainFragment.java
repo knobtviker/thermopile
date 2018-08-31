@@ -212,7 +212,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
 
         //ax: -0.10000000149011612 ay: -0.20000000298023224 az: -9.800000190734863 + 9.80665F
-        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
+//        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
 
         final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az, 2)), MeasuredAcceleration.MAXIMUM);
         arcViewMotion.setProgress(value / MeasuredAcceleration.MAXIMUM); // 2g in m/s2

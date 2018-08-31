@@ -66,7 +66,11 @@ public class SettingsFragment extends BaseFragment {
         final NavController navController = NavHostFragment.findNavController(this);
         toolbar.inflateMenu(R.menu.settings);
         toolbar.setOnMenuItemClickListener(menuItem -> {
-            NavigationUI.onNavDestinationSelected(menuItem, navController);
+            if (menuItem.getItemId() == R.id.showAboutAction) {
+                navController.popBackStack(); //TODO: Remove this temporary hack when Navigation BottomNavigationView bug is fixed.
+            } else {
+                NavigationUI.onNavDestinationSelected(menuItem, navController);
+            }
             return false;
         });
         NavigationUI.setupWithNavController(toolbar, navController);

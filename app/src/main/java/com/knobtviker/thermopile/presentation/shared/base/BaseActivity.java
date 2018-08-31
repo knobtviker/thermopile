@@ -1,10 +1,16 @@
 package com.knobtviker.thermopile.presentation.shared.base;
 
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.MotionEvent;
 
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
+import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
+import com.knobtviker.thermopile.presentation.shared.constants.integrity.Preferences;
 
 /**
  * Created by bojan on 10/06/2017.
@@ -12,19 +18,17 @@ import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    // Possible solution to DayNight mixed resources issue.
-    // https://issuetracker.google.com/issues/37083803
-    // https://issuetracker.google.com/issues/37110398
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        final int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-//
-//        if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
-//            newConfig.uiMode = (newConfig.uiMode & ~Configuration.UI_MODE_NIGHT_MASK) | Configuration.UI_MODE_NIGHT_YES;
-//        }
-//
-//        super.onConfigurationChanged(newConfig);
-//    }
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+        AppCompatDelegate.setDefaultNightMode(
+            PreferenceManager
+                .getDefaultSharedPreferences(this.getApplicationContext())
+                .getInt(Preferences.THEME, Default.THEME)
+        );
+
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {

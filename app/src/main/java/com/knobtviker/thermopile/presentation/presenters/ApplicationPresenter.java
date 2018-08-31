@@ -170,16 +170,4 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                 )
         );
     }
-
-    @Override
-    public void settings() {
-        compositeDisposable.add(
-            settingsRepository
-                .observe()
-                .subscribe(
-                    view::onSettingsChanged,
-                    this::error
-                )
-        );
-    }
 }

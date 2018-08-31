@@ -3,9 +3,7 @@ package com.knobtviker.thermopile.presentation;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDelegate;
 
-import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractApplication;
@@ -19,7 +17,6 @@ import timber.log.Timber;
 
 // /data/data/com.knobtviker.thermopile
 public class ThermopileApplication extends AbstractApplication<ApplicationContract.Presenter> implements ApplicationContract.View {
-    private static final String TAG = ThermopileApplication.class.getSimpleName();
 
     private static long lastBootTimestamp = 0L;
 
@@ -40,13 +37,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
     @Override
     public void showError(@NonNull Throwable throwable) {
         Timber.e(throwable);
-    }
-
-    @Override
-    public void onSettingsChanged(@NonNull Settings settings) {
-        if (AppCompatDelegate.getDefaultNightMode() != settings.theme) {
-            AppCompatDelegate.setDefaultNightMode(settings.theme);
-        }
     }
 
     @Override
@@ -124,8 +114,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         presenter = new ApplicationPresenter(this);
 
         presenter.createScreensaver();
-
-        presenter.settings();
     }
 
     private boolean isThingsDevice(@NonNull final Context context) {

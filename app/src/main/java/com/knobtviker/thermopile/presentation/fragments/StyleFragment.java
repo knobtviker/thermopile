@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.chip.Chip;
@@ -19,6 +20,7 @@ import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
+import com.knobtviker.thermopile.presentation.shared.constants.integrity.Preferences;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ScreensaverTimeout;
 import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
@@ -94,8 +96,10 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
     @Override
     public void onLoad(@NonNull Settings settings) {
+        this.theme = PreferenceManager
+            .getDefaultSharedPreferences(requireContext().getApplicationContext())
+            .getInt(Preferences.THEME, Default.THEME);
         this.settingsId = settings.id;
-        this.theme = settings.theme;
         this.screenSaverTimeout = settings.screensaverDelay;
 
         setTheme();
@@ -136,7 +140,11 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
             }
             if (radioGroupTheme.isEnabled()) {
                 this.theme = value;
-                presenter.saveTheme(settingsId, value);
+                PreferenceManager
+                    .getDefaultSharedPreferences(requireContext().getApplicationContext())
+                    .edit()
+                    .putInt(Preferences.THEME, value)
+                    .apply();
                 AppCompatDelegate.setDefaultNightMode(value);
                 requireActivity().recreate();
             }
