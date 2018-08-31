@@ -9,6 +9,7 @@
     </style>
 
     <style name="Widget.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">?android:windowBackground</item>
         <item name="itemTextAppearanceActive">@style/TextAppearance.Item.BottomNavigationView.Active</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.Item.BottomNavigationView.Inactive</item>
         <item name="labelVisibilityMode">labeled</item>
