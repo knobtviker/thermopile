@@ -89,7 +89,7 @@ dependencies {
     implementation deps.rx.android
     implementation deps.dagger.runtime
     annotationProcessor deps.dagger.compiler
-    implementation deps.joda.android
+    implementation deps.threetenbp.android
     //data
     debugImplementation deps.objectbox.browser
     releaseImplementation deps.objectbox.android

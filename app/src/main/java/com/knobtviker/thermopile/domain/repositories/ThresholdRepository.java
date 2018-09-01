@@ -3,13 +3,12 @@ package com.knobtviker.thermopile.domain.repositories;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.data.models.presentation.Interval;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.data.sources.local.ThresholdLocalDataSource;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.factories.ThresholdIntervalFactory;
-
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +18,6 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-
 
 /**
  * Created by bojan on 17/07/2017.
@@ -85,7 +83,8 @@ public class ThresholdRepository extends AbstractRepository {
             .observeOn(schedulers.ui);
     }
 
-    private void fillDayWithThresholds(@NonNull final List<Threshold> thresholds, @NonNull final List<ThresholdInterval> thresholdIntervals, final int day) {
+    private void fillDayWithThresholds(@NonNull final List<Threshold> thresholds, @NonNull final List<ThresholdInterval> thresholdIntervals,
+        final int day) {
         final List<Threshold> thresholdsInDay = thresholds.stream()
             .filter(ThresholdIntervalFactory.withDay(day)) //Filter thresholds only for that day
             .sorted(ThresholdIntervalFactory.sortDay())
@@ -99,20 +98,9 @@ public class ThresholdRepository extends AbstractRepository {
                 thresholdIntervals.add(
                     ThresholdInterval.builder()
                         .interval(
-                            new Interval(
-                                new DateTime()
-                                    .withDayOfWeek(first.day + 1)
-                                    .withHourOfDay(0)
-                                    .withMinuteOfHour(0)
-                                    .withSecondOfMinute(0)
-                                    .withMillisOfSecond(0),
-                                new DateTime()
-                                    .withDayOfWeek(first.day + 1)
-                                    .withHourOfDay(first.startHour)
-                                    .withMinuteOfHour(first.startMinute)
-                                    .withSecondOfMinute(0)
-                                    .withMillisOfSecond(0)
-                                    .minusMillis(1)
+                            Interval.of(
+                                DateTimeKit.from(first.day, 0, 0).toInstant(),
+                                DateTimeKit.from(first.day, first.startHour, first.startMinute).minusNanos(1).toInstant()
                             )
                         )
                         .build()
@@ -122,20 +110,9 @@ public class ThresholdRepository extends AbstractRepository {
                 thresholdIntervals.add(
                     ThresholdInterval.builder()
                         .interval(
-                            new Interval(
-                                new DateTime()
-                                    .withDayOfWeek(first.day + 1)
-                                    .withHourOfDay(last.endHour)
-                                    .withMinuteOfHour(last.endMinute)
-                                    .withSecondOfMinute(0)
-                                    .withMillisOfSecond(0)
-                                    .minusMillis(1),
-                                new DateTime()
-                                    .withDayOfWeek(first.day + 1)
-                                    .withHourOfDay(23)
-                                    .withMinuteOfHour(59)
-                                    .withSecondOfMinute(59)
-                                    .withMillisOfSecond(999)
+                            Interval.of(
+                                DateTimeKit.from(first.day, last.endHour, last.endMinute).minusNanos(1).toInstant(),
+                                DateTimeKit.from(first.day, 23, 59).plusSeconds(59).plusNanos(999999999).toInstant()
                             )
                         )
                         .build()
@@ -152,7 +129,7 @@ public class ThresholdRepository extends AbstractRepository {
                             thresholdIntervals.add(
                                 ThresholdInterval.builder()
                                     .interval(
-                                        new Interval(
+                                        Interval.of(
                                             gap.getStart().plusMillis(1),
                                             gap.getEnd().minusMillis(1)
                                         )

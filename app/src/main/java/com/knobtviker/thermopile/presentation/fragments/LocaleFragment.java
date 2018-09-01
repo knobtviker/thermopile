@@ -22,12 +22,10 @@ import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.views.adapters.FormatAdapter;
 import com.knobtviker.thermopile.presentation.views.adapters.TimezoneAdapter;
 
-import org.joda.time.DateTimeZone;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -163,7 +161,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         spinnerTimezone.setEnabled(false);
         spinnerTimezone.setPrompt("Timezone");
 
-        spinnerAdapter = new TimezoneAdapter(requireContext(), new ArrayList<>(DateTimeZone.getAvailableIDs()));
+        spinnerAdapter = new TimezoneAdapter(requireContext(), DateTimeKit.zones());
         spinnerTimezone.setAdapter(spinnerAdapter);
     }
 

@@ -26,6 +26,7 @@ import com.knobtviker.thermopile.data.models.local.Pressure;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.shared.SingleModel;
+import com.knobtviker.thermopile.data.models.presentation.Interval;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.presenters.ChartsPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
@@ -41,13 +42,11 @@ import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTi
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.adapters.ChartAdapter;
 import com.knobtviker.thermopile.presentation.views.spark.SparkView;
 import com.knobtviker.thermopile.presentation.views.spark.animation.MorphSparkAnimator;
-
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
 import java.util.List;
 import java.util.Optional;
@@ -401,51 +400,38 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     }
 
     private void data() {
-        presenter.data(type, interval.getStartMillis(), interval.getEndMillis());
+        presenter.data(type, interval.getStart().toEpochMilli(), interval.getEnd().toEpochMilli());
     }
 
     private Interval intervalForType(@ChartInterval final int interval) {
-        final DateTime now = DateTime.now();
-        final DateTime other;
-
         switch (interval) {
             case ChartInterval.TODAY:
-                other = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
-                return new Interval(other, now);
+                return DateTimeKit.today();
             case ChartInterval.YESTERDAY:
-                final DateTime today = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
-                final DateTime yesterday = today.minusDays(1);
-                return new Interval(yesterday, today);
+                return DateTimeKit.yesterday();
             case ChartInterval.THIS_WEEK:
-                other = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfWeek(1);
-                return new Interval(other, now);
+                return DateTimeKit.thisWeek();
             case ChartInterval.LAST_WEEK:
-                final DateTime thisWeek = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfWeek(1);
-                final DateTime lastWeek = thisWeek.minusWeeks(1);
-                return new Interval(lastWeek, thisWeek);
+                return DateTimeKit.lastWeek();
             case ChartInterval.THIS_MONTH:
-                other = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfMonth(1);
-                return new Interval(other, now);
+                return DateTimeKit.thisMonth();
             case ChartInterval.LAST_MONTH:
-                final DateTime thisMonth = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfMonth(1);
-                final DateTime lastMonth = thisMonth.minusMonths(1);
-                return new Interval(lastMonth, thisMonth);
+                return DateTimeKit.lastMonth();
             case ChartInterval.THIS_YEAR:
-                other = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfYear(1);
-                return new Interval(other, now);
+                return DateTimeKit.thisYear();
             case ChartInterval.LAST_YEAR:
-                final DateTime thisYear = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0).withDayOfYear(1);
-                final DateTime lastYear = thisYear.minusYears(1);
-                return new Interval(lastYear, thisYear);
+                return DateTimeKit.lastYear();
             default:
-                return new Interval(now.minusMillis(1), now);
+                return DateTimeKit.lastSecond();
         }
     }
 
     private void hasScrubbedValue(@NonNull final String value, @Nullable final String unit, final long timestamp) {
         textViewScrubbedValue.setText(value);
         textViewScrubbedUnit.setText(unit);
-        textViewScrubbedDateTime.setText(new DateTime(timestamp).toString(String.format("%s %s", formatDate, formatTime)));
+        textViewScrubbedDateTime.setText(
+            DateTimeKit.format(timestamp, String.format("%s %s", formatDate, formatTime))
+        );
 
         textViewScrubbedValue.setVisibility(View.VISIBLE);
         textViewScrubbedUnit.setVisibility(View.VISIBLE);

@@ -11,9 +11,7 @@ import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
-
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 
 import io.reactivex.Completable;
 
@@ -74,27 +72,29 @@ public class ThresholdPresenter extends AbstractPresenter implements ThresholdCo
         compositeDisposable.add(
             Completable.create(emitter -> {
                 if (!emitter.isDisposed()) {
-                    final DateTime startDateTime = new DateTime()
-                        .withDayOfWeek(threshold.day + 1)
-                        .withHourOfDay(threshold.startHour)
-                        .withMinuteOfHour(threshold.startMinute)
-                        .withSecondOfMinute(0)
-                        .withMillisOfSecond(0);
-
-                    final DateTime endDateTime = new DateTime()
-                        .withDayOfWeek(threshold.day + 1)
-                        .withHourOfDay(threshold.endHour)
-                        .withMinuteOfHour(threshold.endMinute)
-                        .withSecondOfMinute(0)
-                        .withMillisOfSecond(0);
-
-                    if (startDateTime.isAfter(endDateTime)) {
+                    if (DateTimeKit.isStartAfterEnd(
+                        threshold.day,
+                        threshold.startHour,
+                        threshold.startMinute,
+                        threshold.endHour,
+                        threshold.endMinute)
+                    ) {
                         emitter.onError(new Throwable("Start time cannot be after end time"));
-                    } else if (startDateTime.isEqual(endDateTime)) {
+                    } else if (DateTimeKit.isStartEqualEnd(
+                        threshold.day,
+                        threshold.startHour,
+                        threshold.startMinute,
+                        threshold.endHour,
+                        threshold.endMinute)) {
                         emitter.onError(new Throwable("Start time cannot be equal and exact as end time"));
                     } else {
-                        final Interval interval = new Interval(startDateTime, endDateTime);
-                        if (interval.toDuration().toStandardHours().getHours() >= 1) {
+                        if (DateTimeKit.interval(
+                            threshold.day,
+                            threshold.startHour,
+                            threshold.startMinute,
+                            threshold.endHour,
+                            threshold.endMinute
+                        ).toDuration().toHours() >= 1) {
                             emitter.onComplete();
                         } else {
                             emitter.onError(new Throwable("Duration between start and end time is less than one hour"));

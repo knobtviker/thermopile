@@ -33,14 +33,15 @@ import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTi
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.utils.controllers.PIDController;
 import com.knobtviker.thermopile.presentation.views.ArcView;
 import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
 import com.knobtviker.thermopile.presentation.views.listeners.DayScrollListener;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 
@@ -55,13 +56,14 @@ import timber.log.Timber;
  */
 
 public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View, DayScrollListener.Listener {
+
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private ThresholdAdapter thresholdAdapter;
 
     private LinearLayoutManager linearLayoutManager;
 
-    private DateTimeZone dateTimeZone;
+    private ZoneId dateTimeZone;
 
     @ClockMode
     private int formatClock;
@@ -138,7 +140,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public RecyclerView recyclerViewThresholds;
 
     public MainFragment() {
-        dateTimeZone = DateTimeZone.forID(Default.TIMEZONE);
+        dateTimeZone = ZoneId.of(Default.TIMEZONE);
         formatClock = ClockMode._24H;
         formatDate = FormatDate.EEEE_DD_MM_YYYY;
         formatTime = FormatTime.HH_MM;
@@ -181,7 +183,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         arcViewTemperature.setProgress(value / MeasuredTemperature.MAXIMUM);
         textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))));
 
-//        pidController.doPID(Math.round(value));
+        //        pidController.doPID(Math.round(value));
     }
 
     @Override
@@ -212,7 +214,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
 
         //ax: -0.10000000149011612 ay: -0.20000000298023224 az: -9.800000190734863 + 9.80665F
-//        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
+        //        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
 
         final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az, 2)), MeasuredAcceleration.MAXIMUM);
         arcViewMotion.setProgress(value / MeasuredAcceleration.MAXIMUM); // 2g in m/s2
@@ -227,7 +229,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
-        dateTimeZone = DateTimeZone.forID(settings.timezone);
+        dateTimeZone = ZoneId.of(settings.timezone);
         formatClock = settings.formatClock;
         formatDate = settings.formatDate;
         formatTime = settings.formatTime;
@@ -268,16 +270,15 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.button_decrease:
-//                RelayRawDataSource.getInstance()
-//                    .on()
-//                    .subscribe();
+                //                RelayRawDataSource.getInstance()
+                //                    .on()
+                //                    .subscribe();
                 break;
             case R.id.button_increase:
-//                RelayRawDataSource.getInstance()
-//                    .off()
-//                    .subscribe();
+                //                RelayRawDataSource.getInstance()
+                //                    .off()
+                //                    .subscribe();
                 break;
-
         }
     }
 
@@ -301,7 +302,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setFormatClock() {
-        textViewClock.setTimeZone(dateTimeZone.toString());
+        textViewClock.setTimeZone(dateTimeZone.getId());
         if (formatClock == ClockMode._12H) {
             textViewClock.setFormat12Hour(formatTime);
             textViewClock.setFormat24Hour(null);
@@ -366,8 +367,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setDate() {
-        final DateTime dateTime = new DateTime(dateTimeZone);
-        textViewDate.setText(dateTime.toString(formatDate));
+        textViewDate.setText(
+            DateTimeKit.format(ZonedDateTime.now(dateTimeZone), formatDate)
+        );
     }
 
     private void load() {
