@@ -22,8 +22,7 @@ import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
-
-import org.joda.time.DateTimeUtils;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 
 import java.util.List;
 
@@ -72,7 +71,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable saveTemperature(@NonNull final String vendor, @NonNull final String name, final float value) {
         return temperatureLocalDataSource
-            .save(new Temperature(DateTimeUtils.currentTimeMillis(), vendor, name, value))
+            .save(new Temperature(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();
@@ -80,7 +79,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable savePressure(@NonNull final String vendor, @NonNull final String name, final float value) {
         return pressureLocalDataSource
-            .save(new Pressure(DateTimeUtils.currentTimeMillis(), vendor, name, value))
+            .save(new Pressure(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();
@@ -88,7 +87,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable saveAltitude(@NonNull final String vendor, @NonNull final String name, final float value) {
         return altitudeLocalDataSource
-            .save(new Altitude(DateTimeUtils.currentTimeMillis(), vendor, name, convertPressureToAltitude(value)))
+            .save(new Altitude(DateTimeKit.instant().toEpochMilli(), vendor, name, convertPressureToAltitude(value)))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();
@@ -96,7 +95,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable saveHumidity(@NonNull final String vendor, @NonNull final String name, final float value) {
         return humidityLocalDataSource
-            .save(new Humidity(DateTimeUtils.currentTimeMillis(), vendor, name, value))
+            .save(new Humidity(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();
@@ -104,7 +103,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable saveAirQuality(@NonNull final String vendor, @NonNull final String name, final float value) {
         return airQualityLocalDataSource
-            .save(new AirQuality(DateTimeUtils.currentTimeMillis(), vendor, name, value))
+            .save(new AirQuality(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();
@@ -112,7 +111,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable saveLuminosity(@NonNull final String vendor, @NonNull final String name, final float value) {
         return luminosityLocalDataSource
-            .save(new Luminosity(DateTimeUtils.currentTimeMillis(), vendor, name, value))
+            .save(new Luminosity(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();
@@ -120,7 +119,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable saveAcceleration(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return accelerationLocalDataSource
-            .save(new Acceleration(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
+            .save(new Acceleration(DateTimeKit.instant().toEpochMilli(), vendor, name, values[0], values[1], values[2]))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();
@@ -128,7 +127,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable saveAngularVelocity(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return angularVelocityLocalDataSource
-            .save(new AngularVelocity(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
+            .save(new AngularVelocity(DateTimeKit.instant().toEpochMilli(), vendor, name, values[0], values[1], values[2]))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();
@@ -136,7 +135,7 @@ public class AtmosphereRepository extends AbstractRepository {
 
     public Completable saveMagneticField(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return magneticFieldLocalDataSource
-            .save(new MagneticField(DateTimeUtils.currentTimeMillis(), vendor, name, values[0], values[1], values[2]))
+            .save(new MagneticField(DateTimeKit.instant().toEpochMilli(), vendor, name, values[0], values[1], values[2]))
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.io)
             .ignoreElements();

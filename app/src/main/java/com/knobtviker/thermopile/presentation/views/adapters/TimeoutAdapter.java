@@ -10,8 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-
-import org.joda.time.Seconds;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 
 import java.util.List;
 import java.util.Locale;
@@ -69,12 +68,11 @@ public class TimeoutAdapter extends ArrayAdapter<Integer> {
     }
 
     private String buildItemText(@NonNull final Integer item) {
-        final Seconds seconds = Seconds.seconds(item);
-        final int minutes = seconds.toStandardMinutes().getMinutes();
+        final long minutes = DateTimeKit.secondsToMinutes(item);
         if (minutes > 0) {
             return String.format(Locale.getDefault(), "%d min", minutes);
         } else {
-            return String.format(Locale.getDefault(), "%d s", seconds.getSeconds());
+            return String.format(Locale.getDefault(), "%d s", item);
         }
     }
 }

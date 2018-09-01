@@ -10,8 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-
-import org.joda.time.DateTime;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 
 import java.util.List;
 
@@ -46,7 +45,9 @@ public class FormatAdapter extends ArrayAdapter<String> {
         final TextView textView2 = view.findViewById(R.id.text2);
 
         textView1.setText(item);
-        textView2.setText(DateTime.now().toString(item));
+        textView2.setText(
+            DateTimeKit.format(DateTimeKit.now(), item)
+        );
 
         return view;
     }
@@ -66,7 +67,9 @@ public class FormatAdapter extends ArrayAdapter<String> {
         final TextView textView2 = view.findViewById(R.id.text2);
 
         textView1.setText(item);
-        textView2.setText(DateTime.now().toString(item));
+        textView2.setText(
+            DateTimeKit.format(DateTimeKit.now(), item)
+        );
 
         return view;
     }

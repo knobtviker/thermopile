@@ -26,10 +26,11 @@ import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTi
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -39,9 +40,10 @@ import timber.log.Timber;
  */
 
 public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presenter> implements ScreenSaverContract.View {
+
     public static final String TAG = ScreensaverFragment.class.getSimpleName();
 
-    private DateTimeZone dateTimeZone;
+    private ZoneId dateTimeZone;
 
     @ClockMode
     private int formatClock;
@@ -95,7 +97,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     public TextView textViewMotionUnit;
 
     public ScreensaverFragment() {
-        dateTimeZone = DateTimeZone.forID(Default.TIMEZONE);
+        dateTimeZone = DateTimeKit.zoneById(Default.TIMEZONE);
         formatClock = ClockMode._24H;
         formatDate = FormatDate.EEEE_DD_MM_YYYY;
         formatTime = FormatTime.HH_MM;
@@ -156,7 +158,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
         final double ay = values[2] + 0.2f;
         final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
 
-//        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
+        //        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
 
         final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az, 2)), MeasuredAcceleration.MAXIMUM);
         textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));
@@ -169,7 +171,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     @Override
     public void onSettingsChanged(@NonNull Settings settings) {
-        dateTimeZone = DateTimeZone.forID(settings.timezone);
+        dateTimeZone = ZoneId.of(settings.timezone);
         formatClock = settings.formatClock;
         formatDate = settings.formatDate;
         formatTime = settings.formatTime;
@@ -187,16 +189,26 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     private void setDate() {
-        final DateTime dateTime = new DateTime(dateTimeZone);
+        final ZonedDateTime dateTime = ZonedDateTime.now(dateTimeZone);
 
         if (formatDate.contains(FormatDay.EEEE)) {
-            textViewDate.setText(dateTime.toString(formatDate.replace(FormatDay.EEEE, "").trim()));
-            textViewDay.setText(dateTime.toString(FormatDay.EEEE));
+            textViewDate.setText(
+                DateTimeKit.format(dateTime, formatDate.replace(FormatDay.EEEE, "").trim())
+            );
+            textViewDay.setText(
+                DateTimeKit.format(dateTime, FormatDay.EEEE)
+            );
         } else if (formatDate.contains(FormatDay.EE)) {
-            textViewDate.setText(dateTime.toString(formatDate.replace(FormatDay.EE, "").trim()));
-            textViewDay.setText(dateTime.toString(FormatDay.EE));
+            textViewDate.setText(
+                DateTimeKit.format(dateTime, formatDate.replace(FormatDay.EE, "").trim())
+            );
+            textViewDay.setText(
+                DateTimeKit.format(dateTime, FormatDay.EE)
+            );
         } else {
-            textViewDate.setText(dateTime.toString(formatDate));
+            textViewDate.setText(
+                DateTimeKit.format(dateTime, formatDate)
+            );
             textViewDay.setVisibility(View.INVISIBLE);
         }
     }
@@ -222,7 +234,7 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
     }
 
     private void setFormatClock() {
-        textViewClock.setTimeZone(dateTimeZone.toString());
+        textViewClock.setTimeZone(dateTimeZone.getId());
         if (formatClock == ClockMode._12H) {
             textViewClock.setFormat12Hour(formatTime);
             textViewClock.setFormat24Hour(null);

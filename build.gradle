@@ -33,7 +33,7 @@ buildscript {
         'rxjava'          : '2.2.1',
         'rxandroid'       : '2.1.0',
         'dagger'          : '2.17',
-        'joda'            : '2.9.9',
+        'threetenbp'      : '1.1.0',
         'objectbox'       : '2.1.0',
         'autovalue'       : '1.6',
         'butterknife'     : '8.8.1',
@@ -97,14 +97,14 @@ buildscript {
             'android': "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}",
         ],
         'dagger'     : [
-            'runtime' : "com.google.dagger:dagger:${versions.dagger}",
-            'compiler': "com.google.dagger:dagger-compiler:${versions.dagger}",
-            'android' : "com.google.dagger:dagger-android:${versions.dagger}",
-            'support': "com.google.dagger:dagger-android-support:${versions.dagger}",
+            'runtime'  : "com.google.dagger:dagger:${versions.dagger}",
+            'compiler' : "com.google.dagger:dagger-compiler:${versions.dagger}",
+            'android'  : "com.google.dagger:dagger-android:${versions.dagger}",
+            'support'  : "com.google.dagger:dagger-android-support:${versions.dagger}",
             'processor': "com.google.dagger:dagger-android-processor:${versions.dagger}",
         ],
-        'joda'       : [
-            'android': "net.danlew:android.joda:${versions.joda}",
+        'threetenbp' : [
+            'android': "com.jakewharton.threetenabp:threetenabp:${versions.threetenbp}",
         ],
         'objectbox'  : [
             'browser': "io.objectbox:objectbox-android-objectbrowser:${versions.objectbox}",

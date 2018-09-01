@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.shared.Database;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
@@ -21,8 +22,6 @@ import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommun
 import com.knobtviker.thermopile.shared.MessageFactory;
 import com.knobtviker.thermopile.shared.constants.Keys;
 import com.knobtviker.thermopile.shared.constants.Uid;
-
-import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.Objects;
 
@@ -52,7 +51,7 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         services();
 
         initCrashlytics();
-        initJodaTime();
+        initTime();
         initDatabase();
     }
 
@@ -178,8 +177,8 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
         }
     }
 
-    private void initJodaTime() {
-        JodaTimeAndroid.init(this);
+    private void initTime() {
+        AndroidThreeTen.init(this);
     }
 
     private void initDatabase() {

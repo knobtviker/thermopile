@@ -1,14 +1,15 @@
 package com.knobtviker.thermopile.presentation.utils.factories;
 
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.data.models.presentation.Interval;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.comparators.ThresholdInDayComparator;
 import com.knobtviker.thermopile.presentation.utils.comparators.ThresholdIntervalComparator;
 import com.knobtviker.thermopile.presentation.utils.mappers.ThresholdIntervalMapper;
 import com.knobtviker.thermopile.presentation.utils.predicates.ThresholdOfDayPredicate;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
+import org.threeten.bp.ZoneOffset;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,47 +20,27 @@ import java.util.stream.IntStream;
 public class ThresholdIntervalFactory {
 
     public static List<ThresholdInterval> emptyDays() {
-        return IntStream.range(1, 8)
-                .mapToObj(day ->
-                    ThresholdInterval.builder()
-                        .interval(
-                            new Interval(
-                                new DateTime()
-                                    .withDayOfWeek(day)
-                                    .withHourOfDay(0)
-                                    .withMinuteOfHour(0)
-                                    .withSecondOfMinute(0)
-                                    .withMillisOfSecond(0),
-                                new DateTime()
-                                    .withDayOfWeek(day)
-                                    .withHourOfDay(23)
-                                    .withMinuteOfHour(59)
-                                    .withSecondOfMinute(59)
-                                    .withMillisOfSecond(999)
-                            )
+        return IntStream.range(0, 6)
+            .mapToObj(day ->
+                ThresholdInterval.builder()
+                    .interval(
+                        Interval.of(
+                            DateTimeKit.from(day, 0,0).toInstant(ZoneOffset.UTC),
+                            DateTimeKit.from(day, 23,59).plusSeconds(59).plusNanos(999999999).toInstant(ZoneOffset.UTC)
                         )
-                        .build()
-                )
-                .collect(Collectors.toList()
-        );
+                    )
+                    .build()
+            )
+            .collect(Collectors.toList()
+            );
     }
 
     public static ThresholdInterval emptyDay(final int day) {
         return ThresholdInterval.builder()
             .interval(
-                new Interval(
-                    new DateTime()
-                        .withDayOfWeek(day + 1)
-                        .withHourOfDay(0)
-                        .withMinuteOfHour(0)
-                        .withSecondOfMinute(0)
-                        .withMillisOfSecond(0),
-                    new DateTime()
-                        .withDayOfWeek(day + 1)
-                        .withHourOfDay(23)
-                        .withMinuteOfHour(59)
-                        .withSecondOfMinute(59)
-                        .withMillisOfSecond(999)
+                Interval.of(
+                    DateTimeKit.from(day, 0,0).toInstant(ZoneOffset.UTC),
+                    DateTimeKit.from(day, 23,59).plusSeconds(59).plusNanos(999999999).toInstant(ZoneOffset.UTC)
                 )
             )
             .build();

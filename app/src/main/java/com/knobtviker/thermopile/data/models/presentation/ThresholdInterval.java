@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 
-import org.joda.time.Interval;
-
 @AutoValue
 public abstract class ThresholdInterval {
 

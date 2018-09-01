@@ -11,12 +11,13 @@ import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
 
 public class TimezoneAdapter extends ArrayAdapter<String> {
 
-    public TimezoneAdapter(@NonNull final Context context, @NonNull final List<String> items) {
-        super(context, R.layout.item_spinner, items);
+    public TimezoneAdapter(@NonNull final Context context, @NonNull final Set<String> items) {
+        super(context, R.layout.item_spinner, new ArrayList<>(items));
 
         setDropDownViewResource(R.layout.item_spinner);
     }

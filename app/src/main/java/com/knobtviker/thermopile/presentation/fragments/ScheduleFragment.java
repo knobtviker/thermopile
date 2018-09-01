@@ -23,11 +23,9 @@ import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
-
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -221,18 +219,15 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                 final ConstraintSet set = new ConstraintSet();
                 set.clone(layout);
                 set.constrainWidth(thresholdView.getId(), Math.round(
-                    Minutes.minutesBetween(
-                        new DateTime()
-                            .withHourOfDay(threshold.startHour)
-                            .withMinuteOfHour(threshold.startMinute),
-                        new DateTime()
-                            .withHourOfDay(threshold.endHour)
-                            .withMinuteOfHour(threshold.endMinute)
-                    ).getMinutes() / 2.0f
+                    DateTimeKit.minutesBetween(
+                        threshold.startHour, threshold.startMinute,
+                        threshold.endHour, threshold.endMinute
+                    ) / 2.0f //TODO: Investigate and remove this magic number.
                 ));
                 set.constrainHeight(thresholdView.getId(), ConstraintSet.MATCH_CONSTRAINT);
                 set.connect(thresholdView.getId(), START, ConstraintSet.PARENT_ID, START,
-                    Math.round((threshold.startHour * 60 + threshold.startMinute) / 2.0f));
+                    Math.round(
+                        (threshold.startHour * 60 + threshold.startMinute) / 2.0f)); //TODO: Investigate and remove this magic number.
                 set.connect(thresholdView.getId(), TOP, ConstraintSet.PARENT_ID, TOP, 8);
                 set.connect(thresholdView.getId(), BOTTOM, ConstraintSet.PARENT_ID, BOTTOM, 8);
 

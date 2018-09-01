@@ -27,12 +27,11 @@ import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemp
 import com.knobtviker.thermopile.presentation.shared.constants.time.Days;
 import com.knobtviker.thermopile.presentation.shared.constants.time.Hours;
 import com.knobtviker.thermopile.presentation.shared.constants.time.Minutes;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 import com.knobtviker.thermopile.presentation.views.dividers.GridItemDecoration;
-
-import org.joda.time.DateTime;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -48,6 +47,7 @@ import timber.log.Timber;
  */
 
 public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter> implements ThresholdContract.View {
+
     public static String TAG = ThresholdFragment.class.getSimpleName();
 
     private long thresholdId = Default.INVALID_ID;
@@ -227,10 +227,12 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     private void setupTimePickers() {
-        final DateTime now = DateTime.now();
-
-        textViewTimeStart.setText(now.toString(formatTime));
-        textViewTimeEnd.setText(now.toString(formatTime));
+        textViewTimeStart.setText(
+            DateTimeKit.format(DateTimeKit.now(), formatTime)
+        );
+        textViewTimeEnd.setText(
+            DateTimeKit.format(DateTimeKit.now(), formatTime)
+        );
 
         timePickerDialogStart = new TimePickerDialog(
             requireContext(),
@@ -240,8 +242,8 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
                 setStartTime(day + 1, startTimeHour, startTimeMinute);
             },
-            now.getHourOfDay(),
-            now.getMinuteOfHour(),
+            DateTimeKit.now().getHour(),
+            DateTimeKit.now().getMinute(),
             formatClock == ClockMode._24H
         );
 
@@ -253,8 +255,8 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
                 setEndTime(day + 1, endTimeHour, endTimeMinute);
             },
-            now.getHourOfDay(),
-            now.getMinuteOfHour(),
+            DateTimeKit.now().getHour(),
+            DateTimeKit.now().getMinute(),
             formatClock == ClockMode._24H
         );
     }
@@ -333,21 +335,13 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private void setStartTime(final int day, final int hour, final int minute) {
         textViewTimeStart.setText(
-            new DateTime()
-                .withDayOfWeek(day)
-                .withHourOfDay(hour)
-                .withMinuteOfHour(minute)
-                .toString(formatTime)
+            DateTimeKit.format(day, hour, minute, formatTime)
         );
     }
 
     private void setEndTime(final int day, final int hour, final int minute) {
         textViewTimeEnd.setText(
-            new DateTime()
-                .withDayOfWeek(day)
-                .withHourOfDay(hour)
-                .withMinuteOfHour(minute)
-                .toString(formatTime)
+            DateTimeKit.format(day, hour, minute, formatTime)
         );
     }
 }
