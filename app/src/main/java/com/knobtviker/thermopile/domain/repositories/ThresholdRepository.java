@@ -10,6 +10,8 @@ import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.factories.ThresholdIntervalFactory;
 
+import org.threeten.bp.ZoneOffset;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -99,8 +101,8 @@ public class ThresholdRepository extends AbstractRepository {
                     ThresholdInterval.builder()
                         .interval(
                             Interval.of(
-                                DateTimeKit.from(first.day, 0, 0).toInstant(),
-                                DateTimeKit.from(first.day, first.startHour, first.startMinute).minusNanos(1).toInstant()
+                                DateTimeKit.from(first.day, 0, 0).toInstant(ZoneOffset.UTC),
+                                DateTimeKit.from(first.day, first.startHour, first.startMinute).minusNanos(1).toInstant(ZoneOffset.UTC)
                             )
                         )
                         .build()
@@ -111,8 +113,8 @@ public class ThresholdRepository extends AbstractRepository {
                     ThresholdInterval.builder()
                         .interval(
                             Interval.of(
-                                DateTimeKit.from(first.day, last.endHour, last.endMinute).minusNanos(1).toInstant(),
-                                DateTimeKit.from(first.day, 23, 59).plusSeconds(59).plusNanos(999999999).toInstant()
+                                DateTimeKit.from(first.day, last.endHour, last.endMinute).minusNanos(1).toInstant(ZoneOffset.UTC),
+                                DateTimeKit.from(first.day, 23, 59).plusSeconds(59).plusNanos(999999999).toInstant(ZoneOffset.UTC)
                             )
                         )
                         .build()

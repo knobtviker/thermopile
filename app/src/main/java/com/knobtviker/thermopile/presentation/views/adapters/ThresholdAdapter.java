@@ -33,8 +33,6 @@ import java.util.List;
 
 public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHolder> {
 
-    private final static String TAG = ThresholdAdapter.class.getSimpleName();
-
     private final LayoutInflater layoutInflater;
     private final List<String> days;
     private final List<String> daysShort;
@@ -79,11 +77,11 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
 
             buildTime(
                 holder.textViewTimeStart,
-                DateTimeKit.format(interval.getStart(), formatTime)
+                DateTimeKit.format(interval.getStart().toEpochMilli(), formatTime)
             );
             buildTime(
                 holder.textViewTimeEnd,
-                DateTimeKit.format(interval.getEnd(), formatTime)
+                DateTimeKit.format(interval.getEnd().toEpochMilli(), formatTime)
             );
         } else {
             holder.viewIndicator.setBackgroundResource(R.drawable.empty_interval_line);
@@ -135,8 +133,6 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     private void buildTime(@NonNull final TextView textView, @NonNull final String time) {
         final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
         spannableStringBuilder.append(time);
-        //        spannableStringBuilder.setSpan(typefaceSpanMedium, 0, time.indexOf(":"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         textView.setText(spannableStringBuilder, TextView.BufferType.SPANNABLE);
     }
 

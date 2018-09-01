@@ -5,10 +5,9 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.Interval;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.ZoneOffset;
 
 import java.util.function.Function;
 
@@ -32,15 +31,8 @@ public class ThresholdIntervalMapper implements Function<Threshold, ThresholdInt
     private Interval convertThresholdToInterval(@NonNull final Threshold threshold) {
         //this works for everyhing but 00:00 end time. which should not be allowed
         return Interval.of(
-            ZonedDateTime.from(
-                LocalTime.of(threshold.startHour, threshold.startMinute, 0, 0))
-                .with(ChronoField.DAY_OF_WEEK, threshold.day + 1)
-                .toInstant(),
-            ZonedDateTime.from(
-                LocalTime.of(threshold.endHour, threshold.endMinute, 0, 0))
-                .with(ChronoField.DAY_OF_WEEK, threshold.day + 1)
-                .minusNanos(1)
-                .toInstant()
+            DateTimeKit.from(threshold.day, threshold.startHour, threshold.startMinute).toInstant(ZoneOffset.UTC),
+            DateTimeKit.from(threshold.day, threshold.endHour, threshold.endMinute).toInstant(ZoneOffset.UTC).minusNanos(1)
         );
     }
 }
