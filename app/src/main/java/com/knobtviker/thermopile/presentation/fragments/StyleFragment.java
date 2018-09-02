@@ -16,6 +16,8 @@ import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultScreenSaverTimeout;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTheme;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
@@ -28,6 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnItemSelected;
 import timber.log.Timber;
@@ -38,16 +42,18 @@ import timber.log.Timber;
 
 public class StyleFragment extends BaseFragment<StyleContract.Presenter> implements StyleContract.View {
 
-    public static final String TAG = StyleFragment.class.getSimpleName();
-
     private TimeoutAdapter spinnerAdapterTimeout;
 
     private long settingsId = -1L;
 
-    private int theme = Default.THEME;
+    @Inject
+    @DefaultTheme
+    int theme;
 
+    @Inject
+    @DefaultScreenSaverTimeout
     @ScreensaverTimeout
-    private int screenSaverTimeout = ScreensaverTimeout._1MIN;
+    int screenSaverTimeout;
 
     @BindView(R.id.radiogroup_theme)
     public ChipGroup radioGroupTheme;

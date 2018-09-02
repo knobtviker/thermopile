@@ -32,8 +32,6 @@ import timber.log.Timber;
 public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     implements NetworkContract.View, CompoundButton.OnCheckedChangeListener {
 
-    public static final String TAG = NetworkFragment.class.getSimpleName();
-
     private long settingsId = -1L;
 
     @BindView(R.id.cardview_bluetooth)

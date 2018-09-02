@@ -1,9 +1,9 @@
 package com.knobtviker.thermopile.presentation.shared.base;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.MotionEvent;
 
@@ -12,19 +12,24 @@ import com.knobtviker.thermopile.presentation.activities.ScreenSaverActivity;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Preferences;
 
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Created by bojan on 10/06/2017.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends DaggerAppCompatActivity {
+
+//    @Inject
+    public SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+
         AppCompatDelegate.setDefaultNightMode(
-            PreferenceManager
-                .getDefaultSharedPreferences(this.getApplicationContext())
-                .getInt(Preferences.THEME, Default.THEME)
+            sharedPreferences.getInt(Preferences.THEME, Default.THEME)
         );
 
         super.onCreate(savedInstanceState);

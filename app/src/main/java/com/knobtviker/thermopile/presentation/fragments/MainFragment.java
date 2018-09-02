@@ -17,11 +17,16 @@ import android.widget.TextView;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredAirQuality;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredHumidity;
@@ -45,6 +50,8 @@ import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import butterknife.BindView;
@@ -57,33 +64,45 @@ import timber.log.Timber;
 
 public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View, DayScrollListener.Listener {
 
-    public static final String TAG = MainFragment.class.getSimpleName();
-
     private ThresholdAdapter thresholdAdapter;
 
     private LinearLayoutManager linearLayoutManager;
 
-    private ZoneId dateTimeZone;
+    @Inject
+    ZoneId dateTimeZone;
 
+    @Inject
+    @DefaultClockMode
     @ClockMode
-    private int formatClock;
+    int formatClock;
 
+    @Inject
+    @DefaultFormatDate
     @FormatDate
-    private String formatDate;
+    String formatDate;
 
+    @Inject
+    @DefaultFormatTime
     @FormatTime
-    private String formatTime;
+    String formatTime;
 
+    @Inject
+    @DefaultTemperature
     @UnitTemperature
-    private int unitTemperature;
+    int unitTemperature;
 
+    @Inject
+    @DefaultPressure
     @UnitPressure
-    private int unitPressure;
+    int unitPressure;
 
+    @Inject
+    @DefaultMotion
     @UnitAcceleration
-    private int unitMotion;
+    int unitMotion;
 
-    private final PIDController pidController;
+    @Inject
+    PIDController pidController;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -138,18 +157,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @BindView(R.id.recyclerview_thresholds)
     public RecyclerView recyclerViewThresholds;
-
-    public MainFragment() {
-        dateTimeZone = ZoneId.of(Default.TIMEZONE);
-        formatClock = ClockMode._24H;
-        formatDate = FormatDate.EEEE_DD_MM_YYYY;
-        formatTime = FormatTime.HH_MM;
-        unitTemperature = UnitTemperature.CELSIUS;
-        unitPressure = UnitPressure.PASCAL;
-        unitMotion = UnitAcceleration.METERS_PER_SECOND_2;
-
-        pidController = new PIDController(40, 1000);
-    }
 
     @Nullable
     @Override

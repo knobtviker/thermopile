@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
@@ -31,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import javax.inject.Inject;
 
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -48,15 +52,17 @@ import static android.support.constraint.ConstraintSet.TOP;
 
 public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
 
-    public static final String TAG = ScheduleFragment.class.getSimpleName();
-
-    @FormatDate
-    private String formatDate;
-
-    @UnitTemperature
-    private int unitTemperature;
-
     private List<Threshold> thresholds = new ArrayList<>(0);
+
+    @Inject
+    @DefaultFormatDate
+    @FormatDate
+    String formatDate;
+
+    @Inject
+    @DefaultTemperature
+    @UnitTemperature
+    int unitTemperature;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -68,11 +74,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     @BindViews({R.id.textview_day_monday, R.id.textview_day_tuesday, R.id.textview_day_wednesday, R.id.textview_day_thursday,
         R.id.textview_day_friday, R.id.textview_day_saturday, R.id.textview_day_sunday})
     public List<TextView> weekdayTextViews;
-
-    public ScheduleFragment() {
-        formatDate = FormatDate.EEEE_DD_MM_YYYY;
-        unitTemperature = UnitTemperature.CELSIUS;
-    }
 
     @Nullable
     @Override

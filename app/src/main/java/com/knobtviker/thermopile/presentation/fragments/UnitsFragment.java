@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.presenters.UnitsPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
@@ -21,6 +24,8 @@ import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemp
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import timber.log.Timber;
 
@@ -29,18 +34,23 @@ import timber.log.Timber;
  */
 
 public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> implements UnitsContract.View {
-    public static final String TAG = UnitsFragment.class.getSimpleName();
 
     private long settingsId = -1L;
 
+    @Inject
+    @DefaultTemperature
     @UnitTemperature
-    private int unitTemperature = UnitTemperature.CELSIUS;
+    int unitTemperature;
 
+    @Inject
+    @DefaultPressure
     @UnitPressure
-    private int unitPressure = UnitPressure.PASCAL;
+    int unitPressure;
 
+    @Inject
+    @DefaultMotion
     @UnitAcceleration
-    private int unitAcceleration = UnitAcceleration.METERS_PER_SECOND_2;
+    int unitAcceleration;
 
     @BindView(R.id.radiogroup_temperature_unit)
     public ChipGroup radioGroupTemperatureUnit;

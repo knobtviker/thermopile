@@ -15,10 +15,12 @@ import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
 import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
@@ -30,6 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnItemSelected;
 import timber.log.Timber;
@@ -39,27 +43,32 @@ import timber.log.Timber;
  */
 
 public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> implements LocaleContract.View {
-    public static final String TAG = LocaleFragment.class.getSimpleName();
 
     private long settingsId = -1L;
-
-    @NonNull
-    private String timezone = Default.TIMEZONE;
-
-    @ClockMode
-    private int clockMode = ClockMode._24H;
-
-    @FormatDate
-    private String formatDate = FormatDate.EEEE_DD_MM_YYYY;
-
-    @FormatTime
-    private String formatTime = FormatTime.HH_MM;
 
     @Nullable
     private TimezoneAdapter spinnerAdapter;
 
     private FormatAdapter spinnerAdapterDate;
     private FormatAdapter spinnerAdapterTime;
+
+    @Inject
+    String timezone;
+
+    @Inject
+    @DefaultClockMode
+    @ClockMode
+    int formatClock;
+
+    @Inject
+    @DefaultFormatDate
+    @FormatDate
+    String formatDate;
+
+    @Inject
+    @DefaultFormatTime
+    @FormatTime
+    String formatTime;
 
     @BindView(R.id.spinner_timezone)
     public Spinner spinnerTimezone;
@@ -115,7 +124,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public void onLoad(@NonNull Settings settings) {
         this.settingsId = settings.id;
         this.timezone = settings.timezone;
-        this.clockMode = settings.formatClock;
+        this.formatClock = settings.formatClock;
         this.formatDate = settings.formatDate;
         this.formatTime = settings.formatTime;
 
@@ -181,7 +190,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
                     break;
             }
             if (radioGroupClockMode.isEnabled()) {
-                this.clockMode = value;
+                this.formatClock = value;
                 presenter.saveClockMode(settingsId, value);
             }
         });
@@ -232,7 +241,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     }
 
     private void setClockMode() {
-        switch (clockMode) {
+        switch (formatClock) {
             case ClockMode._12H:
                 radioButton12h.setChecked(true);
                 break;

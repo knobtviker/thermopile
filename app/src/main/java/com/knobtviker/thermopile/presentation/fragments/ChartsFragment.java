@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.content.Context;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.hardware.SensorManager;
@@ -27,6 +26,12 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.shared.SingleModel;
 import com.knobtviker.thermopile.data.models.presentation.Interval;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultChartType;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.presenters.ChartsPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
@@ -52,6 +57,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import butterknife.BindView;
@@ -62,29 +69,40 @@ import butterknife.OnItemSelected;
  */
 
 public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> implements ChartsContract.View, SparkView.OnScrubListener {
-    public static final String TAG = ChartsFragment.class.getSimpleName();
 
-    @FormatDate
-    private String formatDate;
-
-    @FormatTime
-    private String formatTime;
-
-    @UnitTemperature
-    private int unitTemperature;
-
-    @UnitPressure
-    private int unitPressure;
-
-    @UnitAcceleration
-    private int unitMotion;
-
-    @ChartType
-    private int type;
+    private ChartAdapter<SingleModel> sparkAdapter;
 
     private Interval interval;
 
-    private ChartAdapter<SingleModel> sparkAdapter;
+    @Inject
+    @DefaultFormatDate
+    @FormatDate
+    String formatDate;
+
+    @Inject
+    @DefaultFormatTime
+    @FormatTime
+    String formatTime;
+
+    @Inject
+    @DefaultTemperature
+    @UnitTemperature
+    int unitTemperature;
+
+    @Inject
+    @DefaultPressure
+    @UnitPressure
+    int unitPressure;
+
+    @Inject
+    @DefaultMotion
+    @UnitAcceleration
+    int unitMotion;
+
+    @Inject
+    @DefaultChartType
+    @ChartType
+    int type;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -126,23 +144,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     private String textViewPressureUnit;
     private String textViewMotionUnit;
 
-    public ChartsFragment() {
-        formatDate = FormatDate.EEEE_DD_MM_YYYY;
-        formatTime = FormatTime.HH_MM;
-        unitTemperature = UnitTemperature.CELSIUS;
-        unitPressure = UnitPressure.PASCAL;
-        unitMotion = UnitAcceleration.METERS_PER_SECOND_2;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        setTemperatureUnit();
-        setPressureUnit();
-        setMotionUnit();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -152,6 +153,10 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        setTemperatureUnit();
+        setPressureUnit();
+        setMotionUnit();
 
         setupToolbar();
         setupSpinnerType();

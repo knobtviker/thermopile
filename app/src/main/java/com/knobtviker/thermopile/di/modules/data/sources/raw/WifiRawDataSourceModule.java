@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.sources.raw.network.WifiRawDataSource;
-import com.knobtviker.thermopile.di.qualifiers.presentation.ActivityScope;
+import com.knobtviker.thermopile.di.qualifiers.presentation.scopes.ActivityScope;
 
 import dagger.Module;
 import dagger.Provides;

@@ -19,7 +19,7 @@ buildscript {
     ]
 
     ext.versions = [
-        'gradle'          : '3.3.0-alpha07',
+        'gradle'          : '3.3.0-alpha08',
         'build_properties': '0.4.1',
         'things'          : '1.0',
         'services'        : '4.0.1',

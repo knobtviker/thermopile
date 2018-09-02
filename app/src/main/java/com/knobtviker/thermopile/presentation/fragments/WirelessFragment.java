@@ -33,16 +33,11 @@ import timber.log.Timber;
 
 public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> implements WirelessContract.View, WirelessSelectListener {
 
-    public static String TAG = WirelessFragment.class.getSimpleName();
-
-    @BindView(R.id.recyclerview_networks)
-    public RecyclerView recyclerViewNetworks;
-
     @NonNull
     private WirelessAdapter adapter;
 
-    public WirelessFragment() {
-    }
+    @BindView(R.id.recyclerview_networks)
+    public RecyclerView recyclerViewNetworks;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

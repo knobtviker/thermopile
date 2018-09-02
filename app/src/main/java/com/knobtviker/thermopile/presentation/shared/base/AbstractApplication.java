@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.shared.base;
 
-import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
@@ -17,6 +16,8 @@ import com.crashlytics.android.Crashlytics;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.knobtviker.thermopile.BuildConfig;
 import com.knobtviker.thermopile.data.sources.local.shared.Database;
+import com.knobtviker.thermopile.di.components.presentation.AppComponent;
+import com.knobtviker.thermopile.di.components.presentation.DaggerAppComponent;
 import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
 import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
 import com.knobtviker.thermopile.shared.MessageFactory;
@@ -25,10 +26,13 @@ import com.knobtviker.thermopile.shared.constants.Uid;
 
 import java.util.Objects;
 
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
-public abstract class AbstractApplication<P extends BasePresenter> extends Application implements ServiceConnection, IncomingCommunicator {
+public abstract class AbstractApplication<P extends BasePresenter> extends DaggerApplication
+    implements ServiceConnection, IncomingCommunicator {
 
     @Nullable
     private Messenger serviceMessengerSensors = null;
@@ -41,6 +45,16 @@ public abstract class AbstractApplication<P extends BasePresenter> extends Appli
 
     @NonNull
     protected P presenter;
+
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        final AppComponent appComponent = DaggerAppComponent.builder()
+            .application(this)
+            .build();
+        appComponent.inject(this);
+
+        return appComponent;
+    }
 
     @Override
     public void onCreate() {

@@ -13,11 +13,16 @@ import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
@@ -32,6 +37,8 @@ import com.knobtviker.thermopile.presentation.utils.MathKit;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import timber.log.Timber;
 
@@ -39,29 +46,40 @@ import timber.log.Timber;
  * Created by bojan on 15/06/2017.
  */
 
-public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presenter> implements ScreenSaverContract.View {
+public class ScreenSaverFragment extends BaseFragment<ScreenSaverContract.Presenter> implements ScreenSaverContract.View {
 
-    public static final String TAG = ScreensaverFragment.class.getSimpleName();
+    @Inject
+    ZoneId dateTimeZone;
 
-    private ZoneId dateTimeZone;
-
+    @Inject
+    @DefaultClockMode
     @ClockMode
-    private int formatClock;
+    int formatClock;
 
+    @Inject
+    @DefaultFormatDate
     @FormatDate
-    private String formatDate;
+    String formatDate;
 
+    @Inject
+    @DefaultFormatTime
     @FormatTime
-    private String formatTime;
+    String formatTime;
 
+    @Inject
+    @DefaultTemperature
     @UnitTemperature
-    private int unitTemperature;
+    int unitTemperature;
 
+    @Inject
+    @DefaultPressure
     @UnitPressure
-    private int unitPressure;
+    int unitPressure;
 
+    @Inject
+    @DefaultMotion
     @UnitAcceleration
-    private int unitMotion;
+    int unitMotion;
 
     @BindView(R.id.textview_clock)
     public TextClock textViewClock;
@@ -95,15 +113,6 @@ public class ScreensaverFragment extends BaseFragment<ScreenSaverContract.Presen
 
     @BindView(R.id.textview_motion_unit)
     public TextView textViewMotionUnit;
-
-    public ScreensaverFragment() {
-        dateTimeZone = DateTimeKit.zoneById(Default.TIMEZONE);
-        formatClock = ClockMode._24H;
-        formatDate = FormatDate.EEEE_DD_MM_YYYY;
-        formatTime = FormatTime.HH_MM;
-        unitTemperature = UnitTemperature.CELSIUS;
-        unitPressure = UnitPressure.PASCAL;
-    }
 
     @Nullable
     @Override

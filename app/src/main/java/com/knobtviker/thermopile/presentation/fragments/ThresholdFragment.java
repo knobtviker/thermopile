@@ -16,6 +16,11 @@ import android.widget.TextView;
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMaxWidth;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultThreshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
@@ -36,6 +41,8 @@ import com.knobtviker.thermopile.presentation.views.dividers.GridItemDecoration;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
@@ -48,20 +55,11 @@ import timber.log.Timber;
 
 public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter> implements ThresholdContract.View {
 
-    public static String TAG = ThresholdFragment.class.getSimpleName();
+    private TimePickerDialog timePickerDialogStart;
 
-    private long thresholdId = Default.INVALID_ID;
+    private TimePickerDialog timePickerDialogEnd;
 
-    private int maxWidth = Default.INVALID_WIDTH;
-
-    @ClockMode
-    private int formatClock;
-
-    @FormatTime
-    private String formatTime;
-
-    @UnitTemperature
-    private int unitTemperature;
+    private ColorAdapter colorAdapter;
 
     @Days
     private int day;
@@ -81,11 +79,28 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @Minutes
     private int endTimeMinute;
 
-    private TimePickerDialog timePickerDialogStart;
+    @Inject
+    @DefaultThreshold
+    long thresholdId;
 
-    private TimePickerDialog timePickerDialogEnd;
+    @Inject
+    @DefaultMaxWidth
+    int maxWidth;
 
-    private ColorAdapter colorAdapter;
+    @Inject
+    @DefaultClockMode
+    @ClockMode
+    int formatClock;
+
+    @Inject
+    @DefaultFormatTime
+    @FormatTime
+    String formatTime;
+
+    @Inject
+    @DefaultTemperature
+    @UnitTemperature
+    int unitTemperature;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -101,12 +116,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     @BindView(R.id.recyclerview_colors)
     public RecyclerView recyclerViewColors;
-
-    public ThresholdFragment() {
-        formatClock = ClockMode._24H;
-        formatTime = FormatTime.HH_MM;
-        unitTemperature = UnitTemperature.CELSIUS;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

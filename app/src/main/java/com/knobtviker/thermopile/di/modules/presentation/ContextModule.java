@@ -3,8 +3,8 @@ package com.knobtviker.thermopile.di.modules.presentation;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.qualifiers.presentation.ActivityScope;
-import com.knobtviker.thermopile.di.qualifiers.presentation.ApplicationScope;
+import com.knobtviker.thermopile.di.qualifiers.presentation.scopes.ActivityScope;
+import com.knobtviker.thermopile.di.qualifiers.presentation.scopes.ApplicationScope;
 
 import dagger.Module;
 import dagger.Provides;
