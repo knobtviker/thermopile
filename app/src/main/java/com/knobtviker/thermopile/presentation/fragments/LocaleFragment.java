@@ -15,6 +15,8 @@ import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.di.qualifiers.presentation.adapters.FormatDateAdapter;
+import com.knobtviker.thermopile.di.qualifiers.presentation.adapters.FormatTimeAdapter;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
@@ -23,12 +25,9 @@ import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
-import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.views.adapters.FormatAdapter;
 import com.knobtviker.thermopile.presentation.views.adapters.TimezoneAdapter;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -43,13 +42,8 @@ import timber.log.Timber;
 
 public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> implements LocaleContract.View {
 
-    private long settingsId = -1L;
-
-    @Nullable
-    private TimezoneAdapter spinnerAdapter;
-
-    private FormatAdapter spinnerAdapterDate;
-    private FormatAdapter spinnerAdapterTime;
+    @Inject
+    long settingsId;
 
     @Inject
     String timezone;
@@ -68,6 +62,17 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     @DefaultFormatTime
     @FormatTime
     String formatTime;
+
+    @Inject
+    TimezoneAdapter spinnerAdapterTimezones;
+
+    @Inject
+    @FormatDateAdapter
+    FormatAdapter spinnerAdapterDate;
+
+    @Inject
+    @FormatTimeAdapter
+    FormatAdapter spinnerAdapterTime;
 
     @BindView(R.id.spinner_timezone)
     public Spinner spinnerTimezone;
@@ -138,17 +143,13 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view, final int position, final long id) {
         switch (adapterView.getId()) {
             case R.id.spinner_timezone:
-                if (spinnerAdapter != null) {
-                    if (spinnerTimezone.isEnabled() && !TextUtils.isEmpty(spinnerAdapter.getItem(position))) {
-                        timezone = spinnerAdapter.getItem(position);
-                        presenter.saveTimezone(settingsId, timezone);
-                    }
+                if (spinnerTimezone.isEnabled() && !TextUtils.isEmpty(spinnerAdapterTimezones.getItem(position))) {
+                    timezone = spinnerAdapterTimezones.getItem(position);
+                    presenter.saveTimezone(settingsId, timezone);
                 }
                 break;
             case R.id.spinner_date_format:
-                if (spinnerFormatDate.isEnabled()
-                    && spinnerAdapterDate != null
-                    && !TextUtils.isEmpty(spinnerAdapterDate.getItem(position))) {
+                if (spinnerFormatDate.isEnabled() && !TextUtils.isEmpty(spinnerAdapterDate.getItem(position))) {
                     formatDate = spinnerAdapterDate.getItem(position);
                     if (!TextUtils.isEmpty(formatDate)) {
                         presenter.saveFormatDate(settingsId, formatDate);
@@ -156,9 +157,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
                 }
                 break;
             case R.id.spinner_time_format:
-                if (spinnerFormatTime.isEnabled()
-                    && spinnerAdapterTime != null
-                    && !TextUtils.isEmpty(spinnerAdapterTime.getItem(position))) {
+                if (spinnerFormatTime.isEnabled() && !TextUtils.isEmpty(spinnerAdapterTime.getItem(position))) {
                     formatTime = spinnerAdapterTime.getItem(position);
                     presenter.saveFormatTime(settingsId, formatTime);
                 }
@@ -169,9 +168,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     private void setupSpinnerTimezone() {
         spinnerTimezone.setEnabled(false);
         spinnerTimezone.setPrompt("Timezone");
-
-        spinnerAdapter = new TimezoneAdapter(requireContext(), DateTimeKit.zones());
-        spinnerTimezone.setAdapter(spinnerAdapter);
+        spinnerTimezone.setAdapter(spinnerAdapterTimezones);
     }
 
     private void setupGroupClockMode() {
@@ -199,41 +196,20 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     private void setupSpinnerDate() {
         spinnerFormatDate.setEnabled(false);
         spinnerFormatDate.setPrompt("Date format");
-
-        final List<String> formats = Arrays.asList(
-            FormatDate.EEEE_DD_MM_YYYY,
-            FormatDate.EE_DD_MM_YYYY,
-            FormatDate.DD_MM_YYYY,
-            FormatDate.EEEE_MM_DD_YYYY,
-            FormatDate.EE_MM_DD_YYYY,
-            FormatDate.MM_DD_YYYY
-        );
-        spinnerAdapterDate = new FormatAdapter(spinnerFormatDate.getContext(), formats);
         spinnerFormatDate.setAdapter(spinnerAdapterDate);
     }
 
     private void setupSpinnerTime() {
         spinnerFormatTime.setEnabled(false);
         spinnerFormatTime.setPrompt("Time format");
-
-        final List<String> formats = Arrays.asList(
-            FormatTime.HH_MM,
-            FormatTime.H_M,
-            FormatTime.KK_MM_A,
-            FormatTime.K_M_A
-        );
-
-        spinnerAdapterTime = new FormatAdapter(requireContext(), formats);
         spinnerFormatTime.setAdapter(spinnerAdapterTime);
     }
 
     private void setTimezone() {
-        if (spinnerAdapter != null) {
-            for (int i = 0; i<spinnerAdapter.getCount(); i++) {
-                if (spinnerAdapter.getItem(i).equalsIgnoreCase(timezone)) {
-                    spinnerTimezone.setSelection(i);
-                    break;
-                }
+        for (int i = 0; i < spinnerAdapterTimezones.getCount(); i++) {
+            if (spinnerAdapterTimezones.getItem(i).equalsIgnoreCase(timezone)) {
+                spinnerTimezone.setSelection(i);
+                break;
             }
         }
 
@@ -252,7 +228,6 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
         radioGroupClockMode.setEnabled(true);
     }
-
 
     private void setFormatDate() {
         for (int i = 0; i < spinnerAdapterDate.getCount(); i++) {

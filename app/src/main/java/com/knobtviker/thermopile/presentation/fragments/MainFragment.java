@@ -63,10 +63,6 @@ import timber.log.Timber;
 
 public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View, DayScrollListener.Listener {
 
-    private ThresholdAdapter thresholdAdapter;
-
-    private LinearLayoutManager linearLayoutManager;
-
     @Inject
     ZoneId dateTimeZone;
 
@@ -99,6 +95,12 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @DefaultMotion
     @UnitAcceleration
     int unitMotion;
+
+    @Inject
+    ThresholdAdapter thresholdAdapter;
+
+    @Inject
+    LinearLayoutManager linearLayoutManager;
 
     @Inject
     PIDController pidController;
@@ -252,12 +254,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         setMotionUnit();
         setDate();
 
-        if (thresholdAdapter != null) {
-            thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
+        thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
 
-            if (thresholdAdapter.getItemCount() > 0 && linearLayoutManager.findFirstVisibleItemPosition() != -1) {
-                textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
-            }
+        if (thresholdAdapter.getItemCount() > 0 && linearLayoutManager.findFirstVisibleItemPosition() != -1) {
+            textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
         }
 
         ((ThermopileApplication) requireActivity().getApplication()).refresh();
@@ -301,9 +301,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setupRecyclerView() {
-        thresholdAdapter = new ThresholdAdapter(requireContext(), unitTemperature, formatTime, formatDate);
-
-        linearLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
 
         recyclerViewThresholds.setLayoutManager(linearLayoutManager);
         recyclerViewThresholds.setAdapter(thresholdAdapter);

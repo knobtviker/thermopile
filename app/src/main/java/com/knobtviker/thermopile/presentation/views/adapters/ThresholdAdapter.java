@@ -43,14 +43,10 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
 
     private List<ThresholdInterval> intervals = new ArrayList<>(0);
 
-    public ThresholdAdapter(@NonNull final Context context, @UnitTemperature final int unitTemperature,
-        @FormatTime @NonNull final String formatTime, @FormatDate @NonNull final String formatDate) {
+    public ThresholdAdapter(@NonNull final Context context) {
         this.layoutInflater = LayoutInflater.from(context);
         this.days = Arrays.asList(context.getResources().getStringArray(R.array.weekdays));
         this.daysShort = Arrays.asList(context.getResources().getStringArray(R.array.weekdays_short));
-        this.unitTemperature = unitTemperature;
-        this.formatTime = formatTime;
-        this.formatDate = formatDate;
 
         setEmptyDays();
     }
@@ -142,8 +138,11 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
         notifyDataSetChanged();
     }
 
-    public void setUnitAndFormat(@UnitTemperature final int unitTemperature, @FormatTime @NonNull final String formatTime,
-        @FormatDate @NonNull final String formatDate) {
+    public void setUnitAndFormat(
+        @UnitTemperature final int unitTemperature,
+        @FormatTime @NonNull final String formatTime,
+        @FormatDate @NonNull final String formatDate
+    ) {
         this.unitTemperature = unitTemperature;
         this.formatTime = formatTime;
         this.formatDate = formatDate;

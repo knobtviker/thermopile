@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
@@ -14,6 +15,7 @@ import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -49,6 +51,11 @@ public class ThresholdFragmentModule {
     @DefaultTemperature
     int provideDefaultUnitTemperature() {
         return UnitTemperature.CELSIUS;
+    }
+
+    @Provides
+    ColorAdapter provideColorAdapter(@NonNull final Context context) {
+        return new ColorAdapter(context);
     }
 
     @Provides

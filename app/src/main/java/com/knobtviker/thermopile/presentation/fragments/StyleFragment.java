@@ -25,8 +25,6 @@ import com.knobtviker.thermopile.presentation.shared.constants.integrity.Prefere
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ScreensaverTimeout;
 import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -41,9 +39,8 @@ import timber.log.Timber;
 
 public class StyleFragment extends BaseFragment<StyleContract.Presenter> implements StyleContract.View {
 
-    private TimeoutAdapter spinnerAdapterTimeout;
-
-    private long settingsId = -1L;
+    @Inject
+    long settingsId;
 
     @Inject
     @DefaultTheme
@@ -53,6 +50,9 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     @DefaultScreenSaverTimeout
     @ScreensaverTimeout
     int screenSaverTimeout;
+
+    @Inject
+    TimeoutAdapter spinnerAdapterTimeout;
 
     @BindView(R.id.radiogroup_theme)
     public ChipGroup radioGroupTheme;
@@ -160,16 +160,6 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
     private void setupSpinnerTimeout() {
         spinnerTimeout.setEnabled(false);
         spinnerTimeout.setPrompt("Screensaver Timeout");
-
-        final List<Integer> timeouts = Arrays.asList(
-            ScreensaverTimeout._15S,
-            ScreensaverTimeout._30S,
-            ScreensaverTimeout._1MIN,
-            ScreensaverTimeout._2MIN,
-            ScreensaverTimeout._5MIN,
-            ScreensaverTimeout._10MIN
-        );
-        spinnerAdapterTimeout = new TimeoutAdapter(requireContext(), timeouts);
         spinnerTimeout.setAdapter(spinnerAdapterTimeout);
     }
 

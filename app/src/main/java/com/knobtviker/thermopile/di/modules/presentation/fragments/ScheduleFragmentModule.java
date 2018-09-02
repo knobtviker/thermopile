@@ -2,6 +2,7 @@ package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
@@ -9,6 +10,9 @@ import com.knobtviker.thermopile.presentation.fragments.ScheduleFragment;
 import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+
+import java.util.Collections;
+import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,6 +30,11 @@ public class ScheduleFragmentModule {
     @DefaultTemperature
     int provideDefaultUnitTemperature() {
         return UnitTemperature.CELSIUS;
+    }
+
+    @Provides
+    List<Threshold> provideThresholds() {
+        return Collections.emptyList();
     }
 
     @Provides

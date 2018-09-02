@@ -8,25 +8,18 @@ import com.knobtviker.thermopile.presentation.views.spark.SparkAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ChartAdapter<M extends SingleModel> extends SparkAdapter {
 
     private float baseline;
 
     private List<? extends SingleModel> data;
 
+    @Inject
     public ChartAdapter() {
         this.data = new ArrayList<>(0);
         this.baseline = 0.0f;
-    }
-
-    public ChartAdapter(final float baseline) {
-        this.data = new ArrayList<>(0);
-        this.baseline = baseline;
-    }
-
-    public ChartAdapter(@NonNull final List<M> data, final float baseline) {
-        this.data = data;
-        this.baseline = baseline;
     }
 
     @Override

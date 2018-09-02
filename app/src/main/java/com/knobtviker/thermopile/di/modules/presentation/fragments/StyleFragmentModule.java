@@ -1,5 +1,6 @@
 package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultScreenSaverTimeout;
@@ -9,12 +10,20 @@ import com.knobtviker.thermopile.presentation.fragments.StyleFragment;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ScreensaverTimeout;
+import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
+
+import java.util.Arrays;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class StyleFragmentModule {
+
+    @Provides
+    long provideDefaultSettings() {
+        return -1L;
+    }
 
     @Provides
     @DefaultTheme
@@ -26,6 +35,21 @@ public class StyleFragmentModule {
     @DefaultScreenSaverTimeout
     int provideDefaultScreenSaverTimeout() {
         return ScreensaverTimeout._1MIN;
+    }
+
+    @Provides
+    TimeoutAdapter provideTimeoutAdapter(@NonNull final Context context) {
+        return new TimeoutAdapter(
+            context,
+            Arrays.asList(
+                ScreensaverTimeout._15S,
+                ScreensaverTimeout._30S,
+                ScreensaverTimeout._1MIN,
+                ScreensaverTimeout._2MIN,
+                ScreensaverTimeout._5MIN,
+                ScreensaverTimeout._10MIN
+            )
+        );
     }
 
     @Provides

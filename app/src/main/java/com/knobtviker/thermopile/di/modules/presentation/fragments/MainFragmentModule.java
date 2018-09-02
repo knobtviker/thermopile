@@ -1,6 +1,8 @@
 package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
@@ -20,6 +22,7 @@ import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPres
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
 import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.controllers.PIDController;
+import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
 
 import org.threeten.bp.ZoneId;
 
@@ -28,6 +31,16 @@ import dagger.Provides;
 
 @Module
 public class MainFragmentModule {
+
+    @Provides
+    ThresholdAdapter provideThresholdAdapter(@NonNull final Context context) {
+        return new ThresholdAdapter(context);
+    }
+
+    @Provides
+    LinearLayoutManager provideLinearLayoutManager(@NonNull final Context context) {
+        return new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+    }
 
     @Provides
     ZoneId provideDefaultZoneId() {

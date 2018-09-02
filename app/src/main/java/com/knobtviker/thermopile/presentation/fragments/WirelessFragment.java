@@ -32,6 +32,7 @@ import timber.log.Timber;
 
 public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> implements WirelessContract.View, WirelessSelectListener {
 
+    //TODO: Inject this with listener
     @NonNull
     private WirelessAdapter adapter;
 

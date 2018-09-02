@@ -28,7 +28,6 @@ import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -51,8 +50,6 @@ import static android.support.constraint.ConstraintSet.TOP;
 
 public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
 
-    private List<Threshold> thresholds = new ArrayList<>(0);
-
     @Inject
     @DefaultFormatDate
     @FormatDate
@@ -62,6 +59,9 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     @DefaultTemperature
     @UnitTemperature
     int unitTemperature;
+
+    @Inject
+    List<Threshold> thresholds;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;

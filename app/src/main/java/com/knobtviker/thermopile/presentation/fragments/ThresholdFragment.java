@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.models.local.Settings;
@@ -58,8 +59,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private TimePickerDialog timePickerDialogEnd;
 
-    private ColorAdapter colorAdapter;
-
     @Days
     private int day;
 
@@ -100,6 +99,9 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     @DefaultTemperature
     @UnitTemperature
     int unitTemperature;
+
+    @Inject
+    ColorAdapter colorAdapter;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -251,12 +253,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
         timePickerDialogStart = new TimePickerDialog(
             requireContext(),
-            (view, hourOfDay, minute) -> {
-                startTimeHour = hourOfDay;
-                startTimeMinute = minute;
-
-                setStartTime(day + 1, startTimeHour, startTimeMinute);
-            },
+            this::onStartTimeSet,
             DateTimeKit.now().getHour(),
             DateTimeKit.now().getMinute(),
             formatClock == ClockMode._24H
@@ -264,12 +261,7 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
         timePickerDialogEnd = new TimePickerDialog(
             requireContext(),
-            (view, hourOfDay, minute) -> {
-                endTimeHour = hourOfDay;
-                endTimeMinute = minute;
-
-                setEndTime(day + 1, endTimeHour, endTimeMinute);
-            },
+            this::onEndTimeSet,
             DateTimeKit.now().getHour(),
             DateTimeKit.now().getMinute(),
             formatClock == ClockMode._24H
@@ -278,7 +270,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private void setupRecyclerView() {
         final int spanCount = 7;
-        colorAdapter = new ColorAdapter(requireContext());
 
         recyclerViewColors.setHasFixedSize(true);
         recyclerViewColors.setLayoutManager(new GridLayoutManager(requireContext(), spanCount));
@@ -348,5 +339,19 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         textViewTimeEnd.setText(
             DateTimeKit.format(day, hour, minute, formatTime)
         );
+    }
+
+    private void onStartTimeSet(@NonNull final TimePicker view, final int hourOfDay, final int minute) {
+        startTimeHour = hourOfDay;
+        startTimeMinute = minute;
+
+        setStartTime(day + 1, startTimeHour, startTimeMinute);
+    }
+
+    private void onEndTimeSet(@NonNull final TimePicker view, final int hourOfDay, final int minute) {
+        endTimeHour = hourOfDay;
+        endTimeMinute = minute;
+
+        setEndTime(day + 1, endTimeHour, endTimeMinute);
     }
 }

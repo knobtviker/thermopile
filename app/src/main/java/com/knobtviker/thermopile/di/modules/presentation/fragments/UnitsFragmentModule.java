@@ -19,6 +19,11 @@ import dagger.Provides;
 public class UnitsFragmentModule {
 
     @Provides
+    long provideDefaultSettings() {
+        return -1L;
+    }
+
+    @Provides
     @DefaultTemperature
     int provideDefaultUnitTemperature() {
         return UnitTemperature.CELSIUS;

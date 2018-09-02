@@ -34,7 +34,8 @@ import timber.log.Timber;
 
 public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> implements UnitsContract.View {
 
-    private long settingsId = -1L;
+    @Inject
+    long settingsId;
 
     @Inject
     @DefaultTemperature

@@ -1,13 +1,19 @@
 package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.data.models.presentation.Interval;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultChartType;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotionUnit;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressureUnit;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperatureUnit;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.fragments.ChartsFragment;
 import com.knobtviker.thermopile.presentation.presenters.ChartsPresenter;
@@ -17,6 +23,8 @@ import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTi
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
+import com.knobtviker.thermopile.presentation.views.adapters.ChartAdapter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,6 +66,34 @@ public class ChartsFragmentModule {
     @DefaultChartType
     int provideDefaultChartType() {
         return ChartType.TEMPERATURE;
+    }
+
+    @Provides
+    @DefaultTemperatureUnit
+    String provideDefaultTemperatureUnit(@NonNull final Context context) {
+        return context.getString(R.string.unit_temperature_celsius);
+    }
+
+    @Provides
+    @DefaultPressureUnit
+    String provideDefaultPressureUnit(@NonNull final Context context) {
+        return context.getString(R.string.unit_pressure_pascal);
+    }
+
+    @Provides
+    @DefaultMotionUnit
+    String provideDefaultMotionUnit(@NonNull final Context context) {
+        return context.getString(R.string.unit_acceleration_ms2);
+    }
+
+    @Provides
+    Interval providesDefaultInterval() {
+        return DateTimeKit.today();
+    }
+
+    @Provides
+    ChartAdapter providesAdapter() {
+        return new ChartAdapter<>();
     }
 
     @Provides

@@ -30,8 +30,11 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultChar
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotionUnit;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressureUnit;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
+import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperatureUnit;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.charts.ChartInterval;
@@ -69,10 +72,6 @@ import butterknife.OnItemSelected;
 
 public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> implements ChartsContract.View, SparkView.OnScrubListener {
 
-    private ChartAdapter<SingleModel> sparkAdapter;
-
-    private Interval interval;
-
     @Inject
     @DefaultFormatDate
     @FormatDate
@@ -102,6 +101,24 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     @DefaultChartType
     @ChartType
     int type;
+
+    @Inject
+    @DefaultTemperatureUnit
+    String textViewTemperatureUnit;
+
+    @Inject
+    @DefaultPressureUnit
+    String textViewPressureUnit;
+
+    @Inject
+    @DefaultMotionUnit
+    String textViewMotionUnit;
+
+    @Inject
+    Interval interval;
+
+    @Inject
+    ChartAdapter<SingleModel> sparkAdapter;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -139,10 +156,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     @BindView(R.id.textview_scrubbed_datetime)
     public TextView textViewScrubbedDateTime;
 
-    private String textViewTemperatureUnit;
-    private String textViewPressureUnit;
-    private String textViewMotionUnit;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -152,10 +165,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        setTemperatureUnit();
-        setPressureUnit();
-        setMotionUnit();
 
         setupToolbar();
         setupSpinnerType();
@@ -193,15 +202,18 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         switch (type) {
             case ChartType.TEMPERATURE:
                 setMinMaxUnit(textViewTemperatureUnit);
-                setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MAXIMUM))), String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MINIMUM))));
+                setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MAXIMUM))),
+                    String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MINIMUM))));
                 break;
             case ChartType.HUMIDITY:
                 setMinMaxUnit(getString(R.string.unit_humidity_percent));
-                setMinMaxValue(String.valueOf(MathKit.round(MeasuredHumidity.MAXIMUM)), String.valueOf(MathKit.round(MeasuredHumidity.MINIMUM)));
+                setMinMaxValue(String.valueOf(MathKit.round(MeasuredHumidity.MAXIMUM)),
+                    String.valueOf(MathKit.round(MeasuredHumidity.MINIMUM)));
                 break;
             case ChartType.PRESSURE:
                 setMinMaxUnit(textViewPressureUnit);
-                setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MAXIMUM))), String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MINIMUM))));
+                setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MAXIMUM))),
+                    String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MINIMUM))));
                 break;
             case ChartType.AIR_QUALITY:
                 setMinMaxUnit("");
@@ -209,7 +221,8 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
                 break;
             case ChartType.MOTION:
                 setMinMaxUnit(textViewMotionUnit);
-                setMinMaxValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MAXIMUM))), String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MINIMUM))));
+                setMinMaxValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MAXIMUM))),
+                    String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MINIMUM))));
                 break;
         }
     }
@@ -220,7 +233,8 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         sparkView.setFillColor(getResources().getColor(R.color.red_500_50, null));
 
         setMinMaxUnit(textViewTemperatureUnit);
-        setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MAXIMUM))), String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MINIMUM))));
+        setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MAXIMUM))),
+            String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MINIMUM))));
 
         final Optional<Temperature> optional = data
             .stream()
@@ -256,7 +270,8 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         sparkView.setFillColor(getResources().getColor(R.color.amber_500_50, null));
 
         setMinMaxUnit(textViewPressureUnit);
-        setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MAXIMUM))), String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MINIMUM))));
+        setMinMaxValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MAXIMUM))),
+            String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, MeasuredPressure.MINIMUM))));
 
         final Optional<Pressure> optional = data
             .stream()
@@ -275,7 +290,6 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
         data.forEach(item -> item.value = ((MeasuredAirQuality.MAXIMUM - item.value) / MeasuredAirQuality.MAXIMUM));
 
-
         setMinMaxUnit("");
         setMinMaxValue("Good", "Very bad");
 
@@ -284,7 +298,8 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
             .filter(item -> item.value <= MeasuredAirQuality.MAXIMUM)
             .max((item, other) -> Float.compare(item.value, other.value));
 
-        applyTopPadding(optional.map(item -> (MeasuredAirQuality.MAXIMUM - item.value)).orElse(MeasuredAirQuality.MAXIMUM), MeasuredAirQuality.MAXIMUM);
+        applyTopPadding(optional.map(item -> (MeasuredAirQuality.MAXIMUM - item.value)).orElse(MeasuredAirQuality.MAXIMUM),
+            MeasuredAirQuality.MAXIMUM);
 
         sparkAdapter.setData(data);
     }
@@ -301,15 +316,17 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
                     item.id,
                     item.vendor,
                     item.name,
-                    ((float) Math.min(Math.sqrt(Math.pow(item.valueX, 2) + Math.pow(item.valueY, 2) + Math.pow(item.valueZ + SensorManager.GRAVITY_EARTH, 2)), MeasuredAcceleration.MAXIMUM)),
+                    ((float) Math.min(Math.sqrt(
+                        Math.pow(item.valueX, 2) + Math.pow(item.valueY, 2) + Math.pow(item.valueZ + SensorManager.GRAVITY_EARTH, 2)),
+                        MeasuredAcceleration.MAXIMUM)),
                     item.timestamp
                 ))
             .filter(item -> (item.value >= MeasuredAcceleration.MINIMUM && item.value <= MeasuredAcceleration.MAXIMUM))
             .collect(Collectors.toList());
 
-
         setMinMaxUnit(textViewMotionUnit);
-        setMinMaxValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MAXIMUM))), String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MINIMUM))));
+        setMinMaxValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MAXIMUM))),
+            String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, MeasuredAcceleration.MINIMUM))));
 
         final Optional<Motion> optional = motionData
             .stream()
@@ -329,19 +346,23 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
             final SingleModel object = (SingleModel) value;
             switch (type) {
                 case ChartType.TEMPERATURE:
-                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, object.value))), textViewTemperatureUnit, object.timestamp);
+                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, object.value))),
+                        textViewTemperatureUnit, object.timestamp);
                     break;
                 case ChartType.HUMIDITY:
-                    hasScrubbedValue(String.valueOf(MathKit.round(object.value)), getString(R.string.unit_humidity_percent), object.timestamp);
+                    hasScrubbedValue(String.valueOf(MathKit.round(object.value)), getString(R.string.unit_humidity_percent),
+                        object.timestamp);
                     break;
                 case ChartType.PRESSURE:
-                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, object.value))), textViewPressureUnit, object.timestamp);
+                    hasScrubbedValue(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, object.value))),
+                        textViewPressureUnit, object.timestamp);
                     break;
                 case ChartType.AIR_QUALITY:
                     hasScrubbedValueWithoutUnit(MathKit.convertIAQValueToLabel(object.value), object.timestamp);
                     break;
                 case ChartType.MOTION:
-                    hasScrubbedValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, object.value))), textViewMotionUnit, object.timestamp);
+                    hasScrubbedValue(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, object.value))),
+                        textViewMotionUnit, object.timestamp);
                     break;
             }
         }
@@ -366,35 +387,31 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     }
 
     private void setupSpinnerType() {
-        setType(ChartType.TEMPERATURE);
-
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.chart_types, R.layout.item_spinner);
+        final ArrayAdapter<CharSequence> adapter =
+            ArrayAdapter.createFromResource(requireContext(), R.array.chart_types, R.layout.item_spinner);
         adapter.setDropDownViewResource(R.layout.item_spinner);
 
         spinnerType.setAdapter(adapter);
     }
 
     private void setupSpinnerInterval() {
-        setInterval(ChartInterval.TODAY);
-
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.chart_intervals, R.layout.item_spinner);
+        final ArrayAdapter<CharSequence> adapter =
+            ArrayAdapter.createFromResource(requireContext(), R.array.chart_intervals, R.layout.item_spinner);
         adapter.setDropDownViewResource(R.layout.item_spinner);
 
         spinnerInterval.setAdapter(adapter);
     }
 
     private void setupSparkView() {
-        sparkAdapter = new ChartAdapter<>();
         sparkView.setAdapter(sparkAdapter);
 
         final Paint baseLinePaint = sparkView.getBaseLinePaint();
-        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{16, 16}, 0);
+        DashPathEffect dashPathEffect = new DashPathEffect(new float[] {16, 16}, 0);
         baseLinePaint.setPathEffect(dashPathEffect);
 
         sparkView.setSparkAnimator(new MorphSparkAnimator());
         sparkView.setScrubListener(this);
     }
-
 
     private void setType(@ChartType final int typeItemPosition) {
         this.type = typeItemPosition;
