@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.presentation.contracts.BlankContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 
 import java.util.Objects;
@@ -23,7 +24,7 @@ import timber.log.Timber;
  * Created by bojan on 28/10/2017.
  */
 
-public class BlankFragment extends BaseFragment {
+public class BlankFragment extends BaseFragment<BlankContract.Presenter> implements BlankContract.View {
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -38,6 +39,11 @@ public class BlankFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         setupToolbar();
+    }
+
+    @Override
+    protected void load() {
+        // no-op
     }
 
     @Override

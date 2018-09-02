@@ -7,6 +7,7 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultForm
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
 import com.knobtviker.thermopile.presentation.fragments.LocaleFragment;
+import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
@@ -39,6 +40,11 @@ public class LocaleFragmentModule {
     @DefaultFormatTime
     String provideDefaultFormatTime() {
         return FormatTime.HH_MM;
+    }
+
+    @Provides
+    LocaleContract.Presenter providePresenter(@NonNull final LocaleContract.View view) {
+        return new LocalePresenter(view);
     }
 
     @Provides

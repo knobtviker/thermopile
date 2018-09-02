@@ -25,7 +25,6 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPres
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
-import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredAirQuality;
@@ -170,10 +169,13 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         setupToolbar();
         setupRecyclerView();
+    }
 
-        presenter = new MainPresenter(this);
-
-        load();
+    @Override
+    protected void load() {
+        date();
+        data();
+        thresholds();
     }
 
     @Override
@@ -377,12 +379,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         textViewDate.setText(
             DateTimeKit.format(ZonedDateTime.now(dateTimeZone), formatDate)
         );
-    }
-
-    private void load() {
-        date();
-        data();
-        thresholds();
     }
 
     private void date() {

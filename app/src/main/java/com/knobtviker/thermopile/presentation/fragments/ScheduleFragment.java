@@ -21,7 +21,6 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
-import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
@@ -87,10 +86,12 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
         setupToolbar();
         setupDayTouchListeners();
+    }
 
-        presenter = new SchedulePresenter(this);
-
-        load();
+    @Override
+    protected void load() {
+        presenter.settings();
+        presenter.thresholds();
     }
 
     @Override
@@ -166,11 +167,6 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                             return true;
                         }
                     }));
-    }
-
-    private void load() {
-        presenter.settings();
-        presenter.thresholds();
     }
 
     private void populate(@NonNull final List<Threshold> thresholds) {

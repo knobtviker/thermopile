@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
-import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.RequestCode;
 
@@ -67,9 +66,10 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
 
-        presenter = new NetworkPresenter(requireContext(), this);
-
+    @Override
+    protected void load() {
         presenter.hasBluetooth();
         presenter.hasWifi();
 

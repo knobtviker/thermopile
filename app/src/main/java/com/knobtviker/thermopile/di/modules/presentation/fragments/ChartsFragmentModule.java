@@ -10,6 +10,7 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPres
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.fragments.ChartsFragment;
+import com.knobtviker.thermopile.presentation.presenters.ChartsPresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.charts.ChartType;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
@@ -57,6 +58,11 @@ public class ChartsFragmentModule {
     @DefaultChartType
     int provideDefaultChartType() {
         return ChartType.TEMPERATURE;
+    }
+
+    @Provides
+    ChartsContract.Presenter providePresenter(@NonNull final ChartsContract.View view) {
+        return new ChartsPresenter(view);
     }
 
     @Provides

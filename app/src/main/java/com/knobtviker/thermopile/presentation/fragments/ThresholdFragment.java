@@ -22,7 +22,6 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMaxW
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultThreshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
-import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredTemperature;
@@ -144,10 +143,17 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         setupSeekBar();
         setupTimePickers();
         setupRecyclerView();
+    }
 
-        presenter = new ThresholdPresenter(this);
+    @Override
+    protected void load() {
+        presenter.settings();
 
-        load();
+        if (thresholdId != Default.INVALID_ID) {
+            presenter.loadById(thresholdId);
+        } else if (maxWidth != Default.INVALID_WIDTH) {
+            populate(startMinute, maxWidth);
+        }
     }
 
     @Override
@@ -278,16 +284,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         recyclerViewColors.setLayoutManager(new GridLayoutManager(requireContext(), spanCount));
         recyclerViewColors.setAdapter(colorAdapter);
         recyclerViewColors.addItemDecoration(GridItemDecoration.create(getResources().getDimensionPixelSize(R.dimen.margin_small)));
-    }
-
-    private void load() {
-        presenter.settings();
-
-        if (thresholdId != Default.INVALID_ID) {
-            presenter.loadById(thresholdId);
-        } else if (maxWidth != Default.INVALID_WIDTH) {
-            populate(startMinute, maxWidth);
-        }
     }
 
     private void save() {

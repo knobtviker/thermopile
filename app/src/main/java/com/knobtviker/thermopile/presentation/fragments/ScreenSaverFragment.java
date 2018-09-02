@@ -21,7 +21,6 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPres
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
-import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
@@ -123,10 +122,12 @@ public class ScreenSaverFragment extends BaseFragment<ScreenSaverContract.Presen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
 
-        presenter = new ScreenSaverPresenter(this);
-
-        load();
+    @Override
+    protected void load() {
+        date();
+        data();
     }
 
     @Override
@@ -220,11 +221,6 @@ public class ScreenSaverFragment extends BaseFragment<ScreenSaverContract.Presen
             );
             textViewDay.setVisibility(View.INVISIBLE);
         }
-    }
-
-    private void load() {
-        date();
-        data();
     }
 
     private void date() {

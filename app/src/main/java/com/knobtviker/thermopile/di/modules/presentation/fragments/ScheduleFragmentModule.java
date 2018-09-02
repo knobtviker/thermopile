@@ -6,6 +6,7 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultForm
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.fragments.ScheduleFragment;
+import com.knobtviker.thermopile.presentation.presenters.SchedulePresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
 
@@ -25,6 +26,11 @@ public class ScheduleFragmentModule {
     @DefaultTemperature
     int provideDefaultUnitTemperature() {
         return UnitTemperature.CELSIUS;
+    }
+
+    @Provides
+    ScheduleContract.Presenter providePresenter(@NonNull final ScheduleContract.View view) {
+        return new SchedulePresenter(view);
     }
 
     @Provides

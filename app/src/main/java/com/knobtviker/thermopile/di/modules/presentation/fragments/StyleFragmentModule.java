@@ -6,6 +6,7 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultScre
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTheme;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.fragments.StyleFragment;
+import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ScreensaverTimeout;
 
@@ -25,6 +26,11 @@ public class StyleFragmentModule {
     @DefaultScreenSaverTimeout
     int provideDefaultScreenSaverTimeout() {
         return ScreensaverTimeout._1MIN;
+    }
+
+    @Provides
+    StyleContract.Presenter providePresenter(@NonNull final StyleContract.View view) {
+        return new StylePresenter(view);
     }
 
     @Provides

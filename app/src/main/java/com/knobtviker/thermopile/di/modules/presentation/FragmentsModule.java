@@ -31,7 +31,7 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class FragmentsModule {
 
-//    @ContributesAndroidInjector
+//    @ContributesAndroidInjector(modules = BaseFragmentModule.class)
 //    abstract BaseFragment provideBaseFragment();
 
     @ContributesAndroidInjector(modules = MainFragmentModule.class)

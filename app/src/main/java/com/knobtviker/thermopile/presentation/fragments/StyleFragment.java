@@ -19,7 +19,6 @@ import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultScreenSaverTimeout;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTheme;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
-import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Preferences;
@@ -82,9 +81,10 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
         setupGroupTheme();
         setupSpinnerTimeout();
+    }
 
-        presenter = new StylePresenter(this);
-
+    @Override
+    protected void load() {
         presenter.load();
     }
 

@@ -16,7 +16,6 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMoti
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
-import com.knobtviker.thermopile.presentation.presenters.UnitsPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
@@ -104,9 +103,10 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
         setupGroupTemperatureUnit();
         setupGroupPressureUnit();
         setupGroupAccelerationUnit();
+    }
 
-        presenter = new UnitsPresenter(this);
-
+    @Override
+    protected void load() {
         presenter.load();
     }
 

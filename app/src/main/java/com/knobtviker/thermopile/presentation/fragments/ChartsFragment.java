@@ -33,7 +33,6 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMoti
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
-import com.knobtviker.thermopile.presentation.presenters.ChartsPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.charts.ChartInterval;
 import com.knobtviker.thermopile.presentation.shared.constants.charts.ChartType;
@@ -162,9 +161,10 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
         setupSpinnerType();
         setupSpinnerInterval();
         setupSparkView();
+    }
 
-        presenter = new ChartsPresenter(this);
-
+    @Override
+    protected void load() {
         data();
     }
 

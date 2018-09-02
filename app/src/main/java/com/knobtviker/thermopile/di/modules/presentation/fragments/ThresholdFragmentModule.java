@@ -9,6 +9,7 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemp
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultThreshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.fragments.ThresholdFragment;
+import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
@@ -48,6 +49,11 @@ public class ThresholdFragmentModule {
     @DefaultTemperature
     int provideDefaultUnitTemperature() {
         return UnitTemperature.CELSIUS;
+    }
+
+    @Provides
+    ThresholdContract.Presenter providePresenter(@NonNull final ThresholdContract.View view) {
+        return new ThresholdPresenter(view);
     }
 
     @Provides

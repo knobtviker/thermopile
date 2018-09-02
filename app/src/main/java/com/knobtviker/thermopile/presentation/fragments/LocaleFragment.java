@@ -19,7 +19,6 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultCloc
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
-import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
@@ -102,9 +101,10 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         setupGroupClockMode();
         setupSpinnerDate();
         setupSpinnerTime();
+    }
 
-        presenter = new LocalePresenter(this);
-
+    @Override
+    protected void load() {
         presenter.load();
     }
 

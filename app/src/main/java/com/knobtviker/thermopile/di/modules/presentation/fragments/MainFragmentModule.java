@@ -10,6 +10,7 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPres
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.MainFragment;
+import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
@@ -72,6 +73,11 @@ public class MainFragmentModule {
     @Provides
     PIDController providePIDController() {
         return new PIDController(40, 1000);
+    }
+
+    @Provides
+    MainContract.Presenter providePresenter(@NonNull final MainContract.View view) {
+        return new MainPresenter(view);
     }
 
     @Provides

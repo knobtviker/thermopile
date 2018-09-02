@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.contracts.WirelessContract;
-import com.knobtviker.thermopile.presentation.presenters.WirelessPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
 import com.knobtviker.thermopile.presentation.views.adapters.WirelessAdapter;
@@ -49,9 +48,10 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
         super.onViewCreated(view, savedInstanceState);
 
         setupRecyclerView();
+    }
 
-        presenter = new WirelessPresenter(requireContext(), this);
-
+    @Override
+    protected void load() {
         presenter.hasWifi();
     }
 

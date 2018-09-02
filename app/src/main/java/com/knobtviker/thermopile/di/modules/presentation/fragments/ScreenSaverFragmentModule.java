@@ -10,6 +10,7 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPres
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.fragments.ScreenSaverFragment;
+import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
@@ -66,6 +67,11 @@ public class ScreenSaverFragmentModule {
     @DefaultMotion
     int provideDefaultUnitMotion() {
         return UnitAcceleration.METERS_PER_SECOND_2;
+    }
+
+    @Provides
+    ScreenSaverContract.Presenter providePresenter(@NonNull final ScreenSaverContract.View view) {
+        return new ScreenSaverPresenter(view);
     }
 
     @Provides
