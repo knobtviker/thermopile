@@ -100,9 +100,6 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     ThresholdAdapter thresholdAdapter;
 
     @Inject
-    LinearLayoutManager linearLayoutManager;
-
-    @Inject
     PIDController pidController;
 
     @BindView(R.id.toolbar)
@@ -256,8 +253,11 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
         thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
 
-        if (thresholdAdapter.getItemCount() > 0 && linearLayoutManager.findFirstVisibleItemPosition() != -1) {
-            textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+        if (recyclerViewThresholds.getLayoutManager() instanceof LinearLayoutManager) {
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerViewThresholds.getLayoutManager();
+            if (thresholdAdapter.getItemCount() > 0 && linearLayoutManager.findFirstVisibleItemPosition() != -1) {
+                textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+            }
         }
 
         ((ThermopileApplication) requireActivity().getApplication()).refresh();
@@ -271,7 +271,10 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @Override
     public void onDayChanged() {
         if (thresholdAdapter.getItemCount() > 0) {
-            textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+            if (recyclerViewThresholds.getLayoutManager() instanceof LinearLayoutManager) {
+                final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerViewThresholds.getLayoutManager();
+                textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+            }
         }
     }
 
@@ -303,7 +306,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     private void setupRecyclerView() {
         thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
 
-        recyclerViewThresholds.setLayoutManager(linearLayoutManager);
+        recyclerViewThresholds.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewThresholds.setAdapter(thresholdAdapter);
         recyclerViewThresholds.addOnScrollListener(DayScrollListener.create(this));
     }

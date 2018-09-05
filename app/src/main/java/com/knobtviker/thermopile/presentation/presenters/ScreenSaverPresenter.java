@@ -6,14 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.android.MainThreadDisposable;
@@ -22,25 +21,24 @@ import io.reactivex.android.MainThreadDisposable;
  * Created by bojan on 15/07/2017.
  */
 
-public class ScreenSaverPresenter extends AbstractPresenter implements ScreenSaverContract.Presenter {
+public class ScreenSaverPresenter extends AbstractPresenter<ScreenSaverContract.View> implements ScreenSaverContract.Presenter {
 
-    private final ScreenSaverContract.View view;
-
+    @NonNull
     private final AtmosphereRepository atmosphereRepository;
+
+    @NonNull
     private final SettingsRepository settingsRepository;
 
-    public ScreenSaverPresenter(@NonNull final ScreenSaverContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
-            .localDataSource(new AtmosphereLocalDataSourceModule())
-            .build()
-            .inject();
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public ScreenSaverPresenter(
+        @NonNull final ScreenSaverContract.View view,
+        @NonNull final AtmosphereRepository atmosphereRepository,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final Schedulers schedulers
+        ) {
+        super(view, schedulers);
+        this.atmosphereRepository = atmosphereRepository;
+        this.settingsRepository = settingsRepository;
     }
 
     @Override

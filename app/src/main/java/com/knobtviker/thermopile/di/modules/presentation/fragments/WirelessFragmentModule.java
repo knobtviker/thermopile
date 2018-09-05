@@ -1,8 +1,9 @@
 package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.domain.repositories.NetworkRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.WirelessContract;
 import com.knobtviker.thermopile.presentation.fragments.WirelessFragment;
 import com.knobtviker.thermopile.presentation.presenters.WirelessPresenter;
@@ -14,8 +15,12 @@ import dagger.Provides;
 public class WirelessFragmentModule {
 
     @Provides
-    WirelessContract.Presenter providePresenter(@NonNull final Context context, @NonNull final WirelessContract.View view) {
-        return new WirelessPresenter(context, view);
+    WirelessContract.Presenter providePresenter(
+        @NonNull final WirelessContract.View view,
+        @NonNull final NetworkRepository networkRepository,
+        @NonNull final Schedulers schedulers
+        ) {
+        return new WirelessPresenter(view, networkRepository, schedulers);
     }
 
     @Provides

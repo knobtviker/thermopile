@@ -2,11 +2,12 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
+
+import javax.inject.Inject;
 
 import io.reactivex.internal.functions.Functions;
 
@@ -14,20 +15,19 @@ import io.reactivex.internal.functions.Functions;
  * Created by bojan on 15/07/2017.
  */
 
-public class UnitsPresenter extends AbstractPresenter implements UnitsContract.Presenter {
+public class UnitsPresenter extends AbstractPresenter<UnitsContract.View> implements UnitsContract.Presenter {
 
-    private final UnitsContract.View view;
-
+    @NonNull
     private final SettingsRepository settingsRepository;
 
-    public UnitsPresenter(@NonNull final UnitsContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public UnitsPresenter(
+        @NonNull final UnitsContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(view, schedulers);
+        this.settingsRepository = settingsRepository;
     }
 
     @Override

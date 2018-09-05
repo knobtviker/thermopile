@@ -2,14 +2,13 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerThresholdRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
+
+import javax.inject.Inject;
 
 import io.reactivex.internal.functions.Functions;
 
@@ -17,25 +16,24 @@ import io.reactivex.internal.functions.Functions;
  * Created by bojan on 15/07/2017.
  */
 
-public class SchedulePresenter extends AbstractPresenter implements ScheduleContract.Presenter {
+public class SchedulePresenter extends AbstractPresenter<ScheduleContract.View> implements ScheduleContract.Presenter {
 
-    private final ScheduleContract.View view;
-
+    @NonNull
     private final SettingsRepository settingsRepository;
+
+    @NonNull
     private final ThresholdRepository thresholdRepository;
 
-    public SchedulePresenter(@NonNull final ScheduleContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
-        this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
-            .localDataSource(new ThresholdLocalDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public SchedulePresenter(
+        @NonNull final ScheduleContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final ThresholdRepository thresholdRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(view, schedulers);
+        this.settingsRepository = settingsRepository;
+        this.thresholdRepository = thresholdRepository;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.knobtviker.thermopile.di.modules.domain.schedulers;
+package com.knobtviker.thermopile.di.modules.domain;
 
 import android.os.Looper;
 

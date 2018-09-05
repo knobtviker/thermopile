@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultScreenSaverTimeout;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTheme;
+import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.fragments.StyleFragment;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
@@ -53,8 +55,12 @@ public class StyleFragmentModule {
     }
 
     @Provides
-    StyleContract.Presenter providePresenter(@NonNull final StyleContract.View view) {
-        return new StylePresenter(view);
+    StyleContract.Presenter providePresenter(
+        @NonNull final StyleContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        return new StylePresenter(view, settingsRepository, schedulers);
     }
 
     @Provides

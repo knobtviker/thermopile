@@ -21,6 +21,7 @@ import com.knobtviker.thermopile.data.sources.local.LuminosityLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.MagneticFieldLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.PressureLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.TemperatureLocalDataSource;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 
@@ -38,35 +39,56 @@ import io.reactivex.Observable;
 
 public class AtmosphereRepository extends AbstractRepository {
 
-    @Inject
-    TemperatureLocalDataSource temperatureLocalDataSource;
+    @NonNull
+    private final TemperatureLocalDataSource temperatureLocalDataSource;
+
+    @NonNull
+    private final HumidityLocalDataSource humidityLocalDataSource;
+
+    @NonNull
+    private final PressureLocalDataSource pressureLocalDataSource;
+
+    @NonNull
+    private final AltitudeLocalDataSource altitudeLocalDataSource;
+
+    @NonNull
+    private final AirQualityLocalDataSource airQualityLocalDataSource;
+
+    @NonNull
+    private final LuminosityLocalDataSource luminosityLocalDataSource;
+
+    @NonNull
+    private final AccelerationLocalDataSource accelerationLocalDataSource;
+
+    @NonNull
+    private final AngularVelocityLocalDataSource angularVelocityLocalDataSource;
+
+    @NonNull
+    private final MagneticFieldLocalDataSource magneticFieldLocalDataSource;
 
     @Inject
-    HumidityLocalDataSource humidityLocalDataSource;
-
-    @Inject
-    PressureLocalDataSource pressureLocalDataSource;
-
-    @Inject
-    AltitudeLocalDataSource altitudeLocalDataSource;
-
-    @Inject
-    AirQualityLocalDataSource airQualityLocalDataSource;
-
-    @Inject
-    LuminosityLocalDataSource luminosityLocalDataSource;
-
-    @Inject
-    AccelerationLocalDataSource accelerationLocalDataSource;
-
-    @Inject
-    AngularVelocityLocalDataSource angularVelocityLocalDataSource;
-
-    @Inject
-    MagneticFieldLocalDataSource magneticFieldLocalDataSource;
-
-    @Inject
-    AtmosphereRepository() {
+    public AtmosphereRepository(
+        @NonNull final TemperatureLocalDataSource temperatureLocalDataSource,
+        @NonNull final HumidityLocalDataSource humidityLocalDataSource,
+        @NonNull final PressureLocalDataSource pressureLocalDataSource,
+        @NonNull final AltitudeLocalDataSource altitudeLocalDataSource,
+        @NonNull final AirQualityLocalDataSource airQualityLocalDataSource,
+        @NonNull final LuminosityLocalDataSource luminosityLocalDataSource,
+        @NonNull final AccelerationLocalDataSource accelerationLocalDataSource,
+        @NonNull final AngularVelocityLocalDataSource angularVelocityLocalDataSource,
+        @NonNull final MagneticFieldLocalDataSource magneticFieldLocalDataSource,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(schedulers);
+        this.temperatureLocalDataSource = temperatureLocalDataSource;
+            this.humidityLocalDataSource = humidityLocalDataSource;
+            this.pressureLocalDataSource = pressureLocalDataSource;
+            this.altitudeLocalDataSource = altitudeLocalDataSource;
+            this.airQualityLocalDataSource = airQualityLocalDataSource;
+            this.luminosityLocalDataSource = luminosityLocalDataSource;
+            this.accelerationLocalDataSource = accelerationLocalDataSource;
+            this.angularVelocityLocalDataSource = angularVelocityLocalDataSource;
+            this.magneticFieldLocalDataSource = magneticFieldLocalDataSource;
     }
 
     public Completable saveTemperature(@NonNull final String vendor, @NonNull final String name, final float value) {

@@ -14,6 +14,7 @@ import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.google.android.things.bluetooth.BluetoothProfile;
 import com.knobtviker.thermopile.data.sources.raw.bluetooth.BluetoothRawDataSource;
 import com.knobtviker.thermopile.data.sources.raw.network.WifiRawDataSource;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
 
@@ -37,14 +38,21 @@ import timber.log.Timber;
 
 public class NetworkRepository extends AbstractRepository {
 
-    @Inject
-    BluetoothRawDataSource bluetoothRawDataSource;
+    @NonNull
+    private final BluetoothRawDataSource bluetoothRawDataSource;
+
+    @NonNull
+    private final WifiRawDataSource wifiRawDataSource;
 
     @Inject
-    WifiRawDataSource wifiRawDataSource;
-
-    @Inject
-    NetworkRepository() {
+    public NetworkRepository(
+        @NonNull final BluetoothRawDataSource bluetoothRawDataSource,
+        @NonNull final WifiRawDataSource wifiRawDataSource,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(schedulers);
+        this.bluetoothRawDataSource = bluetoothRawDataSource;
+        this.wifiRawDataSource = wifiRawDataSource;
     }
 
     public Observable<Boolean> hasBluetooth() {

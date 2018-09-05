@@ -26,14 +26,11 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
 
     private final List<String> colors;
 
-    private final LayoutInflater layoutInflater;
-
     private final int radius;
 
     private String selectedColor;
 
     public ColorAdapter(@NonNull final Context context) {
-        this.layoutInflater = LayoutInflater.from(context);
         this.radius = context.getResources().getDimensionPixelSize(R.dimen.corner_24dp);
 
         final TypedArray colors500TypedArray = context.getResources().obtainTypedArray(R.array.colors_500);
@@ -51,7 +48,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
     @NonNull
     @Override
     public ColorViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
-        return new ColorViewHolder(layoutInflater.inflate(R.layout.item_color, null));
+        return new ColorViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_color, null));
     }
 
     @Override
@@ -79,10 +76,6 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorViewHolder> {
     public int getItemCount() {
         return colors.size();
     }
-
-//    public int getItem(final int position) {
-//        return colors.get(position);
-//    }
 
     public String getSelectedColor() {
         return selectedColor;

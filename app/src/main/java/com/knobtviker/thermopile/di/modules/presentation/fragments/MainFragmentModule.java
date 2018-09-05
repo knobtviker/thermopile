@@ -2,7 +2,6 @@ package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
 
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
@@ -10,6 +9,10 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultForm
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
+import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.fragments.MainFragment;
 import com.knobtviker.thermopile.presentation.presenters.MainPresenter;
@@ -35,11 +38,6 @@ public class MainFragmentModule {
     @Provides
     ThresholdAdapter provideThresholdAdapter(@NonNull final Context context) {
         return new ThresholdAdapter(context);
-    }
-
-    @Provides
-    LinearLayoutManager provideLinearLayoutManager(@NonNull final Context context) {
-        return new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
     }
 
     @Provides
@@ -89,8 +87,14 @@ public class MainFragmentModule {
     }
 
     @Provides
-    MainContract.Presenter providePresenter(@NonNull final MainContract.View view) {
-        return new MainPresenter(view);
+    MainContract.Presenter providePresenter(
+        @NonNull final MainContract.View view,
+        @NonNull final AtmosphereRepository atmosphereRepository,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final ThresholdRepository thresholdRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        return new MainPresenter(view, atmosphereRepository, settingsRepository, thresholdRepository, schedulers);
     }
 
     @Provides

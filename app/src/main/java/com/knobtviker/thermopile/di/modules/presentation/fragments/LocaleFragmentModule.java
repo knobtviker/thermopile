@@ -8,6 +8,8 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.adapters.FormatTimeA
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
+import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
 import com.knobtviker.thermopile.presentation.fragments.LocaleFragment;
 import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
@@ -91,8 +93,12 @@ public class LocaleFragmentModule {
     }
 
     @Provides
-    LocaleContract.Presenter providePresenter(@NonNull final LocaleContract.View view) {
-        return new LocalePresenter(view);
+    LocaleContract.Presenter providePresenter(
+        @NonNull final LocaleContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        return new LocalePresenter(view, settingsRepository, schedulers);
     }
 
     @Provides

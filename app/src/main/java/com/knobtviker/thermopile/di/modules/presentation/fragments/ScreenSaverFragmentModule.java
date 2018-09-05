@@ -8,6 +8,9 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultForm
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
+import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.ScreenSaverContract;
 import com.knobtviker.thermopile.presentation.fragments.ScreenSaverFragment;
 import com.knobtviker.thermopile.presentation.presenters.ScreenSaverPresenter;
@@ -70,8 +73,13 @@ public class ScreenSaverFragmentModule {
     }
 
     @Provides
-    ScreenSaverContract.Presenter providePresenter(@NonNull final ScreenSaverContract.View view) {
-        return new ScreenSaverPresenter(view);
+    ScreenSaverContract.Presenter providePresenter(
+        @NonNull final ScreenSaverContract.View view,
+        @NonNull final AtmosphereRepository atmosphereRepository,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        return new ScreenSaverPresenter(view, atmosphereRepository, settingsRepository, schedulers);
     }
 
     @Provides

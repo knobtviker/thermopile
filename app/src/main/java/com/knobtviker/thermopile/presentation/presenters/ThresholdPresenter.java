@@ -3,15 +3,14 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.data.models.local.Threshold;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerThresholdRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
+
+import javax.inject.Inject;
 
 import io.reactivex.Completable;
 
@@ -19,26 +18,24 @@ import io.reactivex.Completable;
  * Created by bojan on 29/10/2017.
  */
 
-public class ThresholdPresenter extends AbstractPresenter implements ThresholdContract.Presenter {
+public class ThresholdPresenter extends AbstractPresenter<ThresholdContract.View> implements ThresholdContract.Presenter {
 
-    private final ThresholdContract.View view;
+    @NonNull
+    SettingsRepository settingsRepository;
 
+    @NonNull
+    ThresholdRepository thresholdRepository;
 
-    private final SettingsRepository settingsRepository;
-    private final ThresholdRepository thresholdRepository;
-
-    public ThresholdPresenter(@NonNull final ThresholdContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
-        this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
-            .localDataSource(new ThresholdLocalDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public ThresholdPresenter(
+        @NonNull final ThresholdContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final ThresholdRepository thresholdRepository,
+        @NonNull final Schedulers schedulers
+        ) {
+        super(view, schedulers);
+        this.settingsRepository = settingsRepository;
+        this.thresholdRepository = thresholdRepository;
     }
 
     @Override

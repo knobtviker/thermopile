@@ -2,39 +2,37 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.ChartsContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 import com.knobtviker.thermopile.presentation.shared.constants.charts.ChartType;
+
+import javax.inject.Inject;
 
 /**
  * Created by bojan on 15/07/2017.
  */
 
-public class ChartsPresenter extends AbstractPresenter implements ChartsContract.Presenter {
+public class ChartsPresenter extends AbstractPresenter<ChartsContract.View> implements ChartsContract.Presenter {
 
-    private final ChartsContract.View view;
-
+    @NonNull
     private final SettingsRepository settingsRepository;
+
+    @NonNull
     private final AtmosphereRepository atmosphereRepository;
 
-    public ChartsPresenter(@NonNull final ChartsContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
-        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
-            .localDataSource(new AtmosphereLocalDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public ChartsPresenter(
+        @NonNull final ChartsContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final AtmosphereRepository atmosphereRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(view, schedulers);
+        this.settingsRepository = settingsRepository;
+        this.atmosphereRepository = atmosphereRepository;
     }
 
     @Override

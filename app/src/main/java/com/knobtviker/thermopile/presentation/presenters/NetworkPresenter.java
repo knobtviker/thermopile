@@ -2,21 +2,17 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.data.sources.raw.bluetooth.GattServerCallback;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerNetworkRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.raw.BluetoothRawDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.raw.WifiRawDataSourceModule;
-import com.knobtviker.thermopile.di.modules.presentation.ContextModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.NetworkRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.internal.functions.Functions;
@@ -25,28 +21,24 @@ import io.reactivex.internal.functions.Functions;
  * Created by bojan on 15/07/2017.
  */
 
-public class NetworkPresenter extends AbstractPresenter implements NetworkContract.Presenter {
+public class NetworkPresenter extends AbstractPresenter<NetworkContract.View> implements NetworkContract.Presenter {
 
-    private final NetworkContract.View view;
-
+    @NonNull
     private final AtmosphereRepository atmosphereRepository;
 
+    @NonNull
     private final NetworkRepository networkRepository;
 
-    public NetworkPresenter(@NonNull final Context context, @NonNull final NetworkContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
-            .localDataSource(new AtmosphereLocalDataSourceModule())
-            .build()
-            .inject();
-        this.networkRepository = DaggerNetworkRepositoryComponent.builder()
-            .context(new ContextModule(context))
-            .wifiRawDataSource(new WifiRawDataSourceModule())
-            .bluetoothRawDataSource(new BluetoothRawDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public NetworkPresenter(
+        @NonNull final NetworkContract.View view,
+        @NonNull final AtmosphereRepository atmosphereRepository,
+        @NonNull final NetworkRepository networkRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(view, schedulers);
+        this.atmosphereRepository = atmosphereRepository;
+        this.networkRepository = networkRepository;
     }
 
     @Override

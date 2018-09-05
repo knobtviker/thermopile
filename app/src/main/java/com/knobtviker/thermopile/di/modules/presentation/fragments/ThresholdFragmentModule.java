@@ -8,6 +8,9 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultForm
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMaxWidth;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultThreshold;
+import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.fragments.ThresholdFragment;
 import com.knobtviker.thermopile.presentation.presenters.ThresholdPresenter;
@@ -59,8 +62,13 @@ public class ThresholdFragmentModule {
     }
 
     @Provides
-    ThresholdContract.Presenter providePresenter(@NonNull final ThresholdContract.View view) {
-        return new ThresholdPresenter(view);
+    ThresholdContract.Presenter providePresenter(
+        @NonNull final ThresholdContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final ThresholdRepository thresholdRepository,
+        @NonNull final Schedulers schedulers
+        ) {
+        return new ThresholdPresenter(view, settingsRepository, thresholdRepository, schedulers);
     }
 
     @Provides

@@ -2,8 +2,6 @@ package com.knobtviker.thermopile.data.sources.local.shared.base;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.sources.local.shared.Database;
-
 import java.util.List;
 
 import io.objectbox.Box;
@@ -18,10 +16,11 @@ import io.reactivex.Observable;
 
 public abstract class AbstractLocalDataSource<T> implements BaseLocalDataSource<T> {
 
-    protected Box<T> box;
+    @NonNull
+    protected final Box<T> box;
 
-    public AbstractLocalDataSource(@NonNull final Class<T> clazz) {
-        box = Database.getInstance().boxFor(clazz);
+    public AbstractLocalDataSource(@NonNull final Box<T> box) {
+        this.box = box;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
+import android.support.annotation.NonNull;
+
 import com.knobtviker.thermopile.data.models.local.AngularVelocity;
 import com.knobtviker.thermopile.data.models.local.AngularVelocity_;
 import com.knobtviker.thermopile.data.sources.local.shared.base.AbstractLocalDataSource;
@@ -8,6 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.objectbox.BoxStore;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
@@ -18,8 +21,8 @@ import io.reactivex.Observable;
 public class AngularVelocityLocalDataSource extends AbstractLocalDataSource<AngularVelocity> {
 
     @Inject
-    public AngularVelocityLocalDataSource() {
-        super(AngularVelocity.class);
+    public AngularVelocityLocalDataSource(@NonNull final BoxStore boxStore) {
+        super(boxStore.boxFor(AngularVelocity.class));
     }
 
     @Override

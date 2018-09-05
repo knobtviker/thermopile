@@ -1,5 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
+import android.support.annotation.NonNull;
+
 import com.knobtviker.thermopile.data.models.local.Acceleration;
 import com.knobtviker.thermopile.data.models.local.Acceleration_;
 import com.knobtviker.thermopile.data.sources.local.shared.base.AbstractLocalDataSource;
@@ -8,6 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.objectbox.BoxStore;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
@@ -18,8 +21,8 @@ import io.reactivex.Observable;
 public class AccelerationLocalDataSource extends AbstractLocalDataSource<Acceleration> {
 
     @Inject
-    public AccelerationLocalDataSource() {
-        super(Acceleration.class);
+    public AccelerationLocalDataSource(@NonNull final BoxStore boxStore) {
+        super(boxStore.boxFor(Acceleration.class));
     }
 
     @Override

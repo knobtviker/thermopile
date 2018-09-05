@@ -6,6 +6,7 @@ import com.knobtviker.thermopile.data.models.local.Threshold;
 import com.knobtviker.thermopile.data.models.presentation.Interval;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.data.sources.local.ThresholdLocalDataSource;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.utils.factories.ThresholdIntervalFactory;
@@ -27,11 +28,16 @@ import io.reactivex.Observable;
 
 public class ThresholdRepository extends AbstractRepository {
 
-    @Inject
-    ThresholdLocalDataSource thresholdLocalDataSource;
+    @NonNull
+    private final ThresholdLocalDataSource thresholdLocalDataSource;
 
     @Inject
-    ThresholdRepository() {
+    public ThresholdRepository(
+        @NonNull final ThresholdLocalDataSource thresholdLocalDataSource,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(schedulers);
+        this.thresholdLocalDataSource = thresholdLocalDataSource;
     }
 
     public Observable<List<Threshold>> load() {

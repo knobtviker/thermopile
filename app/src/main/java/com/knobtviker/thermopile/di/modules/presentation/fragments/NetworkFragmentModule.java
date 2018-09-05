@@ -1,8 +1,10 @@
 package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
+import com.knobtviker.thermopile.domain.repositories.NetworkRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.fragments.NetworkFragment;
 import com.knobtviker.thermopile.presentation.presenters.NetworkPresenter;
@@ -19,8 +21,13 @@ public class NetworkFragmentModule {
     }
 
     @Provides
-    NetworkContract.Presenter providePresenter(@NonNull final Context context, @NonNull final NetworkContract.View view) {
-        return new NetworkPresenter(context, view);
+    NetworkContract.Presenter providePresenter(
+        @NonNull final NetworkContract.View view,
+        @NonNull final AtmosphereRepository atmosphereRepository,
+        @NonNull final NetworkRepository networkRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        return new NetworkPresenter(view, atmosphereRepository, networkRepository, schedulers);
     }
 
     @Provides

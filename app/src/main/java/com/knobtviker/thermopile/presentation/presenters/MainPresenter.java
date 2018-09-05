@@ -6,17 +6,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerThresholdRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.local.ThresholdLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.repositories.ThresholdRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.android.MainThreadDisposable;
@@ -25,30 +22,29 @@ import io.reactivex.android.MainThreadDisposable;
  * Created by bojan on 15/07/2017.
  */
 
-public class MainPresenter extends AbstractPresenter implements MainContract.Presenter {
+public class MainPresenter extends AbstractPresenter<MainContract.View> implements MainContract.Presenter {
 
-    private final MainContract.View view;
-
+    @NonNull
     private final AtmosphereRepository atmosphereRepository;
+
+    @NonNull
     private final SettingsRepository settingsRepository;
+
+    @NonNull
     private final ThresholdRepository thresholdRepository;
 
-    public MainPresenter(@NonNull final MainContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
-            .localDataSource(new AtmosphereLocalDataSourceModule())
-            .build()
-            .inject();
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
-        this.thresholdRepository = DaggerThresholdRepositoryComponent.builder()
-            .localDataSource(new ThresholdLocalDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public MainPresenter(
+        @NonNull final MainContract.View view,
+        @NonNull final AtmosphereRepository atmosphereRepository,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final ThresholdRepository thresholdRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(view, schedulers);
+        this.atmosphereRepository = atmosphereRepository;
+        this.settingsRepository = settingsRepository;
+        this.thresholdRepository = thresholdRepository;
     }
 
     @Override

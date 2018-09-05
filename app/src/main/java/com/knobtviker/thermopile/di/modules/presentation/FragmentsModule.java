@@ -31,42 +31,39 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class FragmentsModule {
 
-//    @ContributesAndroidInjector(modules = BaseFragmentModule.class)
-//    abstract BaseFragment provideBaseFragment();
-
     @ContributesAndroidInjector(modules = MainFragmentModule.class)
-    abstract MainFragment provideMainFragment();
+    abstract MainFragment contributeMainFragment();
 
     @ContributesAndroidInjector(modules = ChartsFragmentModule.class)
-    abstract ChartsFragment provideChartFragment();
+    abstract ChartsFragment contributeChartFragment();
 
     @ContributesAndroidInjector(modules = ScheduleFragmentModule.class)
-    abstract ScheduleFragment provideScheduleFragment();
+    abstract ScheduleFragment contributeScheduleFragment();
 
     @ContributesAndroidInjector(modules = ThresholdFragmentModule.class)
-    abstract ThresholdFragment provideThresholdFragment();
+    abstract ThresholdFragment contributeThresholdFragment();
 
     @ContributesAndroidInjector(modules = SettingsFragmentModule.class)
-    abstract SettingsFragment provideSettingsFragment();
+    abstract SettingsFragment contributeSettingsFragment();
 
     @ContributesAndroidInjector(modules = UnitsFragmentModule.class)
-    abstract UnitsFragment provideUnitsFragment();
+    abstract UnitsFragment contributeUnitsFragment();
 
     @ContributesAndroidInjector(modules = LocaleFragmentModule.class)
-    abstract LocaleFragment provideLocaleFragment();
+    abstract LocaleFragment contributeLocaleFragment();
 
     @ContributesAndroidInjector(modules = StyleFragmentModule.class)
-    abstract StyleFragment provideStyleFragment();
+    abstract StyleFragment contributeStyleFragment();
 
     @ContributesAndroidInjector(modules = NetworkFragmentModule.class)
-    abstract NetworkFragment provideNetworkFragment();
+    abstract NetworkFragment contributeNetworkFragment();
 
     @ContributesAndroidInjector(modules = WirelessFragmentModule.class)
-    abstract WirelessFragment provideWirelessFragment();
+    abstract WirelessFragment contributeWirelessFragment();
 
     @ContributesAndroidInjector(modules = ScreenSaverFragmentModule.class)
-    abstract ScreenSaverFragment provideScreensaverFragment();
+    abstract ScreenSaverFragment contributeScreensaverFragment();
 
     @ContributesAndroidInjector(modules = BlankFragmentModule.class)
-    abstract BlankFragment provideBlankFragment();
+    abstract BlankFragment contributeBlankFragment();
 }

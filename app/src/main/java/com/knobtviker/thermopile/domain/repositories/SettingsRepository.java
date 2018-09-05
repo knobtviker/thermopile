@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.sources.local.SettingsLocalDataSource;
 import com.knobtviker.thermopile.data.sources.local.shared.Database;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 
 import javax.inject.Inject;
@@ -19,11 +20,16 @@ import io.reactivex.Observable;
 
 public class SettingsRepository extends AbstractRepository {
 
-    @Inject
-    SettingsLocalDataSource settingsLocalDataSource;
+    @NonNull
+    private final SettingsLocalDataSource settingsLocalDataSource;
 
     @Inject
-    SettingsRepository() {
+    public SettingsRepository(
+        @NonNull final SettingsLocalDataSource settingsLocalDataSource,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(schedulers);
+        this.settingsLocalDataSource = settingsLocalDataSource;
     }
 
     public Flowable<Settings> observe() {

@@ -1,5 +1,7 @@
 package com.knobtviker.thermopile.data.sources.local;
 
+import android.support.annotation.NonNull;
+
 import com.knobtviker.thermopile.data.models.local.Temperature;
 import com.knobtviker.thermopile.data.models.local.Temperature_;
 import com.knobtviker.thermopile.data.sources.local.shared.base.AbstractLocalDataSource;
@@ -9,6 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.objectbox.BoxStore;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
@@ -19,8 +22,8 @@ import io.reactivex.Observable;
 public class TemperatureLocalDataSource extends AbstractLocalDataSource<Temperature> {
 
     @Inject
-    public TemperatureLocalDataSource() {
-        super(Temperature.class);
+    public TemperatureLocalDataSource(@NonNull final BoxStore boxStore) {
+        super(boxStore.boxFor(Temperature.class));
     }
 
     @Override
