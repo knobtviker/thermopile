@@ -13,6 +13,7 @@ import com.knobtviker.thermopile.di.qualifiers.presentation.messengers.Foregroun
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.schedulers.Schedulers;
+import com.knobtviker.thermopile.presentation.IncomingHandler;
 import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
@@ -55,9 +56,16 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
+    IncomingHandler provideIncomingHandler(@NonNull final Context context) {
+        return new IncomingHandler(context);
+    }
+
+    @Provides
+    @Singleton
     @ForegroundMessenger
-    Messenger provideForegroundMessenger(@NonNull final Context context) {
-        return new Messenger(new ThermopileApplication.IncomingHandler(context));
+    Messenger provideForegroundMessenger(@NonNull final IncomingHandler incomingHandler) {
+        return new Messenger(incomingHandler);
     }
 
     //    @Provides
@@ -79,6 +87,7 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     ApplicationContract.Presenter providePresenter(
         @NonNull final ApplicationContract.View view,
         @NonNull final AtmosphereRepository atmosphereRepository,
@@ -89,6 +98,7 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     ApplicationContract.View provideView() {
         return application;
     }
