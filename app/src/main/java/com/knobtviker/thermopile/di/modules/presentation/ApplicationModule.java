@@ -75,10 +75,6 @@ public class ApplicationModule {
     @Provides
     @Singleton
     BoxStore provideDatabase(@NonNull final Context context) {
-//        return MyObjectBox.builder()
-//            .androidContext(context)
-//            .name(BuildConfig.DATABASE_NAME)
-//            .build();
         return Database.init(context);
     }
 

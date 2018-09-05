@@ -12,11 +12,11 @@ import dagger.android.ContributesAndroidInjector;
 public abstract class ActivitiesModule {
 
     @ContributesAndroidInjector
-    abstract MainActivity bindMainActivity();
+    abstract MainActivity contributeMainActivity();
 
     @ContributesAndroidInjector(modules = {ScreenSaverActivityModule.class})
-    abstract ScreenSaverActivity bindScreenSaverActivity();
+    abstract ScreenSaverActivity contributeScreenSaverActivity();
 
     @ContributesAndroidInjector
-    abstract WirelessActivity bindWirelessActivity();
+    abstract WirelessActivity contributeWirelessActivity();
 }
