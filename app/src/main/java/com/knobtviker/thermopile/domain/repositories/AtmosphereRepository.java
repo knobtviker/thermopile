@@ -94,72 +94,72 @@ public class AtmosphereRepository extends AbstractRepository {
     public Completable saveTemperature(@NonNull final String vendor, @NonNull final String name, final float value) {
         return temperatureLocalDataSource
             .save(new Temperature(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable savePressure(@NonNull final String vendor, @NonNull final String name, final float value) {
         return pressureLocalDataSource
             .save(new Pressure(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveAltitude(@NonNull final String vendor, @NonNull final String name, final float value) {
         return altitudeLocalDataSource
             .save(new Altitude(DateTimeKit.instant().toEpochMilli(), vendor, name, convertPressureToAltitude(value)))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveHumidity(@NonNull final String vendor, @NonNull final String name, final float value) {
         return humidityLocalDataSource
             .save(new Humidity(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveAirQuality(@NonNull final String vendor, @NonNull final String name, final float value) {
         return airQualityLocalDataSource
             .save(new AirQuality(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveLuminosity(@NonNull final String vendor, @NonNull final String name, final float value) {
         return luminosityLocalDataSource
             .save(new Luminosity(DateTimeKit.instant().toEpochMilli(), vendor, name, value))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveAcceleration(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return accelerationLocalDataSource
             .save(new Acceleration(DateTimeKit.instant().toEpochMilli(), vendor, name, values[0], values[1], values[2]))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveAngularVelocity(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return angularVelocityLocalDataSource
             .save(new AngularVelocity(DateTimeKit.instant().toEpochMilli(), vendor, name, values[0], values[1], values[2]))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveMagneticField(@NonNull final String vendor, @NonNull final String name, final float[] values) {
         return magneticFieldLocalDataSource
             .save(new MagneticField(DateTimeKit.instant().toEpochMilli(), vendor, name, values[0], values[1], values[2]))
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 

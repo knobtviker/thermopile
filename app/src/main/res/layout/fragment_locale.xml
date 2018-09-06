@@ -24,11 +24,12 @@
 
                 <TextView
                     style="@style/TextAppearance.Section"
-                    android:text="Timezone"/>
+                    android:text="@string/timezone"/>
 
                 <Spinner
                     android:id="@+id/spinner_timezone"
                     android:layout_width="match_parent"
+                    android:prompt="@string/timezone"
                     android:layout_height="?attr/listPreferredItemHeightSmall"
                     android:layout_marginTop="@dimen/margin_small"
                     android:spinnerMode="dialog"/>
@@ -100,10 +101,11 @@
 
                 <TextView
                     style="@style/TextAppearance.Section"
-                    android:text="Date format"/>
+                    android:text="@string/date_format"/>
 
                 <Spinner
                     android:id="@+id/spinner_date_format"
+                    android:prompt="@string/date_format"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/listPreferredItemHeightSmall"
                     android:layout_marginTop="@dimen/margin_small"
@@ -127,10 +129,11 @@
 
                 <TextView
                     style="@style/TextAppearance.Section"
-                    android:text="Time format"/>
+                    android:text="@string/time_format"/>
 
                 <Spinner
                     android:id="@+id/spinner_time_format"
+                    android:prompt="@string/time_format"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/listPreferredItemHeightSmall"
                     android:layout_marginTop="@dimen/margin_small"

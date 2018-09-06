@@ -23,6 +23,10 @@ import io.reactivex.internal.functions.Functions;
 
 public class ApplicationPresenter extends AbstractPresenter<ApplicationContract.View> implements ApplicationContract.Presenter {
 
+    private long lastBootTimestamp = 0L;
+
+    private long bootCount = 1L;
+
     @NonNull
     private final AtmosphereRepository atmosphereRepository;
 
@@ -161,5 +165,25 @@ public class ApplicationPresenter extends AbstractPresenter<ApplicationContract.
                     this::error
                 )
         );
+    }
+
+    @Override
+    public void setLastBootTimestamp(long value) {
+        this.lastBootTimestamp = value;
+    }
+
+    @Override
+    public void setBootCount(long value) {
+        this.bootCount = value;
+    }
+
+    @Override
+    public long lastBootTimestamp() {
+        return lastBootTimestamp;
+    }
+
+    @Override
+    public long bootCount() {
+        return bootCount;
     }
 }

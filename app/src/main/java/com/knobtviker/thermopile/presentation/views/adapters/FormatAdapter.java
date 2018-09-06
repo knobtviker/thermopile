@@ -16,8 +16,13 @@ import java.util.List;
 
 public class FormatAdapter extends ArrayAdapter<String> {
 
+    @NonNull
+    private final List<String> items;
+
     public FormatAdapter(@NonNull final Context context, @NonNull final List<String> items) {
         super(context, R.layout.item_spinner_two_line, items);
+
+        this.items = items;
 
         setDropDownViewResource(R.layout.item_spinner_two_line);
     }
@@ -72,5 +77,10 @@ public class FormatAdapter extends ArrayAdapter<String> {
         );
 
         return view;
+    }
+
+    @NonNull
+    public List<String> getItems() {
+        return items;
     }
 }

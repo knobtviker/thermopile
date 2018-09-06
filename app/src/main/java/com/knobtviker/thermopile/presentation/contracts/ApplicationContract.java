@@ -38,5 +38,13 @@ public interface ApplicationContract {
         void saveAngularVelocity(@NonNull final String vendor, @NonNull final String name, final float[] values);
 
         void saveMagneticField(@NonNull final String vendor, @NonNull final String name, final float[] values);
+
+        void setLastBootTimestamp(final long value);
+
+        void setBootCount(final long value);
+
+        long lastBootTimestamp();
+
+        long bootCount();
     }
 }

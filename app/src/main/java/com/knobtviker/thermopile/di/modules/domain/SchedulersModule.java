@@ -4,9 +4,9 @@ import android.os.Looper;
 
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerComputation;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerIO;
-import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerMemory;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerNetwork;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerScreensaver;
+import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerTrampoline;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerUI;
 
 import javax.inject.Singleton;
@@ -41,9 +41,9 @@ public class SchedulersModule {
 
     @Provides
     @Singleton
-    @SchedulerMemory
-    static Scheduler provideMemory() {
-        return Schedulers.newThread();
+    @SchedulerTrampoline
+    static Scheduler provideTrampoline() {
+        return Schedulers.trampoline();
     }
 
     @Provides
@@ -66,6 +66,6 @@ public class SchedulersModule {
     @Singleton
     @SchedulerScreensaver
     static Scheduler provideScreensaver() {
-        return Schedulers.newThread();
+        return Schedulers.single();
     }
 }

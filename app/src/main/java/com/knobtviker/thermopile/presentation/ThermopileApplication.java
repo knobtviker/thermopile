@@ -31,14 +31,11 @@ import timber.log.Timber;
 // /data/data/com.knobtviker.thermopile
 public class ThermopileApplication extends DaggerApplication implements ApplicationContract.View, ServiceConnection, IncomingCommunicator {
 
-    private static long lastBootTimestamp = 0L;
-
-    private static long bootCount = 1L;
-
     @Inject
     @ForegroundMessenger
     Messenger foregroundMessenger;
 
+    //TODO: Find a way to inject 2 Messengers
     //    @Inject
     //    @DriversMessenger
     Messenger serviceMessengerSensors;
@@ -154,12 +151,12 @@ public class ThermopileApplication extends DaggerApplication implements Applicat
 
     @Override
     public void setLastBootTimestamp(long value) {
-        lastBootTimestamp = value;
+        presenter.setLastBootTimestamp(value);
     }
 
     @Override
     public void setBootCount(long value) {
-        bootCount = value;
+        presenter.setBootCount(value);
     }
 
     public void refresh() {
@@ -194,12 +191,12 @@ public class ThermopileApplication extends DaggerApplication implements Applicat
         Router.showScreensaver(this);
     }
 
-    public static long lastBootTimestamp() {
-        return lastBootTimestamp;
+    public long lastBootTimestamp() {
+        return presenter.lastBootTimestamp();
     }
 
-    public static long bootCount() {
-        return bootCount;
+    public long bootCount() {
+        return presenter.bootCount();
     }
 
     public void createScreensaver() {

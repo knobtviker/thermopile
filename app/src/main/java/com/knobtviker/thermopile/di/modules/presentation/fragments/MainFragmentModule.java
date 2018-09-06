@@ -3,6 +3,7 @@ package com.knobtviker.thermopile.di.modules.presentation.fragments;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
 import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
@@ -29,6 +30,8 @@ import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
 
 import org.threeten.bp.ZoneId;
 
+import java.util.Arrays;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -37,7 +40,10 @@ public class MainFragmentModule {
 
     @Provides
     ThresholdAdapter provideThresholdAdapter(@NonNull final Context context) {
-        return new ThresholdAdapter(context);
+        return new ThresholdAdapter(
+            Arrays.asList(context.getResources().getStringArray(R.array.weekdays)),
+            Arrays.asList(context.getResources().getStringArray(R.array.weekdays_short))
+        );
     }
 
     @Provides

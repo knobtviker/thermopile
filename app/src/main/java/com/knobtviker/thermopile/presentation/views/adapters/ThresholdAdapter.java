@@ -1,6 +1,5 @@
 package com.knobtviker.thermopile.presentation.views.adapters;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintSet;
@@ -24,7 +23,6 @@ import com.knobtviker.thermopile.presentation.utils.factories.ThresholdIntervalF
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdLineViewHolder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,7 +31,6 @@ import java.util.List;
 
 public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHolder> {
 
-    private final LayoutInflater layoutInflater;
     private final List<String> days;
     private final List<String> daysShort;
 
@@ -43,10 +40,9 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
 
     private List<ThresholdInterval> intervals = new ArrayList<>(0);
 
-    public ThresholdAdapter(@NonNull final Context context) {
-        this.layoutInflater = LayoutInflater.from(context);
-        this.days = Arrays.asList(context.getResources().getStringArray(R.array.weekdays));
-        this.daysShort = Arrays.asList(context.getResources().getStringArray(R.array.weekdays_short));
+    public ThresholdAdapter(@NonNull final List<String> days, @NonNull final List<String> daysShort) {
+        this.days = days;
+        this.daysShort = daysShort;
 
         setEmptyDays();
     }
@@ -54,7 +50,7 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     @NonNull
     @Override
     public ThresholdLineViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
-        return new ThresholdLineViewHolder(layoutInflater.inflate(R.layout.item_threshold_line, null));
+        return new ThresholdLineViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_threshold_line, null));
     }
 
     @Override

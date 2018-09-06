@@ -2,9 +2,9 @@ package com.knobtviker.thermopile.domain.schedulers;
 
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerComputation;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerIO;
-import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerMemory;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerNetwork;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerScreensaver;
+import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerTrampoline;
 import com.knobtviker.thermopile.di.qualifiers.domain.SchedulerUI;
 
 import javax.inject.Inject;
@@ -23,8 +23,8 @@ public class Schedulers {
     public Scheduler io;
 
     @Inject
-    @SchedulerMemory
-    public Scheduler memory;
+    @SchedulerTrampoline
+    public Scheduler trampoline;
 
     @Inject
     @SchedulerScreensaver

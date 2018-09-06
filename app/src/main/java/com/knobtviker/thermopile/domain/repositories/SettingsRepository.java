@@ -50,106 +50,108 @@ public class SettingsRepository extends AbstractRepository {
     public Completable saveTimezone(final long settingsId, @NonNull final String timezone) {
         return settingsLocalDataSource
             .queryById(settingsId)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.timezone = timezone;
                 return settingsLocalDataSource.save(settings);
             })
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveClockMode(final long settingsId, final int clockMode) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.formatClock = clockMode;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulers.io)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveFormatDate(final long settingsId, @NonNull final String item) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.formatDate = item;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulers.io)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveFormatTime(final long settingsId, @NonNull final String item) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.formatTime = item;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulers.io)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveTemperatureUnit(final long settingsId, final int unit) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.unitTemperature = unit;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulers.io)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable savePressureUnit(final long settingsId, final int unit) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.unitPressure = unit;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulers.io)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveAccelerationUnit(final long settingsId, final int unit) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.unitMotion = unit;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulers.io)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveTheme(final long settingsId, final int value) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.theme = value;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulers.io)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 
     public Completable saveScreensaverTimeout(long settingsId, int value) {
         return settingsLocalDataSource
             .queryById(settingsId)
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .flatMap(settings -> {
                 settings.screensaverDelay = value;
                 return settingsLocalDataSource.save(settings);
             })
-            .observeOn(schedulers.io)
+            .observeOn(schedulers.trampoline)
             .ignoreElements();
     }
 }

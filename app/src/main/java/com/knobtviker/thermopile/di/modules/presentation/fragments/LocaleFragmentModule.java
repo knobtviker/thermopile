@@ -5,16 +5,11 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.di.qualifiers.presentation.adapters.FormatDateAdapter;
 import com.knobtviker.thermopile.di.qualifiers.presentation.adapters.FormatTimeAdapter;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
 import com.knobtviker.thermopile.presentation.fragments.LocaleFragment;
 import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
 import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
@@ -28,34 +23,6 @@ import dagger.Provides;
 
 @Module
 public class LocaleFragmentModule {
-
-    @Provides
-    long provideDefaultSettings() {
-        return -1L;
-    }
-
-    @Provides
-    String provideDefaultZone() {
-        return Default.TIMEZONE;
-    }
-
-    @Provides
-    @DefaultClockMode
-    int provideDefaultClockMode() {
-        return ClockMode._24H;
-    }
-
-    @Provides
-    @DefaultFormatDate
-    String provideDefaultFormatDate() {
-        return FormatDate.EEEE_DD_MM_YYYY;
-    }
-
-    @Provides
-    @DefaultFormatTime
-    String provideDefaultFormatTime() {
-        return FormatTime.HH_MM;
-    }
 
     @Provides
     TimezoneAdapter provideTimezoneAdapter(@NonNull final Context context) {

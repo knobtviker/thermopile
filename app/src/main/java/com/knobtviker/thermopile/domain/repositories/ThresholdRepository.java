@@ -50,7 +50,7 @@ public class ThresholdRepository extends AbstractRepository {
     public Observable<List<ThresholdInterval>> loadInline() {
         return thresholdLocalDataSource
             .query()
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.computation)
             .map(thresholds -> {
                 if (thresholds.isEmpty()) {
                     return ThresholdIntervalFactory.emptyDays();
