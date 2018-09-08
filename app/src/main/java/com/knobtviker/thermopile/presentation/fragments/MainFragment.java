@@ -1,13 +1,12 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,37 +14,14 @@ import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.data.models.presentation.MeasuredData;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
-import com.knobtviker.thermopile.presentation.ThermopileApplication;
 import com.knobtviker.thermopile.presentation.contracts.MainContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredAcceleration;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredAirQuality;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredHumidity;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredPressure;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredTemperature;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
-import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
-import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.utils.controllers.PIDController;
 import com.knobtviker.thermopile.presentation.views.ArcView;
 import com.knobtviker.thermopile.presentation.views.adapters.ThresholdAdapter;
 import com.knobtviker.thermopile.presentation.views.listeners.DayScrollListener;
-
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 
@@ -62,39 +38,6 @@ import timber.log.Timber;
  */
 
 public class MainFragment extends BaseFragment<MainContract.Presenter> implements MainContract.View, DayScrollListener.Listener {
-
-    @Inject
-    ZoneId dateTimeZone;
-
-    @Inject
-    @DefaultClockMode
-    @ClockMode
-    int formatClock;
-
-    @Inject
-    @DefaultFormatDate
-    @FormatDate
-    String formatDate;
-
-    @Inject
-    @DefaultFormatTime
-    @FormatTime
-    String formatTime;
-
-    @Inject
-    @DefaultTemperature
-    @UnitTemperature
-    int unitTemperature;
-
-    @Inject
-    @DefaultPressure
-    @UnitPressure
-    int unitPressure;
-
-    @Inject
-    @DefaultMotion
-    @UnitAcceleration
-    int unitMotion;
 
     @Inject
     ThresholdAdapter thresholdAdapter;
@@ -147,6 +90,9 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     @BindView(R.id.textview_pressure_unit)
     public TextView textViewPressureUnit;
 
+    @BindView(R.id.textview_humidity_unit)
+    public TextView textViewHumidityUnit;
+
     @BindView(R.id.textview_motion_unit)
     public TextView textViewMotionUnit;
 
@@ -172,9 +118,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     protected void load() {
-        date();
-        data();
-        thresholds();
+        presenter.observeDateChanged(requireContext());
+        presenter.observeAtmosphere();
     }
 
     @Override
@@ -187,70 +132,44 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     @Override
-    public void onTemperatureChanged(final float value) {
-        arcViewTemperature.setProgress(value / MeasuredTemperature.MAXIMUM);
-        textViewTemperature.setText(String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))));
-
-        //        pidController.doPID(Math.round(value));
+    public void onDateChanged(@NonNull String date) {
+        textViewDate.setText(date);
     }
 
     @Override
-    public void onHumidityChanged(final float value) {
-        arcViewHumidity.setProgress(value / MeasuredHumidity.MAXIMUM);
-        textViewHumidity.setText(String.valueOf(MathKit.round(value)));
+    public void onZoneAndFormatChanged(@NonNull String timezone, boolean is24HourMode, @NonNull String formatTime) {
+        textViewClock.setTimeZone(timezone);
+        if (is24HourMode) {
+            textViewClock.setFormat24Hour(formatTime);
+            textViewClock.setFormat12Hour(null);
+        } else {
+            textViewClock.setFormat12Hour(formatTime);
+            textViewClock.setFormat24Hour(null);
+        }
     }
 
     @Override
-    public void onPressureChanged(final float value) {
-        arcViewPressure.setProgress(value / MeasuredPressure.MAXIMUM);
-        textViewPressure.setText(String.valueOf(MathKit.round(MathKit.applyPressureUnit(unitPressure, value))));
+    public void onTemperatureUnitChanged(@StringRes int resId) {
+        textViewTemperatureUnit.setText(getString(resId));
     }
 
     @Override
-    public void onAirQualityChanged(final float value) {
-        final Pair<String, Integer> pair = MathKit.convertIAQValueToLabelAndColor(value);
-
-        textViewIAQ.setText(pair.first);
-        arcViewIAQ.setProgressColor(pair.second);
-        arcViewIAQ.setProgress((MeasuredAirQuality.MAXIMUM - value) / MeasuredAirQuality.MAXIMUM);
+    public void onPressureUnitChanged(int resId) {
+        textViewPressureUnit.setText(getString(resId));
     }
 
     @Override
-    public void onAccelerationChanged(final float[] values) {
-        final double ax = values[0];
-        final double ay = values[2] + 0.2f;
-        final double az = values[1] + SensorManager.GRAVITY_EARTH; //možda minus
-
-        //ax: -0.10000000149011612 ay: -0.20000000298023224 az: -9.800000190734863 + 9.80665F
-        //        Timber.i("ax: %s ay: %s az: %s", ax, ay, az);
-
-        final float value = (float) Math.min(Math.sqrt(Math.pow(ax, 2) + Math.pow(ay, 2) + Math.pow(az, 2)), MeasuredAcceleration.MAXIMUM);
-        arcViewMotion.setProgress(value / MeasuredAcceleration.MAXIMUM); // 2g in m/s2
-        textViewMotion.setText(String.valueOf(MathKit.roundToOne(MathKit.applyAccelerationUnit(unitMotion, value))));
+    public void ontHumidityUnitChanged(int resId) {
+        textViewHumidityUnit.setText(getString(resId));
     }
 
     @Override
-    public void onDateChanged() {
-        setDate();
-        thresholds();
+    public void onMotionUnitChanged(int resId) {
+        textViewMotionUnit.setText(getString(resId));
     }
 
     @Override
-    public void onSettingsChanged(@NonNull Settings settings) {
-        dateTimeZone = ZoneId.of(settings.timezone);
-        formatClock = settings.formatClock;
-        formatDate = settings.formatDate;
-        formatTime = settings.formatTime;
-        unitTemperature = settings.unitTemperature;
-        unitPressure = settings.unitPressure;
-        unitMotion = settings.unitMotion;
-
-        setFormatClock();
-        setTemperatureUnit();
-        setPressureUnit();
-        setMotionUnit();
-        setDate();
-
+    public void onThresholdUnitAndFormatChanged(int unitTemperature, @NonNull String formatTime, @NonNull String formatDate) {
         thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
 
         if (recyclerViewThresholds.getLayoutManager() instanceof LinearLayoutManager) {
@@ -259,8 +178,40 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
                 textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
             }
         }
+    }
 
-        ((ThermopileApplication) requireActivity().getApplication()).refresh();
+    @Override
+    public void onTemperatureChanged(@NonNull MeasuredData measuredData) {
+        arcViewTemperature.setProgress(measuredData.progress());
+        textViewTemperature.setText(measuredData.readableValue());
+
+        //        pidController.doPID(Math.round(value));
+    }
+
+    @Override
+    public void onHumidityChanged(@NonNull MeasuredData measuredData) {
+        arcViewHumidity.setProgress(measuredData.progress());
+        textViewHumidity.setText(measuredData.readableValue());
+    }
+
+    @Override
+    public void onPressureChanged(@NonNull MeasuredData measuredData) {
+        arcViewPressure.setProgress(measuredData.progress());
+        textViewPressure.setText(measuredData.readableValue());
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public void onAirQualityChanged(@NonNull MeasuredData measuredData) {
+        arcViewIAQ.setProgress(measuredData.progress());
+        arcViewIAQ.setProgressColor(measuredData.color());
+        textViewIAQ.setText(measuredData.readableValue());
+    }
+
+    @Override
+    public void onAccelerationChanged(@NonNull MeasuredData measuredData) {
+        arcViewMotion.setProgress(measuredData.progress());
+        textViewMotion.setText(measuredData.readableValue());
     }
 
     @Override
@@ -273,7 +224,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         if (thresholdAdapter.getItemCount() > 0) {
             if (recyclerViewThresholds.getLayoutManager() instanceof LinearLayoutManager) {
                 final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerViewThresholds.getLayoutManager();
-                textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+//                textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
             }
         }
     }
@@ -304,100 +255,8 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
     }
 
     private void setupRecyclerView() {
-        thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
-
         recyclerViewThresholds.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewThresholds.setAdapter(thresholdAdapter);
         recyclerViewThresholds.addOnScrollListener(DayScrollListener.create(this));
-    }
-
-    private void setFormatClock() {
-        textViewClock.setTimeZone(dateTimeZone.getId());
-        if (formatClock == ClockMode._12H) {
-            textViewClock.setFormat12Hour(formatTime);
-            textViewClock.setFormat24Hour(null);
-        } else {
-            textViewClock.setFormat24Hour(formatTime);
-            textViewClock.setFormat12Hour(null);
-        }
-    }
-
-    private void setTemperatureUnit() {
-        switch (unitTemperature) {
-            case UnitTemperature.CELSIUS:
-                textViewTemperatureUnit.setText(getString(R.string.unit_temperature_celsius));
-                break;
-            case UnitTemperature.FAHRENHEIT:
-                textViewTemperatureUnit.setText(getString(R.string.unit_temperature_fahrenheit));
-                break;
-            case UnitTemperature.KELVIN:
-                textViewTemperatureUnit.setText(getString(R.string.unit_temperature_kelvin));
-                break;
-            default:
-                textViewTemperatureUnit.setText(getString(R.string.unit_temperature_celsius));
-                break;
-        }
-    }
-
-    private void setPressureUnit() {
-        switch (unitPressure) {
-            case UnitPressure.PASCAL:
-                textViewPressureUnit.setText(getString(R.string.unit_pressure_pascal));
-                break;
-            case UnitPressure.BAR:
-                textViewPressureUnit.setText(getString(R.string.unit_pressure_bar));
-                break;
-            case UnitPressure.PSI:
-                textViewPressureUnit.setText(getString(R.string.unit_pressure_psi));
-                break;
-            default:
-                textViewPressureUnit.setText(getString(R.string.unit_pressure_pascal));
-                break;
-        }
-    }
-
-    private void setMotionUnit() {
-        switch (unitMotion) {
-            case UnitAcceleration.METERS_PER_SECOND_2:
-                textViewMotionUnit.setText(getString(R.string.unit_acceleration_ms2));
-                break;
-            case UnitAcceleration.G:
-                textViewMotionUnit.setText(getString(R.string.unit_acceleration_g));
-                break;
-            case UnitAcceleration.GAL:
-                textViewMotionUnit.setText(getString(R.string.unit_acceleration_gal));
-                break;
-            case UnitAcceleration.CENTIMETERS_PER_SECOND_2:
-                textViewMotionUnit.setText(getString(R.string.unit_acceleration_cms2));
-                break;
-            default:
-                textViewMotionUnit.setText(getString(R.string.unit_acceleration_ms2));
-                break;
-        }
-    }
-
-    private void setDate() {
-        textViewDate.setText(
-            DateTimeKit.format(ZonedDateTime.now(dateTimeZone), formatDate)
-        );
-    }
-
-    private void date() {
-        presenter.observeDateChanged(requireContext());
-    }
-
-    private void data() {
-        presenter.observeTemperature();
-        presenter.observePressure();
-        presenter.observeHumidity();
-        presenter.observeAirQuality();
-        presenter.observeAcceleration();
-        presenter.settings();
-
-        ((ThermopileApplication) requireActivity().getApplication()).refresh();
-    }
-
-    private void thresholds() {
-        presenter.thresholds();
     }
 }

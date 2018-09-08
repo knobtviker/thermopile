@@ -125,7 +125,7 @@
                 <TextView
                     android:id="@+id/textview_temperature_unit"
                     style="@style/TextAppearance.Data.Primary.Unit"
-                    android:text="@string/unit_temperature_celsius"
+                    tools:text="@string/unit_temperature_celsius"
                     app:layout_constraintBottom_toBottomOf="@id/textview_temperature"
                     app:layout_constraintStart_toEndOf="@id/textview_temperature"
                     app:layout_constraintTop_toTopOf="@id/textview_temperature"
@@ -219,7 +219,7 @@
                 <TextView
                     android:id="@+id/textview_humidity_unit"
                     style="@style/TextAppearance.Data.Secondary.Unit"
-                    android:text="@string/unit_humidity_percent"
+                    tools:text="@string/unit_humidity_percent"
                     app:layout_constraintBottom_toBottomOf="@id/textview_humidity"
                     app:layout_constraintStart_toEndOf="@id/textview_humidity"
                     app:layout_constraintTop_toTopOf="@id/textview_humidity"
@@ -341,7 +341,7 @@
                 <TextView
                     android:id="@+id/textview_pressure_unit"
                     style="@style/TextAppearance.Data.Secondary.Unit"
-                    android:text="@string/unit_pressure_pascal"
+                    tools:text="@string/unit_pressure_pascal"
                     app:layout_constraintBottom_toBottomOf="@id/textview_pressure"
                     app:layout_constraintStart_toEndOf="@id/textview_pressure"
                     app:layout_constraintTop_toTopOf="@id/textview_pressure"
@@ -405,7 +405,7 @@
                 <TextView
                     android:id="@+id/textview_motion_unit"
                     style="@style/TextAppearance.Data.Secondary.Unit"
-                    android:text="@string/unit_acceleration_ms2"
+                    tools:text="@string/unit_acceleration_ms2"
                     app:layout_constraintBottom_toBottomOf="@id/textview_motion"
                     app:layout_constraintStart_toEndOf="@id/textview_motion"
                     app:layout_constraintTop_toTopOf="@id/textview_motion"

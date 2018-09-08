@@ -28,6 +28,8 @@ public abstract class BaseFragment<P extends BasePresenter> extends DaggerFragme
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         unbinder = ButterKnife.bind(this, view);
+
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -48,6 +50,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends DaggerFragme
 
     @Override
     public void onDestroyView() {
+        if (presenter != null) {
+            presenter.dispose();
+        }
         if (!unbinder.equals(Unbinder.EMPTY)) {
             unbinder.unbind();
             unbinder = Unbinder.EMPTY;

@@ -2,11 +2,15 @@ package com.knobtviker.thermopile.presentation.contracts;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
-import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.data.models.presentation.MeasuredData;
 import com.knobtviker.thermopile.data.models.presentation.ThresholdInterval;
 import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseView;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
 
 import java.util.List;
 
@@ -18,19 +22,37 @@ public interface MainContract {
 
     interface View extends BaseView {
 
-        void onTemperatureChanged(final float value);
+        void onDateChanged(@NonNull final String date);
 
-        void onPressureChanged(final float value);
+        void onZoneAndFormatChanged(
+            @NonNull final String timezone,
+            final boolean is24HourMode,
+            @NonNull @FormatTime final String formatTime
+        );
 
-        void onHumidityChanged(final float value);
+        void onTemperatureUnitChanged(@StringRes final int resId);
 
-        void onAirQualityChanged(final float value);
+        void onPressureUnitChanged(@StringRes final int resId);
 
-        void onAccelerationChanged(final float[] values);
+        void ontHumidityUnitChanged(@StringRes final int resId);
 
-        void onDateChanged();
+        void onMotionUnitChanged(@StringRes final int resId);
 
-        void onSettingsChanged(@NonNull final Settings settings);
+        void onThresholdUnitAndFormatChanged(
+            @UnitTemperature final int unitTemperature,
+            @NonNull @FormatTime final String formatTime,
+            @NonNull @FormatDate String formatDate
+        );
+
+        void onTemperatureChanged(@NonNull final MeasuredData measuredData);
+
+        void onPressureChanged(@NonNull final MeasuredData measuredData);
+
+        void onHumidityChanged(@NonNull final MeasuredData measuredData);
+
+        void onAirQualityChanged(@NonNull final MeasuredData measuredData);
+
+        void onAccelerationChanged(@NonNull final MeasuredData measuredData);
 
         void onThresholdsChanged(@NonNull final List<ThresholdInterval> thresholds);
     }
@@ -39,18 +61,6 @@ public interface MainContract {
 
         void observeDateChanged(@NonNull final Context context);
 
-        void observeTemperature();
-
-        void observePressure();
-
-        void observeHumidity();
-
-        void observeAirQuality();
-
-        void observeAcceleration();
-
-        void settings();
-
-        void thresholds();
+        void observeAtmosphere();
     }
 }
