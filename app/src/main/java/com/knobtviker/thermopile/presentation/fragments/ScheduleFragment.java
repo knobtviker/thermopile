@@ -16,23 +16,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Threshold;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatDate;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
+import com.knobtviker.thermopile.data.models.presentation.ThresholdChip;
 import com.knobtviker.thermopile.presentation.contracts.ScheduleContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
-import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
-import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.viewholders.ThresholdViewHolder;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import javax.inject.Inject;
 
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -49,19 +40,6 @@ import static android.support.constraint.ConstraintSet.TOP;
  */
 
 public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> implements ScheduleContract.View {
-
-    @Inject
-    @DefaultFormatDate
-    @FormatDate
-    String formatDate;
-
-    @Inject
-    @DefaultTemperature
-    @UnitTemperature
-    int unitTemperature;
-
-    @Inject
-    List<Threshold> thresholds;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -90,8 +68,7 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
 
     @Override
     protected void load() {
-        presenter.settings();
-        presenter.thresholds();
+        presenter.load();
     }
 
     @Override
@@ -105,19 +82,61 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
     }
 
     @Override
-    public void onSettingsChanged(@NonNull Settings settings) {
-        formatDate = settings.formatDate;
-        unitTemperature = settings.unitTemperature;
+    public void onThresholds(@NonNull List<ThresholdChip> thresholds) {
+        weekdayLayouts.forEach(ViewGroup::removeAllViewsInLayout);
 
-        setWeekdayNames(formatDate);
-        repopulate();
+        final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+
+        thresholds
+            .forEach(threshold -> {
+                final ConstraintLayout layout = weekdayLayouts.get(threshold.day());
+
+                final View thresholdView = layoutInflater.inflate(R.layout.item_threshold, null);
+
+                final ThresholdViewHolder thresholdViewHolder = ThresholdViewHolder.bind(
+                    thresholdView,
+                    threshold.color(),
+                    threshold.temperature()
+                );
+
+                thresholdView.setId(View.generateViewId());
+
+                thresholdViewHolder.rootLayout.setOnClickListener(v -> {
+                    if (thresholdViewHolder.getState() == ThresholdViewHolder.State.STATE_DEFAULT) {
+                        showThresholdbyId(threshold.id());
+                    } else {
+                        thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_DEFAULT);
+                    }
+                });
+                thresholdViewHolder.buttonRemove.setOnClickListener(v -> presenter.removeThresholdById(threshold.id()));
+                thresholdViewHolder.rootLayout.setOnLongClickListener(v -> {
+                    thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_REMOVE);
+                    return true;
+                });
+                thresholdViewHolder.textViewTemperature.setOnLongClickListener(v -> {
+                    thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_REMOVE);
+                    return true;
+                });
+
+                layout.addView(thresholdView);
+
+                final ConstraintSet set = new ConstraintSet();
+                set.clone(layout);
+                set.constrainWidth(thresholdView.getId(), threshold.width());
+                set.constrainHeight(thresholdView.getId(), ConstraintSet.MATCH_CONSTRAINT);
+                set.connect(thresholdView.getId(), START, ConstraintSet.PARENT_ID, START, threshold.offset());
+                set.connect(thresholdView.getId(), TOP, ConstraintSet.PARENT_ID, TOP, 8);
+                set.connect(thresholdView.getId(), BOTTOM, ConstraintSet.PARENT_ID, BOTTOM, 8);
+                set.applyTo(layout);
+            });
     }
 
     @Override
-    public void onThresholds(@NonNull List<Threshold> thresholds) {
-        this.thresholds = thresholds;
-
-        populate(thresholds);
+    public void setWeekdayNames(boolean isShortName) {
+        final List<String> days = Arrays.asList(getResources().getStringArray(isShortName ? R.array.weekdays_short : R.array.weekdays));
+        IntStream
+            .range(0, 7)
+            .forEach(day -> weekdayTextViews.get(day).setText(days.get(day)));
     }
 
     private void setupToolbar() {
@@ -161,155 +180,12 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                                 final int dY = Math.abs(endY - startY);
 
                                 if (Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)) <= touchSlop) {
-                                    navigateToThreshold(index, startX, weekdayLayouts.get(0).getWidth());
+                                    navigateToCreateThreshold(index, startX, weekdayLayouts.get(0).getWidth());
                                 }
                             }
                             return true;
                         }
                     }));
-    }
-
-    private void populate(@NonNull final List<Threshold> thresholds) {
-        weekdayLayouts.forEach(ViewGroup::removeAllViewsInLayout);
-
-        final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-
-        thresholds
-            .forEach(threshold -> {
-                final ConstraintLayout layout = weekdayLayouts.get(threshold.day);
-
-                final View thresholdView = layoutInflater.inflate(R.layout.item_threshold, null);
-
-                final ThresholdViewHolder thresholdViewHolder = ThresholdViewHolder.bind(
-                    thresholdView,
-                    threshold.color,
-                    buildThresholdTemperature(threshold.temperature)
-                );
-
-                thresholdView.setId(View.generateViewId());
-
-                thresholdViewHolder.rootLayout.setOnClickListener(v -> {
-                    if (thresholdViewHolder.getState() == ThresholdViewHolder.State.STATE_DEFAULT) {
-                        NavHostFragment
-                            .findNavController(this)
-                            .navigate(
-                                ScheduleFragmentDirections
-                                    .showThresholdByIdAction()
-                                    .setThresholdId((int) threshold.id)
-                            );
-                    } else {
-                        thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_DEFAULT);
-                    }
-                });
-                thresholdViewHolder.buttonRemove.setOnClickListener(v -> presenter.removeThresholdById(threshold.id));
-                thresholdViewHolder.rootLayout.setOnLongClickListener(v -> {
-                    thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_REMOVE);
-                    return true;
-                });
-                thresholdViewHolder.textViewTemperature.setOnLongClickListener(v -> {
-                    thresholdViewHolder.setState(ThresholdViewHolder.State.STATE_REMOVE);
-                    return true;
-                });
-
-                layout.addView(thresholdView);
-
-                final ConstraintSet set = new ConstraintSet();
-                set.clone(layout);
-                set.constrainWidth(thresholdView.getId(), Math.round(
-                    DateTimeKit.minutesBetween(
-                        threshold.startHour, threshold.startMinute,
-                        threshold.endHour, threshold.endMinute
-                    ) / 2.0f //TODO: Investigate and remove this magic number.
-                ));
-                set.constrainHeight(thresholdView.getId(), ConstraintSet.MATCH_CONSTRAINT);
-                set.connect(thresholdView.getId(), START, ConstraintSet.PARENT_ID, START,
-                    Math.round(
-                        (threshold.startHour * 60 + threshold.startMinute) / 2.0f)); //TODO: Investigate and remove this magic number.
-                set.connect(thresholdView.getId(), TOP, ConstraintSet.PARENT_ID, TOP, 8);
-                set.connect(thresholdView.getId(), BOTTOM, ConstraintSet.PARENT_ID, BOTTOM, 8);
-
-                set.applyTo(layout);
-            });
-    }
-
-    private void repopulate() {
-        if (!thresholds.isEmpty()) {
-            populate(thresholds);
-        }
-    }
-
-    private void setWeekdayNames(@FormatDate @NonNull final String formatDate) {
-        final List<String> days = Arrays.asList(getResources().getStringArray(R.array.weekdays));
-        final List<String> daysShort = Arrays.asList(getResources().getStringArray(R.array.weekdays_short));
-
-        weekdayTextViews
-            .forEach(textView -> {
-                switch (textView.getId()) {
-                    case R.id.textview_day_monday:
-                        if (formatDate.contains("EEEE")) {
-                            textView.setText(days.get(0));
-                        } else if (formatDate.contains("EE")) {
-                            textView.setText(daysShort.get(0));
-                        } else {
-                            textView.setText(days.get(0));
-                        }
-                        break;
-                    case R.id.textview_day_tuesday:
-                        if (formatDate.contains("EEEE")) {
-                            textView.setText(days.get(1));
-                        } else if (formatDate.contains("EE")) {
-                            textView.setText(daysShort.get(1));
-                        } else {
-                            textView.setText(days.get(1));
-                        }
-                        break;
-                    case R.id.textview_day_wednesday:
-                        if (formatDate.contains("EEEE")) {
-                            textView.setText(days.get(2));
-                        } else if (formatDate.contains("EE")) {
-                            textView.setText(daysShort.get(2));
-                        } else {
-                            textView.setText(days.get(2));
-                        }
-                        break;
-                    case R.id.textview_day_thursday:
-                        if (formatDate.contains("EEEE")) {
-                            textView.setText(days.get(3));
-                        } else if (formatDate.contains("EE")) {
-                            textView.setText(daysShort.get(3));
-                        } else {
-                            textView.setText(days.get(3));
-                        }
-                        break;
-                    case R.id.textview_day_friday:
-                        if (formatDate.contains("EEEE")) {
-                            textView.setText(days.get(4));
-                        } else if (formatDate.contains("EE")) {
-                            textView.setText(daysShort.get(4));
-                        } else {
-                            textView.setText(days.get(4));
-                        }
-                        break;
-                    case R.id.textview_day_saturday:
-                        if (formatDate.contains("EEEE")) {
-                            textView.setText(days.get(5));
-                        } else if (formatDate.contains("EE")) {
-                            textView.setText(daysShort.get(5));
-                        } else {
-                            textView.setText(days.get(5));
-                        }
-                        break;
-                    case R.id.textview_day_sunday:
-                        if (formatDate.contains("EEEE")) {
-                            textView.setText(days.get(6));
-                        } else if (formatDate.contains("EE")) {
-                            textView.setText(daysShort.get(6));
-                        } else {
-                            textView.setText(days.get(6));
-                        }
-                        break;
-                }
-            });
     }
 
     private void add() {
@@ -320,34 +196,14 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
             .setCancelable(true)
             .setSingleChoiceItems(days, -1, (dialogInterface, index) -> {
                 dialogInterface.dismiss();
-                navigateToThreshold(index, 0, weekdayLayouts.get(0).getWidth());
+                navigateToCreateThreshold(index, 0, weekdayLayouts.get(0).getWidth());
             })
             .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
             .create()
             .show();
     }
 
-    private String buildThresholdTemperature(final int value) {
-        String unit;
-        switch (unitTemperature) {
-            case UnitTemperature.CELSIUS:
-                unit = getString(R.string.unit_temperature_celsius);
-                break;
-            case UnitTemperature.FAHRENHEIT:
-                unit = getString(R.string.unit_temperature_fahrenheit);
-                break;
-            case UnitTemperature.KELVIN:
-                unit = getString(R.string.unit_temperature_kelvin);
-                break;
-            default:
-                unit = getString(R.string.unit_temperature_celsius);
-                break;
-        }
-
-        return String.format("%s %s", String.valueOf(MathKit.round(MathKit.applyTemperatureUnit(unitTemperature, value))), unit);
-    }
-
-    private void navigateToThreshold(int day, int startX, int width) {
+    private void navigateToCreateThreshold(int day, int startX, int width) {
         NavHostFragment
             .findNavController(this)
             .navigate(
@@ -356,6 +212,16 @@ public class ScheduleFragment extends BaseFragment<ScheduleContract.Presenter> i
                     .setDay(day)
                     .setStartMinute(startX)
                     .setMaxWidth(width)
+            );
+    }
+
+    private void showThresholdbyId(final long thresholdId) {
+        NavHostFragment
+            .findNavController(this)
+            .navigate(
+                ScheduleFragmentDirections
+                    .showThresholdByIdAction()
+                    .setThresholdId(thresholdId)
             );
     }
 }

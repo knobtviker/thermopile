@@ -16,11 +16,6 @@ import dagger.Provides;
 public class NetworkFragmentModule {
 
     @Provides
-    long provideDefaultSettings() {
-        return -1L;
-    }
-
-    @Provides
     NetworkContract.Presenter providePresenter(
         @NonNull final NetworkContract.View view,
         @NonNull final AtmosphereRepository atmosphereRepository,

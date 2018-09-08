@@ -18,8 +18,6 @@ import com.knobtviker.thermopile.presentation.contracts.NetworkContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.RequestCode;
 
-import javax.inject.Inject;
-
 import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -32,9 +30,6 @@ import timber.log.Timber;
 // .Connect -e ssid {SSID} -e passphrase {PASSPHRASE}` with the appropriate SSID and passphrase.
 public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     implements NetworkContract.View, CompoundButton.OnCheckedChangeListener {
-
-    @Inject
-    long settingsId;
 
     @BindView(R.id.cardview_bluetooth)
     public CardView cardViewBluetooth;
