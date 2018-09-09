@@ -1,16 +1,14 @@
 package com.knobtviker.thermopile.di.modules.presentation.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultScreenSaverTimeout;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTheme;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
 import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.fragments.StyleFragment;
 import com.knobtviker.thermopile.presentation.presenters.StylePresenter;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ScreensaverTimeout;
 import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
@@ -21,23 +19,6 @@ import dagger.Provides;
 
 @Module
 public class StyleFragmentModule {
-
-    @Provides
-    long provideDefaultSettings() {
-        return -1L;
-    }
-
-    @Provides
-    @DefaultTheme
-    int provideDefaultTheme() {
-        return Default.THEME;
-    }
-
-    @Provides
-    @DefaultScreenSaverTimeout
-    int provideDefaultScreenSaverTimeout() {
-        return ScreensaverTimeout._1MIN;
-    }
 
     @Provides
     TimeoutAdapter provideTimeoutAdapter(@NonNull final Context context) {
@@ -58,9 +39,10 @@ public class StyleFragmentModule {
     StyleContract.Presenter providePresenter(
         @NonNull final StyleContract.View view,
         @NonNull final SettingsRepository settingsRepository,
-        @NonNull final Schedulers schedulers
+        @NonNull final Schedulers schedulers,
+        @NonNull final SharedPreferences preferences
     ) {
-        return new StylePresenter(view, settingsRepository, schedulers);
+        return new StylePresenter(view, settingsRepository, schedulers, preferences);
     }
 
     @Provides

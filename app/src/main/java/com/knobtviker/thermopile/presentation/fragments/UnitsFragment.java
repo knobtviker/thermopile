@@ -11,10 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMotion;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultPressure;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
@@ -22,8 +18,6 @@ import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPres
 import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
 
 import java.util.Objects;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -33,24 +27,6 @@ import timber.log.Timber;
  */
 
 public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> implements UnitsContract.View {
-
-    @Inject
-    long settingsId;
-
-    @Inject
-    @DefaultTemperature
-    @UnitTemperature
-    int unitTemperature;
-
-    @Inject
-    @DefaultPressure
-    @UnitPressure
-    int unitPressure;
-
-    @Inject
-    @DefaultMotion
-    @UnitAcceleration
-    int unitAcceleration;
 
     @BindView(R.id.radiogroup_temperature_unit)
     public ChipGroup radioGroupTemperatureUnit;
@@ -124,15 +100,63 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
     }
 
     @Override
-    public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id;
-        this.unitTemperature = settings.unitTemperature;
-        this.unitPressure = settings.unitPressure;
-        this.unitAcceleration = settings.unitMotion;
+    public void onCelsiusChecked() {
+        radioButtonUnitCelsius.setChecked(true);
+        radioGroupTemperatureUnit.setEnabled(true);
+    }
 
-        setUnitTemperature();
-        setUnitPressure();
-        setUnitAcceleration();
+    @Override
+    public void onFahrenheitChecked() {
+        radioButtonUnitFarenheit.setChecked(true);
+        radioGroupTemperatureUnit.setEnabled(true);
+    }
+
+    @Override
+    public void onKelvinChecked() {
+        radioButtonUnitKelvin.setChecked(true);
+        radioGroupTemperatureUnit.setEnabled(true);
+    }
+
+    @Override
+    public void onPascalChecked() {
+        radioButtonUnitPascal.setChecked(true);
+        radioGroupPressureUnit.setEnabled(true);
+    }
+
+    @Override
+    public void onBarChecked() {
+        radioButtonUnitBar.setChecked(true);
+        radioGroupPressureUnit.setEnabled(true);
+    }
+
+    @Override
+    public void onPsiChecked() {
+        radioButtonUnitPsi.setChecked(true);
+        radioGroupPressureUnit.setEnabled(true);
+    }
+
+    @Override
+    public void onMs2Checked() {
+        radioButtonUnitMs2.setChecked(true);
+        radioGroupAccelerationUnit.setEnabled(true);
+    }
+
+    @Override
+    public void onGChecked() {
+        radioButtonUnitG.setChecked(true);
+        radioGroupAccelerationUnit.setEnabled(true);
+    }
+
+    @Override
+    public void onCms2Checked() {
+        radioButtonUnitCms2.setChecked(true);
+        radioGroupAccelerationUnit.setEnabled(true);
+    }
+
+    @Override
+    public void onGalChecked() {
+        radioButtonUnitGal.setChecked(true);
+        radioGroupAccelerationUnit.setEnabled(true);
     }
 
     private void setupGroupTemperatureUnit() {
@@ -154,8 +178,8 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
                     break;
             }
             if (radioGroupTemperatureUnit.isEnabled()) {
-                this.unitTemperature = value;
-                presenter.saveTemperatureUnit(settingsId, value);
+                radioGroupTemperatureUnit.setEnabled(false);
+                presenter.saveTemperatureUnit(value);
             }
         });
     }
@@ -179,8 +203,8 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
                     break;
             }
             if (radioGroupPressureUnit.isEnabled()) {
-                this.unitPressure = value;
-                presenter.savePressureUnit(settingsId, value);
+                radioGroupPressureUnit.setEnabled(false);
+                presenter.savePressureUnit(value);
             }
         });
     }
@@ -207,60 +231,9 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
                     break;
             }
             if (radioGroupAccelerationUnit.isEnabled()) {
-                this.unitAcceleration = value;
-                presenter.saveAccelerationUnit(settingsId, value);
+                radioGroupAccelerationUnit.setEnabled(false);
+                presenter.saveAccelerationUnit(value);
             }
         });
-    }
-
-    private void setUnitTemperature() {
-        switch (unitTemperature) {
-            case UnitTemperature.CELSIUS:
-                radioButtonUnitCelsius.setChecked(true);
-                break;
-            case UnitTemperature.FAHRENHEIT:
-                radioButtonUnitFarenheit.setChecked(true);
-                break;
-            case UnitTemperature.KELVIN:
-                radioButtonUnitKelvin.setChecked(true);
-                break;
-        }
-
-        radioGroupTemperatureUnit.setEnabled(true);
-    }
-
-    private void setUnitPressure() {
-        switch (unitPressure) {
-            case UnitPressure.PASCAL:
-                radioButtonUnitPascal.setChecked(true);
-                break;
-            case UnitPressure.BAR:
-                radioButtonUnitBar.setChecked(true);
-                break;
-            case UnitPressure.PSI:
-                radioButtonUnitPsi.setChecked(true);
-                break;
-        }
-
-        radioGroupPressureUnit.setEnabled(true);
-    }
-
-    private void setUnitAcceleration() {
-        switch (unitAcceleration) {
-            case UnitAcceleration.METERS_PER_SECOND_2:
-                radioButtonUnitMs2.setChecked(true);
-                break;
-            case UnitAcceleration.G:
-                radioButtonUnitG.setChecked(true);
-                break;
-            case UnitAcceleration.CENTIMETERS_PER_SECOND_2:
-                radioButtonUnitCms2.setChecked(true);
-                break;
-            case UnitAcceleration.GAL:
-                radioButtonUnitGal.setChecked(true);
-                break;
-        }
-
-        radioGroupAccelerationUnit.setEnabled(true);
     }
 }

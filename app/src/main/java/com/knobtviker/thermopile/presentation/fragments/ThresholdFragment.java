@@ -15,25 +15,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.data.models.local.Threshold;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultClockMode;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultFormatTime;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultMaxWidth;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTemperature;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultThreshold;
 import com.knobtviker.thermopile.presentation.contracts.ThresholdContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.integrity.MeasuredTemperature;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
 import com.knobtviker.thermopile.presentation.shared.constants.time.Days;
 import com.knobtviker.thermopile.presentation.shared.constants.time.Hours;
 import com.knobtviker.thermopile.presentation.shared.constants.time.Minutes;
 import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
-import com.knobtviker.thermopile.presentation.utils.MathKit;
 import com.knobtviker.thermopile.presentation.views.DiscreteSeekBar;
 import com.knobtviker.thermopile.presentation.views.adapters.ColorAdapter;
 import com.knobtviker.thermopile.presentation.views.dividers.GridItemDecoration;
@@ -59,6 +49,10 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     private TimePickerDialog timePickerDialogEnd;
 
+    private long thresholdId = Default.INVALID_ID;
+
+    private int maxWidth = Default.INVALID_WIDTH;
+
     @Days
     private int day;
 
@@ -76,29 +70,6 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
 
     @Minutes
     private int endTimeMinute;
-
-    @Inject
-    @DefaultThreshold
-    long thresholdId;
-
-    @Inject
-    @DefaultMaxWidth
-    int maxWidth;
-
-    @Inject
-    @DefaultClockMode
-    @ClockMode
-    int formatClock;
-
-    @Inject
-    @DefaultFormatTime
-    @FormatTime
-    String formatTime;
-
-    @Inject
-    @DefaultTemperature
-    @UnitTemperature
-    int unitTemperature;
 
     @Inject
     ColorAdapter colorAdapter;
@@ -142,19 +113,15 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
 
         setupToolbar();
-        setupSeekBar();
-        setupTimePickers();
         setupRecyclerView();
     }
 
     @Override
     protected void load() {
-        presenter.settings();
-
         if (thresholdId != Default.INVALID_ID) {
             presenter.loadById(thresholdId);
         } else if (maxWidth != Default.INVALID_WIDTH) {
-            populate(startMinute, maxWidth);
+            presenter.createNew(day, startMinute, maxWidth);
         }
     }
 
@@ -171,35 +138,85 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
     }
 
     @Override
-    public void onSettingsChanged(@NonNull Settings settings) {
-        this.formatClock = settings.formatClock;
-        this.formatTime = settings.formatTime;
-        this.unitTemperature = settings.unitTemperature;
-
-        setupSeekBar();
-        setupTimePickers();
+    public void updateDialogStartTime(int startHour, int startMinute) {
+        timePickerDialogStart.updateTime(startHour, startMinute);
     }
 
     @Override
-    public void onThreshold(@NonNull Threshold threshold) {
-        populate(threshold);
+    public void onTemperatureUnitChanged(int resId, float minimum, float maximum) {
+        seekBarTemperature.newBuilder()
+            .min(minimum)
+            .max(maximum)
+            .unit(getString(resId))
+            .build();
     }
 
     @Override
-    public void onSaved() {
-        NavHostFragment.findNavController(this).navigateUp();
+    public void onClockAndTimeFormatChanged(boolean is24hMode, @NonNull String formattedTimeNow) {
+        textViewTimeStart.setText(formattedTimeNow);
+        textViewTimeEnd.setText(formattedTimeNow);
+
+        timePickerDialogStart = new TimePickerDialog(
+            requireContext(),
+            this::onStartTimeSet,
+            DateTimeKit.now().getHour(),
+            DateTimeKit.now().getMinute(),
+            is24hMode
+        );
+
+        timePickerDialogEnd = new TimePickerDialog(
+            requireContext(),
+            this::onEndTimeSet,
+            DateTimeKit.now().getHour(),
+            DateTimeKit.now().getMinute(),
+            is24hMode
+        );
+    }
+
+    @Override
+    public void onStartTimeChanged(@NonNull String formattedTime) {
+        textViewTimeStart.setText(formattedTime);
+    }
+
+    @Override
+    public void onEndTimeChanged(@NonNull String formattedTime) {
+        textViewTimeEnd.setText(formattedTime);
     }
 
     @OnClick({R.id.layout_start_time, R.id.layout_end_time})
     public void onClicked(@NonNull final View view) {
         switch (view.getId()) {
             case R.id.layout_start_time:
-                showStartTimePicker();
+                timePickerDialogStart.show();
                 break;
             case R.id.layout_end_time:
-                showEndTimePicker();
+                timePickerDialogEnd.show();
                 break;
         }
+    }
+
+    @Override
+    public void onThreshold(@NonNull Threshold threshold) {
+        this.day = threshold.day;
+        this.startTimeHour = threshold.startHour;
+        this.startTimeMinute = threshold.startMinute;
+        this.endTimeHour = threshold.endHour;
+        this.endTimeMinute = threshold.endMinute;
+
+        seekBarTemperature.setProgress(threshold.temperature);
+        timePickerDialogStart.updateTime(threshold.startHour, threshold.startMinute);
+        timePickerDialogEnd.updateTime(threshold.endHour, threshold.endMinute);
+
+        setStartTime(day + 1, startTimeHour, startTimeMinute);
+
+        setEndTime(day + 1, endTimeHour, endTimeMinute);
+
+        colorAdapter.setSelectedColor(threshold.color);
+    }
+
+    @Override
+    public void onSaved() {
+        NavHostFragment.findNavController(this).navigateUp();
     }
 
     private void setupToolbar() {
@@ -218,63 +235,13 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         });
     }
 
-    private void setupSeekBar() {
-        String unit;
-
-        switch (unitTemperature) {
-            case UnitTemperature.CELSIUS:
-                unit = getString(R.string.unit_temperature_celsius);
-                break;
-            case UnitTemperature.FAHRENHEIT:
-                unit = getString(R.string.unit_temperature_fahrenheit);
-                break;
-            case UnitTemperature.KELVIN:
-                unit = getString(R.string.unit_temperature_kelvin);
-                break;
-            default:
-                unit = getString(R.string.unit_temperature_celsius);
-                break;
-        }
-
-        seekBarTemperature.newBuilder()
-            .min(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MINIMUM))
-            .max(MathKit.applyTemperatureUnit(unitTemperature, MeasuredTemperature.MAXIMUM))
-            .unit(unit)
-            .build();
-    }
-
-    private void setupTimePickers() {
-        textViewTimeStart.setText(
-            DateTimeKit.format(DateTimeKit.now(), formatTime)
-        );
-        textViewTimeEnd.setText(
-            DateTimeKit.format(DateTimeKit.now(), formatTime)
-        );
-
-        timePickerDialogStart = new TimePickerDialog(
-            requireContext(),
-            this::onStartTimeSet,
-            DateTimeKit.now().getHour(),
-            DateTimeKit.now().getMinute(),
-            formatClock == ClockMode._24H
-        );
-
-        timePickerDialogEnd = new TimePickerDialog(
-            requireContext(),
-            this::onEndTimeSet,
-            DateTimeKit.now().getHour(),
-            DateTimeKit.now().getMinute(),
-            formatClock == ClockMode._24H
-        );
-    }
-
     private void setupRecyclerView() {
         final int spanCount = 7;
 
         recyclerViewColors.setHasFixedSize(true);
         recyclerViewColors.setLayoutManager(new GridLayoutManager(requireContext(), spanCount));
         recyclerViewColors.setAdapter(colorAdapter);
-        recyclerViewColors.addItemDecoration(GridItemDecoration.create(getResources().getDimensionPixelSize(R.dimen.margin_small)));
+        recyclerViewColors.addItemDecoration(GridItemDecoration.create(getResources().getDimensionPixelSize(R.dimen.margin_xsmall)));
     }
 
     private void save() {
@@ -290,55 +257,12 @@ public class ThresholdFragment extends BaseFragment<ThresholdContract.Presenter>
         presenter.save(threshold);
     }
 
-    private void populate(@NonNull final Threshold threshold) {
-        this.day = threshold.day;
-        this.startTimeHour = threshold.startHour;
-        this.startTimeMinute = threshold.startMinute;
-        this.endTimeHour = threshold.endHour;
-        this.endTimeMinute = threshold.endMinute;
-
-        seekBarTemperature.setProgress(threshold.temperature);
-        timePickerDialogStart.updateTime(threshold.startHour, threshold.startMinute);
-        timePickerDialogEnd.updateTime(threshold.endHour, threshold.endMinute);
-
-        setStartTime(day + 1, startTimeHour, startTimeMinute);
-
-        setEndTime(day + 1, endTimeHour, endTimeMinute);
-
-        colorAdapter.setSelectedColor(threshold.color);
-    }
-
-    private void populate(final int startMinuteX, final int maxWidth) {
-        final int startMinuteInADay = Math.round(startMinuteX * (1440 / (float) maxWidth));
-
-        final int startHour = startMinuteInADay / 60;
-        final int startMinute = startMinuteInADay - startHour * 60;
-
-        timePickerDialogStart.updateTime(startHour, startMinute);
-
-        setStartTime(day + 1, startHour, startMinute);
-
-        setEndTime(day + 1, startHour, startMinute);
-    }
-
-    private void showStartTimePicker() {
-        timePickerDialogStart.show();
-    }
-
-    private void showEndTimePicker() {
-        timePickerDialogEnd.show();
-    }
-
     private void setStartTime(final int day, final int hour, final int minute) {
-        textViewTimeStart.setText(
-            DateTimeKit.format(day, hour, minute, formatTime)
-        );
+        presenter.setStartTime(day, hour, minute);
     }
 
     private void setEndTime(final int day, final int hour, final int minute) {
-        textViewTimeEnd.setText(
-            DateTimeKit.format(day, hour, minute, formatTime)
-        );
+        presenter.setEndTime(day, hour, minute);
     }
 
     private void onStartTimeSet(@NonNull final TimePicker view, final int hourOfDay, final int minute) {

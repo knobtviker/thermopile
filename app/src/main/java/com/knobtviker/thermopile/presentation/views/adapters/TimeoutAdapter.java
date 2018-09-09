@@ -17,8 +17,13 @@ import java.util.Locale;
 
 public class TimeoutAdapter extends ArrayAdapter<Integer> {
 
+    @NonNull
+    private final List<Integer> items;
+
     public TimeoutAdapter(@NonNull final Context context, @NonNull final List<Integer> items) {
         super(context, R.layout.item_spinner, items);
+
+        this.items = items;
 
         setDropDownViewResource(R.layout.item_spinner);
     }
@@ -65,6 +70,11 @@ public class TimeoutAdapter extends ArrayAdapter<Integer> {
         textView1.setText(buildItemText(item));
 
         return view;
+    }
+
+    @NonNull
+    public List<Integer> getItems() {
+        return items;
     }
 
     private String buildItemText(@NonNull final Integer item) {

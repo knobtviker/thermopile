@@ -1,7 +1,6 @@
 package com.knobtviker.thermopile.presentation.fragments;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.chip.Chip;
@@ -15,14 +14,8 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultScreenSaverTimeout;
-import com.knobtviker.thermopile.di.qualifiers.presentation.defaults.DefaultTheme;
 import com.knobtviker.thermopile.presentation.contracts.StyleContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.Preferences;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.ScreensaverTimeout;
 import com.knobtviker.thermopile.presentation.views.adapters.TimeoutAdapter;
 
 import java.util.Objects;
@@ -38,18 +31,6 @@ import timber.log.Timber;
  */
 
 public class StyleFragment extends BaseFragment<StyleContract.Presenter> implements StyleContract.View {
-
-    @Inject
-    long settingsId;
-
-    @Inject
-    @DefaultTheme
-    int theme;
-
-    @Inject
-    @DefaultScreenSaverTimeout
-    @ScreensaverTimeout
-    int screenSaverTimeout;
 
     @Inject
     TimeoutAdapter spinnerAdapterTimeout;
@@ -85,7 +66,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
     @Override
     protected void load() {
-        presenter.load();
+        presenter.load(spinnerAdapterTimeout.getItems());
     }
 
     @Override
@@ -100,26 +81,14 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         Snackbar.make(Objects.requireNonNull(getView()), throwable.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onLoad(@NonNull Settings settings) {
-        this.theme = PreferenceManager
-            .getDefaultSharedPreferences(requireContext().getApplicationContext())
-            .getInt(Preferences.THEME, Default.THEME);
-        this.settingsId = settings.id;
-        this.screenSaverTimeout = settings.screensaverDelay;
-
-        setTheme();
-        setScreenSaverTimeout();
-    }
-
     @OnItemSelected(value = {R.id.spinner_timeout}, callback = OnItemSelected.Callback.ITEM_SELECTED)
     public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view, final int position, final long id) {
         switch (adapterView.getId()) {
             case R.id.spinner_timeout:
                 if (spinnerTimeout.isEnabled() && spinnerAdapterTimeout != null && spinnerAdapterTimeout.getItem(position) > 0) {
-                    screenSaverTimeout = spinnerAdapterTimeout.getItem(position);
+                    final int screenSaverTimeout = spinnerAdapterTimeout.getItem(position);
                     if (screenSaverTimeout > 0) {
-                        presenter.saveScreensaverTimeout(settingsId, screenSaverTimeout);
+                        presenter.saveScreensaverTimeout(screenSaverTimeout);
                     }
                 }
                 break;
@@ -145,12 +114,7 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
                     break;
             }
             if (radioGroupTheme.isEnabled()) {
-                this.theme = value;
-                PreferenceManager
-                    .getDefaultSharedPreferences(requireContext().getApplicationContext())
-                    .edit()
-                    .putInt(Preferences.THEME, value)
-                    .apply();
+                presenter.saveTheme(value);
                 AppCompatDelegate.setDefaultNightMode(value);
                 requireActivity().recreate();
             }
@@ -159,11 +123,11 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
 
     private void setupSpinnerTimeout() {
         spinnerTimeout.setEnabled(false);
-        spinnerTimeout.setPrompt("Screensaver Timeout");
         spinnerTimeout.setAdapter(spinnerAdapterTimeout);
     }
 
-    private void setTheme() {
+    @Override
+    public void setTheme(int theme) {
         switch (theme) {
             case AppCompatDelegate.MODE_NIGHT_NO:
                 radioButtonLight.setChecked(true);
@@ -179,14 +143,9 @@ public class StyleFragment extends BaseFragment<StyleContract.Presenter> impleme
         radioGroupTheme.setEnabled(true);
     }
 
-    private void setScreenSaverTimeout() {
-        for (int i = 0; i < spinnerAdapterTimeout.getCount(); i++) {
-            if (spinnerAdapterTimeout.getItem(i) == screenSaverTimeout) {
-                spinnerTimeout.setSelection(i);
-                break;
-            }
-        }
-
+    @Override
+    public void setScreenSaverTimeout(int index) {
+        spinnerTimeout.setSelection(index);
         spinnerTimeout.setEnabled(true);
     }
 }

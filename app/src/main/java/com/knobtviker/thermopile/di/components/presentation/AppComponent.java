@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.knobtviker.thermopile.di.modules.data.sources.LocalDataSourceModule;
 import com.knobtviker.thermopile.di.modules.data.sources.RawDataSourceModule;
+import com.knobtviker.thermopile.di.modules.domain.PreferencesModule;
 import com.knobtviker.thermopile.di.modules.domain.RepositoriesModule;
 import com.knobtviker.thermopile.di.modules.domain.SchedulersModule;
 import com.knobtviker.thermopile.di.modules.presentation.ActivitiesModule;
@@ -26,7 +27,8 @@ import dagger.android.support.AndroidSupportInjectionModule;
     SchedulersModule.class,
     RepositoriesModule.class,
     LocalDataSourceModule.class,
-    RawDataSourceModule.class
+    RawDataSourceModule.class,
+    PreferencesModule.class
 })
 public interface AppComponent extends AndroidInjector<ThermopileApplication> {
 

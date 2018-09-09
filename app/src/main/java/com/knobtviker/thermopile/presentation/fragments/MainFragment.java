@@ -170,7 +170,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void onThresholdUnitAndFormatChanged(int unitTemperature, @NonNull String formatTime, @NonNull String formatDate) {
-        thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate);
+//        thresholdAdapter.setUnitAndFormat(unitTemperature, formatTime, formatDate); //TODO: Fix this crash
 
         if (recyclerViewThresholds.getLayoutManager() instanceof LinearLayoutManager) {
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerViewThresholds.getLayoutManager();
@@ -224,7 +224,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
         if (thresholdAdapter.getItemCount() > 0) {
             if (recyclerViewThresholds.getLayoutManager() instanceof LinearLayoutManager) {
                 final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerViewThresholds.getLayoutManager();
-//                textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition()));
+//                textViewDay.setText(thresholdAdapter.getItemDay(linearLayoutManager.findFirstVisibleItemPosition())); //TODO: Fix this crash
             }
         }
     }

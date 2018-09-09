@@ -34,9 +34,15 @@ public class ThresholdAdapter extends RecyclerView.Adapter<ThresholdLineViewHold
     private final List<String> days;
     private final List<String> daysShort;
 
-    private int unitTemperature;
-    private String formatTime;
-    private String formatDate;
+    //TODO: Fix this because this should not be initialised and then overwritten later
+    @UnitTemperature
+    private int unitTemperature = UnitTemperature.CELSIUS;
+
+    @NonNull
+    private String formatTime = FormatTime.HH_MM;
+
+    @NonNull
+    private String formatDate = FormatDate.EEEE_DD_MM_YYYY;
 
     private List<ThresholdInterval> intervals = new ArrayList<>(0);
 
