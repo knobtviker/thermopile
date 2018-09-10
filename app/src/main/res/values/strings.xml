@@ -4,7 +4,6 @@
     <string name="label_schedule">Schedule</string>
     <string name="label_settings">Settings</string>
     <string name="label_locale">Locale</string>
-    <string name="label_formats">Formats</string>
     <string name="label_units">Units</string>
     <string name="label_style">Style</string>
     <string name="label_network">Network</string>
@@ -41,6 +40,11 @@
 
     <string name="state_off">Off</string>
     <string name="state_on">On</string>
+
+    <string name="label_empty"/>
+    <string name="date_format">Date format</string>
+    <string name="timezone">Timezone</string>
+    <string name="time_format">Time format</string>
 
     <string-array name="weekdays">
         <item>@string/day_monday</item>

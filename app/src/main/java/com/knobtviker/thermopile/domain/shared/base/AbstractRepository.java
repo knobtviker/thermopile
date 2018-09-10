@@ -1,6 +1,7 @@
 package com.knobtviker.thermopile.domain.shared.base;
 
-import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulersComponent;
+import android.support.annotation.NonNull;
+
 import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 
 /**
@@ -9,9 +10,10 @@ import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 
 public abstract class AbstractRepository {
 
-    protected final Schedulers schedulers;
+    @NonNull
+    protected Schedulers schedulers;
 
-    protected AbstractRepository() {
-        this.schedulers = DaggerSchedulersComponent.create().inject();
+    protected AbstractRepository(@NonNull final Schedulers schedulers) {
+        this.schedulers = schedulers;
     }
 }

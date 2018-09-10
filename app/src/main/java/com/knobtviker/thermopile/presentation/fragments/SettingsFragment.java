@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
+import com.knobtviker.thermopile.presentation.contracts.SettingsContract;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 
 import java.util.Objects;
@@ -25,16 +26,13 @@ import timber.log.Timber;
  * Created by bojan on 15/06/2017.
  */
 
-public class SettingsFragment extends BaseFragment {
+public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> implements SettingsContract.View {
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
     @BindView(R.id.bottom_navigation_view)
     public BottomNavigationView bottomNavigationView;
-
-    public SettingsFragment() {
-    }
 
     @Nullable
     @Override
@@ -48,6 +46,11 @@ public class SettingsFragment extends BaseFragment {
 
         setupToolbar();
         setupBottomNavigationView();
+    }
+
+    @Override
+    protected void load() {
+        // no-op
     }
 
     @Override

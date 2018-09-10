@@ -14,21 +14,17 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.knobtviker.thermopile.R;
-import com.knobtviker.thermopile.data.models.local.Settings;
+import com.knobtviker.thermopile.di.qualifiers.presentation.adapters.FormatDateAdapter;
+import com.knobtviker.thermopile.di.qualifiers.presentation.adapters.FormatTimeAdapter;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
-import com.knobtviker.thermopile.presentation.presenters.LocalePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
-import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
 import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
-import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
-import com.knobtviker.thermopile.presentation.utils.DateTimeKit;
 import com.knobtviker.thermopile.presentation.views.adapters.FormatAdapter;
 import com.knobtviker.thermopile.presentation.views.adapters.TimezoneAdapter;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnItemSelected;
@@ -39,27 +35,17 @@ import timber.log.Timber;
  */
 
 public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> implements LocaleContract.View {
-    public static final String TAG = LocaleFragment.class.getSimpleName();
 
-    private long settingsId = -1L;
+    @Inject
+    TimezoneAdapter spinnerAdapterTimezones;
 
-    @NonNull
-    private String timezone = Default.TIMEZONE;
+    @Inject
+    @FormatDateAdapter
+    FormatAdapter spinnerAdapterDate;
 
-    @ClockMode
-    private int clockMode = ClockMode._24H;
-
-    @FormatDate
-    private String formatDate = FormatDate.EEEE_DD_MM_YYYY;
-
-    @FormatTime
-    private String formatTime = FormatTime.HH_MM;
-
-    @Nullable
-    private TimezoneAdapter spinnerAdapter;
-
-    private FormatAdapter spinnerAdapterDate;
-    private FormatAdapter spinnerAdapterTime;
+    @Inject
+    @FormatTimeAdapter
+    FormatAdapter spinnerAdapterTime;
 
     @BindView(R.id.spinner_timezone)
     public Spinner spinnerTimezone;
@@ -93,10 +79,15 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
         setupGroupClockMode();
         setupSpinnerDate();
         setupSpinnerTime();
+    }
 
-        presenter = new LocalePresenter(this);
-
-        presenter.load();
+    @Override
+    protected void load() {
+        presenter.load(
+            spinnerAdapterTimezones.getItems(),
+            spinnerAdapterDate.getItems(),
+            spinnerAdapterTime.getItems()
+        );
     }
 
     @Override
@@ -112,46 +103,51 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     }
 
     @Override
-    public void onLoad(@NonNull Settings settings) {
-        this.settingsId = settings.id;
-        this.timezone = settings.timezone;
-        this.clockMode = settings.formatClock;
-        this.formatDate = settings.formatDate;
-        this.formatTime = settings.formatTime;
+    public void setTimezone(int index) {
+        spinnerTimezone.setSelection(index);
+        spinnerTimezone.setEnabled(true);
+    }
 
-        setTimezone();
-        setClockMode();
-        setFormatDate();
-        setFormatTime();
+    @Override
+    public void button12hChecked() {
+        radioButton12h.setChecked(true);
+        radioGroupClockMode.setEnabled(true);
+    }
+
+    @Override
+    public void button24hChecked() {
+        radioButton24h.setChecked(true);
+        radioGroupClockMode.setEnabled(true);
+    }
+
+    @Override
+    public void setDateFormat(int index) {
+        spinnerFormatDate.setSelection(index);
+        spinnerFormatDate.setEnabled(true);
+    }
+
+    @Override
+    public void setTimeFormat(int index) {
+        spinnerFormatTime.setSelection(index);
+        spinnerFormatTime.setEnabled(true);
     }
 
     @OnItemSelected(value = {R.id.spinner_timezone}, callback = OnItemSelected.Callback.ITEM_SELECTED)
     public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view, final int position, final long id) {
         switch (adapterView.getId()) {
             case R.id.spinner_timezone:
-                if (spinnerAdapter != null) {
-                    if (spinnerTimezone.isEnabled() && !TextUtils.isEmpty(spinnerAdapter.getItem(position))) {
-                        timezone = spinnerAdapter.getItem(position);
-                        presenter.saveTimezone(settingsId, timezone);
-                    }
+                if (spinnerTimezone.isEnabled() && !TextUtils.isEmpty(spinnerAdapterTimezones.getItem(position))) {
+                    presenter.saveTimezone(spinnerAdapterTimezones.getItem(position));
                 }
                 break;
             case R.id.spinner_date_format:
-                if (spinnerFormatDate.isEnabled()
-                    && spinnerAdapterDate != null
-                    && !TextUtils.isEmpty(spinnerAdapterDate.getItem(position))) {
-                    formatDate = spinnerAdapterDate.getItem(position);
-                    if (!TextUtils.isEmpty(formatDate)) {
-                        presenter.saveFormatDate(settingsId, formatDate);
-                    }
+                if (spinnerFormatDate.isEnabled() && !TextUtils.isEmpty(spinnerAdapterDate.getItem(position))) {
+                    presenter.saveFormatDate(spinnerAdapterDate.getItem(position));
                 }
                 break;
             case R.id.spinner_time_format:
-                if (spinnerFormatTime.isEnabled()
-                    && spinnerAdapterTime != null
-                    && !TextUtils.isEmpty(spinnerAdapterTime.getItem(position))) {
-                    formatTime = spinnerAdapterTime.getItem(position);
-                    presenter.saveFormatTime(settingsId, formatTime);
+                if (spinnerFormatTime.isEnabled() && !TextUtils.isEmpty(spinnerAdapterTime.getItem(position))) {
+                    presenter.saveFormatTime(spinnerAdapterTime.getItem(position));
                 }
                 break;
         }
@@ -159,10 +155,7 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
     private void setupSpinnerTimezone() {
         spinnerTimezone.setEnabled(false);
-        spinnerTimezone.setPrompt("Timezone");
-
-        spinnerAdapter = new TimezoneAdapter(requireContext(), DateTimeKit.zones());
-        spinnerTimezone.setAdapter(spinnerAdapter);
+        spinnerTimezone.setAdapter(spinnerAdapterTimezones);
     }
 
     private void setupGroupClockMode() {
@@ -181,89 +174,18 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
                     break;
             }
             if (radioGroupClockMode.isEnabled()) {
-                this.clockMode = value;
-                presenter.saveClockMode(settingsId, value);
+                presenter.saveClockMode(value);
             }
         });
     }
 
     private void setupSpinnerDate() {
         spinnerFormatDate.setEnabled(false);
-        spinnerFormatDate.setPrompt("Date format");
-
-        final List<String> formats = Arrays.asList(
-            FormatDate.EEEE_DD_MM_YYYY,
-            FormatDate.EE_DD_MM_YYYY,
-            FormatDate.DD_MM_YYYY,
-            FormatDate.EEEE_MM_DD_YYYY,
-            FormatDate.EE_MM_DD_YYYY,
-            FormatDate.MM_DD_YYYY
-        );
-        spinnerAdapterDate = new FormatAdapter(spinnerFormatDate.getContext(), formats);
         spinnerFormatDate.setAdapter(spinnerAdapterDate);
     }
 
     private void setupSpinnerTime() {
         spinnerFormatTime.setEnabled(false);
-        spinnerFormatTime.setPrompt("Time format");
-
-        final List<String> formats = Arrays.asList(
-            FormatTime.HH_MM,
-            FormatTime.H_M,
-            FormatTime.KK_MM_A,
-            FormatTime.K_M_A
-        );
-
-        spinnerAdapterTime = new FormatAdapter(requireContext(), formats);
         spinnerFormatTime.setAdapter(spinnerAdapterTime);
-    }
-
-    private void setTimezone() {
-        if (spinnerAdapter != null) {
-            for (int i = 0; i<spinnerAdapter.getCount(); i++) {
-                if (spinnerAdapter.getItem(i).equalsIgnoreCase(timezone)) {
-                    spinnerTimezone.setSelection(i);
-                    break;
-                }
-            }
-        }
-
-        spinnerTimezone.setEnabled(true);
-    }
-
-    private void setClockMode() {
-        switch (clockMode) {
-            case ClockMode._12H:
-                radioButton12h.setChecked(true);
-                break;
-            case ClockMode._24H:
-                radioButton24h.setChecked(true);
-                break;
-        }
-
-        radioGroupClockMode.setEnabled(true);
-    }
-
-
-    private void setFormatDate() {
-        for (int i = 0; i < spinnerAdapterDate.getCount(); i++) {
-            if (spinnerAdapterDate.getItem(i).equalsIgnoreCase(formatDate)) {
-                spinnerFormatDate.setSelection(i);
-                break;
-            }
-        }
-
-        spinnerFormatDate.setEnabled(true);
-    }
-
-    private void setFormatTime() {
-        for (int i = 0; i < spinnerAdapterTime.getCount(); i++) {
-            if (spinnerAdapterTime.getItem(i).equalsIgnoreCase(formatTime)) {
-                spinnerFormatTime.setSelection(i);
-                break;
-            }
-        }
-
-        spinnerFormatTime.setEnabled(true);
     }
 }

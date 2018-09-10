@@ -14,6 +14,7 @@ import com.google.android.things.bluetooth.BluetoothConfigManager;
 import com.google.android.things.bluetooth.BluetoothProfile;
 import com.knobtviker.thermopile.data.sources.raw.bluetooth.BluetoothRawDataSource;
 import com.knobtviker.thermopile.data.sources.raw.network.WifiRawDataSource;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.domain.shared.base.AbstractRepository;
 import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
 
@@ -37,14 +38,21 @@ import timber.log.Timber;
 
 public class NetworkRepository extends AbstractRepository {
 
-    @Inject
-    BluetoothRawDataSource bluetoothRawDataSource;
+    @NonNull
+    private final BluetoothRawDataSource bluetoothRawDataSource;
+
+    @NonNull
+    private final WifiRawDataSource wifiRawDataSource;
 
     @Inject
-    WifiRawDataSource wifiRawDataSource;
-
-    @Inject
-    NetworkRepository() {
+    public NetworkRepository(
+        @NonNull final BluetoothRawDataSource bluetoothRawDataSource,
+        @NonNull final WifiRawDataSource wifiRawDataSource,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(schedulers);
+        this.bluetoothRawDataSource = bluetoothRawDataSource;
+        this.wifiRawDataSource = wifiRawDataSource;
     }
 
     public Observable<Boolean> hasBluetooth() {
@@ -71,29 +79,29 @@ public class NetworkRepository extends AbstractRepository {
     public Completable enableBluetooth() {
         return bluetoothRawDataSource
             .enable()
-            .subscribeOn(schedulers.network)
+            .subscribeOn(schedulers.trampoline)
             .observeOn(schedulers.ui);
     }
 
     public Completable disableBluetooth() {
         return bluetoothRawDataSource
             .disable()
-            .subscribeOn(schedulers.network)
+            .subscribeOn(schedulers.trampoline)
             .observeOn(schedulers.ui);
     }
 
     public Observable<Integer> observeBluetoothState() {
         return bluetoothRawDataSource
             .state()
-            .subscribeOn(schedulers.network)
+            .subscribeOn(schedulers.io)
             .observeOn(schedulers.ui);
     }
 
     public Completable name(@StringRes final int resId) {
         return bluetoothRawDataSource
             .name(resId)
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Completable deviceClass() {
@@ -103,15 +111,15 @@ public class NetworkRepository extends AbstractRepository {
                 BluetoothClass.Device.COMPUTER_SERVER,
                 BluetoothConfigManager.IO_CAPABILITY_OUT
             )
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Completable profiles() {
         return bluetoothRawDataSource
             .setProfiles(Arrays.asList(BluetoothProfile.GATT, BluetoothProfile.GATT_SERVER))
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Completable setupBluetoothDevice(@StringRes final int resId) {
@@ -127,29 +135,29 @@ public class NetworkRepository extends AbstractRepository {
     public Completable startGattServer(@NonNull final BluetoothGattServerCallback bluetoothGattServerCallback) {
         return bluetoothRawDataSource
             .startGattServer(bluetoothGattServerCallback)
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Completable stopGattServer() {
         return bluetoothRawDataSource
             .stopGattServer()
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Completable startBluetoothAdvertising() {
         return bluetoothRawDataSource
             .startAdvertising()
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Completable stopBluetoothAdvertising() {
         return bluetoothRawDataSource
             .stopGattServer()
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public void enableDiscoverability(Activity activity, int requestCode) {
@@ -166,8 +174,8 @@ public class NetworkRepository extends AbstractRepository {
     public Completable setupWifiDevice() {
         return wifiRawDataSource
             .setup()
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Observable<Boolean> isWifiEnabled() {
@@ -184,7 +192,7 @@ public class NetworkRepository extends AbstractRepository {
                 final String ip = extractIP(wifiInfo);
                 return Pair.create(ssid, ip);
             })
-            .subscribeOn(schedulers.network)
+            .subscribeOn(schedulers.computation)
             .observeOn(schedulers.ui);
     }
 
@@ -207,29 +215,29 @@ public class NetworkRepository extends AbstractRepository {
     public Completable enableWifi() {
         return wifiRawDataSource
             .enable()
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Completable disableWifi() {
         return wifiRawDataSource
             .disable()
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.trampoline)
+            .observeOn(schedulers.trampoline);
     }
 
     public Completable scanWifi() {
         return Observable
             .interval(0,30, TimeUnit.SECONDS, schedulers.network)
             .flatMapCompletable(tick -> wifiRawDataSource.scan())
-            .subscribeOn(schedulers.network)
-            .observeOn(schedulers.network);
+            .subscribeOn(schedulers.computation)
+            .observeOn(schedulers.computation);
     }
 
     public Observable<List<ScanResult>> observeScanResults() {
         return wifiRawDataSource
             .scanResults()
-            .subscribeOn(schedulers.network)
+            .subscribeOn(schedulers.io)
             .observeOn(schedulers.ui);
     }
 

@@ -6,7 +6,7 @@ package com.knobtviker.thermopile.presentation.shared.base;
 
 import android.support.annotation.NonNull;
 
-public interface BasePresenter<V extends BaseView> {
+public interface BasePresenter {
 
     void dispose();
 

@@ -2,22 +2,28 @@ package com.knobtviker.thermopile.presentation.shared.base;
 
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
+
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by bojan on 12/12/2017.
  */
 
-public abstract class AbstractPresenter implements BasePresenter {
+public abstract class AbstractPresenter<V extends BaseView> implements BasePresenter {
 
     @NonNull
-    private final BaseView view;
+    protected V view;
+
+    @NonNull
+    protected Schedulers schedulers;
 
     @NonNull
     protected final CompositeDisposable compositeDisposable;
 
-    protected AbstractPresenter(@NonNull final BaseView view) {
+    protected AbstractPresenter(@NonNull final V view, @NonNull final Schedulers schedulers) {
         this.view = view;
+        this.schedulers = schedulers;
         this.compositeDisposable = new CompositeDisposable();
     }
 

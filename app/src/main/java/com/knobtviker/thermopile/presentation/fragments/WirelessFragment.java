@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.knobtviker.thermopile.R;
 import com.knobtviker.thermopile.presentation.contracts.WirelessContract;
-import com.knobtviker.thermopile.presentation.presenters.WirelessPresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseFragment;
 import com.knobtviker.thermopile.presentation.shared.constants.network.WiFiType;
 import com.knobtviker.thermopile.presentation.views.adapters.WirelessAdapter;
@@ -33,16 +32,12 @@ import timber.log.Timber;
 
 public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> implements WirelessContract.View, WirelessSelectListener {
 
-    public static String TAG = WirelessFragment.class.getSimpleName();
-
-    @BindView(R.id.recyclerview_networks)
-    public RecyclerView recyclerViewNetworks;
-
+    //TODO: Inject this with listener
     @NonNull
     private WirelessAdapter adapter;
 
-    public WirelessFragment() {
-    }
+    @BindView(R.id.recyclerview_networks)
+    public RecyclerView recyclerViewNetworks;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,9 +49,10 @@ public class WirelessFragment extends BaseFragment<WirelessContract.Presenter> i
         super.onViewCreated(view, savedInstanceState);
 
         setupRecyclerView();
+    }
 
-        presenter = new WirelessPresenter(requireContext(), this);
-
+    @Override
+    protected void load() {
         presenter.hasWifi();
     }
 

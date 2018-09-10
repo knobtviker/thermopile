@@ -3,20 +3,17 @@ package com.knobtviker.thermopile.presentation.presenters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerAtmosphereRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.components.domain.schedulers.DaggerSchedulersComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.AtmosphereLocalDataSourceModule;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
 import com.knobtviker.thermopile.domain.repositories.AtmosphereRepository;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import io.reactivex.Completable;
-import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.internal.functions.Functions;
 
@@ -24,32 +21,31 @@ import io.reactivex.internal.functions.Functions;
  * Created by bojan on 08/08/2017.
  */
 
-public class ApplicationPresenter extends AbstractPresenter implements ApplicationContract.Presenter {
+public class ApplicationPresenter extends AbstractPresenter<ApplicationContract.View> implements ApplicationContract.Presenter {
 
-    private final ApplicationContract.View view;
+    private long lastBootTimestamp = 0L;
 
+    private long bootCount = 1L;
+
+    @NonNull
     private final AtmosphereRepository atmosphereRepository;
 
+    @NonNull
     private final SettingsRepository settingsRepository;
-
-    private final Scheduler scheduler;
 
     @Nullable
     private Disposable screensaverDisposable;
 
-    public ApplicationPresenter(@NonNull final ApplicationContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.atmosphereRepository = DaggerAtmosphereRepositoryComponent.builder()
-            .localDataSource(new AtmosphereLocalDataSourceModule())
-            .build()
-            .inject();
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
-        this.scheduler = DaggerSchedulersComponent.create().inject().screensaver;
+    @Inject
+    public ApplicationPresenter(
+        @NonNull final ApplicationContract.View view,
+        @NonNull final AtmosphereRepository atmosphereRepository,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(view, schedulers);
+        this.atmosphereRepository = atmosphereRepository;
+        this.settingsRepository = settingsRepository;
     }
 
     @Override
@@ -57,8 +53,8 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
         screensaverDisposable = settingsRepository
             .load()
             .map(settings -> settings.screensaverDelay)
-            .flatMapCompletable(delay -> Completable.timer(delay, TimeUnit.SECONDS, scheduler))
-            .observeOn(scheduler)
+            .flatMapCompletable(delay -> Completable.timer(delay, TimeUnit.SECONDS, schedulers.screensaver))
+            .observeOn(schedulers.screensaver)
             .subscribe(
                 view::showScreensaver,
                 this::error
@@ -169,5 +165,25 @@ public class ApplicationPresenter extends AbstractPresenter implements Applicati
                     this::error
                 )
         );
+    }
+
+    @Override
+    public void setLastBootTimestamp(long value) {
+        this.lastBootTimestamp = value;
+    }
+
+    @Override
+    public void setBootCount(long value) {
+        this.bootCount = value;
+    }
+
+    @Override
+    public long lastBootTimestamp() {
+        return lastBootTimestamp;
+    }
+
+    @Override
+    public long bootCount() {
+        return bootCount;
     }
 }

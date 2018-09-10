@@ -1,14 +1,27 @@
 package com.knobtviker.thermopile.presentation;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.support.annotation.NonNull;
 
+import com.knobtviker.thermopile.di.components.presentation.DaggerAppComponent;
+import com.knobtviker.thermopile.di.modules.presentation.ApplicationModule;
+import com.knobtviker.thermopile.di.qualifiers.presentation.messengers.ForegroundMessenger;
 import com.knobtviker.thermopile.presentation.contracts.ApplicationContract;
-import com.knobtviker.thermopile.presentation.presenters.ApplicationPresenter;
-import com.knobtviker.thermopile.presentation.shared.base.AbstractApplication;
 import com.knobtviker.thermopile.presentation.utils.Router;
+import com.knobtviker.thermopile.presentation.utils.factories.ServiceFactory;
+import com.knobtviker.thermopile.presentation.views.communicators.IncomingCommunicator;
+import com.knobtviker.thermopile.shared.MessageFactory;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
+import io.objectbox.BoxStore;
 import timber.log.Timber;
 
 /**
@@ -16,17 +29,151 @@ import timber.log.Timber;
  */
 
 // /data/data/com.knobtviker.thermopile
-public class ThermopileApplication extends AbstractApplication<ApplicationContract.Presenter> implements ApplicationContract.View {
+public class ThermopileApplication extends DaggerApplication implements ApplicationContract.View, ServiceConnection, IncomingCommunicator {
 
-    private static long lastBootTimestamp = 0L;
+    @Inject
+    @ForegroundMessenger
+    Messenger foregroundMessenger;
 
-    private static long bootCount = 1L;
+    //TODO: Find a way to inject 2 Messengers
+    //    @Inject
+    //    @DriversMessenger
+    Messenger serviceMessengerSensors;
+
+    //    @Inject
+    //    @FramMessenger
+    Messenger serviceMessengerFram;
+
+    @Inject
+    BoxStore database;
+
+    @Inject
+    ApplicationContract.Presenter presenter;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        initPresenter();
+        services();
+
+        createScreensaver();
+    }
+
+    @Override
+    protected AndroidInjector<ThermopileApplication> applicationInjector() {
+        return DaggerAppComponent.builder()
+            .applicationModule(new ApplicationModule(this))
+            .build();
+    }
+
+    @Override
+    public void onLowMemory() {
+        if (!database.isClosed()) {
+            database.close();
+        }
+
+        database.deleteAllFiles();
+
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        Timber.i("onServiceConnected %s", name.flattenToString());
+
+        if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameDrivers(this))) { // Driver service connected
+            serviceMessengerSensors = new Messenger(service);
+            MessageFactory.registerToBackground(foregroundMessenger, serviceMessengerSensors);
+        } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service connected
+            serviceMessengerFram = new Messenger(service);
+            MessageFactory.registerToBackground(foregroundMessenger, serviceMessengerFram);
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        Timber.i("onServiceDisconnected %s", name.flattenToString());
+
+        if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameDrivers(this))) { // Driver service disconnected
+            serviceMessengerSensors = null;
+        } else if (name.getPackageName().equalsIgnoreCase(ServiceFactory.packageNameFram(this))) { // FRAM service disconnected
+            serviceMessengerFram = null;
+        }
+    }
+
+    @Override
+    public void onBindingDied(ComponentName name) {
+        //        Timber.i("onBindingDied %s", name.flattenToString());
+        //        serviceMessengerSensors = null;
+        //
+        //        services();
+    }
+
+    @Override
+    public void saveTemperature(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.saveTemperature(vendor, name, value);
+    }
+
+    @Override
+    public void savePressure(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.savePressure(vendor, name, value);
+    }
+
+    @Override
+    public void saveHumidity(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.saveHumidity(vendor, name, value);
+    }
+
+    @Override
+    public void saveAirQuality(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.saveAirQuality(vendor, name, value);
+    }
+
+    @Override
+    public void saveLuminosity(@NonNull String vendor, @NonNull String name, float value) {
+        presenter.saveLuminosity(vendor, name, value);
+    }
+
+    @Override
+    public void saveAcceleration(@NonNull String vendor, @NonNull String name, float[] values) {
+        presenter.saveAcceleration(vendor, name, values);
+    }
+
+    @Override
+    public void saveAngularVelocity(@NonNull String vendor, @NonNull String name, float[] values) {
+        presenter.saveAngularVelocity(vendor, name, values);
+    }
+
+    @Override
+    public void saveMagneticField(@NonNull String vendor, @NonNull String name, float[] values) {
+        presenter.saveMagneticField(vendor, name, values);
+    }
+
+    @Override
+    public void setLastBootTimestamp(long value) {
+        presenter.setLastBootTimestamp(value);
+    }
+
+    @Override
+    public void setBootCount(long value) {
+        presenter.setBootCount(value);
+    }
+
+    public void refresh() {
+        if (foregroundMessenger != null && serviceMessengerSensors != null) {
+            MessageFactory.currentFromBackground(foregroundMessenger, serviceMessengerSensors);
+        }
+    }
+
+    public void reset() {
+        if (foregroundMessenger != null && serviceMessengerFram != null) {
+            MessageFactory.resetToBackground(foregroundMessenger, serviceMessengerFram);
+        }
+    }
+
+    private void services() {
+        bindService(ServiceFactory.drivers(this), this, BIND_AUTO_CREATE);
+        bindService(ServiceFactory.fram(this), this, BIND_AUTO_CREATE);
     }
 
     @Override
@@ -44,62 +191,12 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
         Router.showScreensaver(this);
     }
 
-    @Override
-    public void onNewTemperature(@NonNull String vendor, @NonNull String name, float value) {
-        presenter.saveTemperature(vendor, name, value);
+    public long lastBootTimestamp() {
+        return presenter.lastBootTimestamp();
     }
 
-    @Override
-    public void onNewPressure(@NonNull String vendor, @NonNull String name, float value) {
-        presenter.savePressure(vendor, name, value);
-    }
-
-    @Override
-    public void onNewHumidity(@NonNull String vendor, @NonNull String name, float value) {
-        presenter.saveHumidity(vendor, name, value);
-    }
-
-    @Override
-    public void onNewAirQuality(@NonNull String vendor, @NonNull String name, float value) {
-        presenter.saveAirQuality(vendor, name, value);
-    }
-
-    @Override
-    public void onNewLuminosity(@NonNull String vendor, @NonNull String name, float value) {
-        presenter.saveLuminosity(vendor, name, value);
-    }
-
-    @Override
-    public void onNewAcceleration(@NonNull String vendor, @NonNull String name, float[] values) {
-        presenter.saveAcceleration(vendor, name, values);
-    }
-
-    @Override
-    public void onNewAngularVelocity(@NonNull String vendor, @NonNull String name, float[] values) {
-        presenter.saveAngularVelocity(vendor, name, values);
-    }
-
-    @Override
-    public void onNewMagneticField(@NonNull String vendor, @NonNull String name, float[] values) {
-        presenter.saveMagneticField(vendor, name, values);
-    }
-
-    @Override
-    public void onLastBootTimestamp(long value) {
-        lastBootTimestamp = value;
-    }
-
-    @Override
-    public void onBootCount(long value) {
-        bootCount = value;
-    }
-
-    public static long lastBootTimestamp() {
-        return lastBootTimestamp;
-    }
-
-    public static long bootCount() {
-        return bootCount;
+    public long bootCount() {
+        return presenter.bootCount();
     }
 
     public void createScreensaver() {
@@ -108,11 +205,6 @@ public class ThermopileApplication extends AbstractApplication<ApplicationContra
 
     public void destroyScreensaver() {
         presenter.destroyScreensaver();
-    }
-
-    private void initPresenter() {
-        presenter = new ApplicationPresenter(this);
-        presenter.createScreensaver();
     }
 
     private boolean isThingsDevice(@NonNull final Context context) {

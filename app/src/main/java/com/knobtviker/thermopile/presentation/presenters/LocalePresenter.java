@@ -2,101 +2,169 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.LocaleContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.shared.constants.integrity.Default;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.ClockMode;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatDate;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.FormatTime;
 
-import io.reactivex.internal.functions.Functions;
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by bojan on 15/07/2017.
  */
 
-public class LocalePresenter extends AbstractPresenter implements LocaleContract.Presenter {
+public class LocalePresenter extends AbstractPresenter<LocaleContract.View> implements LocaleContract.Presenter {
 
-    private final LocaleContract.View view;
+    private long settingsId = -1L;
 
+    @NonNull
+    private String timezone = Default.TIMEZONE;
+
+    @ClockMode
+    private int clockMode = ClockMode._24H;
+
+    @NonNull
+    @FormatDate
+    private String formatDate = FormatDate.EEEE_DD_MM_YYYY;
+
+    @NonNull
+    @FormatTime
+    private String formatTime = FormatTime.HH_MM;
+
+    @NonNull
     private final SettingsRepository settingsRepository;
 
-    public LocalePresenter(@NonNull final LocaleContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public LocalePresenter(
+        @NonNull final LocaleContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(view, schedulers);
+        this.settingsRepository = settingsRepository;
     }
 
     @Override
-    public void load() {
+    public void load(
+        @NonNull List<String> timezones,
+        @NonNull List<String> dateFormats,
+        @NonNull List<String> timeFormats
+    ) {
         compositeDisposable.add(
             settingsRepository
                 .load()
                 .doOnSubscribe(consumer -> subscribed())
                 .doOnTerminate(this::terminated)
                 .subscribe(
-                    view::onLoad,
+                    settings -> this.onLoaded(settings, timezones, dateFormats, timeFormats),
                     this::error
                 )
         );
     }
 
     @Override
-    public void saveTimezone(long settingsId, @NonNull String timezone) {
+    public void saveTimezone(@NonNull String item) {
         compositeDisposable.add(
             settingsRepository
                 .saveTimezone(settingsId, timezone)
                 .doOnSubscribe(consumer -> subscribed())
                 .doOnTerminate(this::terminated)
                 .subscribe(
-                    Functions.EMPTY_ACTION,
+                    () -> timezone = item,
                     this::error
                 )
         );
     }
 
     @Override
-    public void saveClockMode(long settingsId, int clockMode) {
+    public void saveClockMode(@ClockMode int item) {
         compositeDisposable.add(
             settingsRepository
-                .saveClockMode(settingsId, clockMode)
+                .saveClockMode(settingsId, item)
                 .doOnSubscribe(consumer -> subscribed())
                 .doOnTerminate(this::terminated)
                 .subscribe(
-                    Functions.EMPTY_ACTION,
+                    () -> clockMode = item,
                     this::error
                 )
         );
     }
 
     @Override
-    public void saveFormatDate(long settingsId, @NonNull String item) {
+    public void saveFormatDate(@NonNull @FormatDate String item) {
         compositeDisposable.add(
             settingsRepository
                 .saveFormatDate(settingsId, item)
                 .doOnSubscribe(consumer -> subscribed())
                 .doOnTerminate(this::terminated)
                 .subscribe(
-                    Functions.EMPTY_ACTION,
+                    () -> formatDate = item,
                     this::error
                 )
         );
     }
 
     @Override
-    public void saveFormatTime(long settingsId, @NonNull String item) {
+    public void saveFormatTime(@NonNull @FormatTime String item) {
         compositeDisposable.add(
             settingsRepository
                 .saveFormatTime(settingsId, item)
                 .doOnSubscribe(consumer -> subscribed())
                 .doOnTerminate(this::terminated)
                 .subscribe(
-                    Functions.EMPTY_ACTION,
+                    () -> formatTime = item,
                     this::error
                 )
         );
+    }
+
+    private void onLoaded(
+        @NonNull final Settings settings,
+        @NonNull final List<String> timezones,
+        @NonNull final List<String> dateFormats,
+        @NonNull final List<String> timeFormats
+    ) {
+        this.settingsId = settings.id;
+        this.timezone = settings.timezone;
+        this.clockMode = settings.formatClock;
+        this.formatDate = settings.formatDate;
+        this.formatTime = settings.formatTime;
+
+        for (int i = 0; i < timezones.size(); i++) {
+            if (timezones.get(i).equalsIgnoreCase(timezone)) {
+                view.setTimezone(i);
+                break;
+            }
+        }
+
+        switch (clockMode) {
+            case ClockMode._12H:
+                view.button12hChecked();
+                break;
+            case ClockMode._24H:
+                view.button24hChecked();
+                break;
+        }
+
+        for (int i = 0; i < dateFormats.size(); i++) {
+            if (dateFormats.get(i).equalsIgnoreCase(formatDate)) {
+                view.setDateFormat(i);
+                break;
+            }
+        }
+
+        for (int i = 0; i < timeFormats.size(); i++) {
+            if (timeFormats.get(i).equalsIgnoreCase(formatTime)) {
+                view.setTimeFormat(i);
+                break;
+            }
+        }
     }
 }

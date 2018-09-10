@@ -2,8 +2,7 @@ package com.knobtviker.thermopile.presentation.contracts;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.data.models.local.Settings;
-import com.knobtviker.thermopile.data.models.local.Threshold;
+import com.knobtviker.thermopile.data.models.presentation.ThresholdChip;
 import com.knobtviker.thermopile.presentation.shared.base.BasePresenter;
 import com.knobtviker.thermopile.presentation.shared.base.BaseView;
 
@@ -17,16 +16,14 @@ public interface ScheduleContract {
 
     interface View extends BaseView {
 
-        void onSettingsChanged(@NonNull final Settings settings);
+        void setWeekdayNames(final boolean isShortName);
 
-        void onThresholds(@NonNull final List<Threshold> thresholds);
+        void onThresholds(@NonNull final List<ThresholdChip> thresholds);
     }
 
     interface Presenter extends BasePresenter {
 
-        void settings();
-
-        void thresholds();
+        void load();
 
         void removeThresholdById(final long id);
     }

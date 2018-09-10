@@ -2,11 +2,16 @@ package com.knobtviker.thermopile.presentation.presenters;
 
 import android.support.annotation.NonNull;
 
-import com.knobtviker.thermopile.di.components.domain.repositories.DaggerSettingsRepositoryComponent;
-import com.knobtviker.thermopile.di.modules.data.sources.local.SettingsLocalDataSourceModule;
+import com.knobtviker.thermopile.data.models.local.Settings;
 import com.knobtviker.thermopile.domain.repositories.SettingsRepository;
+import com.knobtviker.thermopile.domain.schedulers.Schedulers;
 import com.knobtviker.thermopile.presentation.contracts.UnitsContract;
 import com.knobtviker.thermopile.presentation.shared.base.AbstractPresenter;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitAcceleration;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitPressure;
+import com.knobtviker.thermopile.presentation.shared.constants.settings.UnitTemperature;
+
+import javax.inject.Inject;
 
 import io.reactivex.internal.functions.Functions;
 
@@ -14,20 +19,30 @@ import io.reactivex.internal.functions.Functions;
  * Created by bojan on 15/07/2017.
  */
 
-public class UnitsPresenter extends AbstractPresenter implements UnitsContract.Presenter {
+public class UnitsPresenter extends AbstractPresenter<UnitsContract.View> implements UnitsContract.Presenter {
 
-    private final UnitsContract.View view;
+    private long settingsId = -1L;
 
+    @UnitTemperature
+    private int unitTemperature = UnitTemperature.CELSIUS;
+
+    @UnitPressure
+    private int unitPressure = UnitPressure.PASCAL;
+
+    @UnitAcceleration
+    private int unitAcceleration = UnitAcceleration.METERS_PER_SECOND_2;
+
+    @NonNull
     private final SettingsRepository settingsRepository;
 
-    public UnitsPresenter(@NonNull final UnitsContract.View view) {
-        super(view);
-
-        this.view = view;
-        this.settingsRepository = DaggerSettingsRepositoryComponent.builder()
-            .localDataSource(new SettingsLocalDataSourceModule())
-            .build()
-            .inject();
+    @Inject
+    public UnitsPresenter(
+        @NonNull final UnitsContract.View view,
+        @NonNull final SettingsRepository settingsRepository,
+        @NonNull final Schedulers schedulers
+    ) {
+        super(view, schedulers);
+        this.settingsRepository = settingsRepository;
     }
 
     @Override
@@ -35,17 +50,42 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
         compositeDisposable.add(
             settingsRepository
                 .load()
-                .doOnSubscribe(consumer -> subscribed())
+                .doOnSubscribe(consumer -> {
+                    subscribed();
+                    setUnitTemperature();
+                    setUnitPressure();
+                    setUnitAcceleration();
+                })
                 .doOnTerminate(this::terminated)
                 .subscribe(
-                    view::onLoad,
+                    this::onLoad,
                     this::error
                 )
         );
     }
 
+    private void onLoad(@NonNull final Settings settings) {
+        settingsId = settings.id;
+
+        if (unitTemperature != settings.unitTemperature) {
+            unitTemperature = settings.unitTemperature;
+
+            setUnitTemperature();
+        }
+        if (unitPressure != settings.unitPressure) {
+            unitPressure = settings.unitPressure;
+
+            setUnitPressure();
+        }
+        if (unitAcceleration != settings.unitMotion) {
+            unitAcceleration = settings.unitMotion;
+
+            setUnitAcceleration();
+        }
+    }
+
     @Override
-    public void saveTemperatureUnit(long settingsId, int unit) {
+    public void saveTemperatureUnit(int unit) {
         compositeDisposable.add(
             settingsRepository
                 .saveTemperatureUnit(settingsId, unit)
@@ -59,7 +99,7 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
     }
 
     @Override
-    public void savePressureUnit(long settingsId, int unit) {
+    public void savePressureUnit(int unit) {
         compositeDisposable.add(
             settingsRepository
                 .savePressureUnit(settingsId, unit)
@@ -73,7 +113,7 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
     }
 
     @Override
-    public void saveAccelerationUnit(long settingsId, int unit) {
+    public void saveAccelerationUnit(int unit) {
         compositeDisposable.add(
             settingsRepository
                 .saveAccelerationUnit(settingsId, unit)
@@ -84,5 +124,50 @@ public class UnitsPresenter extends AbstractPresenter implements UnitsContract.P
                     this::error
                 )
         );
+    }
+
+    private void setUnitTemperature() {
+        switch (unitTemperature) {
+            case UnitTemperature.CELSIUS:
+                view.onCelsiusChecked();
+                break;
+            case UnitTemperature.FAHRENHEIT:
+                view.onFahrenheitChecked();
+                break;
+            case UnitTemperature.KELVIN:
+                view.onKelvinChecked();
+                break;
+        }
+    }
+
+    private void setUnitPressure() {
+        switch (unitPressure) {
+            case UnitPressure.PASCAL:
+                view.onPascalChecked();
+                break;
+            case UnitPressure.BAR:
+                view.onBarChecked();
+                break;
+            case UnitPressure.PSI:
+                view.onPsiChecked();
+                break;
+        }
+    }
+
+    private void setUnitAcceleration() {
+        switch (unitAcceleration) {
+            case UnitAcceleration.METERS_PER_SECOND_2:
+                view.onMs2Checked();
+                break;
+            case UnitAcceleration.G:
+                view.onGChecked();
+                break;
+            case UnitAcceleration.CENTIMETERS_PER_SECOND_2:
+                view.onCms2Checked();
+                break;
+            case UnitAcceleration.GAL:
+                view.onGalChecked();
+                break;
+        }
     }
 }
