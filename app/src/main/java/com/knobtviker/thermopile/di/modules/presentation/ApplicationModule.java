@@ -68,18 +68,6 @@ public class ApplicationModule {
         return new Messenger(incomingHandler);
     }
 
-    //    @Provides
-    //    @DriversMessenger
-    //    Messenger provideDriversMessenger() {
-    //
-    //    }
-    //
-    //    @Provides
-    //    @FramMessenger
-    //    Messenger provideFramMessenger() {
-    //
-    //    }
-
     @Provides
     @Singleton
     BoxStore provideDatabase(@NonNull final Context context) {

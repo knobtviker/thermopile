@@ -3,6 +3,8 @@ package com.knobtviker.thermopile.presentation.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -30,6 +32,12 @@ import timber.log.Timber;
 // .Connect -e ssid {SSID} -e passphrase {PASSPHRASE}` with the appropriate SSID and passphrase.
 public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
     implements NetworkContract.View, CompoundButton.OnCheckedChangeListener {
+
+    @BindView(R.id.scrollview_content)
+    public NestedScrollView scrollViewContent;
+
+    @BindView(R.id.progressbar)
+    public ContentLoadingProgressBar progressBar;
 
     @BindView(R.id.cardview_bluetooth)
     public CardView cardViewBluetooth;
@@ -80,7 +88,8 @@ public class NetworkFragment extends BaseFragment<NetworkContract.Presenter>
 
     @Override
     public void showLoading(boolean isLoading) {
-
+        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        scrollViewContent.setVisibility(isLoading ? View.GONE : View.VISIBLE);
     }
 
     @Override

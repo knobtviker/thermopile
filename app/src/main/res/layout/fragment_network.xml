@@ -1,164 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <android.support.design.card.MaterialCardView
-            android:id="@+id/cardview_bluetooth"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollview_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/cardview_bluetooth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="Bluetooth"/>
-
-                <Switch
-                    android:id="@+id/switch_bluetooth_on_off"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:enabled="false"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:text="Off"/>
-
-                <ProgressBar
-                    android:id="@+id/progressbar_bluetooth"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    android:indeterminateOnly="true"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
-
-        </android.support.design.card.MaterialCardView>
-
-        <android.support.design.card.MaterialCardView
-            android:id="@+id/cardview_wireless"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="WiFi"/>
-
-                <Switch
-                    android:id="@+id/switch_wifi_on_off"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:enabled="false"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:text="Off"/>
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
 
                 <LinearLayout
-                    android:id="@+id/layout_wifi_connected"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:minHeight="?attr/listPreferredItemHeightSmall"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="Bluetooth"/>
+
+                    <Switch
+                        android:id="@+id/switch_bluetooth_on_off"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/listPreferredItemHeightSmall"
+                        android:enabled="false"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:text="Off"/>
+
+                    <ProgressBar
+                        android:id="@+id/progressbar_bluetooth"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/textview_wifi_ssid"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:textColor="?android:textColorPrimary"
-                            tools:text="Knobtviker"/>
-
-                        <TextView
-                            android:id="@+id/textview_ip_wifi"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                            android:textColor="?android:textColorSecondary"
-                            tools:text="192.168.1.244"/>
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_arrow_next"/>
+                        android:indeterminate="true"
+                        android:indeterminateOnly="true"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </android.support.design.card.MaterialCardView>
 
-        </android.support.design.card.MaterialCardView>
-
-        <android.support.design.card.MaterialCardView
-            android:id="@+id/cardview_servers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
-
-            <LinearLayout
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/cardview_wireless"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
 
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="Servers"/>
-
-                <Switch
-                    android:id="@+id/switch_server_http"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:enabled="false"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:text="HTTP"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <Switch
-                    android:id="@+id/switch_server_websocket"
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="WiFi"/>
+
+                    <Switch
+                        android:id="@+id/switch_wifi_on_off"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/listPreferredItemHeightSmall"
+                        android:enabled="false"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:text="Off"/>
+
+                    <LinearLayout
+                        android:id="@+id/layout_wifi_connected"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:minHeight="?attr/listPreferredItemHeightSmall"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/textview_wifi_ssid"
+                                tools:text="Knobtviker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textColor="?android:textColorPrimary"/>
+
+                            <TextView
+                                android:id="@+id/textview_ip_wifi"
+                                tools:text="192.168.1.244"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                                android:textColor="?android:textColorSecondary"/>
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_arrow_next"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/cardview_servers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:enabled="false"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:text="Websocket"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="Servers"/>
 
-        </android.support.design.card.MaterialCardView>
+                    <Switch
+                        android:id="@+id/switch_server_http"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/listPreferredItemHeightSmall"
+                        android:enabled="false"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:text="HTTP"/>
 
-    </LinearLayout>
+                    <Switch
+                        android:id="@+id/switch_server_websocket"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/listPreferredItemHeightSmall"
+                        android:enabled="false"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:text="Websocket"/>
 
-</android.support.v4.widget.NestedScrollView>
+                </LinearLayout>
+
+            </android.support.design.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.constraint.ConstraintLayout>

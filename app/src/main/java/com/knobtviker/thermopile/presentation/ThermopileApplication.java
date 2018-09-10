@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.Messenger;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.knobtviker.thermopile.di.components.presentation.DaggerAppComponent;
 import com.knobtviker.thermopile.di.modules.presentation.ApplicationModule;
@@ -35,20 +36,17 @@ public class ThermopileApplication extends DaggerApplication implements Applicat
     @ForegroundMessenger
     Messenger foregroundMessenger;
 
-    //TODO: Find a way to inject 2 Messengers
-    //    @Inject
-    //    @DriversMessenger
-    Messenger serviceMessengerSensors;
-
-    //    @Inject
-    //    @FramMessenger
-    Messenger serviceMessengerFram;
-
     @Inject
     BoxStore database;
 
     @Inject
     ApplicationContract.Presenter presenter;
+
+    @Nullable
+    private Messenger serviceMessengerSensors;
+
+    @Nullable
+    private Messenger serviceMessengerFram;
 
     @Override
     public void onCreate() {

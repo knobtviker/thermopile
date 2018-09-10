@@ -54,36 +54,12 @@ public class MessageFactory {
         }
     }
 
-    public static void bluetoothEnableToBackground(@NonNull final Messenger foregroundMessenger, @NonNull final Messenger backgroundMessenger) {
-        try {
-            final Message message = Message.obtain(null, Action.BLUETOOH_ENABLE);
-            message.replyTo = foregroundMessenger;
-            backgroundMessenger.send(message);
-        } catch (RemoteException e) {
-            Timber.e(e);
-        }
-    }
-
-    public static void bluetoothDisableToBackground(@NonNull final Messenger foregroundMessenger, @NonNull final Messenger backgroundMessenger) {
-        try {
-            final Message message = Message.obtain(null, Action.BLUETOOH_DISABLE);
-            message.replyTo = foregroundMessenger;
-            backgroundMessenger.send(message);
-        } catch (RemoteException e) {
-            Timber.e(e);
-        }
-    }
-
     public static Message drivers(@NonNull final Bundle data) {
         return create(Uid.DRIVERS, data);
     }
 
     public static Message fram(@NonNull final Bundle data) {
         return create(Uid.FRAM, data);
-    }
-
-    public static Message bluetooth(@NonNull final Bundle data) {
-        return create(Uid.BLUETOOTH, data);
     }
 
     private static Message create(@Uid final int what, @NonNull final Bundle data) {

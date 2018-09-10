@@ -1,202 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <android.support.design.card.MaterialCardView
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollview_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <android.support.design.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
 
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="Temperature"/>
-
-                <android.support.design.chip.ChipGroup
-                    android:id="@+id/radiogroup_temperature_unit"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
-                    app:singleSelection="true">
+                    android:orientation="vertical">
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_celsius"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="Celsius"/>
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="Temperature"/>
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_farenheit"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="Fahrenheit"/>
+                    <android.support.design.chip.ChipGroup
+                        android:id="@+id/radiogroup_temperature_unit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        app:singleSelection="true">
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_kelvin"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="Kelvin"/>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_celsius"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="Celsius"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-                </android.support.design.chip.ChipGroup>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_farenheit"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="Fahrenheit"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-            </LinearLayout>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_kelvin"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="Kelvin"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-        </android.support.design.card.MaterialCardView>
+                    </android.support.design.chip.ChipGroup>
 
-        <android.support.design.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
+                </LinearLayout>
 
-            <LinearLayout
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.design.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
 
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="Pressure"/>
-
-                <android.support.design.chip.ChipGroup
-                    android:id="@+id/radiogroup_pressure_unit"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
-                    app:singleSelection="true">
+                    android:orientation="vertical">
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_pascal"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="@string/unit_pressure_pascal"/>
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="Pressure"/>
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_bar"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="@string/unit_pressure_bar"/>
+                    <android.support.design.chip.ChipGroup
+                        android:id="@+id/radiogroup_pressure_unit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        app:singleSelection="true">
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_psi"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="@string/unit_pressure_psi"/>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_pascal"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="@string/unit_pressure_pascal"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-                </android.support.design.chip.ChipGroup>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_bar"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="@string/unit_pressure_bar"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-            </LinearLayout>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_psi"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="@string/unit_pressure_psi"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-        </android.support.design.card.MaterialCardView>
+                    </android.support.design.chip.ChipGroup>
 
-        <android.support.design.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
+                </LinearLayout>
 
-            <LinearLayout
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.design.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
 
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="Motion"/>
-
-                <android.support.design.chip.ChipGroup
-                    android:id="@+id/radiogroup_acceleration_unit"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
-                    app:singleSelection="true">
+                    android:orientation="vertical">
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_ms2"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="@string/unit_acceleration_ms2"/>
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="Motion"/>
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_g"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="@string/unit_acceleration_g"/>
+                    <android.support.design.chip.ChipGroup
+                        android:id="@+id/radiogroup_acceleration_unit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        app:singleSelection="true">
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_gal"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="@string/unit_acceleration_gal"/>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_ms2"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="@string/unit_acceleration_ms2"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/unit_cms2"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="@string/unit_acceleration_cms2"/>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_g"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="@string/unit_acceleration_g"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-                </android.support.design.chip.ChipGroup>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_gal"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="@string/unit_acceleration_gal"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-            </LinearLayout>
+                        <android.support.design.chip.Chip
+                            android:id="@+id/unit_cms2"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="@string/unit_acceleration_cms2"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-        </android.support.design.card.MaterialCardView>
+                    </android.support.design.chip.ChipGroup>
 
-    </LinearLayout>
+                </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+            </android.support.design.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.constraint.ConstraintLayout>

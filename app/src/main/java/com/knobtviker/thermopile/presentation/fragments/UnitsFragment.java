@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,12 @@ import timber.log.Timber;
  */
 
 public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> implements UnitsContract.View {
+
+    @BindView(R.id.scrollview_content)
+    public NestedScrollView scrollViewContent;
+
+    @BindView(R.id.progressbar)
+    public ContentLoadingProgressBar progressBar;
 
     @BindView(R.id.radiogroup_temperature_unit)
     public ChipGroup radioGroupTemperatureUnit;
@@ -89,7 +97,8 @@ public class UnitsFragment extends BaseFragment<UnitsContract.Presenter> impleme
 
     @Override
     public void showLoading(boolean isLoading) {
-        //TODO: Do some loading if needed
+        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        scrollViewContent.setVisibility(isLoading ? View.GONE : View.VISIBLE);
     }
 
     @Override

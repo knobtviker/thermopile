@@ -1,148 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <android.support.design.card.MaterialCardView
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollview_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <android.support.design.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
 
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="@string/timezone"/>
-
-                <Spinner
-                    android:id="@+id/spinner_timezone"
-                    android:layout_width="match_parent"
-                    android:prompt="@string/timezone"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:spinnerMode="dialog"/>
-
-            </LinearLayout>
-
-        </android.support.design.card.MaterialCardView>
-
-        <android.support.design.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="Clock mode"/>
-
-                <android.support.design.chip.ChipGroup
-                    android:id="@+id/radiogroup_clock_mode"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
-                    app:singleSelection="true">
+                    android:orientation="vertical">
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/mode_12h"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="12h"/>
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="@string/timezone"/>
 
-                    <android.support.design.chip.Chip
-                        android:id="@+id/mode_24h"
-                        app:chipBackgroundColor="@drawable/background_chip_choice"
-                        app:chipStrokeColor="?android:textColorPrimary"
-                        app:chipStrokeWidth="1dp"
-                        app:chipEndPadding="32dp"
-                        app:chipStartPadding="32dp"
-                        style="@style/Widget.Chip.Choice"
-                        android:text="24h"/>
+                    <Spinner
+                        android:id="@+id/spinner_timezone"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/listPreferredItemHeightSmall"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:prompt="@string/timezone"
+                        android:spinnerMode="dialog"/>
 
-                </android.support.design.chip.ChipGroup>
+                </LinearLayout>
 
-            </LinearLayout>
+            </android.support.design.card.MaterialCardView>
 
-        </android.support.design.card.MaterialCardView>
-
-        <android.support.design.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
-
-            <LinearLayout
+            <android.support.design.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
 
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="@string/date_format"/>
-
-                <Spinner
-                    android:id="@+id/spinner_date_format"
-                    android:prompt="@string/date_format"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:spinnerMode="dialog"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="Clock mode"/>
 
-        </android.support.design.card.MaterialCardView>
+                    <android.support.design.chip.ChipGroup
+                        android:id="@+id/radiogroup_clock_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        app:singleSelection="true">
 
-        <android.support.design.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp"
-            app:contentPadding="8dp">
+                        <android.support.design.chip.Chip
+                            android:id="@+id/mode_12h"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="12h"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
 
-            <LinearLayout
+                        <android.support.design.chip.Chip
+                            android:id="@+id/mode_24h"
+                            style="@style/Widget.Chip.Choice"
+                            android:text="24h"
+                            app:chipBackgroundColor="@drawable/background_chip_choice"
+                            app:chipEndPadding="32dp"
+                            app:chipStartPadding="32dp"
+                            app:chipStrokeColor="?android:textColorPrimary"
+                            app:chipStrokeWidth="1dp"/>
+
+                    </android.support.design.chip.ChipGroup>
+
+                </LinearLayout>
+
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.design.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
 
-                <TextView
-                    style="@style/TextAppearance.Section"
-                    android:text="@string/time_format"/>
-
-                <Spinner
-                    android:id="@+id/spinner_time_format"
-                    android:prompt="@string/time_format"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/listPreferredItemHeightSmall"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:spinnerMode="dialog"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="@string/date_format"/>
 
-        </android.support.design.card.MaterialCardView>
+                    <Spinner
+                        android:id="@+id/spinner_date_format"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/listPreferredItemHeightSmall"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:prompt="@string/date_format"
+                        android:spinnerMode="dialog"/>
 
-    </LinearLayout>
+                </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.design.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:contentPadding="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextAppearance.Section"
+                        android:text="@string/time_format"/>
+
+                    <Spinner
+                        android:id="@+id/spinner_time_format"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/listPreferredItemHeightSmall"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:prompt="@string/time_format"
+                        android:spinnerMode="dialog"/>
+
+                </LinearLayout>
+
+            </android.support.design.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.constraint.ConstraintLayout>

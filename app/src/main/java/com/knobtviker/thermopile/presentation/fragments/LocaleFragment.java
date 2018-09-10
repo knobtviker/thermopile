@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +48,12 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
     @Inject
     @FormatTimeAdapter
     FormatAdapter spinnerAdapterTime;
+
+    @BindView(R.id.scrollview_content)
+    public NestedScrollView scrollViewContent;
+
+    @BindView(R.id.progressbar)
+    public ContentLoadingProgressBar progressBar;
 
     @BindView(R.id.spinner_timezone)
     public Spinner spinnerTimezone;
@@ -92,7 +100,8 @@ public class LocaleFragment extends BaseFragment<LocaleContract.Presenter> imple
 
     @Override
     public void showLoading(boolean isLoading) {
-        //TODO: Do some loading if needed
+        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        scrollViewContent.setVisibility(isLoading ? View.GONE : View.VISIBLE);
     }
 
     @Override

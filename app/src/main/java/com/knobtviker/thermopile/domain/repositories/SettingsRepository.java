@@ -42,7 +42,7 @@ public class SettingsRepository extends AbstractRepository {
     public Observable<Settings> load() {
         return settingsLocalDataSource
             .query()
-            .subscribeOn(schedulers.io)
+            .subscribeOn(schedulers.trampoline)
             .map(items -> items.isEmpty() ? Database.defaultSettings() : items.get(0))
             .observeOn(schedulers.ui);
     }
