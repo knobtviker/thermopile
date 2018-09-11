@@ -160,6 +160,8 @@ public class MainPresenter extends AbstractPresenter<MainContract.View> implemen
         compositeDisposable.add(
             atmosphereRepository
                 .observeTemperature()
+//                .doOnSubscribe(consumer -> view.showLoadingTemperature())
+//                .doAfterNext(item -> view.hideLoadingTemperature())
                 .subscribe(
                     this::onTemperatureChanged,
                     this::error

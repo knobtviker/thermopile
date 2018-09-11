@@ -50,9 +50,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends DaggerFragme
 
     @Override
     public void onDestroyView() {
-        if (presenter != null) {
-            presenter.dispose();
-        }
         if (!unbinder.equals(Unbinder.EMPTY)) {
             unbinder.unbind();
             unbinder = Unbinder.EMPTY;

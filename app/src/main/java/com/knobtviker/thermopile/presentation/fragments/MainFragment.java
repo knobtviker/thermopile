@@ -124,6 +124,7 @@ public class MainFragment extends BaseFragment<MainContract.Presenter> implement
 
     @Override
     public void showLoading(boolean isLoading) {
+        //TODO: Use this one for thresholds loading
     }
 
     @Override

@@ -16,24 +16,24 @@
         <action
             android:id="@+id/showChartsAction"
             app:destination="@id/chartsFragment"
-            app:enterAnim="@anim/enter_fade_in_right_to_left"
-            app:exitAnim="@anim/exit_fade_out_left_to_right"
-            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
-            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
+            app:enterAnim="@anim/no_anim"
+            app:exitAnim="@anim/no_anim"
+            app:popEnterAnim="@anim/no_anim"
+            app:popExitAnim="@anim/no_anim"/>
         <action
             android:id="@+id/showScheduleAction"
             app:destination="@id/scheduleFragment"
-            app:enterAnim="@anim/enter_fade_in_right_to_left"
-            app:exitAnim="@anim/exit_fade_out_left_to_right"
-            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
-            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
+            app:enterAnim="@anim/no_anim"
+            app:exitAnim="@anim/no_anim"
+            app:popEnterAnim="@anim/no_anim"
+            app:popExitAnim="@anim/no_anim"/>
         <action
             android:id="@+id/showSettingsAction"
             app:destination="@id/settingsFragment"
-            app:enterAnim="@anim/enter_fade_in_right_to_left"
-            app:exitAnim="@anim/exit_fade_out_left_to_right"
-            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
-            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
+            app:enterAnim="@anim/no_anim"
+            app:exitAnim="@anim/no_anim"
+            app:popEnterAnim="@anim/no_anim"
+            app:popExitAnim="@anim/no_anim"/>
     </fragment>
 
     <fragment
@@ -61,17 +61,17 @@
         <action
             android:id="@+id/showHelpAction"
             app:destination="@id/blankFragment"
-            app:enterAnim="@anim/enter_fade_in_right_to_left"
-            app:exitAnim="@anim/exit_fade_out_left_to_right"
-            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
-            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
+            app:enterAnim="@anim/no_anim"
+            app:exitAnim="@anim/no_anim"
+            app:popEnterAnim="@anim/no_anim"
+            app:popExitAnim="@anim/no_anim"/>
         <action
             android:id="@+id/showAboutAction"
             app:destination="@id/blankFragment"
-            app:enterAnim="@anim/enter_fade_in_right_to_left"
-            app:exitAnim="@anim/exit_fade_out_left_to_right"
-            app:popEnterAnim="@anim/enter_fade_in_right_to_left"
-            app:popExitAnim="@anim/exit_fade_out_left_to_right"/>
+            app:enterAnim="@anim/no_anim"
+            app:exitAnim="@anim/no_anim"
+            app:popEnterAnim="@anim/no_anim"
+            app:popExitAnim="@anim/no_anim"/>
     </fragment>
 
     <fragment

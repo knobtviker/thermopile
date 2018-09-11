@@ -157,9 +157,22 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:spark_animateChanges="true"
                         app:spark_cornerRadius="4dp"
+                        android:visibility="gone"
                         app:spark_fillType="down"
                         app:spark_lineWidth="1dp"
                         app:spark_scrubEnabled="true"/>
+
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/progressbar"
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/guideline_split"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
                     <TextView
                         android:id="@+id/textview_max_value"

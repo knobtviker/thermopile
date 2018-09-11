@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.constraint.Guideline;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,6 +63,9 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
     @BindView(R.id.sparkview)
     public SparkView sparkView;
 
+    @BindView(R.id.progressbar)
+    public ContentLoadingProgressBar progressBar;
+
     @BindView(R.id.textview_max_value)
     public TextView textViewMaxValue;
 
@@ -106,7 +110,8 @@ public class ChartsFragment extends BaseFragment<ChartsContract.Presenter> imple
 
     @Override
     public void showLoading(boolean isLoading) {
-
+        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        sparkView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
     }
 
     @Override
